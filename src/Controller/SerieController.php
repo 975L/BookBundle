@@ -15,24 +15,6 @@ class SerieController extends AbstractController
     ) {
     }
 
-    // REDIRECT
-    #[Route(
-        '/serie/{slug}',
-        name: 'serie_redirect',
-        requirements: [
-            'slug' => '^(mamievitevite)$'
-        ],
-        methods: ['GET']
-    )]
-    public function redirect_display(string $slug): Response
-    {
-        $slugs = [
-            'mamievitevite' => 'mamie-vitevite',
-        ];
-
-        return $this->redirectToRoute('serie_display', ['slug' => $slugs[$slug]]);
-    }
-
     // INDEX
     #[Route(
         '/series',

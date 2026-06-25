@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3
+
+- Suppressed specific data related to former use (25/06/2026)
+
 ## v0.2
 
 - Renamed Tables and Folders (25/06/2026)

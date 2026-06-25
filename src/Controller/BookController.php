@@ -16,29 +16,6 @@ class BookController extends AbstractController
     ) {
     }
 
-    // REDIRECT
-    #[Route(
-        '/livre/{slug}',
-        name: 'book_redirect',
-        requirements: [
-            'slug' => '^(le-repere|les-canadiennes|le-reveillon|trafic|chateau-hurlton|guerre-et-occupation)$'
-        ],
-        methods: ['GET']
-    )]
-    public function redirect_display(string $slug): Response
-    {
-        $slugs = [
-            'le-reveillon' => 'mamie-vitevite-le-reveillon',
-            'le-repere' => 'les-triados-trafic',
-            'trafic' => 'les-triados-trafic',
-            'chateau-hurlton' => 'la-guilde-des-seigneurs-chateau-hurlton',
-            'guerre-et-occupation' => 'resistance-haute-savoie-guerre-et-occupation',
-            'les-canadiennes' => 'resistance-haute-savoie-guerre-et-occupation',
-        ];
-
-        return $this->redirectToRoute('book_display', ['slug' => $slugs[$slug]]);
-    }
-
     // INDEX
     #[Route(
         '/livres',

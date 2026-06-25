@@ -35,12 +35,6 @@
         {% elseif book.getTranslation('fr') %}
             <twig:c975LUi:Button:Button label="Version française" url="{{ path('book_display', {'slug': book.getTranslation('fr').slug}) }}"/>
         {% endif %}
-        {% if (book.slug == 'les-chastel') %}
-            <p>Archives Haute-Savoie : <a href="https://bibliotheque-patrimoniale.hautesavoie.fr/exl-php/vue-consult/cd74_recherche/UNI00021479" target="_blank">Travaux préparatoires à l’ouvrage « Les Chastel »</a>
-        {% endif %}
-        {% if ('papa-calin' in book.slug) %}
-            <twig:c975LUi:Button:Button label="Voir sur Papa Câlin" url="https://papa-calin.com/histoire/{{ book.slug|replace({'papa-calin-': ''}) }}" target="_blank"/>
-        {% endif %}
         <twig:Book:Financement book="{{ book }}" />
     </div>
 </twig:c975LUi:Card:Card>
