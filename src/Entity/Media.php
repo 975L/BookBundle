@@ -14,7 +14,7 @@ use c975L\BookBundle\Repository\MediaRepository;
 use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
-#[ORM\Table(name: 'media')]
+#[ORM\Table(name: 'book_media')]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'owner_type', type: 'string')]
 #[ORM\DiscriminatorMap([

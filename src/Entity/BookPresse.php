@@ -39,6 +39,6 @@ class BookPresse extends Media implements VichMediaNamableInterface
 
     public function getVichMediaPath(): string
     {
-        return 'medias/books/' . ($this->book?->getSlug() ?? 'temp');
+        return 'medias/books/presse/' . ($this->book?->getSlug() ?? 'temp');
     }
 }

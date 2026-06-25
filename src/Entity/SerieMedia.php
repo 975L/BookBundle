@@ -39,6 +39,6 @@ class SerieMedia extends Media implements VichMediaNamableInterface
 
     public function getVichMediaPath(): string
     {
-        return 'medias/series/' . $this->serie->getSlug();
+        return 'medias/books/series/' . $this->serie->getSlug();
     }
 }

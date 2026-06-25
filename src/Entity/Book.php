@@ -14,6 +14,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
+#[ORM\Table(name: 'book_book')]
+#[UniqueEntity('slug')]
 class Book
 {
     #[ORM\Id]
