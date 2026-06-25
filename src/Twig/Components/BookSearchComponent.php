@@ -7,8 +7,8 @@ use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
-#[AsLiveComponent]
-class BookSearch
+#[AsLiveComponent(name: 'BookSearch', template: '@c975LBook/components/BookSearch.html.twig')]
+class BookSearchComponent
 {
     use DefaultActionTrait;
 

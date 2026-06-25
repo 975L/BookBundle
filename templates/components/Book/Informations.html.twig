@@ -35,6 +35,6 @@
         {% elseif book.getTranslation('fr') %}
             <twig:c975LUi:Button:Button label="Version française" url="{{ path('book_display', {'slug': book.getTranslation('fr').slug}) }}"/>
         {% endif %}
-        <twig:Book:Financement book="{{ book }}" />
+        <twig:c975LBook:Book:Financement book="{{ book }}" />
     </div>
 </twig:c975LUi:Card:Card>

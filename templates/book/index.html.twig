@@ -5,9 +5,9 @@
 {% set description = 'Liste des livres publiés' %}
 
 {% block content %}
-    <twig:Book:Explanation/>
-    <twig:Book:Search/>
+    <twig:c975LBook:Book:Explanation/>
+    <twig:c975LBook:Book:Search/>
     <twig:c975LUi:Pagination:Pagination paginate="{{ books }}"/>
-    <twig:Book:Books books="{{ books }}"/>
+    <twig:c975LBook:Book:Books books="{{ books }}"/>
     <twig:c975LUi:Pagination:Pagination paginate="{{ books }}"/>
 {% endblock %}

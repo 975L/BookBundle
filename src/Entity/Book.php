@@ -2,16 +2,17 @@
 
 namespace c975L\BookBundle\Entity;
 
-use DateTimeInterface;
-use c975L\BookBundle\Entity\BookMedia;
-use c975L\BookBundle\Entity\BookVideo;
-use c975L\BookBundle\Entity\BookPresse;
 use c975L\BookBundle\Entity\BookMarketing;
+use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\BookPresse;
+use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Repository\BookRepository;
+use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use c975L\BookBundle\Repository\BookRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ORM\Table(name: 'book_book')]

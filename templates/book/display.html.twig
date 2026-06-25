@@ -10,14 +10,14 @@
     {% if(asset_exists("medias/series/logo-" ~ book.serie.slug ~ ".webp")) %}
         <twig:c975LUi:Image:Image src="medias/series/logo-{{ book.serie.slug }}.webp" alt="Logo {{ book.serie.title }}"/>
     {% endif %}
-    <twig:Book:Couvertures medias="{{ book.medias }}" />
-    <twig:Book:Financement book="{{ book }}" />
-    <twig:Book:Resume book="{{ book }}" />
-    <twig:Book:Videos videos="{{ book.videos }}" />
-    <twig:Book:Extracts book="{{ book}}" />
-    <twig:Book:Shops book="{{ book }}" />
-    <twig:Book:Presses presses="{{ book.presses }}" />
-    <twig:Book:Marketings marketings="{{ book.marketings }}" />
-    <twig:Book:Serie serie="{{ book.serie }}" />
-    <twig:Book:Informations book="{{ book }}" />
+    <twig:c975LBook:Book:Couvertures medias="{{ book.medias }}" />
+    <twig:c975LBook:Book:Financement book="{{ book }}" />
+    <twig:c975LBook:Book:Resume book="{{ book }}" />
+    <twig:c975LBook:Book:Videos videos="{{ book.videos }}" />
+    <twig:c975LBook:Book:Extracts book="{{ book}}" />
+    <twig:c975LBook:Book:Shops book="{{ book }}" />
+    <twig:c975LBook:Book:Presses presses="{{ book.presses }}" />
+    <twig:c975LBook:Book:Marketings marketings="{{ book.marketings }}" />
+    <twig:c975LBook:Book:Serie serie="{{ book.serie }}" />
+    <twig:c975LBook:Book:Informations book="{{ book }}" />
 {% endblock %}

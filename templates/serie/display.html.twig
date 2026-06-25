@@ -9,12 +9,12 @@
     {% if(asset_exists("medias/series/logo-" ~ serie.slug ~ ".webp")) %}
         <twig:c975LUi:Image:Image src="medias/series/logo-{{ serie.slug }}.webp" alt="Logo {{ serie.title }}"/>
     {% endif %}
-    <twig:Serie:Resume serie="{{ serie }}"/>
+    <twig:c975LBook:Serie:Resume serie="{{ serie }}"/>
     <h2 class="text-center">{{"label.serie_books"|trans({}, 'messages', language)}}</h2>
     <div class="cards">
         {% for book in serie.books %}
-            <twig:Book:Book book="{{ book }}"/>
+            <twig:c975LBook:Book:Book book="{{ book }}"/>
         {% endfor %}
     </div>
-    <twig:Serie:Informations serie="{{ serie }}" language="{{ language }}"/>
+    <twig:c975LBook:Serie:Informations serie="{{ serie }}" language="{{ language }}"/>
 {% endblock %}

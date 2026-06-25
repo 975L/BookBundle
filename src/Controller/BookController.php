@@ -25,7 +25,7 @@ class BookController extends AbstractController
     public function index(Request $request): Response
     {
         return $this->render(
-            'book/index.html.twig',
+            '@c975LBook/book/index.html.twig',
             ['books' => $this->bookService->findAllPaginated($request->query)]
         )->setMaxAge(3600);
     }
@@ -42,7 +42,7 @@ class BookController extends AbstractController
     public function display(Book $book): Response
     {
         return $this->render(
-            'book/display.html.twig',
+            '@c975LBook/book/display.html.twig',
             [
                 'book' => $book,
             ]

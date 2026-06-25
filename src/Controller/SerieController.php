@@ -24,7 +24,7 @@ class SerieController extends AbstractController
     public function index(Request $request): Response
     {
         return $this->render(
-            'serie/index.html.twig',
+            '@c975LBook/serie/index.html.twig',
             ['series' => $this->serieService->findAllPaginated($request->query)]
         )->setMaxAge(3600);
     }
@@ -44,7 +44,7 @@ class SerieController extends AbstractController
         $language = strpos($slug, 'english') !== false ? 'en' : 'fr';
 
         return $this->render(
-            'serie/display.html.twig',
+            '@c975LBook/serie/display.html.twig',
             [
                 'language' => $language,
                 'serie' => $serie
