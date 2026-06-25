@@ -1,0 +1,6 @@
+<div class="flex-center">
+    {% set firstSrc = medias|first != false ? medias|first : "bundles/c975lshop/images/no-product-image.webp" %}
+    <twig:c975LUi:Image:Link src="{{ asset(firstSrc) }}" url="{{ asset(firstSrc) }}" class="img-thumbnail" width="150" />
+    {% set lastSrc = medias|last != false ? medias|last : "bundles/c975lshop/images/no-product-image.webp" %}
+    <twig:c975LUi:Image:Link src="{{ asset(lastSrc) }}" url="{{ asset(lastSrc) }}" class="img-thumbnail" width="150" />
+</div>

@@ -1,0 +1,17 @@
+{% if presse.youtubeUrl %}
+    <twig:c975LUi:Video:Iframe src="https://www.youtube-nocookie.com/embed/{{ presse.youtubeUrl }}" width="125"/>
+    <p class="text-center">{{ presse.title }}</p>
+{% elseif presse.name matches '/\.mp3$/' %}
+        <twig:c975LUi:Audio:Audio src="{{ asset(presse.name) }}" type="audio/mpeg"/>
+        <p class="text-center">{{ presse.title }}</p>
+    </div>
+{% elseif presse.name matches '/\.mp4$/' %}
+    <div class="text-center width-150">
+        <twig:c975LUi:Video:Video src="{{ asset(presse.name) }}" type="video/mp4" width="125"/>
+        <p class="text-center">{{ presse.title }}</p>
+    </div>
+{% else %}
+    {% set imageSrc = presse.name|replace({'.pdf': '.webp'}) %}
+    {% set imageSrc = asset_exists(imageSrc) ? imageSrc : "bundles/c975lshop/images/no-product-image.webp" %}
+    <twig:c975LUi:Image:Link label="{{ presse.title }}" src="{{ asset(imageSrc) }}" url="{{ asset(presse.name) }}" class="img-thumbnail box-shadow img-125" width="150"/>
+{% endif %}

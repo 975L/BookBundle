@@ -1,0 +1,16 @@
+<article class="text-center width-150" lang="{{ book.language }}">
+    {% set imageSrc = book.medias|first != false ? book.medias|first : "bundles/c975lshop/images/no-product-image.webp" %}
+    <twig:c975LUi:Image:Link src="{{ asset(imageSrc) }}" url="{{ path('book_display', {'slug': book.slug}) }}" class="img-thumbnail box-shadow" width="150"/>
+    <h3>{{ book.title|replace({' - ': '<br>'})|raw }}</h3>
+    <p class="text text-center small bold">({{ book.language == 'en' ? 'English' : 'Français' }})</p>
+
+    <p class="text text-center small italic">
+        {% if book.published == null %}
+            {{ 'label.to_be_published'|trans({}, 'messages', book.language) }}
+        {% elseif book.published|date("Ymd") > "now"|date("Ymd") %}
+            {{ 'label.to_be_published'|trans({}, 'messages', book.language) }} ({{ book.published|date('d/m/Y') }})
+        {% else %}
+            {{ 'label.published_on'|trans({}, 'messages', book.language) }} {{ book.published|date('d/m/Y') }}
+        {% endif %}
+    </p>
+</article>

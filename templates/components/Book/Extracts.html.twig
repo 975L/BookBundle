@@ -1,0 +1,7 @@
+<twig:c975LUi:Card:Card id="extraits" title="Extraits">
+    {% if book.published and book.published|date("Ymd") <= "now"|date("Ymd") %}
+        <twig:c975LShop:Slider:Slider slug="{{ book.slug }}" />
+    {% else %}
+        <twig:c975LUi:Slider:Slider slides="{{ book.medias }}" id="slider" />
+    {% endif %}
+</twig:c975LUi:Card:Card>

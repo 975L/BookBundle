@@ -1,0 +1,6 @@
+<article class="width-150">
+    {% set imageSrc = serie.medias|first != false ? serie.medias|first : "bundles/c975lshop/images/no-product-image.webp" %}
+    <twig:c975LUi:Image:Link src="{{ asset(imageSrc) }}" url="{{ path('serie_display', {'slug': serie.slug}) }}" class="img-thumbnail box-shadow" width="150"/>
+    <h3>{{ serie.title }}</h3>
+    <p class="text text-center small bold">({{ serie.language == 'en' ? 'English' : 'Français' }})</p>
+</article>

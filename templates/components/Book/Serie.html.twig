@@ -1,0 +1,10 @@
+{% if serie%}
+    <twig:c975LUi:Card:Card id="serie" title="Série">
+        <p class="lead text-center">Ce livre fait partie de la série "{{ serie.title }}"</p>
+        {% set imageSrc = serie.medias|first != false ? serie.medias|first : "bundles/c975lshop/images/no-product-image.webp" %}
+        <twig:c975LUi:Image:Link label="{{ serie.title }}" src="{{ asset(imageSrc) }}" url="{{ path('serie_display', {'slug': serie.slug}) }}" class="img-thumbnail box-shadow img-150" width="150"/>
+        <div class="text text-left lead">
+            <twig:c975LUi:Text:Readmore text="{{ serie.summary }}" id="serie-summary"/>
+        </div>
+    </twig:c975LUi:Card:Card>
+{% endif %}

@@ -1,0 +1,7 @@
+{% if videos is not empty %}
+    <twig:c975LUi:Card:Card id="apercu" title="Aperçu">
+        {% for video in videos %}
+            <twig:Book:Video video="{{ video }}"/>
+        {% endfor %}
+    </twig:c975LUi:Card:Card>
+{% endif %}

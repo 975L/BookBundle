@@ -1,0 +1,12 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set title = 'Nos séries' %}
+{% set description = 'Liste des séries' %}
+
+{% block content %}
+    <h2>Toutes nos séries</h2>
+    <twig:c975LUi:Pagination:Pagination paginate="{{ series }}"/>
+    <twig:Serie:Series series="{{ series }}"/>
+    <twig:c975LUi:Pagination:Pagination paginate="{{ series }}"/>
+{% endblock %}

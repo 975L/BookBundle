@@ -1,0 +1,20 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set title = serie.title %}
+{% set description = serie.summary %}
+{% set ogImage = absolute_url(asset('medias/series/' ~ "%02d"|format(serie.id) ~ '/Couverture.jpg.webp')) %}
+
+{% block content %}
+    {% if(asset_exists("medias/series/logo-" ~ serie.slug ~ ".webp")) %}
+        <twig:c975LUi:Image:Image src="medias/series/logo-{{ serie.slug }}.webp" alt="Logo {{ serie.title }}"/>
+    {% endif %}
+    <twig:Serie:Resume serie="{{ serie }}"/>
+    <h2 class="text-center">{{"label.serie_books"|trans({}, 'messages', language)}}</h2>
+    <div class="cards">
+        {% for book in serie.books %}
+            <twig:Book:Book book="{{ book }}"/>
+        {% endfor %}
+    </div>
+    <twig:Serie:Informations serie="{{ serie }}" language="{{ language }}"/>
+{% endblock %}

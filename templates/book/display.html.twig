@@ -1,0 +1,24 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set title = book.title %}
+{% set description = book.summary %}
+{% set ogImage = absolute_url(asset(book.medias|first)) %}
+{% set locale = book.language %}
+
+{% block content %}
+    {% if(asset_exists("medias/series/logo-" ~ book.serie.slug ~ ".webp")) %}
+        <twig:c975LUi:Image:Image src="medias/series/logo-{{ book.serie.slug }}.webp" alt="Logo {{ book.serie.title }}"/>
+    {% endif %}
+    <twig:Book:Couvertures medias="{{ book.medias }}" />
+    <twig:Book:Financement book="{{ book }}" />
+    <twig:Book:Resume book="{{ book }}" />
+    <twig:Book:Videos videos="{{ book.videos }}" />
+    <twig:Book:Extracts book="{{ book}}" />
+    <twig:Book:PapaCalin book="{{ book }}" />
+    <twig:Book:Shops book="{{ book }}" />
+    <twig:Book:Presses presses="{{ book.presses }}" />
+    <twig:Book:Marketings marketings="{{ book.marketings }}" />
+    <twig:Book:Serie serie="{{ book.serie }}" />
+    <twig:Book:Informations book="{{ book }}" />
+{% endblock %}

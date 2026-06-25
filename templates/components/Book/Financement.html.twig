@@ -1,0 +1,3 @@
+{% if (book.crowdfunding and book.crowdfundingEndDate|date('U') > "now"|date('U')) %}
+    <twig:c975LShop:Button:Button label="Financement participatif {{ book.title }}" url="{{ path('crowdfunding_display', {'slug': book.slug}) }}"  icon="bundles/c975lshop/images/people-group.svg"/>
+{% endif %}

@@ -1,0 +1,13 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set title = 'Nos livres publiés' %}
+{% set description = 'Liste des livres publiés' %}
+
+{% block content %}
+    <twig:Book:Explanation/>
+    <twig:Book:Search/>
+    <twig:c975LUi:Pagination:Pagination paginate="{{ books }}"/>
+    <twig:Book:Books books="{{ books }}"/>
+    <twig:c975LUi:Pagination:Pagination paginate="{{ books }}"/>
+{% endblock %}

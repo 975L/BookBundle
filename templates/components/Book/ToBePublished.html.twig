@@ -1,0 +1,11 @@
+<section class="text-center">
+    <h2>Nos livres en cours de publication</h2>
+    <p class="text text-center">
+        Ces livres sont en cours d'édition, mais vous pouvez déjà en avoir un aperçu. N'hésitez pas à nous laisser vos commentaires, via les <a href="#reseaux">réseaux sociaux</a> ou le <a href="{{ absolute_url(path('contactform_display')) }}">formulaire de contact</a>.
+    </p>
+    <div class="cards">
+        {% for book in books %}
+            <twig:Book:Book book="{{ book }}"/>
+        {% endfor %}
+    </div>
+</section>

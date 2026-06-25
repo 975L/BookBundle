@@ -1,0 +1,12 @@
+{% set displayMore = displayMore | default(false) %}
+<div class="cards">
+    {% for book in books %}
+        <twig:Book:Book book="{{ book }}"/>
+    {% endfor %}
+    {% if displayMore == "true" %}
+        <article class="text-center width-150">
+            <h3 class="card-title">Découvrez tous nos livres</h3>
+            <twig:c975LUi:Button:Button label="Tous nos livres" url="{{ path('book_index') }}" />
+        </article>
+    {% endif %}
+</div>

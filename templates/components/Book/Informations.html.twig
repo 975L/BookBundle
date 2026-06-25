@@ -1,0 +1,46 @@
+<twig:c975LUi:Card:Card id="informations" title="Informations">
+    <div class="text-left">
+        <p>
+            {{ 'label.published_date'|trans({}, 'messages', book.language) }} :
+            <strong>
+                {% if book.published == null %}
+                    {{ 'label.to_be_published'|trans({}, 'messages', book.language) }}
+                {% elseif book.published|date("Ymd") > "now"|date("Ymd") %}
+                    {{ 'label.to_be_published'|trans({}, 'messages', book.language) }} ({{ book.published|date('d/m/Y') }})
+                {% else %}
+                    {{ book.published|date('d/m/Y') }}
+                {% endif %}
+            </strong>
+        </p>
+        <p>
+            {{ 'label.author'|trans({}, 'messages', book.language) }} :
+            {% if book.authorWebsite %}
+                <a href="{{ book.authorWebsite }}" title="Site de l'auteur {{ book.author }}" target="_blank">{{ book.author }}</a>
+            {% else %}
+                <strong>{{ book.author }}</strong>
+            {% endif %}
+        </p>
+        {% if book.illustrator %}
+            <p>Illustrateur/trice : <strong>{{ book.illustrator }}</strong></p>
+        {% endif %}
+        <p>{{ 'label.language'|trans({}, 'messages', book.language) }} : <strong>{{ book.language == 'en' ? 'English' : 'Français' }}</strong></p>
+        <p>{{ 'label.format'|trans({}, 'messages', book.language) }} : <strong>{{ book.format }}</strong></p>
+        <p>{{ 'label.pages'|trans({}, 'messages', book.language) }} : <strong>{{ book.pages }}</strong></p>
+        <p>{{ 'label.age'|trans({}, 'messages', book.language) }} : <strong>{{ book.age }}</strong></p>
+        <p>{{ 'label.isbn_paper'|trans({}, 'messages', book.language) }} : <strong>{{ book.isbn ? book.isbn|isbn : "-" }}</strong></p>
+        <p>{{ 'label.isbn_digital'|trans({}, 'messages', book.language) }} : <strong>{{ book.isbnDigital ? book.isbnDigital|isbn : "-" }}</strong></p>
+        {# Traductions #}
+        {% if book.getTranslation('en') %}
+            <twig:c975LUi:Button:Button label="English version" url="{{ path('book_display', {'slug': book.getTranslation('en').slug}) }}"/>
+        {% elseif book.getTranslation('fr') %}
+            <twig:c975LUi:Button:Button label="Version française" url="{{ path('book_display', {'slug': book.getTranslation('fr').slug}) }}"/>
+        {% endif %}
+        {% if (book.slug == 'les-chastel') %}
+            <p>Archives Haute-Savoie : <a href="https://bibliotheque-patrimoniale.hautesavoie.fr/exl-php/vue-consult/cd74_recherche/UNI00021479" target="_blank">Travaux préparatoires à l’ouvrage « Les Chastel »</a>
+        {% endif %}
+        {% if ('papa-calin' in book.slug) %}
+            <twig:c975LUi:Button:Button label="Voir sur Papa Câlin" url="https://papa-calin.com/histoire/{{ book.slug|replace({'papa-calin-': ''}) }}" target="_blank"/>
+        {% endif %}
+        <twig:Book:Financement book="{{ book }}" />
+    </div>
+</twig:c975LUi:Card:Card>

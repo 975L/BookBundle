@@ -1,0 +1,25 @@
+{% if book.published and book.published|date("Ymd") <= "now"|date("Ymd") %}
+    <twig:c975LUi:Card:Card id="boutiques" title="Boutiques">
+        <p class="lead text-center">Version papier/numérique ?</p>
+        <p class="text-center">Version papier disponible <strong>exclusivement</strong> sur notre boutique en ligne</p>
+        <twig:c975LShop:Button:Button label="{{ book.title }}" url="{{ path('product_display', {'slug': book.slug }) }}"  icon="bundles/c975lshop/images/basket-shopping.svg"/>
+        {% if book.epubFnac or book.epubGplay or book.epubKobo or book.epubApple %}
+            <p class="lead text-center">Autres boutiques</p>
+            <p class="text-center">Numérique uniquement</p>
+            <div class="flex-center text-center">
+                {% if book.epubFnac %}
+                    <twig:c975LUi:Image:Link label="Fnac" src="images/fnac.svg" url="http://www.fnac.com/livre-numerique/{{ book.epubFnac }}" width="48" height="48" target="_blank"/>
+                {% endif %}
+                {% if book.epubGplay %}
+                    <twig:c975LUi:Image:Link label="Google" src="images/google-play.svg" url="https://play.google.com/store/books/details?PAffiliateID=1011l46DJf&id={{ book.epubGplay }}" width="48" height="48" target="_blank"/>
+                {% endif %}
+                {% if book.epubKobo %}
+                    <twig:c975LUi:Image:Link label="Kobo" src="images/kobo.svg" url="https://www.kobo.com/fr/fr/ebook/{{ book.epubKobo }}" width="48" height="48" target="_blank"/>
+                {% endif %}
+                {% if book.epubApple %}
+                    <twig:c975LUi:Image:Link label="Apple" src="images/apple.svg" url="https://books.apple.com/fr/book/{{ book.slug }}/id{{ book.epubApple }}" width="48" height="48" target="_blank"/>
+                {% endif %}
+            </div>
+        {% endif %}
+    </twig:c975LUi:Card:Card>
+{% endif %}
