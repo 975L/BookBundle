@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.1
+
+- Corrected Book Informations component (27/06/2026)
+
 ## v1.0
 
 - Added MenuProvider (27/06/2026)

@@ -27,7 +27,7 @@
         <p>{{ 'label.format'|trans({}, 'book', book.language) }} : <strong>{{ book.format }}</strong></p>
         <p>{{ 'label.pages'|trans({}, 'book', book.language) }} : <strong>{{ book.pages }}</strong></p>
         <p>{{ 'label.age'|trans({}, 'book', book.language) }} : <strong>{{ book.age }}</strong></p>
-        <p>{{ 'label.isbn_paper'|trans({}, 'book', book.language) }} : <strong>{{ book.isbn ? book.isbn|isbn : "-" }}</strong></p>
+        <p>{{ 'label.isbn_paper'|trans({}, 'book', book.language) }} : <strong>{{ book.isbnPaper ? book.isbnPaper|isbn : "-" }}</strong></p>
         <p>{{ 'label.isbn_digital'|trans({}, 'book', book.language) }} : <strong>{{ book.isbnDigital ? book.isbnDigital|isbn : "-" }}</strong></p>
         {# Translations #}
         {% if book.getTranslation('en') %}
