@@ -1,9 +1,8 @@
 {
     "name": "c975l/book-bundle",
     "type": "symfony-bundle",
-    "description": "Manages books and series for a publishing website",
+    "description": "Symfony bundle that manages books and series for a publishing website — catalog, media collections, admin CRUD, pagination, and multilingual support.",
     "keywords": ["symfony", "bundle", "book", "serie"],
-    "homepage": "https://github.com/975L/BookBundle",
     "license": "MIT",
     "authors": [
         {

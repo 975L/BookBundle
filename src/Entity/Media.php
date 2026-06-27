@@ -35,6 +35,9 @@ abstract class Media
     #[ORM\Column(nullable: true)]
     private ?int $position = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $kind = null;
+
     #[ORM\Column(length: 100, nullable: true, unique: true)]
     private ?string $name = null;
 
@@ -95,7 +98,7 @@ abstract class Media
 
     public function setPosition(?int $position): static
     {
-        $this->position = $position;
+        $this->position = $position ?? 0;
 
         return $this;
     }
@@ -108,6 +111,18 @@ abstract class Media
     public function setName(?string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getKind(): ?string
+    {
+        return $this->kind;
+    }
+
+    public function setKind(?string $kind): static
+    {
+        $this->kind = $kind;
 
         return $this;
     }

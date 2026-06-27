@@ -2,6 +2,246 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="fr" datatype="plaintext" original="book.en.xlf">
         <body>
+            <trans-unit id="1">
+                <source>label.catalog</source>
+                <target>Catalogue</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>label.books</source>
+                <target>Livres</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>label.book</source>
+                <target>Livre</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>label.series</source>
+                <target>Séries</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>label.serie</source>
+                <target>Série</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>label.summary</source>
+                <target>Résumé</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>label.to_be_published</source>
+                <target>À paraître</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>label.published_on</source>
+                <target>Publié le</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>label.other_shops</source>
+                <target>Autres boutiques</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>label.shops</source>
+                <target>Boutiques</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>label.extracts</source>
+                <target>Extraits</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>text.series</source>
+                <target>Cette histoire fait partie de notre série</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>label.informations</source>
+                <target>Informations</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>label.published_date</source>
+                <target>Date de publication</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>label.author</source>
+                <target>Auteur</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>label.language</source>
+                <target>Langue</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>label.format</source>
+                <target>Format</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>label.pages</source>
+                <target>Pages</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>label.info_versions</source>
+                <target>Toutes les versions (pdf, epub, audio) sont disponibles sur notre boutique en ligne</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>label.serie_books</source>
+                <target>Livres de la série</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>label.age</source>
+                <target>Âge</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>label.isbn_paper</source>
+                <target>ISBN Papier</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>label.isbn_digital</source>
+                <target>ISBN Numérique</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>label.cover</source>
+                <target>Couverture</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>label.cover-help</source>
+                <target>Image de couverture de la série</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>label.logo</source>
+                <target>Logo</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>label.logo-help</source>
+                <target>Logo de la série (nommé automatiquement logo-{slug}.webp)</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>label.illustrator</source>
+                <target>Illustrateur</target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>label.illustrator_website</source>
+                <target>Site web de l'illustrateur</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>label.author_website</source>
+                <target>Site web de l'auteur</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>label.title</source>
+                <target>Titre</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>label.slug</source>
+                <target>Slug</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>label.published</source>
+                <target>Publié</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>label.translations</source>
+                <target>Traductions</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>label.french</source>
+                <target>Français</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>label.english</source>
+                <target>Anglais</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>label.creation</source>
+                <target>Créé le</target>
+            </trans-unit>
+            <trans-unit id="38">
+                <source>label.modification</source>
+                <target>Modifié le</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>label.technical_informations</source>
+                <target>Informations techniques</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>label.isbn</source>
+                <target>ISBN</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>label.epub</source>
+                <target>EPUB</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>label.epub_gplay</source>
+                <target>EPUB Google Play</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>label.epub_gplay-help</source>
+                <target>Identifiant Google Play</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>label.epub_fnac</source>
+                <target>EPUB Fnac</target>
+            </trans-unit>
+            <trans-unit id="45">
+                <source>label.epub_fnac-help</source>
+                <target>Identifiant Fnac</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>label.epub_kobo</source>
+                <target>EPUB Kobo</target>
+            </trans-unit>
+            <trans-unit id="47">
+                <source>label.epub_kobo-help</source>
+                <target>Identifiant Kobo</target>
+            </trans-unit>
+            <trans-unit id="48">
+                <source>label.epub_apple</source>
+                <target>EPUB Apple</target>
+            </trans-unit>
+            <trans-unit id="49">
+                <source>label.epub_apple-help</source>
+                <target>Identifiant Apple Books</target>
+            </trans-unit>
+            <trans-unit id="50">
+                <source>label.crowdfunding</source>
+                <target>Financement participatif</target>
+            </trans-unit>
+            <trans-unit id="51">
+                <source>label.crowdfunding_end_date</source>
+                <target>Date de fin du financement participatif</target>
+            </trans-unit>
+            <trans-unit id="52">
+                <source>label.media</source>
+                <target>Médias</target>
+            </trans-unit>
+            <trans-unit id="53">
+                <source>label.videos</source>
+                <target>Vidéos</target>
+            </trans-unit>
+            <trans-unit id="54">
+                <source>label.marketing</source>
+                <target>Marketing</target>
+            </trans-unit>
+            <trans-unit id="55">
+                <source>label.presse</source>
+                <target>Presse</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>label.blocks</source>
+                <target>Blocs</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>label.blocks-help</source>
+                <target>Ajouter des blocs de contenu à la page</target>
+            </trans-unit>
+            <trans-unit id="58">
+                <source>label.video</source>
+                <target>Vidéo</target>
+            </trans-unit>
+            <trans-unit id="59">
+                <source>label.youtube_id</source>
+                <target>Identifiant YouTube</target>
+            </trans-unit>
+            <trans-unit id="60">
+                <source>label.youtube_id_help</source>
+                <target>SOIT un identifiant YouTube, SOIT un fichier vidéo ci-dessous</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -3,18 +3,14 @@
 {# Defines specific variables #}
 {% set title = serie.title %}
 {% set description = serie.summary %}
-{% set ogImage = absolute_url(asset('medias/series/' ~ "%02d"|format(serie.id) ~ '/Couverture.jpg.webp')) %}
+{% set ogImage = absolute_url(asset(serie.covers|first != false ? serie.covers|first : "bundles/c975lbook/images/no-cover.webp")) %}
 
 {% block content %}
-    {% if(asset_exists("medias/series/logo-" ~ serie.slug ~ ".webp")) %}
-        <twig:c975LUi:Image:Image src="medias/series/logo-{{ serie.slug }}.webp" alt="Logo {{ serie.title }}"/>
+    {% if serie.logos is not empty %}
+        <twig:c975LUi:Image:Image src="{{ asset(serie.logos|first) }}" alt="Logo {{ serie.title }}" width="400"/>
     {% endif %}
     <twig:c975LBook:Serie:Resume serie="{{ serie }}"/>
     <h2 class="text-center">{{"label.serie_books"|trans({}, 'messages', language)}}</h2>
-    <div class="cards">
-        {% for book in serie.books %}
-            <twig:c975LBook:Book:Book book="{{ book }}"/>
-        {% endfor %}
-    </div>
-    <twig:c975LBook:Serie:Informations serie="{{ serie }}" language="{{ language }}"/>
+    <twig:c975LBook:Book:Books books="{{ serie.books }}" displayMore="false"/>
+    <twig:c975LUi:Blocks:Blocks blocks="{{ serie.blocks }}"/>
 {% endblock %}

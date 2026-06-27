@@ -1,5 +1,5 @@
 <article class="text-center width-150" lang="{{ book.language }}">
-    {% set imageSrc = book.medias|first != false ? book.medias|first : "bundles/c975lshop/images/no-product-image.webp" %}
+    {% set imageSrc = book.medias|first != false ? book.medias|first : "bundles/c975lbook/images/no-cover.webp" %}
     <twig:c975LUi:Image:Link src="{{ asset(imageSrc) }}" url="{{ path('book_display', {'slug': book.slug}) }}" class="img-thumbnail box-shadow" width="150"/>
     <h3>{{ book.title|replace({' - ': '<br>'})|raw }}</h3>
     <p class="text text-center small bold">({{ book.language == 'en' ? 'English' : 'Français' }})</p>

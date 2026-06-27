@@ -1,19 +1,19 @@
 <twig:c975LUi:Card:Card id="informations" title="Informations">
     <div class="text-left">
         <p>
-            {{ 'label.published_date'|trans({}, 'messages', book.language) }} :
+            {{ 'label.published_date'|trans({}, 'book', book.language) }} :
             <strong>
                 {% if book.published == null %}
-                    {{ 'label.to_be_published'|trans({}, 'messages', book.language) }}
+                    {{ 'label.to_be_published'|trans({}, 'book', book.language) }}
                 {% elseif book.published|date("Ymd") > "now"|date("Ymd") %}
-                    {{ 'label.to_be_published'|trans({}, 'messages', book.language) }} ({{ book.published|date('d/m/Y') }})
+                    {{ 'label.to_be_published'|trans({}, 'book', book.language) }} ({{ book.published|date('d/m/Y') }})
                 {% else %}
                     {{ book.published|date('d/m/Y') }}
                 {% endif %}
             </strong>
         </p>
         <p>
-            {{ 'label.author'|trans({}, 'messages', book.language) }} :
+            {{ 'label.author'|trans({}, 'book', book.language) }} :
             {% if book.authorWebsite %}
                 <a href="{{ book.authorWebsite }}" title="Site de l'auteur {{ book.author }}" target="_blank">{{ book.author }}</a>
             {% else %}
@@ -21,15 +21,15 @@
             {% endif %}
         </p>
         {% if book.illustrator %}
-            <p>Illustrateur/trice : <strong>{{ book.illustrator }}</strong></p>
+            <p>{{ 'label.illustrator'|trans({}, 'book', book.language) }} : <strong>{{ book.illustrator }}</strong></p>
         {% endif %}
-        <p>{{ 'label.language'|trans({}, 'messages', book.language) }} : <strong>{{ book.language == 'en' ? 'English' : 'Français' }}</strong></p>
-        <p>{{ 'label.format'|trans({}, 'messages', book.language) }} : <strong>{{ book.format }}</strong></p>
-        <p>{{ 'label.pages'|trans({}, 'messages', book.language) }} : <strong>{{ book.pages }}</strong></p>
-        <p>{{ 'label.age'|trans({}, 'messages', book.language) }} : <strong>{{ book.age }}</strong></p>
-        <p>{{ 'label.isbn_paper'|trans({}, 'messages', book.language) }} : <strong>{{ book.isbn ? book.isbn|isbn : "-" }}</strong></p>
-        <p>{{ 'label.isbn_digital'|trans({}, 'messages', book.language) }} : <strong>{{ book.isbnDigital ? book.isbnDigital|isbn : "-" }}</strong></p>
-        {# Traductions #}
+        <p>{{ 'label.language'|trans({}, 'book', book.language) }} : <strong>{{ book.language == 'en' ? 'English' : 'Français' }}</strong></p>
+        <p>{{ 'label.format'|trans({}, 'book', book.language) }} : <strong>{{ book.format }}</strong></p>
+        <p>{{ 'label.pages'|trans({}, 'book', book.language) }} : <strong>{{ book.pages }}</strong></p>
+        <p>{{ 'label.age'|trans({}, 'book', book.language) }} : <strong>{{ book.age }}</strong></p>
+        <p>{{ 'label.isbn_paper'|trans({}, 'book', book.language) }} : <strong>{{ book.isbn ? book.isbn|isbn : "-" }}</strong></p>
+        <p>{{ 'label.isbn_digital'|trans({}, 'book', book.language) }} : <strong>{{ book.isbnDigital ? book.isbnDigital|isbn : "-" }}</strong></p>
+        {# Translations #}
         {% if book.getTranslation('en') %}
             <twig:c975LUi:Button:Button label="English version" url="{{ path('book_display', {'slug': book.getTranslation('en').slug}) }}"/>
         {% elseif book.getTranslation('fr') %}

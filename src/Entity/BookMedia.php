@@ -39,6 +39,6 @@ class BookMedia extends Media implements VichMediaNamableInterface
 
     public function getVichMediaPath(): string
     {
-        return 'medias/books/books/' . ($this->book?->getSlug() ?? 'temp');
+        return 'medias/book/books/' . $this->getKind() . '-' . $this->book->getSlug();
     }
 }

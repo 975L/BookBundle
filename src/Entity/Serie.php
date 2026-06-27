@@ -2,7 +2,11 @@
 
 namespace c975L\BookBundle\Entity;
 
+use App\Entity\User;
 use c975L\BookBundle\Repository\SerieRepository;
+use c975L\UiBundle\Contract\HasBlocksInterface;
+use c975L\UiBundle\Entity\Block;
+use c975L\UiBundle\Entity\Trait\HasBlocksTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -12,8 +16,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\Table(name: 'book_serie')]
 #[UniqueEntity('slug')]
-class Serie
+class Serie implements HasBlocksInterface
 {
+    use HasBlocksTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -37,6 +42,11 @@ class Serie
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $modification = null;
 
+    #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinTable(name: 'book_serie_block')]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $blocks;
+
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'serie')]
     private Collection $books;
 
@@ -44,8 +54,12 @@ class Serie
     #[ORM\OrderBy(["position" => "ASC"])]
     private Collection $medias;
 
+    #[ORM\ManyToOne]
+    private ?User $user = null;
+
     public function __construct()
     {
+        $this->blocks = new ArrayCollection();
         $this->books = new ArrayCollection();
         $this->medias = new ArrayCollection();
     }
@@ -180,12 +194,55 @@ class Serie
     public function removeMedia(SerieMedia $media): static
     {
         if ($this->medias->removeElement($media)) {
-            // set the owning side to null (unless already changed)
             if ($media->getSerie() === $this) {
                 $media->setSerie(null);
             }
         }
 
         return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCovers(): Collection
+    {
+        return $this->medias->filter(fn(SerieMedia $m) => $m->getKind() !== 'logo');
+    }
+
+    public function addCover(SerieMedia $media): static
+    {
+        $media->setKind(null);
+        return $this->addMedia($media);
+    }
+
+    public function removeCover(SerieMedia $media): static
+    {
+        return $this->removeMedia($media);
+    }
+
+    public function getLogos(): Collection
+    {
+        return $this->medias->filter(fn(SerieMedia $m) => $m->getKind() === 'logo');
+    }
+
+    public function addLogo(SerieMedia $media): static
+    {
+        $media->setKind('logo');
+        return $this->addMedia($media);
+    }
+
+    public function removeLogo(SerieMedia $media): static
+    {
+        return $this->removeMedia($media);
     }
 }

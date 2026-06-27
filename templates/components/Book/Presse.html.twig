@@ -12,6 +12,6 @@
     </div>
 {% else %}
     {% set imageSrc = presse.name|replace({'.pdf': '.webp'}) %}
-    {% set imageSrc = asset_exists(imageSrc) ? imageSrc : "bundles/c975lshop/images/no-product-image.webp" %}
+    {% set imageSrc = asset_exists(imageSrc) ? imageSrc : "bundles/c975lbook/images/no-cover.webp" %}
     <twig:c975LUi:Image:Link label="{{ presse.title }}" src="{{ asset(imageSrc) }}" url="{{ asset(presse.name) }}" class="img-thumbnail box-shadow img-125" width="150"/>
 {% endif %}

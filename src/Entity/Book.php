@@ -6,7 +6,11 @@ use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
 use c975L\BookBundle\Entity\BookVideo;
+use App\Entity\User;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\UiBundle\Contract\HasBlocksInterface;
+use c975L\UiBundle\Entity\Block;
+use c975L\UiBundle\Entity\Trait\HasBlocksTrait;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,8 +21,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ORM\Table(name: 'book_book')]
 #[UniqueEntity('slug')]
-class Book
+class Book implements HasBlocksInterface
 {
+    use HasBlocksTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -43,7 +48,7 @@ class Book
     private ?string $summary = null;
 
     #[ORM\Column(length: 13, nullable: true)]
-    private ?string $isbn = null;
+    private ?string $isbnPaper = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $illustrator = null;
@@ -56,6 +61,9 @@ class Book
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $authorWebsite = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $illustratorWebsite = null;
 
     #[ORM\Column(length: 20, nullable: true)]
     private $epubGplay;
@@ -78,6 +86,11 @@ class Book
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $epubApple = null;
+
+    #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinTable(name: 'book_book_block')]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $blocks;
 
     #[ORM\OneToMany(targetEntity: BookMedia::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(["position" => "ASC"])]
@@ -114,8 +127,12 @@ class Book
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $crowdfundingEndDate = null;
 
+    #[ORM\ManyToOne]
+    private ?User $user = null;
+
     public function __construct()
     {
+        $this->blocks = new ArrayCollection();
         $this->medias = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->presses = new ArrayCollection();
@@ -205,14 +222,14 @@ class Book
         return $this;
     }
 
-    public function getIsbn(): ?string
+    public function getIsbnPaper(): ?string
     {
-        return $this->isbn;
+        return $this->isbnPaper;
     }
 
-    public function setIsbn(?string $isbn): static
+    public function setIsbnPaper(?string $isbnPaper): static
     {
-        $this->isbn = $isbn;
+        $this->isbnPaper = $isbnPaper;
 
         return $this;
     }
@@ -261,6 +278,18 @@ class Book
     public function setAuthorWebsite(?string $authorWebsite): static
     {
         $this->authorWebsite = $authorWebsite;
+
+        return $this;
+    }
+
+    public function getIllustratorWebsite(): ?string
+    {
+        return $this->illustratorWebsite;
+    }
+
+    public function setIllustratorWebsite(?string $illustratorWebsite): static
+    {
+        $this->illustratorWebsite = $illustratorWebsite;
 
         return $this;
     }
@@ -552,6 +581,18 @@ class Book
     public function setCrowdfundingEndDate(?\DateTime $crowdfundingEndDate): static
     {
         $this->crowdfundingEndDate = $crowdfundingEndDate;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

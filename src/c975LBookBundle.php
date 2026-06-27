@@ -26,7 +26,7 @@ class c975LBookBundle extends AbstractBundle
             'mappings' => [
                 'books' => [
                     'uri_prefix' => '',
-                    'upload_destination' => '%kernel.project_dir%/public/medias/books/books/',
+                    'upload_destination' => '%kernel.project_dir%/public/medias/book/books/',
                     'namer' => UiMediaNamer::class,
                     'inject_on_load' => false,
                     'delete_on_update' => true,
@@ -34,7 +34,7 @@ class c975LBookBundle extends AbstractBundle
                 ],
                 'series' => [
                     'uri_prefix' => '',
-                    'upload_destination' => '%kernel.project_dir%/public/medias/books/series/',
+                    'upload_destination' => '%kernel.project_dir%/public/medias/book/series/',
                     'namer' => UiMediaNamer::class,
                     'inject_on_load' => false,
                     'delete_on_update' => true,

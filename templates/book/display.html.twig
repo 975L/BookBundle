@@ -7,7 +7,7 @@
 {% set locale = book.language %}
 
 {% block content %}
-    {% if(asset_exists("medias/series/logo-" ~ book.serie.slug ~ ".webp")) %}
+    {% if(book.serie and asset_exists("medias/series/logo-" ~ book.serie.slug ~ ".webp")) %}
         <twig:c975LUi:Image:Image src="medias/series/logo-{{ book.serie.slug }}.webp" alt="Logo {{ book.serie.title }}"/>
     {% endif %}
     <twig:c975LBook:Book:Couvertures medias="{{ book.medias }}" />
@@ -20,4 +20,5 @@
     <twig:c975LBook:Book:Marketings marketings="{{ book.marketings }}" />
     <twig:c975LBook:Book:Serie serie="{{ book.serie }}" />
     <twig:c975LBook:Book:Informations book="{{ book }}" />
+    <twig:c975LUi:Blocks:Blocks blocks="{{ book.blocks }}"/>
 {% endblock %}
