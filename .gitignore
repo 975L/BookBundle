@@ -1,6 +1,9 @@
-TODO
 
-#Ignore vscode AI rules
+
+### Outillage local (IA / IDE) ###
+/.claude/
+/.idea/
+/.vscode/*
+!/.vscode/settings.json
+!/.vscode/extensions.json
 .github/instructions/codacy.instructions.md
-.claude
-.codacy
