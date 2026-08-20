@@ -15,7 +15,6 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
-use c975L\BookBundle\Enum\BookLinkKind;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookSnippetBuilder;
 use PHPUnit\Framework\TestCase;
@@ -125,17 +124,15 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertSame('https://schema.org/AudiobookFormat', $this->builder->buildBook($book)['bookFormat']);
     }
 
-    // The platforms are given as identities, never as offers: a price and a stock belong to whoever sells the book
+    // The platforms are given as identities, never as offers: a price and a stock belong to whoever sells the book. Each edition carries its own, read off the edition rather than guessed from the format the links group under
     public function testAnEditionCarriesTheAddressesOfThePlatformsPublishingIt(): void
     {
-        $book = $this->book()
-            ->addLink(new BookLink()->setKind(BookLinkKind::EpubKobo)->setUrl('https://kobo.example/tome-1'))
-            ->addLink(new BookLink()->setKind(BookLinkKind::PodcastSpotify)->setUrl('https://spotify.example/tome-1'))
-        ;
+        $book = $this->book();
+        $book->getEditions()[1]->addLink(new BookLink()->setKind('epub_kobo')->setUrl('https://kobo.example/tome-1'));
 
         $editions = $this->builder->buildBook($book)['workExample'];
 
-        // The ebook store reaches the digital edition, the podcast none - a podcast is not an edition
+        // The store selling the digital edition reaches it alone, the paperback being sold where the book holds no link
         $this->assertArrayNotHasKey('sameAs', $editions[0]);
         $this->assertSame(['https://kobo.example/tome-1'], $editions[1]['sameAs']);
     }

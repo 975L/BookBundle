@@ -2,8 +2,6 @@
 
 namespace c975L\BookBundle\Entity;
 
-use c975L\BookBundle\Enum\BookLinkGroup;
-use c975L\BookBundle\Enum\BookLinkKind;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use c975L\UiBundle\Contract\HasBlocksInterface;
@@ -322,20 +320,9 @@ class Book implements HasBlocksInterface, \Stringable
         return $this->links;
     }
 
-    // The links of one group, which is how a page prints them: the stores in one card, the podcasts in another (see BookLinkGroup)
-    /** @return Collection<int, BookLink> */
-    public function getLinksOf(BookLinkGroup | string $group): Collection
+    // One platform's link, for a template asking for it by name rather than walking the collection. Which card a link prints in is not asked here: the group belongs to the vocabulary the site declares, which only a service reads (see BookCustomizationRegistry::getLinksOf())
+    public function getLink(string $kind): ?BookLink
     {
-        $group = $group instanceof BookLinkGroup ? $group : BookLinkGroup::from($group);
-
-        return $this->links->filter(static fn (BookLink $link) => $link->getKind()?->group() === $group);
-    }
-
-    // One platform's link, for a template asking for it by name rather than walking the collection
-    public function getLink(BookLinkKind | string $kind): ?BookLink
-    {
-        $kind = $kind instanceof BookLinkKind ? $kind : BookLinkKind::from($kind);
-
         foreach ($this->links as $link) {
             if ($link->getKind() === $kind) {
                 return $link;

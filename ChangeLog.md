@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **BC break** — `BookLink::$kind` is a plain string, the platforms being the vocabulary a site declares (`BookCustomizationProviderInterface::getLinkKinds()`); `BookLinkKind` stands in as the default catalog, the way `BookEditionKind` does for the editions (20/08/2026)
+- **BC break** — Removed `BookLink::getLabel()`/`getIcon()`, `Book::getLinksOf()` and `BookLinkKind::choices()`; a template reads `book_link_label()`, `book_link_icon()` and `book_links_of()` (`BookLinkExtension`), and `Book::getLink()` takes a string (20/08/2026)
+- `BookCustomizationRegistry` answers a platform's label, icon and group, and the links of a group — a kind the vocabulary does not hold prints as it is stored rather than failing (20/08/2026)
+- The addresses a book's structured data gives per edition are read off the edition's own links, no longer guessed from the group they fall in (20/08/2026)
 - **BC break** — A `BookEdition` is edited on a screen of its own (`BookEditionCrudController`, scoped to one book through `?book=<id>`), holding its files and its platforms; the book's form lists its editions and links into them (20/08/2026)
 - **BC break** — Removed `BookEditionType`, and `BookMediaType`/`BookLinkType` no longer take a `book` option nor offer an `edition` choice — the screen editing them already names the edition (20/08/2026)
 - `BookEdition` owns its `medias` and its `links`, `BookEdition::addMedia()` setting the book along with the edition (the path a file is stored under is built on the book's slug) (20/08/2026)

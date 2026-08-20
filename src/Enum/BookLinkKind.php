@@ -2,7 +2,7 @@
 
 namespace c975L\BookBundle\Enum;
 
-// The platforms a book can be read, listened to or watched on. Held as an enum rather than as one column per platform: adding a store used to mean a column, a migration and a template edit on every site - here it is a case, and the row that carries it is a c975L\BookBundle\Entity\BookLink, which holds the address itself
+// The platforms a book can be read, listened to or watched on, used as the default vocabulary when no site declares its own (see c975L\BookBundle\Contract\BookCustomizationProviderInterface). A kind is stored as a plain string on c975L\BookBundle\Entity\BookLink, so a site selling on a store the bundle never heard of names it without the bundle having to know it - the same move the editions made
 enum BookLinkKind: string
 {
     case EpubGplay = 'epub_gplay';
@@ -57,14 +57,19 @@ enum BookLinkKind: string
         };
     }
 
-    // The choices an EasyAdmin/Symfony choice field takes, label => case
-    public static function choices(): array
+    // The vocabulary a site reads when it declares none of its own, in the shape a provider declares one (see BookCustomizationProviderInterface::getLinkKinds())
+    /** @return array<string, array{label: string, group: string, icon: string}> kind => platform */
+    public static function defaults(): array
     {
-        $choices = [];
+        $defaults = [];
         foreach (self::cases() as $case) {
-            $choices[$case->label()] = $case;
+            $defaults[$case->value] = [
+                'label' => $case->label(),
+                'group' => $case->group()->value,
+                'icon' => $case->icon(),
+            ];
         }
 
-        return $choices;
+        return $defaults;
     }
 }

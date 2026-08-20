@@ -14,7 +14,6 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
-use c975L\BookBundle\Enum\BookLinkGroup;
 
 // Builds the schema.org graph a book's, a serie's or a strip's page publishes as JSON-LD, out of the fields those pages already show.
 // Assembled here rather than as microdata on the rendered elements, for the same reason as UiBundle's ContactSnippetBuilder: an itemprop pinned to an element leaves an empty node behind when the field is empty, where a graph simply drops what wasn't filled in - and it can carry what no template displays (the two ISBNs as two editions, the rank of a volume in its serie).
@@ -25,12 +24,6 @@ class BookSnippetBuilder
     private const array BOOK_FORMATS = [
         'paper' => 'Paperback',
         'audio' => 'AudiobookFormat',
-    ];
-
-    // The platforms an edition is read or listened to on, by the format it publishes as - a paperback is sold in shops the bundle holds no link to
-    private const array EDITION_LINKS = [
-        'EBook' => BookLinkGroup::Epub,
-        'AudiobookFormat' => BookLinkGroup::Audio,
     ];
 
     public function __construct(
@@ -193,14 +186,14 @@ class BookSnippetBuilder
                 'datePublished' => $edition->getPublished()?->format('Y-m-d') ?? '',
                 'numberOfPages' => $edition->getDisplayedPages() ?? 0,
                 // The platforms carrying this edition, as identities and not as offers: what it costs and whether it is in stock belong to whoever sells it (see the note at the top)
-                'sameAs' => $this->editionLinks($book, $format),
+                'sameAs' => $this->editionLinks($edition),
             ]);
         }
 
         return $editions;
     }
 
-    // The schema.org format an edition's kind stands for, an ebook being what a kind naming neither paper nor audio describes
+    // The schema.org format an edition's kind stands for, an ebook being what a kind naming neither paper nor audio describes. A guess, and the only one left here: the vocabulary is the site's own (see BookCustomizationProviderInterface), so a site naming its editions in another language gets EBook - which is what a decorated service of its own overrides
     private function editionFormat(BookEdition $edition): string
     {
         $kind = (string) $edition->getKind();
@@ -214,18 +207,12 @@ class BookSnippetBuilder
         return 'EBook';
     }
 
-    // The addresses of the platforms publishing an edition of this format, empty for a format sold nowhere the book holds a link to
-    private function editionLinks(Book $book, string $format): array
+    // The addresses of the platforms publishing this very edition, read off the edition itself - it used to be guessed from the format, a group of links standing in for the edition selling them
+    private function editionLinks(BookEdition $edition): array
     {
-        $group = self::EDITION_LINKS[$format] ?? null;
-
-        if (null === $group) {
-            return [];
-        }
-
         $urls = [];
 
-        foreach ($book->getLinksOf($group) as $link) {
+        foreach ($edition->getLinks() as $link) {
             $url = trim((string) $link->getUrl());
 
             if ('' !== $url) {

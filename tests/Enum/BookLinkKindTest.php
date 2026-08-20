@@ -47,13 +47,17 @@ class BookLinkKindTest extends TestCase
         $this->assertSame($labels, array_unique($labels));
     }
 
-    public function testChoicesGiveEveryPlatformAsItsLabel(): void
+    // The vocabulary a site reads when it declares none of its own - a platform names itself, says which card it prints in and which icon stands for it
+    public function testDefaultsDescribeEveryPlatform(): void
     {
-        $choices = BookLinkKind::choices();
+        $defaults = BookLinkKind::defaults();
 
-        $this->assertCount(count(BookLinkKind::cases()), $choices);
-        $this->assertSame(BookLinkKind::EpubKobo, $choices['Kobo']);
-        $this->assertSame(BookLinkKind::VideoYoutube, $choices['YouTube']);
+        $this->assertCount(count(BookLinkKind::cases()), $defaults);
+        $this->assertSame(
+            ['label' => 'Kobo', 'group' => 'epub', 'icon' => 'bundles/c975lbook/icons/kobo.svg'],
+            $defaults['epub_kobo']
+        );
+        $this->assertSame('video', $defaults['video_youtube']['group']);
     }
 
     public function testAGroupHoldsThePlatformsAPagePrintsTogether(): void

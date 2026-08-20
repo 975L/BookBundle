@@ -20,6 +20,13 @@ interface BookCustomizationProviderInterface
     public function getEditionKinds(): array;
 
     /**
+     * The platforms this site's books are sold, read or listened to on ("epub_fnac", "audio_gplay"...), each declaring what it is called, which card it prints in (see c975L\BookBundle\Enum\BookLinkGroup) and the icon standing for it - an asset path the site ships, or one of the bundle's own under "bundles/c975lbook/icons/". An empty array falls back to c975L\BookBundle\Enum\BookLinkKind, the stores and podcast apps a catalog holds by default.
+     *
+     * @return array<string, array{label: string, group: string, icon: string}> kind => platform
+     */
+    public function getLinkKinds(): array;
+
+    /**
      * A plain form type mapped on Book::$data, holding the fields this site adds to a book and no other site has - the same way a block declares the form of its own data (see UiBundle's "ui.block" tag). Null for a site adding none.
      *
      * @return class-string|null

@@ -1,4 +1,4 @@
 {# The digital stores of a published book. A site selling its own paper edition adds its button by overriding this template in templates/bundles/c975LBookBundle/components/Book/Shops.html.twig #}
 {% if book.published and book.published|date("Ymd") <= "now"|date("Ymd") %}
-    <twig:c975LBook:Book:Links lang="{{ book.language }}" id="shops" title="{{ 'label.shops'|trans({}, 'book', book.language) }}" links="{{ book.linksOf('epub') }}" />
+    <twig:c975LBook:Book:Links lang="{{ book.language }}" id="shops" title="{{ 'label.shops'|trans({}, 'book', book.language) }}" links="{{ book_links_of(book, 'epub') }}" />
 {% endif %}

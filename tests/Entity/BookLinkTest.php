@@ -11,7 +11,6 @@ namespace c975L\BookBundle\Tests\Entity;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookLink;
-use c975L\BookBundle\Enum\BookLinkKind;
 use PHPUnit\Framework\TestCase;
 
 class BookLinkTest extends TestCase
@@ -19,28 +18,17 @@ class BookLinkTest extends TestCase
     public function testUrlIsTheStoredAddressAndNothingIsRebuiltFromTheBook(): void
     {
         $link = new BookLink()
-            ->setKind(BookLinkKind::EpubGplay)
+            ->setKind('epub_gplay')
             ->setUrl('https://play.google.com/store/books/details?PAffiliateID=1011l46DJf&id=fxGQLX8D-bIC');
 
         $this->assertSame('https://play.google.com/store/books/details?PAffiliateID=1011l46DJf&id=fxGQLX8D-bIC', $link->getUrl());
     }
 
-    public function testLabelAndIconComeFromTheKind(): void
+    // Le libellé et l'icône ne sont plus portés par le lien : ils relèvent du vocabulaire que le site déclare (voir BookCustomizationRegistryTest)
+    public function testALinkSaysTheKindItIs(): void
     {
-        $link = new BookLink()->setKind(BookLinkKind::EpubKobo);
-
-        $this->assertSame('Kobo', $link->getLabel());
-        $this->assertSame('bundles/c975lbook/icons/kobo.svg', $link->getIcon());
-        $this->assertSame('Kobo', (string) $link);
-    }
-
-    public function testAKindlessLinkSaysNothingRatherThanFailing(): void
-    {
-        $link = new BookLink();
-
-        $this->assertNull($link->getLabel());
-        $this->assertNull($link->getIcon());
-        $this->assertSame('', (string) $link);
+        $this->assertSame('epub_kobo', (string) new BookLink()->setKind('epub_kobo'));
+        $this->assertSame('', (string) new BookLink());
     }
 
     public function testPositionFallsBackToTheFirstPlace(): void
@@ -52,7 +40,7 @@ class BookLinkTest extends TestCase
     public function testAddingALinkToABookSetsBothSidesOfTheAssociation(): void
     {
         $book = new Book();
-        $link = new BookLink()->setKind(BookLinkKind::EpubFnac);
+        $link = new BookLink()->setKind('epub_fnac');
 
         $book->addLink($link);
         $this->assertSame($book, $link->getBook());

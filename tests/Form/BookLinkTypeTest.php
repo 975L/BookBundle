@@ -10,11 +10,10 @@
 namespace c975L\BookBundle\Tests\Form;
 
 use c975L\BookBundle\Entity\BookLink;
-use c975L\BookBundle\Enum\BookLinkKind;
 use c975L\BookBundle\Form\BookLinkType;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -50,16 +49,17 @@ class BookLinkTypeTest extends TestCase
 
         $this->assertSame(['position', 'kind', 'url'], array_keys($added));
         $this->assertSame(HiddenType::class, $added['position']['type']);
-        $this->assertSame(EnumType::class, $added['kind']['type']);
-        $this->assertSame(BookLinkKind::class, $added['kind']['options']['class']);
+        $this->assertSame(ChoiceType::class, $added['kind']['type']);
         $this->assertSame(UrlType::class, $added['url']['type']);
     }
 
+    // The platform is offered under its own brand and stored as the site's own word, never as a case of an enum
     public function testThePlatformIsOfferedUnderItsOwnName(): void
     {
-        $choiceLabel = $this->build()['kind']['options']['choice_label'];
+        $choices = $this->build()['kind']['options']['choices'];
 
-        $this->assertSame('Apple Books', $choiceLabel(BookLinkKind::EpubApple));
+        $this->assertSame('epub_apple', $choices['Apple Books']);
+        $this->assertSame('video_youtube', $choices['YouTube']);
     }
 
     public function testTheHiddenPositionCarriesTheClassTheSortingHangsOn(): void

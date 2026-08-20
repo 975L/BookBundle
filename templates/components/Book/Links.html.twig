@@ -3,7 +3,7 @@
     <twig:c975LUi:Card:Card id="{{ id }}" class="toc-target" title="{{ title }}" lang="{{ lang|default('') }}">
         <div class="flex-center text-center">
             {% for link in links %}
-                <twig:c975LUi:Image:Link label="{{ link.label }}" src="{{ link.icon }}" url="{{ link.url }}" width="48" height="48" target="_blank"/>
+                <twig:c975LUi:Image:Link label="{{ book_link_label(link) }}" src="{{ book_link_icon(link) }}" url="{{ link.url }}" width="48" height="48" target="_blank"/>
             {% endfor %}
         </div>
     </twig:c975LUi:Card:Card>

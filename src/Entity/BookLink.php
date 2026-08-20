@@ -2,7 +2,6 @@
 
 namespace c975L\BookBundle\Entity;
 
-use c975L\BookBundle\Enum\BookLinkKind;
 use Doctrine\ORM\Mapping as ORM;
 
 // Where a book is read, listened to or watched, one row per platform holding its address. Used to be four "epub_*" columns on the book itself, which is what made adding a store a migration on every site - the platform is now a value (see c975L\BookBundle\Enum\BookLinkKind) and no longer a column
@@ -19,8 +18,9 @@ class BookLink implements \Stringable
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Book $book = null;
 
-    #[ORM\Column(length: 30, enumType: BookLinkKind::class)]
-    private ?BookLinkKind $kind = null;
+    // The platform, stored as the site's own word rather than as a case of an enum the bundle would have to know (see c975L\BookBundle\Contract\BookCustomizationProviderInterface). What it is called, the card it prints in and its icon are read from that vocabulary (see BookCustomizationRegistry)
+    #[ORM\Column(length: 30)]
+    private ?string $kind = null;
 
     // The whole address, as SiteBundle's CollectionItem holds one: an affiliate identifier, a country, a format anchor are all part of what a platform hands over, and none of them is deducible from the book
     #[ORM\Column(length: 255)]
@@ -48,7 +48,7 @@ class BookLink implements \Stringable
 
     public function __toString(): string
     {
-        return $this->kind?->label() ?? '';
+        return (string) $this->kind;
     }
 
     public function getId(): ?int
@@ -68,12 +68,12 @@ class BookLink implements \Stringable
         return $this;
     }
 
-    public function getKind(): ?BookLinkKind
+    public function getKind(): ?string
     {
         return $this->kind;
     }
 
-    public function setKind(?BookLinkKind $kind): static
+    public function setKind(?string $kind): static
     {
         $this->kind = $kind;
 
@@ -102,15 +102,5 @@ class BookLink implements \Stringable
         $this->position = $position ?? 0;
 
         return $this;
-    }
-
-    public function getLabel(): ?string
-    {
-        return $this->kind?->label();
-    }
-
-    public function getIcon(): ?string
-    {
-        return $this->kind?->icon();
     }
 }

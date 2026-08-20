@@ -3,7 +3,10 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Contract\BookCustomizationProviderInterface;
+use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Enum\BookEditionKind;
+use c975L\BookBundle\Enum\BookLinkKind;
 use c975L\ConfigBundle\Management\ProviderMerger;
 
 // Merges what every site declares about its catalog (see BookCustomizationProviderInterface), so the forms and the CRUD read one vocabulary whether the app customizes anything or not
@@ -27,6 +30,57 @@ class BookCustomizationRegistry
         $kinds = ProviderMerger::merge($this->providers, static fn (BookCustomizationProviderInterface $provider) => $provider->getEditionKinds());
 
         return [] === $kinds ? BookEditionKind::defaults() : $kinds;
+    }
+
+    // The bundle's own stores and podcast apps when the site names no platform of its own, which is what a catalog sells on until it opens a shop the bundle never heard of
+    /** @return array<string, array{label: string, group: string, icon: string}> kind => platform */
+    public function getLinkKinds(): array
+    {
+        $kinds = ProviderMerger::merge($this->providers, static fn (BookCustomizationProviderInterface $provider) => $provider->getLinkKinds());
+
+        return [] === $kinds ? BookLinkKind::defaults() : $kinds;
+    }
+
+    // How a platform names itself on a page - its own brand, printed as it stands and never translated. A kind the vocabulary does not hold prints as it is stored, which is what makes a forgotten declaration visible rather than silent
+    public function getLinkLabel(BookLink | string | null $link): string
+    {
+        $kind = $this->linkKind($link);
+
+        return $this->getLinkKinds()[$kind]['label'] ?? $kind;
+    }
+
+    // The asset path of the icon standing for the platform, null for one declaring none
+    public function getLinkIcon(BookLink | string | null $link): ?string
+    {
+        $icon = $this->getLinkKinds()[$this->linkKind($link)]['icon'] ?? null;
+
+        return '' === $icon ? null : $icon;
+    }
+
+    // What the platform sells or plays, which is the card a page prints it in (see BookLinkGroup)
+    public function getLinkGroup(BookLink | string | null $link): ?string
+    {
+        return $this->getLinkKinds()[$this->linkKind($link)]['group'] ?? null;
+    }
+
+    // The links of one group, which is how a page prints them: the stores in one card, the podcasts in another
+    /** @return list<BookLink> */
+    public function getLinksOf(Book $book, string $group): array
+    {
+        $links = [];
+
+        foreach ($book->getLinks() as $link) {
+            if ($this->getLinkGroup($link) === $group) {
+                $links[] = $link;
+            }
+        }
+
+        return $links;
+    }
+
+    private function linkKind(BookLink | string | null $link): string
+    {
+        return $link instanceof BookLink ? (string) $link->getKind() : (string) $link;
     }
 
     // The first form type declared, an app having one set of its own book fields and not one per provider

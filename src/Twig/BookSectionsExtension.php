@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Twig;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Service\BookCustomizationRegistry;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Attribute\AsTwigFunction;
 
@@ -19,6 +20,7 @@ use Twig\Attribute\AsTwigFunction;
 class BookSectionsExtension
 {
     public function __construct(
+        private readonly BookCustomizationRegistry $customizationRegistry,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -37,8 +39,8 @@ class BookSectionsExtension
             'resume' => ['label.summary', '' !== (string) $book->getSummary()],
             'apercu' => ['label.videos', !$book->getVideos()->isEmpty()],
             'extracts' => ['label.extracts', !$book->getMedias()->isEmpty()],
-            'shops' => ['label.shops', $shops && !$book->getLinksOf('epub')->isEmpty()],
-            'podcasts' => ['label.podcasts', !$book->getLinksOf('audio')->isEmpty() || !$book->getLinksOf('podcast')->isEmpty()],
+            'shops' => ['label.shops', $shops && [] !== $this->customizationRegistry->getLinksOf($book, 'epub')],
+            'podcasts' => ['label.podcasts', [] !== $this->customizationRegistry->getLinksOf($book, 'audio') || [] !== $this->customizationRegistry->getLinksOf($book, 'podcast')],
             'presse' => ['label.presse', !$book->getPresses()->isEmpty()],
             'marketing' => ['label.marketing', !$book->getMarketings()->isEmpty()],
             'serie' => ['label.serie', $book->getSerie() instanceof Serie],

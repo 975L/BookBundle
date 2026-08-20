@@ -13,7 +13,6 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
-use c975L\BookBundle\Enum\BookLinkKind;
 use PHPUnit\Framework\TestCase;
 
 class BookEditionTest extends TestCase
@@ -141,11 +140,11 @@ class BookEditionTest extends TestCase
         $book->addEdition($audio);
         $book->addEdition($digital);
 
-        $audio->addLink(new BookLink()->setKind(BookLinkKind::AudioGplay));
-        $digital->addLink(new BookLink()->setKind(BookLinkKind::EpubFnac));
+        $audio->addLink(new BookLink()->setKind('audio_gplay'));
+        $digital->addLink(new BookLink()->setKind('epub_fnac'));
 
         $this->assertCount(1, $audio->getLinks());
-        $this->assertSame(BookLinkKind::AudioGplay, $audio->getLinks()[0]->getKind());
+        $this->assertSame('audio_gplay', $audio->getLinks()[0]->getKind());
         $this->assertSame($book, $audio->getLinks()[0]->getBook());
         $this->assertCount(2, $book->getLinks());
     }

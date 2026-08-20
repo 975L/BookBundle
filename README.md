@@ -288,7 +288,7 @@ Read back by name, never as a raw key spelled out in a template: `book.getDataVa
 
 ### Links
 
-Where a book is read, listened to or watched is held by `BookLink`, one row per platform, rather than by a column per store as it used to be. The row holds the address itself, and the platform is a case of `BookLinkKind`, which carries its label and its icon:
+Where a book is read, listened to or watched is held by `BookLink`, one row per platform, rather than by a column per store as it used to be. The row holds the address itself and the platform as a plain string — the site's own vocabulary, the bundle's `BookLinkKind` standing in as the default catalog when a site declares none:
 
 ```twig
 {# every store, every podcast platform, as its own card #}
@@ -301,7 +301,18 @@ Where a book is read, listened to or watched is held by `BookLink`, one row per 
 
 `url` holds the whole address, pasted as the platform hands it over, the way SiteBundle's `CollectionItem` holds one. What an address carries beyond the book — an affiliate identifier, a country, a format anchor, a podcast naming its show as well as its episode — belongs to the site and is kept that way, the bundle rebuilding nothing.
 
-Adding a platform is a case in `BookLinkKind` plus its svg under `public/icons`; no column, no migration, and every template follows.
+**Declaring your own platforms** — a site selling in a shop the bundle never heard of names it in its provider (see [customizing the catalog](#customizing-the-catalog)), each platform saying what it is called, which card it prints in (`epub`, `audio`, `podcast`, `video`) and the icon standing for it:
+
+```php
+public function getLinkKinds(): array
+{
+    return [
+        'epub_bookshop' => ['label' => 'Bookshop', 'group' => 'epub', 'icon' => 'images/bookshop.svg'],
+    ];
+}
+```
+
+Declaring one replaces the bundle's catalog whole. A template reads a link through `book_link_label()`, `book_link_icon()` and `book_links_of(book, 'epub')` — the entity answers none of the three, the vocabulary being the site's and not the row's.
 
 ### ISBN filter
 

@@ -13,7 +13,7 @@ namespace c975L\BookBundle\Tests\Twig;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\Serie;
-use c975L\BookBundle\Enum\BookLinkKind;
+use c975L\BookBundle\Service\BookCustomizationRegistry;
 use c975L\BookBundle\Twig\BookSectionsExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -38,7 +38,7 @@ class BookSectionsExtensionTest extends TestCase
     // A store card is only printed for a book actually out: the buttons of an unpublished one lead to pages that do not exist yet
     public function testTheStoresAreOnlyOfferedOnceTheBookIsOut(): void
     {
-        $link = new BookLink()->setKind(BookLinkKind::EpubKobo)->setUrl('https://example.com/kobo');
+        $link = new BookLink()->setKind('epub_kobo')->setUrl('https://example.com/kobo');
 
         $out = new Book()->setPublished(new \DateTimeImmutable('-1 day'));
         $out->addLink($link);
@@ -59,7 +59,7 @@ class BookSectionsExtensionTest extends TestCase
     public function testAPodcastLinkAloneOpensTheListeningSection(): void
     {
         $book = new Book();
-        $book->addLink(new BookLink()->setKind(BookLinkKind::PodcastSpotify)->setUrl('https://example.com/spotify'));
+        $book->addLink(new BookLink()->setKind('podcast_spotify')->setUrl('https://example.com/spotify'));
 
         $this->assertContains('podcasts', $this->anchors($book));
     }
@@ -72,7 +72,7 @@ class BookSectionsExtensionTest extends TestCase
             static fn (string $key, array $parameters, ?string $domain, ?string $locale): string => $key . '@' . $domain . '/' . $locale
         );
 
-        $sections = new BookSectionsExtension($translator)->book(new Book()->setLanguage('en'));
+        $sections = new BookSectionsExtension(new BookCustomizationRegistry([]), $translator)->book(new Book()->setLanguage('en'));
 
         $this->assertSame('label.informations@book/en', $sections[0]['label']);
     }
@@ -83,7 +83,7 @@ class BookSectionsExtensionTest extends TestCase
         $serie = new Serie();
         $serie->setSummary('Une série');
 
-        $this->assertSame(['resume'], array_column(new BookSectionsExtension($this->translator())->serie($serie), 'anchor'));
+        $this->assertSame(['resume'], array_column(new BookSectionsExtension(new BookCustomizationRegistry([]), $this->translator())->serie($serie), 'anchor'));
     }
 
     /**
@@ -91,7 +91,7 @@ class BookSectionsExtensionTest extends TestCase
      */
     private function anchors(Book $book): array
     {
-        return array_column(new BookSectionsExtension($this->translator())->book($book), 'anchor');
+        return array_column(new BookSectionsExtension(new BookCustomizationRegistry([]), $this->translator())->book($book), 'anchor');
     }
 
     private function translator(): TranslatorInterface
