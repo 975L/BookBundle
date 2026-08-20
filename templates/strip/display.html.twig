@@ -1,0 +1,50 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set isPublished = strip.published is not null and strip.published|date("U") < "now"|date("U") %}
+{% set title = strip.title %}
+{% set summarySocialNetwork = strip.summary %}
+{% set ogImage = absolute_url(asset(strip.medias|first != false ? strip.medias|first : "bundles/c975lbook/images/no-cover.webp")) %}
+{% set language = strip.serie ? strip.serie.language : null %}
+
+{# The hero carries the page's only h1, above the planche itself #}
+{% block title %}{% endblock %}
+
+{% block content %}
+    {# Same skeleton as a book's page, with one difference the planche asks for: what stays on screen is the way to the next one, not a summary of sections - a planche has one picture and a line or two around it #}
+    <div class="book-page" lang="{{ language }}">
+        {% if isPublished %}
+            <twig:c975LBook:Strip:Hero strip="{{ strip }}"/>
+
+            <div class="book-page__sections">
+                <twig:c975LBook:Strip:Medias strip="{{ strip }}"/>
+
+                {% if strip.summary is not null %}
+                    <twig:c975LBook:Strip:Summary summary="{{ strip.summary }}"/>
+                {% endif %}
+                {% if strip.characters is not null %}
+                    <twig:c975LBook:Strip:Characters characters="{{ strip.charactersList }}" language="{{ language }}"/>
+                {% endif %}
+                {% if strip.sourceUrl is not null %}
+                    <twig:c975LBook:Strip:SourceUrl sourceUrl="{{ strip.sourceUrl }}" language="{{ language }}"/>
+                {% endif %}
+
+                {# Renders the blocks composed in the back-office, on a published strip only #}
+                <twig:c975LUi:Blocks:Blocks blocks="{{ strip.blocks }}"/>
+            </div>
+
+            <twig:c975LBook:Strip:Navigation previousNext="{{ previousNext }}" language="{{ language }}"/>
+        {% elseif strip.published is not null %}
+            <twig:c975LUi:Alert:Alert type="warning">
+                {{ 'label.to_be_published'|trans({}, 'book', language) }} {{ strip.published|date("d/m/Y") }}
+            </twig:c975LUi:Alert:Alert>
+            <twig:c975LUi:Button:Button label="{{ 'label.strips'|trans({}, 'book', language) }}" url="{{ path('strip_index') }}"/>
+        {% endif %}
+    </div>
+
+    {# The strip's structured data, built by BookSnippetBuilder from the very fields displayed above #}
+    {% set jsonLd = strip_json_ld(strip, ogImage, url('strip_display', {'slug': strip.slug})) %}
+    {% if jsonLd %}
+        <script type="application/ld+json">{{ jsonLd }}</script>
+    {% endif %}
+{% endblock %}

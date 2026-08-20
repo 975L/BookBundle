@@ -1,0 +1,51 @@
+{# Form theme for BookCrudController's virtual (mapped: false) fields - form.parent.vars.data is the Book entity itself, the standard Symfony Form way to reach the bound entity from inside a form theme block #}
+
+{# BookEditionsListType (the "Informations techniques" tab) - the versions of the book, each edited on its own screen with its files and its platforms #}
+{% block c975l_book_editions_widget %}
+    {% set book = form.parent.vars.data %}
+    {% set crudController = 'c975L\\BookBundle\\Controller\\Management\\BookEditionCrudController' %}
+
+    <legend class="col-form-label">{{ 'label.editions'|trans({}, 'book') }}</legend>
+    <p class="text-muted">{{ 'label.editions-help'|trans({}, 'book') }}</p>
+
+    {% if book.id is null %}
+        <p class="text-muted">{{ 'label.editions_save_first'|trans({}, 'book') }}</p>
+    {% else %}
+        {% if book.editions|length %}
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th>{{ 'label.edition_kind'|trans({}, 'book') }}</th>
+                        <th>{{ 'label.isbn'|trans({}, 'book') }}</th>
+                        <th>{{ 'label.published'|trans({}, 'book') }}</th>
+                        <th>{{ 'label.media'|trans({}, 'book') }}</th>
+                        <th>{{ 'label.links'|trans({}, 'book') }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for edition in book.editions %}
+                        <tr>
+                            <td>{{ book_edition_label(edition) }}</td>
+                            <td>{{ edition.isbn ?: '-' }}</td>
+                            <td>{{ edition.published ? edition.published|date('d/m/Y') : 'label.to_be_published'|trans({}, 'book') }}</td>
+                            <td>{{ edition.medias|length }}</td>
+                            <td>{{ edition.links|length }}</td>
+                            <td class="text-end">
+                                <a href="{{ ea_url().setController(crudController).setAction('edit').setEntityId(edition.id).set('book', book.id).generateUrl() }}" class="btn btn-secondary btn-sm">
+                                    {{ 'action.edit'|trans({}, 'EasyAdminBundle') }}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-muted">{{ 'label.editions_none'|trans({}, 'book') }}</p>
+        {% endif %}
+
+        <a href="{{ ea_url().setController(crudController).setAction('new').set('book', book.id).unset('entityId').generateUrl() }}" class="btn btn-secondary">
+            {{ 'action.edition_new'|trans({}, 'book') }}
+        </a>
+    {% endif %}
+{% endblock %}

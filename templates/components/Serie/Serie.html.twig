@@ -2,5 +2,6 @@
     {% set imageSrc = serie.covers|first != false ? serie.covers|first : "bundles/c975lbook/images/no-cover.webp" %}
     <twig:c975LUi:Image:Link src="{{ asset(imageSrc) }}" url="{{ path('serie_display', {'slug': serie.slug}) }}" class="img-thumbnail box-shadow" width="150"/>
     <h3>{{ serie.title }}</h3>
-    <p class="text text-center small bold">({{ serie.language == 'en' ? 'English' : 'Français' }})</p>
+    {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
+    <p class="text text-center small bold">({{ languageLabels[serie.language]|default(serie.language) }})</p>
 </article>

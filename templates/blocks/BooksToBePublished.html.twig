@@ -1,0 +1,4 @@
+{% set books = book_block_to_be_published() %}
+{% if books is not empty %}
+    <twig:c975LBook:Book:ToBePublished books="{{ books }}" />
+{% endif %}

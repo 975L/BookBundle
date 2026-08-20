@@ -1,0 +1,4 @@
+{# Adapter for the dynamic Block system — sorts the block's medias into the album's pages and its recording #}
+{% set images = block.media|filter(media => media.mimeType starts with 'image/') %}
+{% set audio = block.media|filter(media => media.mimeType starts with 'audio/')|first %}
+<twig:c975LBook:Reader:Reader media="{{ images }}" audio="{{ audio }}" id="{{ id }}" cues="{{ cues|default([]) }}" title="{{ title|default('') }}" autoAdvance="{{ autoAdvance|default(false) }}" />

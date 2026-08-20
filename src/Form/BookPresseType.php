@@ -38,9 +38,7 @@ class BookPresseType extends AbstractType
                 'download_uri' => true,
                 'asset_helper' => true,
                 'constraints' => [
-                    new File([
-                        'maxSize' => '100M',
-                    ])
+                    new File(maxSize: '100M'),
                 ],
             ])
         ;
@@ -50,6 +48,7 @@ class BookPresseType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => BookPresse::class,
+            'translation_domain' => 'book',
         ]);
     }
 }

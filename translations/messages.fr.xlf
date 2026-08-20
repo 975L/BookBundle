@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="fr" datatype="plaintext" original="messages.en.xlf">
+        <body>
+            <trans-unit id="dnzVgba">
+                <source>label.age</source>
+                <target>Âge</target>
+            </trans-unit>
+            <trans-unit id="J2_zmdF">
+                <source>label.author</source>
+                <target>Auteur</target>
+            </trans-unit>
+            <trans-unit id="5VjVcR3">
+                <source>label.book</source>
+                <target>Livre</target>
+            </trans-unit>
+            <trans-unit id="QMoEfWk">
+                <source>label.books</source>
+                <target>Livres</target>
+            </trans-unit>
+            <trans-unit id="L86bICc">
+                <source>label.extracts</source>
+                <target>Extraits</target>
+            </trans-unit>
+            <trans-unit id="gv8hrJY">
+                <source>label.format</source>
+                <target>Format</target>
+            </trans-unit>
+            <trans-unit id="JiCbNQT">
+                <source>label.info_versions</source>
+                <target>Versions pdf, epub, audio disponibles en boutique</target>
+            </trans-unit>
+            <trans-unit id="4meBJqw">
+                <source>label.informations</source>
+                <target>Informations</target>
+            </trans-unit>
+            <trans-unit id="cpQR3TT">
+                <source>label.isbn_digital</source>
+                <target>ISBN Numérique</target>
+            </trans-unit>
+            <trans-unit id="AcyAKlZ">
+                <source>label.isbn_paper</source>
+                <target>ISBN Papier</target>
+            </trans-unit>
+            <trans-unit id="Ogsv.lD">
+                <source>label.language</source>
+                <target>Langue</target>
+            </trans-unit>
+            <trans-unit id="NNJfHkT">
+                <source>label.other_shops</source>
+                <target>Autres boutiques</target>
+            </trans-unit>
+            <trans-unit id="dfCuHTM">
+                <source>label.pages</source>
+                <target>Pages</target>
+            </trans-unit>
+            <trans-unit id="mjjW62t">
+                <source>label.published_date</source>
+                <target>Date de publication</target>
+            </trans-unit>
+            <trans-unit id="beGy9uw">
+                <source>label.published_on</source>
+                <target>Publié le</target>
+            </trans-unit>
+            <trans-unit id="k_6r8.5">
+                <source>label.serie</source>
+                <target>Série</target>
+            </trans-unit>
+            <trans-unit id="PGie5WM">
+                <source>label.serie_books</source>
+                <target>Livres de la série</target>
+            </trans-unit>
+            <trans-unit id="_9bIEnd">
+                <source>label.series</source>
+                <target>Séries</target>
+            </trans-unit>
+            <trans-unit id="e0O9HdH">
+                <source>label.shops</source>
+                <target>Boutiques</target>
+            </trans-unit>
+            <trans-unit id="WuyBhau">
+                <source>label.summary</source>
+                <target>Résumé</target>
+            </trans-unit>
+            <trans-unit id="ILdbCR.">
+                <source>label.to_be_published</source>
+                <target>À paraître</target>
+            </trans-unit>
+            <trans-unit id="7TID4un">
+                <source>text.series</source>
+                <target>Cette histoire fait partie de notre série</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

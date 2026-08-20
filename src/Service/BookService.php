@@ -10,7 +10,7 @@ class BookService implements BookServiceInterface
 {
     public function __construct(
         private readonly PaginatorInterface $paginator,
-        private readonly BookRepository $bookRepository
+        private readonly BookRepository $bookRepository,
     ) {
     }
 

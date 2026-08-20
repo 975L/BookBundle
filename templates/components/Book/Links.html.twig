@@ -1,0 +1,10 @@
+{# One card of platform buttons, whatever the group: the icon, the label and the address all come from the link itself (see c975L\BookBundle\Entity\BookLink), so a platform added to the enum shows up here without touching this template #}
+{% if links|length > 0 %}
+    <twig:c975LUi:Card:Card id="{{ id }}" class="toc-target" title="{{ title }}" lang="{{ lang|default('') }}">
+        <div class="flex-center text-center">
+            {% for link in links %}
+                <twig:c975LUi:Image:Link label="{{ link.label }}" src="{{ link.icon }}" url="{{ link.url }}" width="48" height="48" target="_blank"/>
+            {% endfor %}
+        </div>
+    </twig:c975LUi:Card:Card>
+{% endif %}

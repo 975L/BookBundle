@@ -1,10 +1,10 @@
-{% if serie%}
-    <twig:c975LUi:Card:Card id="serie" title="Série">
-        <p class="lead text-center">Ce livre fait partie de la série "{{ serie.title }}"</p>
-        {% set imageSrc = serie.medias|first != false ? serie.medias|first : "bundles/c975lbook/images/no-cover.webp" %}
-        <twig:c975LUi:Image:Link label="{{ serie.title }}" src="{{ asset(imageSrc) }}" url="{{ path('serie_display', {'slug': serie.slug}) }}" class="img-thumbnail box-shadow img-150" width="150"/>
+{# The serie this book belongs to, as a section of the book's own page - its cover leads to the serie, where the other volumes are #}
+{% if book.serie %}
+    <twig:c975LUi:Card:Card id="serie" class="toc-target" title="{{ 'label.serie'|trans({}, 'book', book.language) }}" lang="{{ book.language }}">
+        {% set imageSrc = book.serie.medias|first != false ? book.serie.medias|first : "bundles/c975lbook/images/no-cover.webp" %}
+        <twig:c975LUi:Image:Link label="{{ book.serie.title }}" src="{{ asset(imageSrc) }}" url="{{ path('serie_display', {'slug': book.serie.slug}) }}" class="img-thumbnail box-shadow img-150" width="150"/>
         <div class="text text-left lead">
-            <twig:c975LUi:Text:Readmore text="{{ serie.summary }}" id="serie-summary"/>
+            <twig:c975LUi:Text:Readmore text="{{ book.serie.summary }}" id="serie-summary"/>
         </div>
     </twig:c975LUi:Card:Card>
 {% endif %}

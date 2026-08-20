@@ -2,23 +2,39 @@
 
 {# Defines specific variables #}
 {% set title = book.title %}
-{% set description = book.summary %}
+{% set summarySocialNetwork = book.summary %}
 {% set ogImage = absolute_url(asset(book.medias|first)) %}
 {% set locale = book.language %}
 
+{# The hero carries the page's only h1, inside the container where the cover can stand beside it - the layout's own would print the title a second time, above it #}
+{% block title %}{% endblock %}
+
 {% block content %}
-    {% if(book.serie and asset_exists("medias/series/logo-" ~ book.serie.slug ~ ".webp")) %}
-        <twig:c975LUi:Image:Image src="medias/series/logo-{{ book.serie.slug }}.webp" alt="Logo {{ book.serie.title }}"/>
+    {# Read once, used twice: the summary offers exactly the sections rendered below it, and no section is rendered without an anchor pointing at it #}
+    {% set sections = book_sections(book) %}
+    {% set anchors = sections|column('anchor') %}
+
+    <div class="book-page" lang="{{ book.language }}">
+        <twig:c975LBook:Book:Hero book="{{ book }}" sections="{{ sections }}"/>
+        <twig:c975LUi:Text:Toc entries="{{ sections }}" id="book-toc" class="book-page__toc"/>
+
+        <div class="book-page__sections">
+            {% if 'resume' in anchors %}<twig:c975LBook:Book:Resume book="{{ book }}"/>{% endif %}
+            {% if 'apercu' in anchors %}<twig:c975LBook:Book:Videos book="{{ book }}"/>{% endif %}
+            {% if 'extracts' in anchors %}<twig:c975LBook:Book:Extracts book="{{ book }}"/>{% endif %}
+            {% if 'shops' in anchors %}<twig:c975LBook:Book:Shops book="{{ book }}"/>{% endif %}
+            {% if 'podcasts' in anchors %}<twig:c975LBook:Book:Podcasts book="{{ book }}"/>{% endif %}
+            {% if 'presse' in anchors %}<twig:c975LBook:Book:Presses book="{{ book }}"/>{% endif %}
+            {% if 'marketing' in anchors %}<twig:c975LBook:Book:Marketings book="{{ book }}"/>{% endif %}
+            {% if 'serie' in anchors %}<twig:c975LBook:Book:Serie book="{{ book }}"/>{% endif %}
+            <twig:c975LBook:Book:Informations book="{{ book }}"/>
+            <twig:c975LUi:Blocks:Blocks blocks="{{ book.blocks }}"/>
+        </div>
+    </div>
+
+    {# The book's structured data, built by BookSnippetBuilder from the very fields displayed above #}
+    {% set jsonLd = book_json_ld(book, ogImage, url('book_display', {'slug': book.slug})) %}
+    {% if jsonLd %}
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
-    <twig:c975LBook:Book:Couvertures medias="{{ book.medias }}" />
-    <twig:c975LBook:Book:Financement book="{{ book }}" />
-    <twig:c975LBook:Book:Resume book="{{ book }}" />
-    <twig:c975LBook:Book:Videos videos="{{ book.videos }}" />
-    <twig:c975LBook:Book:Extracts book="{{ book}}" />
-    <twig:c975LBook:Book:Shops book="{{ book }}" />
-    <twig:c975LBook:Book:Presses presses="{{ book.presses }}" />
-    <twig:c975LBook:Book:Marketings marketings="{{ book.marketings }}" />
-    <twig:c975LBook:Book:Serie serie="{{ book.serie }}" />
-    <twig:c975LBook:Book:Informations book="{{ book }}" />
-    <twig:c975LUi:Blocks:Blocks blocks="{{ book.blocks }}"/>
 {% endblock %}

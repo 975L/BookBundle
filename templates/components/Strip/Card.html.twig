@@ -1,0 +1,15 @@
+<article>
+    {% set firstMedia = card.medias.first %}
+    {% if firstMedia %}
+        <twig:c975LUi:Image:Link
+            src="{{ asset(firstMedia.name) }}"
+            url="{{ path('strip_display', {'slug': card.slug}) }}"
+            class="img-thumbnail box-shadow img-150"
+            alt="{{ card.title }}"
+        />
+    {% endif %}
+    <h2>{{ card.title }}</h2>
+    {% if card.published is not null %}
+        <p class="text-center">{{ card.published|date("d/m/Y") }}</p>
+    {% endif %}
+</article>

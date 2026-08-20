@@ -1,0 +1,3 @@
+{% if serie is not null and serie.logos is not empty %}
+    <twig:c975LUi:Image:Image src="{{ asset(serie.logos|first) }}" alt="Logo {{ serie.title }}" width="300"/>
+{% endif %}

@@ -1,0 +1,107 @@
+[
+    {
+        "date": "2026-08-20",
+        "description": [
+            {
+                "en": "A book is declined into versions, each edited on a screen of its own: its ISBN, its release date, its files and the platforms selling it - the pages of the illustrated version no longer sit next to those of the original",
+                "fr": "Un livre se décline en versions, chacune éditée sur son propre écran : son ISBN, sa date de parution, ses fichiers et les plateformes qui la vendent — les pages de la version illustrée ne côtoient plus celles de l'originelle",
+                "es": "Un libro se declina en versiones, cada una editada en su propia pantalla: su ISBN, su fecha de publicación, sus archivos y las plataformas que la venden - las páginas de la versión ilustrada ya no conviven con las de la original"
+            },
+            {
+                "en": "The page of a book, a serie and a planche is laid out mobile first: a cover never cropped, a sticky summary of anchors becoming a column on a wide screen, and on a planche the next one always within a thumb's reach",
+                "fr": "La page d'un livre, d'une série et d'une planche est refondue pour le mobile d'abord : une couverture jamais rognée, un sommaire d'ancres collant qui devient une colonne sur grand écran, et sur une planche la planche suivante toujours à portée de pouce",
+                "es": "La página de un libro, una serie y una página de cómic se rediseña para móvil primero: una portada nunca recortada, un sumario de anclas pegajoso que se convierte en columna en pantalla ancha, y en una página la siguiente siempre al alcance del pulgar"
+            },
+            {
+                "en": "A book holds its editions: the paperback, the ebook, the audiobook, each with its own ISBN and its own release date, an edition still to come being announced rather than hidden",
+                "fr": "Un livre porte ses éditions : papier, numérique, audio, chacune avec son ISBN et sa date de parution — une édition à venir est annoncée plutôt que masquée",
+                "es": "Un libro lleva sus ediciones: papel, digital, audio, cada una con su ISBN y su fecha de publicación - una edición por venir se anuncia en lugar de ocultarse"
+            },
+            {
+                "en": "A book's medias take any file and no longer images alone, and say which kind they are - a page, a recording, a trailer",
+                "fr": "Les médias d'un livre acceptent tout fichier et non plus les seules images, et disent leur type — une page, un enregistrement, une bande-annonce",
+                "es": "Los medios de un libro aceptan cualquier archivo y ya no solo imágenes, e indican su tipo - una página, una grabación, un tráiler"
+            },
+            {
+                "en": "A file or a store link says which edition it belongs to: the pages of the illustrated edition are no longer mixed with the original ones",
+                "fr": "Un fichier ou un lien de boutique dit de quelle édition il relève : les pages de l'édition illustrée ne se mélangent plus à celles de l'originelle",
+                "es": "Un archivo o un enlace de tienda indica a qué edición pertenece: las páginas de la edición ilustrada ya no se mezclan con las de la original"
+            }
+        ]
+    },
+    {
+        "date": "2026-08-19",
+        "description": [
+            {
+                "en": "A book, a serie or a strip publishes its schema.org data, so search engines and other sites can read its author, ISBNs, publication date and place in its serie",
+                "fr": "Un livre, une série ou une planche publie ses données schema.org : auteur, ISBN, date de parution et place dans la série sont lisibles par les moteurs de recherche et les autres sites",
+                "es": "Un libro, una serie o una lámina publica sus datos schema.org: autor, ISBN, fecha de publicación y lugar en la serie son legibles por los buscadores y otros sitios"
+            },
+            {
+                "en": "The blocks composed on a strip are displayed on its page, as they already were on a book and a serie",
+                "fr": "Les blocs composés sur une planche s'affichent sur sa page, comme ils le faisaient déjà sur un livre et une série",
+                "es": "Los bloques compuestos en una lámina se muestran en su página, como ya ocurría en un libro y una serie"
+            },
+            {
+                "en": "A saved block can be dragged from one container to another on the Books, Series and Strips screens",
+                "fr": "Un bloc enregistré se déplace d'un conteneur à l'autre sur les écrans Livres, Séries et Planches",
+                "es": "Un bloque guardado se puede arrastrar de un contenedor a otro en las pantallas Libros, Series y Láminas"
+            },
+            {
+                "en": "The books, the series and the strips folders are declared to the backup, which ignored them until now",
+                "fr": "Les dossiers des livres, des séries et des planches sont déclarés à la sauvegarde, qui les ignorait jusqu'ici",
+                "es": "Las carpetas de libros, series y láminas se declaran a la copia de seguridad, que hasta ahora las ignoraba"
+            },
+            {
+                "en": "The catalog's pages and each serie can be picked as the target of a site menu",
+                "fr": "Les pages du catalogue et chaque série peuvent être choisies comme cible d'un menu du site",
+                "es": "Las páginas del catálogo y cada serie pueden elegirse como destino de un menú del sitio"
+            },
+            {
+                "en": "Three guided projects walk through creating a serie, publishing a book and composing its page",
+                "fr": "Trois projets guidés font créer une série, publier un livre et composer sa page",
+                "es": "Tres proyectos guiados guían para crear una serie, publicar un libro y componer su página"
+            },
+            {
+                "en": "The books and the series feed the site's llms.txt, the index an AI assistant reads",
+                "fr": "Les livres et les séries alimentent le llms.txt du site, l'index que lit un assistant IA",
+                "es": "Los libros y las series alimentan el llms.txt del sitio, el índice que lee un asistente de IA"
+            },
+            {
+                "en": "The \"Published books\" and \"Series strips\" blocks display again on a page",
+                "fr": "Les blocs « Livres publiés » et « Strips d'une série » s'affichent à nouveau sur une page",
+                "es": "Los bloques «Libros publicados» y «Tiras de una serie» vuelven a mostrarse en una página"
+            }
+        ]
+    },
+    {
+        "date": "2026-07-22",
+        "description": [
+            {
+                "en": "The Books, Series and Strips screens now explain what they're for and what to watch out for",
+                "fr": "Les écrans Livres, Séries et Strips expliquent désormais à quoi ils servent et les précautions à prendre",
+                "es": "Las pantallas Libros, Series y Tiras ahora explican para qué sirven y qué precauciones tomar"
+            },
+            {
+                "en": "Removed the separate view page on Books, Series and Strips - edit now shows everything",
+                "fr": "Suppression de la page de consultation séparée sur les livres, séries et strips : la page de modification affiche désormais tout",
+                "es": "Se eliminó la página de consulta independiente en libros, series y tiras: la página de edición ahora lo muestra todo"
+            },
+            {
+                "en": "Added a Cancel button when creating or editing an entry",
+                "fr": "Ajout d'un bouton Annuler lors de la création ou de la modification d'une entrée",
+                "es": "Añadido un botón Cancelar al crear o modificar una entrada"
+            }
+        ]
+    },
+    {
+        "date": "2026-07-04",
+        "description": [
+            {
+                "en": "Added an export option (SQL, CSV, JSON) to the books, series and strips lists",
+                "fr": "Ajout d'une option d'export (SQL, CSV, JSON) sur les listes de livres, séries et strips",
+                "es": "Añadida una opción de exportación (SQL, CSV, JSON) en los listados de libros, series y tiras"
+            }
+        ]
+    }
+]

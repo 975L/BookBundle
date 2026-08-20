@@ -1,0 +1,58 @@
+{# <twig:c975LBook:Book:Hero book="{{ book }}" [sections="{{ book_sections(book) }}"] /> #}
+{# The page's opening: cover, serie, title, the versions the book holds, and a way into the sections that matter most. Carries the page's only h1 - book/display.html.twig leaves the layout's own title block empty, so the title stands inside the container where the cover can sit beside it #}
+{% set sections = sections|default([]) %}
+{% set anchors = sections|column('anchor') %}
+<header class="book-hero book-page__hero">
+    {% set coverSrc = book.medias|first != false ? book.medias|first : "bundles/c975lbook/images/no-cover.webp" %}
+    {# fetchpriority: the cover is what the page is about, and on a phone it is the whole first screen #}
+    <img class="book-hero__cover" src="{{ asset(coverSrc) }}" alt="{{ 'label.cover'|trans({}, 'book', book.language) }} - {{ book.title }}" width="240" fetchpriority="high">
+
+    <div class="book-hero__body">
+        {% if book.serie %}
+            {# The serie's own logo when it has one, at the size of a line rather than of a banner: on a book's page the serie is where the book comes from, not what the page is about #}
+            {% if book.serie.logos is not empty %}
+                <a href="{{ path('serie_display', {'slug': book.serie.slug}) }}"><img class="book-hero__logo" src="{{ asset(book.serie.logos|first) }}" alt="{{ book.serie.title }}" height="48"></a>
+            {% endif %}
+            <p class="book-hero__eyebrow">
+                <a href="{{ path('serie_display', {'slug': book.serie.slug}) }}">{{ book.serie.title }}</a>{% if book.number %} - {{ 'label.number'|trans({}, 'book', book.language) }} {{ book.number }}{% endif %}
+            </p>
+        {% endif %}
+
+        <h1 class="book-hero__title">{{ book.title }}</h1>
+
+        <p class="book-hero__meta">
+            {{ book.author }}{% if book.illustrator %} - {{ book.illustrator }}{% endif %} -
+            {% if book.published == null or book.published|date("Ymd") > "now"|date("Ymd") %}
+                {{ 'label.to_be_published'|trans({}, 'book', book.language) }}{% if book.published %} ({{ book.published|date('d/m/Y') }}){% endif %}
+            {% else %}
+                {{ 'label.published_on'|trans({}, 'book', book.language) }} {{ book.published|date('d/m/Y') }}
+            {% endif %}
+        </p>
+
+        {# Which versions the book holds, read off its editions rather than ticked by hand. One it does not hold yet stays on the page: for a reader that is an answer, not a gap - and the word says so, the shape only repeating it #}
+        {% if book.editions|length %}
+            <ul class="book-badges">
+                {% for edition in book.editions %}
+                    <li class="book-badge {{ edition.released ? 'book-badge--available' : 'book-badge--announced' }}">
+                        {{ book_edition_label(edition, book.language) }}{% if not edition.released %} - {{ 'label.to_be_published'|trans({}, 'book', book.language) }}{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="book-hero__actions">
+            {% if 'shops' in anchors %}
+                <twig:c975LUi:Button:Button label="{{ 'label.shops'|trans({}, 'book', book.language) }}" url="#shops" inline="true"/>
+            {% endif %}
+            {% if 'podcasts' in anchors %}
+                <twig:c975LUi:Button:Button type="secondary" label="{{ 'label.podcasts'|trans({}, 'book', book.language) }}" url="#podcasts" inline="true"/>
+            {% endif %}
+            {# The other language of this very book, absent rather than disabled when there is none to go to #}
+            {% if book.getTranslation('en') %}
+                <twig:c975LUi:Button:Button type="secondary" label="{{ 'label.english'|trans({}, 'book', book.language) }}" url="{{ path('book_display', {'slug': book.getTranslation('en').slug}) }}" inline="true"/>
+            {% elseif book.getTranslation('fr') %}
+                <twig:c975LUi:Button:Button type="secondary" label="{{ 'label.french'|trans({}, 'book', book.language) }}" url="{{ path('book_display', {'slug': book.getTranslation('fr').slug}) }}" inline="true"/>
+            {% endif %}
+        </div>
+    </div>
+</header>

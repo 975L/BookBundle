@@ -12,9 +12,10 @@ namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Controller\Management\BookCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
-use c975L\ConfigBundle\Management\AbstractMenuProvider;
+use c975L\BookBundle\Controller\Management\StripCrudController;
+use c975L\ConfigBundle\Management\MenuProviderInterface;
 
-class MenuProvider extends AbstractMenuProvider
+class MenuProvider implements MenuProviderInterface
 {
     public function getMenuSection(): array
     {
@@ -31,7 +32,7 @@ class MenuProvider extends AbstractMenuProvider
                 'controller' => SerieCrudController::class,
                 'label' => 'label.series',
                 'translation_domain' => 'book',
-                'icon' => 'fas fa-book',
+                'icon' => 'fas fa-layer-group',
             ],
             'book' => [
                 'controller' => BookCrudController::class,
@@ -39,6 +40,17 @@ class MenuProvider extends AbstractMenuProvider
                 'translation_domain' => 'book',
                 'icon' => 'fas fa-book',
             ],
+            'strip' => [
+                'controller' => StripCrudController::class,
+                'label' => 'label.strips',
+                'translation_domain' => 'book',
+                'icon' => 'fas fa-border-all',
+            ],
         ];
+    }
+
+    public function getLinks(): array
+    {
+        return [];
     }
 }

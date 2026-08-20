@@ -6,4 +6,90 @@ services:
 
     c975L\BookBundle\:
         resource: '../src/'
-        exclude: '../src/{DependencyInjection,Entity}'
+        exclude: '../src/{Contract,DependencyInjection,Entity,Field}'
+
+    c975L\BookBundle\Service\BookCustomizationRegistry:
+        arguments:
+            $providers: !tagged_iterator book.customization_provider
+
+    # The bundle's own stylesheet, loaded before the site's themes/*.css so a design still wins over it
+    c975L\BookBundle\Service\StylesheetProvider:
+        tags:
+            - { name: 'ui.stylesheet', priority: 100 }
+
+    # Block kinds registered in UiBundle
+    # cacheable: false on all 4 below - their templates call book_block_*() (BookBlockExtension), which queries Book/Serie/Strip live at render time; those entities aren't watched by BlockCacheInvalidationListener, so caching by this block's own id would go stale as soon as a book/serie/strip is published/edited elsewhere, with nothing to invalidate it
+    book.block.series:
+        class: stdClass
+        tags:
+            - name: ui.block
+              kind: book_series
+              label: 'label.block_series'
+              description: 'label.block_series_description'
+              translation_domain: 'book'
+              category: 'label.category_books'
+              form: 'c975L\BookBundle\Form\Block\SeriesBlockType'
+              template: '@c975LBook/blocks/Series.html.twig'
+              pickable: true
+              cacheable: false
+
+    book.block.books:
+        class: stdClass
+        tags:
+            - name: ui.block
+              kind: book_books
+              label: 'label.block_books'
+              description: 'label.block_books_description'
+              translation_domain: 'book'
+              category: 'label.category_books'
+              form: 'c975L\BookBundle\Form\Block\BooksBlockType'
+              template: '@c975LBook/blocks/Books.html.twig'
+              pickable: true
+              cacheable: false
+
+    book.block.to_be_published:
+        class: stdClass
+        tags:
+            - name: ui.block
+              kind: book_to_be_published
+              label: 'label.block_to_be_published'
+              description: 'label.block_to_be_published_description'
+              translation_domain: 'book'
+              category: 'label.category_books'
+              form: 'c975L\BookBundle\Form\Block\BooksToBePublishedBlockType'
+              template: '@c975LBook/blocks/BooksToBePublished.html.twig'
+              pickable: true
+              cacheable: false
+
+    # The one kind of the four whose content is its own attached medias rather than a live query, hence cacheable and fed by a BlockFixtureProvider where the other three need the showcase
+    book.block.reader:
+        class: stdClass
+        tags:
+            - name: ui.block
+              kind: book_reader
+              label: 'label.block_reader'
+              description: 'label.block_reader_description'
+              translation_domain: 'book'
+              category: 'label.category_books'
+              form: 'c975L\BookBundle\Form\Block\ReaderBlockType'
+              template: '@c975LBook/blocks/Reader.html.twig'
+              pickable: true
+              cacheable: true
+              media_types: 'image/*,audio/*'
+              media_required: true
+              media_multi_upload: true
+              media_help: 'label.block_reader_media_help'
+
+    book.block.serie_strips:
+        class: stdClass
+        tags:
+            - name: ui.block
+              kind: book_serie_strips
+              label: 'label.block_serie_strips'
+              description: 'label.block_serie_strips_description'
+              translation_domain: 'book'
+              category: 'label.category_books'
+              form: 'c975L\BookBundle\Form\Block\SerieStripsBlockType'
+              template: '@c975LBook/blocks/SerieStrips.html.twig'
+              pickable: true
+              cacheable: false

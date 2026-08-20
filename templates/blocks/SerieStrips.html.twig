@@ -1,0 +1,4 @@
+{% set strips = book_block_serie_strips(serieSlug, max ?? null) %}
+{% if strips is not empty %}
+    <twig:c975LBook:Strip:Cards strips="{{ strips }}" />
+{% endif %}

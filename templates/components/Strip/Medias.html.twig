@@ -1,0 +1,9 @@
+{% if strip.medias|length > 0 %}
+    {% if strip.medias|length == 1 %}
+        {% set media = strip.medias.first %}
+        {# The planche is the page: it takes the width it is given, nothing crops it, and it is the image worth loading first #}
+        <twig:c975LUi:Image:Image src="{{ asset(media.name) }}" alt="{{ strip.title }}" class="strip-media" priority="true"/>
+    {% else %}
+        <twig:c975LUi:Slider:Slider slides="{{ strip.medias }}" id="strip-{{ strip.slug }}"/>
+    {% endif %}
+{% endif %}

@@ -1,0 +1,15 @@
+{# The bar a planche is browsed from. Resting against the bottom of the screen rather than waiting at the end of an image the height of three screens: going to the next planche is what a reader does here, and on a phone it was three scrolls away #}
+{% set language = language|default(null) %}
+<nav class="strip-bar" aria-label="{{ 'label.strips'|trans({}, 'book', language) }}">
+    {% if previousNext.previous is not null %}
+        <a href="{{ path('strip_display', {'slug': previousNext.previous.slug}) }}" rel="prev">&laquo; {{ 'label.previous'|trans({}, 'book', language) }}</a>
+    {% else %}
+        <span></span>
+    {% endif %}
+    <a href="{{ path('strip_index') }}">{{ 'label.strips'|trans({}, 'book', language) }}</a>
+    {% if previousNext.next is not null %}
+        <a href="{{ path('strip_display', {'slug': previousNext.next.slug}) }}" rel="next">{{ 'label.next'|trans({}, 'book', language) }} &raquo;</a>
+    {% else %}
+        <span></span>
+    {% endif %}
+</nav>

@@ -1,0 +1,11 @@
+{% if sourceUrl is not null %}
+    <div class="text-center">
+        <twig:c975LUi:Button:Button
+            type="secondary"
+            label="{{ 'label.source_url'|trans({}, 'book', language|default(null)) }}"
+            url="{{ sourceUrl }}"
+            target="_blank"
+            inline="true"
+        />
+    </div>
+{% endif %}

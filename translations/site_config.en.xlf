@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="en" datatype="plaintext" original="site_config.en.xlf">
+        <body>
+            <trans-unit id="9aed734">
+                <source>description.book_route_book</source>
+                <target>First segment of a book's url, e.g. "book" for /book/my-title. Left empty, the page is not served at all.</target>
+            </trans-unit>
+            <trans-unit id="35d55a2">
+                <source>description.book_route_books</source>
+                <target>First segment of the url listing the books, e.g. "books" for /books. The change applies straight away, but the former urls return a not-found page: set up a redirect if they are indexed. Left empty, the page is not served at all — which is what a site whose books are read under its own addresses sets here.</target>
+            </trans-unit>
+            <trans-unit id="2aef3b4">
+                <source>description.book_route_serie</source>
+                <target>First segment of a serie's url, e.g. "serie" for /serie/my-serie. Left empty, the page is not served at all.</target>
+            </trans-unit>
+            <trans-unit id="f349e22">
+                <source>description.book_route_series</source>
+                <target>First segment of the url listing the series, e.g. "series". Left empty, the page is not served at all.</target>
+            </trans-unit>
+            <trans-unit id="e0cab83">
+                <source>description.book_route_strip</source>
+                <target>First segment of a strip's url, e.g. "strip" for /strip/my-strip. Left empty, the page is not served at all.</target>
+            </trans-unit>
+            <trans-unit id="35eb84a">
+                <source>description.book_route_strips</source>
+                <target>First segment of the url listing the strips, e.g. "strips". Left empty, the page is not served at all.</target>
+            </trans-unit>
+            <trans-unit id="ddf15c2">
+                <source>label.book_route_book</source>
+                <target>Book page url prefix</target>
+            </trans-unit>
+            <trans-unit id="a158a45">
+                <source>label.book_route_books</source>
+                <target>Books list url prefix</target>
+            </trans-unit>
+            <trans-unit id="645b0a0">
+                <source>label.book_route_serie</source>
+                <target>Serie page url prefix</target>
+            </trans-unit>
+            <trans-unit id="ae4e94c">
+                <source>label.book_route_series</source>
+                <target>Series list url prefix</target>
+            </trans-unit>
+            <trans-unit id="87765a4">
+                <source>label.book_route_strip</source>
+                <target>Strip page url prefix</target>
+            </trans-unit>
+            <trans-unit id="a286fa5">
+                <source>label.book_route_strips</source>
+                <target>Strips list url prefix</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

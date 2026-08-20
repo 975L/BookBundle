@@ -1,0 +1,15 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set title = 'label.strips'|trans({}, 'book') %}
+{% set summarySocialNetwork = 'label.strips_list'|trans({}, 'book') %}
+
+{% block content %}
+    <twig:c975LBook:Strip:Search/>
+    {% if character is defined %}
+        <twig:c975LBook:Strip:Characters characters="{{ [{'name': character|replace({'-': ' '}), 'slug': character}] }}" selected="{{ character }}"/>
+    {% endif %}
+    <twig:c975LUi:Pagination:Pagination paginate="{{ strips }}"/>
+    <twig:c975LBook:Strip:Cards strips="{{ strips }}"/>
+    <twig:c975LUi:Pagination:Pagination paginate="{{ strips }}"/>
+{% endblock %}

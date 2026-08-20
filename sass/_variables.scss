@@ -1,0 +1,33 @@
+/* TOKEN DEFAULTS */
+
+// The book pages' own shapes. Nothing here says a color of its own: the ground, the ink and the accents are the site's,
+// read through UiBundle's --background/--text/--primary, which the back-office palette (theme-color-*) already feeds.
+// A site retunes what follows from its own assets/styles/themes/book.css, copied there once by the scaffold and owned by the app from then on.
+// Cascade: this sheet, then the compiled site-theme.css holding the admin's values, then the site's own book.css - so a token uncommented there wins over the back-office, as everywhere else
+:root {
+    /* The cover on a phone, where it is the whole width of the hero it can take without pushing the title below the fold */
+    --book-cover-width: 180px;
+
+    /* What it grows to once the hero lays the text beside it rather than under it */
+    --book-cover-width-wide: 240px;
+
+    /* A cover is never cropped: it keeps its own proportions whatever the box, unlike the page images of an illustrated album */
+    --book-cover-radius: var(--block-radius-medium, 14px);
+    --book-cover-shadow: var(--block-shadow-medium, 0 5px 10px 0 rgba(0, 0, 0, 0.5));
+
+    /* What parts the summary's column from the text beside it, and the hero's cover from its body */
+    --book-column-gap: clamp(1.5rem, 4vw, 3rem);
+    --book-hero-gap: clamp(1rem, 3vw, 2rem);
+
+    /* The eyebrow above a title - the serie and the number, set apart from the title by size rather than by a color of its own */
+    --book-eyebrow-size: 0.8rem;
+    --book-eyebrow-spacing: 0.14em;
+
+    /* The badges saying which versions a book holds. Filled for one that exists, outlined for one announced - the word carries the information, the shape only repeats it */
+    --book-badge-radius: 999px;
+    --book-badge-size: 0.78rem;
+
+    /* The bar a planche is browsed from, resting against the bottom of the screen on a phone. Opaque: the planche scrolls under it */
+    --book-bar-background: var(--surface-alt, #f2f2f2);
+    --book-bar-height: 64px;
+}

@@ -17,8 +17,8 @@ class SerieRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Serie[] Returns an array of Serie objects
-    */
+     * @return Serie[] Returns an array of Serie objects
+     */
     public function findAll(?int $number = null): array
     {
         $query = $this->createQueryBuilder('s')
@@ -33,8 +33,36 @@ class SerieRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère une série avec ses livres triés (non publiés en premier)
+     * @return Serie[] Series holding at least one book
      */
+    public function findWithBooks(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.books', 'b')
+            ->leftJoin('s.medias', 'm')
+            ->addSelect('m')
+            ->orderBy('s.title', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Serie[] Series holding at least one strip
+     */
+    public function findWithStrips(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.strips', 'st')
+            ->leftJoin('s.medias', 'm')
+            ->addSelect('m')
+            ->orderBy('s.title', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    // A serie with its books sorted, the unpublished ones first
     public function findOneBySlugWithSortedBooks(string $slug): ?Serie
     {
         return $this->createQueryBuilder('s')

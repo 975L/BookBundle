@@ -1,7 +1,7 @@
-{% if marketings is not empty %}
-    <twig:c975LUi:Card:Card id="marketing" title="Éléments marketing">
+{% if book.marketings is not empty %}
+    <twig:c975LUi:Card:Card id="marketing" class="toc-target" title="{{ 'label.marketing'|trans({}, 'book', book.language) }}" lang="{{ book.language }}">
         <div class="cards">
-            {% for marketing in marketings %}
+            {% for marketing in book.marketings %}
                 <twig:c975LBook:Book:Marketing marketing="{{ marketing }}"/>
             {% endfor %}
         </div>

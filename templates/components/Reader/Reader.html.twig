@@ -1,0 +1,12 @@
+{# <twig:c975LBook:Reader:Reader media="{{ images }}" audio="{{ audioMedia }}" id="reader" [cues="{{ [{page: 1, start: 0}, ...] }}"] [title=""] [autoAdvance=true] /> #}
+{# The recording is the clock: the controller turns the slider's pages at the cues, and moves the playhead when a page is turned by hand #}
+{% set cues = cues|default([]) %}
+{% if media|length > 0 %}
+    <div class="book-reader" data-controller="book-reader" data-book-reader-cues-value="{{ cues|json_encode }}" data-book-reader-auto-advance-value="{{ (autoAdvance|default(true) and audio) ? 'true' : 'false' }}">
+        {# Duration 0: nothing else may turn a page while the voice reads #}
+        <twig:c975LUi:Slider:Slider media="{{ media }}" id="{{ id }}" duration="0" ratio="free" />
+        {% if audio %}
+            <twig:c975LUi:Audio:Audio src="{{ vich_uploader_asset(audio) }}" type="{{ audio.mimeType }}" title="{{ title|default('') }}" />
+        {% endif %}
+    </div>
+{% endif %}

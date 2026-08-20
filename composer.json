@@ -1,8 +1,13 @@
 {
     "name": "c975l/book-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony bundle that manages books and series for a publishing website — catalog, media collections, admin CRUD, pagination, and multilingual support.",
-    "keywords": ["symfony", "bundle", "book", "serie"],
+    "description": "Symfony bundle providing a publisher's catalog of books and series on the c975L core — media, video, press and marketing collections, EasyAdmin CRUD, paginated public routes, multilingual editions and its own sitemap.",
+    "keywords": [
+        "symfony",
+        "bundle",
+        "book",
+        "serie"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -17,16 +22,19 @@
         }
     ],
     "require": {
-        "php": ">=8.0",
-        "c975l/ui-bundle": "*",
-        "doctrine/orm": "*",
-        "easycorp/easyadmin-bundle": "*",
-        "knplabs/knp-paginator-bundle": "*",
-        "symfony/form": "*",
-        "symfony/framework-bundle": "*",
-        "symfony/ux-live-component": "*",
-        "symfony/ux-twig-component": "*",
-        "vich/uploader-bundle": "*"
+        "php": ">=8.4",
+        "c975l/core-bundle": "^1.12.7",
+        "doctrine/orm": "^3.6",
+        "easycorp/easyadmin-bundle": "^5.1",
+        "knplabs/knp-paginator-bundle": "^6.10",
+        "symfony/form": "^8.0",
+        "symfony/framework-bundle": "^8.0",
+        "symfony/ux-live-component": "^3.3",
+        "symfony/ux-twig-component": "^3.3",
+        "vich/uploader-bundle": "^2.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^13.2"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -35,8 +43,36 @@
             "c975L\\BookBundle\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "c975L\\BookBundle\\Tests\\": "tests/"
+        }
+    },
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "audit-deps": "composer audit --abandoned=report",
+        "cs": "phpcs -q",
+        "fixer": "php-cs-fixer check --diff",
+        "stan": "phpstan analyse --no-progress",
+        "rector": "rector process --dry-run --clear-cache",
+        "test": "phpunit",
+        "qa": [
+            "@audit-deps",
+            "@cs",
+            "@fixer",
+            "@stan",
+            "@rector",
+            "@test"
+        ]
+    },
+    "scripts-descriptions": {
+        "cs": "PSR-12 (phpcs)",
+        "fixer": "Standard Symfony (php-cs-fixer)",
+        "stan": "Analyse statique du bundle, level 5",
+        "test": "Suite PHPUnit",
+        "qa": "Tous les contrôles de la CI, dans l'ordre - voir bin/ci.sh pour les rejouer sur des dépendances fraîches"
     },
     "support": {
         "email": "contact@975l.com",

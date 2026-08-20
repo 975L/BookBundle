@@ -2,8 +2,8 @@
 
 namespace c975L\BookBundle\Entity;
 
-use App\Entity\User;
 use c975L\BookBundle\Repository\SerieRepository;
+use c975L\ConfigBundle\Contract\UserInterface;
 use c975L\UiBundle\Contract\HasBlocksInterface;
 use c975L\UiBundle\Entity\Block;
 use c975L\UiBundle\Entity\Trait\HasBlocksTrait;
@@ -16,9 +16,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\Table(name: 'book_serie')]
 #[UniqueEntity('slug')]
-class Serie implements HasBlocksInterface
+class Serie implements HasBlocksInterface, \Stringable
 {
     use HasBlocksTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -33,8 +34,23 @@ class Serie implements HasBlocksInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $summary = null;
 
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $kind = null;
+
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $language = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $author = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $authorWebsite = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $illustrator = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $illustratorWebsite = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $creation = null;
@@ -48,25 +64,31 @@ class Serie implements HasBlocksInterface
     private Collection $blocks;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'serie')]
+    #[ORM\OrderBy(['number' => 'ASC', 'published' => 'ASC'])]
     private Collection $books;
 
+    #[ORM\OneToMany(targetEntity: Strip::class, mappedBy: 'serie')]
+    #[ORM\OrderBy(['number' => 'ASC', 'published' => 'ASC'])]
+    private Collection $strips;
+
     #[ORM\OneToMany(targetEntity: SerieMedia::class, mappedBy: 'serie', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(["position" => "ASC"])]
+    #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $medias;
 
     #[ORM\ManyToOne]
-    private ?User $user = null;
+    private ?UserInterface $user = null;
 
     public function __construct()
     {
         $this->blocks = new ArrayCollection();
         $this->books = new ArrayCollection();
+        $this->strips = new ArrayCollection();
         $this->medias = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 
     public function getId(): ?int
@@ -110,6 +132,18 @@ class Serie implements HasBlocksInterface
         return $this;
     }
 
+    public function getKind(): ?string
+    {
+        return $this->kind;
+    }
+
+    public function setKind(?string $kind): static
+    {
+        $this->kind = $kind;
+
+        return $this;
+    }
+
     public function getLanguage(): ?string
     {
         return $this->language;
@@ -118,6 +152,54 @@ class Serie implements HasBlocksInterface
     public function setLanguage(?string $language): static
     {
         $this->language = $language;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?string $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    public function getAuthorWebsite(): ?string
+    {
+        return $this->authorWebsite;
+    }
+
+    public function setAuthorWebsite(?string $authorWebsite): static
+    {
+        $this->authorWebsite = $authorWebsite;
+
+        return $this;
+    }
+
+    public function getIllustrator(): ?string
+    {
+        return $this->illustrator;
+    }
+
+    public function setIllustrator(?string $illustrator): static
+    {
+        $this->illustrator = $illustrator;
+
+        return $this;
+    }
+
+    public function getIllustratorWebsite(): ?string
+    {
+        return $this->illustratorWebsite;
+    }
+
+    public function setIllustratorWebsite(?string $illustratorWebsite): static
+    {
+        $this->illustratorWebsite = $illustratorWebsite;
 
         return $this;
     }
@@ -202,26 +284,54 @@ class Serie implements HasBlocksInterface
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?UserInterface
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?UserInterface $user): static
     {
         $this->user = $user;
 
         return $this;
     }
 
+    public function getStrips(): Collection
+    {
+        return $this->strips;
+    }
+
+    public function addStrip(Strip $strip): static
+    {
+        if (!$this->strips->contains($strip)) {
+            $this->strips->add($strip);
+            $strip->setSerie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStrip(Strip $strip): static
+    {
+        if ($this->strips->removeElement($strip)) {
+            if ($strip->getSerie() === $this) {
+                $strip->setSerie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    // Also matches the legacy covers, stored with no kind before it was introduced
     public function getCovers(): Collection
     {
-        return $this->medias->filter(fn(SerieMedia $m) => $m->getKind() !== 'logo');
+        return $this->medias->filter(fn (SerieMedia $m) => in_array($m->getKind(), ['cover', null], true));
     }
 
     public function addCover(SerieMedia $media): static
     {
-        $media->setKind(null);
+        $media->setKind('cover');
+
         return $this->addMedia($media);
     }
 
@@ -232,12 +342,13 @@ class Serie implements HasBlocksInterface
 
     public function getLogos(): Collection
     {
-        return $this->medias->filter(fn(SerieMedia $m) => $m->getKind() === 'logo');
+        return $this->medias->filter(fn (SerieMedia $m) => 'logo' === $m->getKind());
     }
 
     public function addLogo(SerieMedia $media): static
     {
         $media->setKind('logo');
+
         return $this->addMedia($media);
     }
 

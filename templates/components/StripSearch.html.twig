@@ -1,0 +1,18 @@
+<div {{ attributes }}>
+    <input
+        type="search"
+        data-model="query"
+        aria-label="Recherche dans les planches"
+        placeholder="Entrer les caractères recherchés"
+        class="img-500"
+    >
+    <p class="text text-center">&nbsp;</p>
+    <div class="flex-center flex-start">
+        {% set strips = this.strips %}
+        {% if strips is not null and strips is empty %}
+            <p class="text text-center">Aucun résultat trouvé pour votre recherche.</p>
+        {% elseif strips is not empty %}
+            <twig:c975LBook:Strip:Cards :strips="strips"/>
+        {% endif %}
+    </div>
+</div>

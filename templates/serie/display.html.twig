@@ -2,15 +2,39 @@
 
 {# Defines specific variables #}
 {% set title = serie.title %}
-{% set description = serie.summary %}
+{% set summarySocialNetwork = serie.summary %}
 {% set ogImage = absolute_url(asset(serie.covers|first != false ? serie.covers|first : "bundles/c975lbook/images/no-cover.webp")) %}
 
+{# The hero carries the page's only h1, inside the container where the cover can stand beside it #}
+{% block title %}{% endblock %}
+
 {% block content %}
-    {% if serie.logos is not empty %}
-        <twig:c975LUi:Image:Image src="{{ asset(serie.logos|first) }}" alt="Logo {{ serie.title }}" width="400"/>
+    {# Read once, used twice: the summary offers exactly the sections rendered below it #}
+    {% set sections = serie_sections(serie) %}
+    {% set anchors = sections|column('anchor') %}
+
+    <div class="book-page" lang="{{ serie.language }}">
+        <twig:c975LBook:Serie:Hero serie="{{ serie }}" sections="{{ sections }}"/>
+        <twig:c975LUi:Text:Toc entries="{{ sections }}" id="serie-toc" class="book-page__toc"/>
+
+        <div class="book-page__sections">
+            {% if 'resume' in anchors %}
+                <twig:c975LUi:Card:Card id="resume" class="toc-target" title="{{ 'label.summary'|trans({}, 'book', serie.language) }}" lang="{{ serie.language }}">
+                    <twig:c975LBook:Serie:Resume serie="{{ serie }}"/>
+                </twig:c975LUi:Card:Card>
+            {% endif %}
+            {% if 'books' in anchors %}
+                <twig:c975LUi:Card:Card id="books" class="toc-target" title="{{ 'label.serie_books'|trans({}, 'book', serie.language) }}" lang="{{ serie.language }}">
+                    <twig:c975LBook:Book:Books books="{{ serie.books }}" displayMore="false"/>
+                </twig:c975LUi:Card:Card>
+            {% endif %}
+            <twig:c975LUi:Blocks:Blocks blocks="{{ serie.blocks }}"/>
+        </div>
+    </div>
+
+    {# The serie's structured data, whose hasPart is what says "tome 1 of 12" to a machine #}
+    {% set jsonLd = serie_json_ld(serie, ogImage, url('serie_display', {'slug': serie.slug})) %}
+    {% if jsonLd %}
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
-    <twig:c975LBook:Serie:Resume serie="{{ serie }}"/>
-    <h2 class="text-center">{{"label.serie_books"|trans({}, 'messages', language)}}</h2>
-    <twig:c975LBook:Book:Books books="{{ serie.books }}" displayMore="false"/>
-    <twig:c975LUi:Blocks:Blocks blocks="{{ serie.blocks }}"/>
 {% endblock %}

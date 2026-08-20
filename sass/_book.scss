@@ -1,0 +1,189 @@
+// The step the hero stops stacking and lays the text beside the cover
+$book-bp-wide: 768px;
+
+// The step the summary of anchors leaves the top of the page for a column of its own - the same one UiBundle's own .toc switches at, the two being one layout
+$book-bp-column: 1200px;
+
+// PAGE
+
+// Mobile first: one column, the hero, then the summary bar, then the sections - which is also the source order, so nothing is reordered for a phone
+.book-page {
+    display: grid;
+    gap: var(--book-column-gap);
+}
+
+.book-page__sections {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+@media (min-width: $book-bp-column) {
+    .book-page {
+        grid-template-columns: var(--toc-column-width) minmax(0, 1fr);
+        align-items: start;
+    }
+
+    // The hero keeps the page's whole width, the summary only standing beside the sections it points at
+    .book-page__hero {
+        grid-column: 1 / -1;
+    }
+}
+
+// HERO
+
+.book-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--book-hero-gap);
+    text-align: center;
+}
+
+// A cover is shown whole, never cropped to fill a band: its own proportions are part of what is being shown
+.book-hero__cover {
+    flex: none;
+    width: var(--book-cover-width);
+    max-width: 100%;
+    border-radius: var(--book-cover-radius);
+    box-shadow: var(--book-cover-shadow);
+    height: auto;
+}
+
+.book-hero__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+// A serie's logo on a book's page: the size of a line, not of a banner - the serie is where the book comes from, not what the page is about
+.book-hero__logo {
+    max-height: 48px;
+    width: auto;
+}
+
+// The serie and the number, above the title - set apart by size and letter-spacing rather than by a color the theme would have to provide
+.book-hero__eyebrow {
+    margin: 0;
+    font-family: var(--font-family-accent);
+    font-size: var(--book-eyebrow-size);
+    letter-spacing: var(--book-eyebrow-spacing);
+    text-transform: uppercase;
+}
+
+// The page's only h1: the layout's own is left empty by the display templates, which render this one inside the container instead
+.book-hero__title {
+    margin: 0;
+    font-family: var(--font-family-title);
+}
+
+.book-hero__meta {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.75;
+}
+
+.book-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+}
+
+@media (min-width: $book-bp-wide) {
+    .book-hero {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: start;
+    }
+
+    .book-hero__cover {
+        width: var(--book-cover-width-wide);
+    }
+
+    .book-hero__actions {
+        justify-content: flex-start;
+    }
+}
+
+// BADGES
+
+// Which versions a book holds. A version it does not hold stays on the page rather than being hidden: for a reader that is an answer, not a gap
+.book-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+}
+
+.book-badge {
+    border: 1px solid var(--border-color);
+    border-radius: var(--book-badge-radius);
+    font-size: var(--book-badge-size);
+    font-weight: bold;
+    padding: 0.3em 0.8em;
+}
+
+// Filled for a version that exists, outlined for one only announced - the word says which, this only repeats it
+.book-badge--available {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--button-color);
+}
+
+.book-badge--announced {
+    border-style: dashed;
+    opacity: 0.7;
+}
+
+@media (min-width: $book-bp-wide) {
+    .book-badges {
+        justify-content: flex-start;
+    }
+}
+
+// PLANCHE
+
+// A planche is one tall image: it takes the width it is given and nothing crops it
+.strip-media {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    margin-inline: auto;
+}
+
+// The bar a planche is browsed from - resting against the bottom of the screen where a thumb is, rather than waiting at the end of an image the height of three screens
+.strip-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: var(--book-bar-height);
+    padding-block: 0.5rem;
+    background: var(--book-bar-background);
+    border-top: 1px solid var(--border-color);
+}
+
+// 44px whatever the font size: these three are how a planche is left at all on a phone
+.strip-bar a,
+.strip-bar span {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 0.8em;
+}
+
+// A bar of links to the neighbouring planches leads nowhere on paper
+@media print {
+    .strip-bar {
+        display: none;
+    }
+}

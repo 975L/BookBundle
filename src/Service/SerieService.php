@@ -39,6 +39,18 @@ class SerieService implements SerieServiceInterface
         return array_slice($series, 0, $number);
     }
 
+    // Finds series that have at least one book
+    public function findWithBooks(): array
+    {
+        return $this->serieRepository->findWithBooks();
+    }
+
+    // Finds series that have at least one strip
+    public function findWithStrips(): array
+    {
+        return $this->serieRepository->findWithStrips();
+    }
+
     // Finds all with sorted books by published date, null first
     public function findOneBySlugWithSortedBooks(string $slug): ?Serie
     {

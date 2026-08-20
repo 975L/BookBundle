@@ -1,0 +1,13 @@
+{% if characters|length > 0 %}
+    <h2>{{ 'label.characters'|trans({}, 'book', language|default(null)) }}</h2>
+    <div class="flex-center">
+        {% for character in characters %}
+            <twig:c975LUi:Button:Button
+                label="{{ character.name|capitalize }}"
+                url="{{ path('strip_character', {'character': character.slug}) }}"
+                type="{{ selected is defined and selected == character.slug ? 'primary' : 'secondary' }}"
+                inline="true"
+            />
+        {% endfor %}
+    </div>
+{% endif %}

@@ -21,7 +21,7 @@ class BookSearchComponent
 
     public function getBooks()
     {
-        if (trim($this->query) === '') {
+        if ('' === trim($this->query)) {
             return null;
         }
 

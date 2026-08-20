@@ -1,0 +1,68 @@
+[
+    {
+        "label": "label.book_route_books",
+        "slug": "book-route-books",
+        "sensitive": false,
+        "restricted": false,
+        "value": "livres",
+        "kind": "text",
+        "group": "book",
+        "severity": "warning",
+        "description": "description.book_route_books"
+    },
+    {
+        "label": "label.book_route_book",
+        "slug": "book-route-book",
+        "sensitive": false,
+        "restricted": false,
+        "value": "livre",
+        "kind": "text",
+        "group": "book",
+        "severity": "warning",
+        "description": "description.book_route_book"
+    },
+    {
+        "label": "label.book_route_series",
+        "slug": "book-route-series",
+        "sensitive": false,
+        "restricted": false,
+        "value": "series",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_series"
+    },
+    {
+        "label": "label.book_route_serie",
+        "slug": "book-route-serie",
+        "sensitive": false,
+        "restricted": false,
+        "value": "serie",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_serie"
+    },
+    {
+        "label": "label.book_route_strips",
+        "slug": "book-route-strips",
+        "sensitive": false,
+        "restricted": false,
+        "value": "strips",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_strips"
+    },
+    {
+        "label": "label.book_route_strip",
+        "slug": "book-route-strip",
+        "sensitive": false,
+        "restricted": false,
+        "value": "strip",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_strip"
+    }
+]

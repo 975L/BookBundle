@@ -1,0 +1,18 @@
+{# <twig:c975LBook:Strip:Hero strip="{{ strip }}" /> #}
+{# A planche opens on its own title rather than on a cover: the picture below is the planche itself, and showing it twice would push it below the fold. Carries the page's only h1 - strip/display.html.twig leaves the layout's title block empty #}
+{% set language = strip.serie ? strip.serie.language : null %}
+<header class="book-hero book-page__hero">
+    <div class="book-hero__body">
+        {% if strip.serie %}
+            <p class="book-hero__eyebrow">
+                <a href="{{ path('serie_display', {'slug': strip.serie.slug}) }}">{{ strip.serie.title }}</a>{% if strip.number %} - {{ 'label.number'|trans({}, 'book', language) }} {{ strip.number }}{% endif %}
+            </p>
+        {% endif %}
+
+        <h1 class="book-hero__title">{{ strip.title }}</h1>
+
+        {% if strip.published %}
+            <p class="book-hero__meta">{{ 'label.published_on'|trans({}, 'book', language) }} {{ strip.published|date('d/m/Y') }}</p>
+        {% endif %}
+    </div>
+</header>

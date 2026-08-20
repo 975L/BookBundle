@@ -1,4 +1,5 @@
 <?php
+
 /*
  * (c) 2026: 975L <contact@975l.com>
  * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
@@ -9,44 +10,37 @@
 
 namespace c975L\BookBundle;
 
-use c975L\UiBundle\Namer\UiMediaNamer;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use c975L\BookBundle\Contract\BookCustomizationProviderInterface;
+use c975L\ConfigBundle\DependencyInjection\Compiler\TaggedInterfacePass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 class c975LBookBundle extends AbstractBundle
 {
-    public function prependExtension(ContainerConfigurator $configurator, ContainerBuilder $container): void
+    public function loadExtension(array $config, ContainerConfigurator $containerConfigurator, ContainerBuilder $containerBuilder): void
     {
-        if (!$container->hasExtension('vich_uploader')) {
-            return;
-        }
+        $containerConfigurator->import('../config/services.yaml');
+    }
 
-        $container->prependExtensionConfig('vich_uploader', [
-            'mappings' => [
-                'books' => [
-                    'uri_prefix' => '',
-                    'upload_destination' => '%kernel.project_dir%/public/medias/book/books/',
-                    'namer' => UiMediaNamer::class,
-                    'inject_on_load' => false,
-                    'delete_on_update' => true,
-                    'delete_on_remove' => true,
-                ],
-                'series' => [
-                    'uri_prefix' => '',
-                    'upload_destination' => '%kernel.project_dir%/public/medias/book/series/',
-                    'namer' => UiMediaNamer::class,
-                    'inject_on_load' => false,
-                    'delete_on_update' => true,
-                    'delete_on_remove' => true,
+    // The bundle's own Stimulus controllers, which importmap.php names as an entrypoint - a path the app cannot declare for it, the bundle living under vendor/
+    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
+    {
+        $builder->prependExtensionConfig('framework', [
+            'asset_mapper' => [
+                'paths' => [
+                    __DIR__ . '/../assets' => '@c975l/book-bundle',
                 ],
             ],
         ]);
     }
 
-    public function loadExtension(array $config, ContainerConfigurator $containerConfigurator, ContainerBuilder $containerBuilder): void
+    // Collects what each site declares about its own catalog, so BookCustomizationRegistry reads them all without the app having to tag its provider by hand
+    public function build(ContainerBuilder $container): void
     {
-        $containerConfigurator->import('../config/services.yaml');
+        parent::build($container);
+
+        $container->addCompilerPass(new TaggedInterfacePass(BookCustomizationProviderInterface::class, 'book.customization_provider'));
     }
 
     public function getPath(): string

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="es" datatype="plaintext" original="site_config.es.xlf">
+        <body>
+            <trans-unit id="e2f6aa3">
+                <source>description.book_route_book</source>
+                <target>Primer segmento de la URL de un libro, p. ej. "libro" para /libro/mi-titulo. Vacío, la página deja de servirse.</target>
+            </trans-unit>
+            <trans-unit id="5690162">
+                <source>description.book_route_books</source>
+                <target>Primer segmento de la URL que lista los libros, p. ej. "libros" para /libros. El cambio es inmediato, pero las URL anteriores devuelven una página no encontrada: prevea una redirección si están indexadas. Vacío, la página deja de servirse.</target>
+            </trans-unit>
+            <trans-unit id="bc47da0">
+                <source>description.book_route_serie</source>
+                <target>Primer segmento de la URL de una serie, p. ej. "serie" para /serie/mi-serie. Vacío, la página deja de servirse.</target>
+            </trans-unit>
+            <trans-unit id="38a0aa8">
+                <source>description.book_route_series</source>
+                <target>Primer segmento de la URL que lista las series, p. ej. "series". Vacío, la página deja de servirse.</target>
+            </trans-unit>
+            <trans-unit id="96da72d">
+                <source>description.book_route_strip</source>
+                <target>Primer segmento de la URL de una lámina, p. ej. "strip" para /strip/mi-lamina. Vacío, la página deja de servirse.</target>
+            </trans-unit>
+            <trans-unit id="34c7dc5">
+                <source>description.book_route_strips</source>
+                <target>Primer segmento de la URL que lista las láminas, p. ej. "strips". Vacío, la página deja de servirse.</target>
+            </trans-unit>
+            <trans-unit id="db5c3b4">
+                <source>label.book_route_book</source>
+                <target>Prefijo URL de la página de un libro</target>
+            </trans-unit>
+            <trans-unit id="8f1c115">
+                <source>label.book_route_books</source>
+                <target>Prefijo URL de la lista de libros</target>
+            </trans-unit>
+            <trans-unit id="de97a96">
+                <source>label.book_route_serie</source>
+                <target>Prefijo URL de la página de una serie</target>
+            </trans-unit>
+            <trans-unit id="392e619">
+                <source>label.book_route_series</source>
+                <target>Prefijo URL de la lista de series</target>
+            </trans-unit>
+            <trans-unit id="5dc32a7">
+                <source>label.book_route_strip</source>
+                <target>Prefijo URL de la página de una lámina</target>
+            </trans-unit>
+            <trans-unit id="4215fca">
+                <source>label.book_route_strips</source>
+                <target>Prefijo URL de la lista de láminas</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

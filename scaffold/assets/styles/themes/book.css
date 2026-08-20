@@ -1,0 +1,32 @@
+/* This site's BookBundle tokens: every line ships commented out at its default, so what stays active is what the design decides */
+/* Format in c975l/site-bundle's readme ("Themes"), defaults in this bundle's sass/_variables.scss */
+/* One file per bundle - this one is the books, series and planches; the shapes they share with every screen are UiBundle's, in themes/ui.css */
+/* No color is offered here on purpose: a book page is laid on the site's own ground and ink, which the "theme" config group holds. Retune those in themes/ui.css to move the whole site along with it */
+/* The summary of anchors standing beside a book page is UiBundle's --toc-*, in themes/ui.css, the two being one layout */
+:root {
+    /* The cover on a phone, where it is all the width the hero can give it without pushing the title below the fold */
+    /* --book-cover-width: 180px; */
+
+    /* What it grows to from 768px on, once the text is laid beside it rather than under it */
+    /* --book-cover-width-wide: 240px; */
+
+    /* A cover keeps its own proportions whatever the box: what is set here is the frame around it, never a crop */
+    /* --book-cover-radius: var(--block-radius-medium, 14px); */
+    /* --book-cover-shadow: var(--block-shadow-medium, 0 5px 10px 0 rgba(0, 0, 0, 0.5)); */
+
+    /* What parts the summary's column from the sections beside it, and the hero's cover from its body */
+    /* --book-column-gap: clamp(1.5rem, 4vw, 3rem); */
+    /* --book-hero-gap: clamp(1rem, 3vw, 2rem); */
+
+    /* The serie and the number above a title, set apart by size rather than by a color of their own */
+    /* --book-eyebrow-size: 0.8rem; */
+    /* --book-eyebrow-spacing: 0.14em; */
+
+    /* The badges saying which versions a book holds - filled for one that exists, outlined for one only announced */
+    /* --book-badge-radius: 999px; */
+    /* --book-badge-size: 0.78rem; */
+
+    /* The bar a planche is browsed from, resting against the bottom of the screen. Opaque: the planche scrolls under it */
+    /* --book-bar-background: var(--surface-alt, #f2f2f2); */
+    /* --book-bar-height: 64px; */
+}

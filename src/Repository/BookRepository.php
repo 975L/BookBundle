@@ -22,8 +22,8 @@ class BookRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Book[] Returns an array of Book objects
-    */
+     * @return Book[] Returns an array of Book objects
+     */
     public function findAllPublished(?int $number = null): array
     {
         $query = $this->createQueryBuilder('b')
@@ -41,8 +41,8 @@ class BookRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Book[] Returns an array of Book objects
-    */
+     * @return Book[] Returns an array of Book objects
+     */
     public function findAllToBePublished(): array
     {
         return $this->createQueryBuilder('b')

@@ -1,4 +1,4 @@
-<twig:c975LUi:Card:Card id="informations" title="Informations">
+<twig:c975LUi:Card:Card id="informations" class="toc-target" title="{{ 'label.informations'|trans({}, 'book', book.language) }}" lang="{{ book.language }}">
     <div class="text-left">
         <p>
             {{ 'label.published_date'|trans({}, 'book', book.language) }} :
@@ -23,18 +23,25 @@
         {% if book.illustrator %}
             <p>{{ 'label.illustrator'|trans({}, 'book', book.language) }} : <strong>{{ book.illustrator }}</strong></p>
         {% endif %}
-        <p>{{ 'label.language'|trans({}, 'book', book.language) }} : <strong>{{ book.language == 'en' ? 'English' : 'Français' }}</strong></p>
+        {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
+        <p>{{ 'label.language'|trans({}, 'book', book.language) }} : <strong>{{ languageLabels[book.language]|default(book.language) }}</strong></p>
         <p>{{ 'label.format'|trans({}, 'book', book.language) }} : <strong>{{ book.format }}</strong></p>
         <p>{{ 'label.pages'|trans({}, 'book', book.language) }} : <strong>{{ book.pages }}</strong></p>
         <p>{{ 'label.age'|trans({}, 'book', book.language) }} : <strong>{{ book.age }}</strong></p>
-        <p>{{ 'label.isbn_paper'|trans({}, 'book', book.language) }} : <strong>{{ book.isbnPaper ? book.isbnPaper|isbn : "-" }}</strong></p>
-        <p>{{ 'label.isbn_digital'|trans({}, 'book', book.language) }} : <strong>{{ book.isbnDigital ? book.isbnDigital|isbn : "-" }}</strong></p>
-        {# Translations #}
-        {% if book.getTranslation('en') %}
-            <twig:c975LUi:Button:Button label="English version" url="{{ path('book_display', {'slug': book.getTranslation('en').slug}) }}"/>
-        {% elseif book.getTranslation('fr') %}
-            <twig:c975LUi:Button:Button label="Version française" url="{{ path('book_display', {'slug': book.getTranslation('fr').slug}) }}"/>
+        {# One line per edition, each with its own ISBN and its own release date - an edition with no date yet is announced rather than hidden #}
+        {% if book.editions|length %}
+            <h3>{{ 'label.editions'|trans({}, 'book', book.language) }}</h3>
+            {% for edition in book.editions %}
+                <p>
+                    {{ book_edition_label(edition, book.language) }} :
+                    <strong>{{ edition.isbn ? edition.isbn|isbn : "-" }}</strong>
+                    {% if edition.published is null %}
+                        ({{ 'label.to_be_published'|trans({}, 'book', book.language) }})
+                    {% elseif not edition.released %}
+                        ({{ 'label.to_be_published'|trans({}, 'book', book.language) }} {{ edition.published|date('d/m/Y') }})
+                    {% endif %}
+                </p>
+            {% endfor %}
         {% endif %}
-        <twig:c975LBook:Book:Financement book="{{ book }}" />
     </div>
 </twig:c975LUi:Card:Card>

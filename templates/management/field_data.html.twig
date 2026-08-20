@@ -1,0 +1,4 @@
+{# What the site's own fields hold, read-only - the form is what edits them (see c975L\BookBundle\Field\BookDataField) #}
+{% for key, value in field.value|default({}) %}
+    <div><strong>{{ key }}</strong> : {{ value }}</div>
+{% endfor %}

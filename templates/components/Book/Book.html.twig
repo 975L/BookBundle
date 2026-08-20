@@ -2,7 +2,8 @@
     {% set imageSrc = book.medias|first != false ? book.medias|first : "bundles/c975lbook/images/no-cover.webp" %}
     <twig:c975LUi:Image:Link src="{{ asset(imageSrc) }}" url="{{ path('book_display', {'slug': book.slug}) }}" class="img-thumbnail box-shadow" width="150"/>
     <h3>{{ book.title|replace({' - ': '<br>'})|raw }}</h3>
-    <p class="text text-center small bold">({{ book.language == 'en' ? 'English' : 'Français' }})</p>
+    {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
+    <p class="text text-center small bold">({{ languageLabels[book.language]|default('Français') }})</p>
 
     <p class="text text-center small italic">
         {% if book.published == null %}

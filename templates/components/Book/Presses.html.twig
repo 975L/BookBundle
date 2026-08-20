@@ -1,7 +1,7 @@
-{% if presses is not empty %}
-    <twig:c975LUi:Card:Card id="presse" title="Presse">
+{% if book.presses is not empty %}
+    <twig:c975LUi:Card:Card id="presse" class="toc-target" title="{{ 'label.presse'|trans({}, 'book', book.language) }}" lang="{{ book.language }}">
         <div class="cards">
-            {% for presse in presses %}
+            {% for presse in book.presses %}
                 <twig:c975LBook:Book:Presse presse="{{ presse }}"/>
             {% endfor %}
         </div>

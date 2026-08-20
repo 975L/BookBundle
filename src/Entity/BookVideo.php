@@ -2,8 +2,6 @@
 
 namespace c975L\BookBundle\Entity;
 
-use c975L\BookBundle\Entity\Book;
-use c975L\BookBundle\Entity\Media;
 use c975L\UiBundle\Contract\VichMediaNamableInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -13,17 +11,12 @@ use Vich\UploaderBundle\Mapping\Attribute as Vich;
 #[Vich\Uploadable]
 class BookVideo extends Media implements VichMediaNamableInterface
 {
-    #[Vich\UploadableField(mapping: 'books', fileNameProperty: 'name', size: 'size')]
+    #[Vich\UploadableField(mapping: 'block_media', fileNameProperty: 'name', size: 'size')]
     protected ?File $file = null;
 
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'videos')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Book $book = null;
-
-    public function getMappingName(): string
-    {
-        return 'books';
-    }
 
     public function getBook(): ?Book
     {
@@ -39,6 +32,6 @@ class BookVideo extends Media implements VichMediaNamableInterface
 
     public function getVichMediaPath(): string
     {
-        return 'medias/books/videos/' . ($this->book?->getSlug() ?? 'temp');
+        return self::MEDIA_DIRECTORY . '/videos/' . ($this->book?->getSlug() ?? 'temp');
     }
 }

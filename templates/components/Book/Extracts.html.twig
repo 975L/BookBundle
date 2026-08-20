@@ -1,7 +1,6 @@
-<twig:c975LUi:Card:Card id="extraits" title="Extraits">
-    {% if book.published and book.published|date("Ymd") <= "now"|date("Ymd") %}
-        <twig:c975LShop:Slider:Slider slug="{{ book.slug }}" />
-    {% else %}
-        <twig:c975LUi:Slider:Slider slides="{{ book.medias }}" id="slider" />
-    {% endif %}
-</twig:c975LUi:Card:Card>
+{# The extracts are the book's own medias, shown by UiBundle's slider. A site whose extracts live in another bundle overrides this template in templates/bundles/c975LBookBundle/components/Book/Extracts.html.twig #}
+{% if book.medias|length %}
+    <twig:c975LUi:Card:Card id="extracts" class="toc-target" lang="{{ book.language }}" title="{{ 'label.extracts'|trans({}, 'book', book.language) }}">
+        <twig:c975LUi:Slider:Slider media="{{ book.medias }}" id="slider" />
+    </twig:c975LUi:Card:Card>
+{% endif %}

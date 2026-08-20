@@ -1,0 +1,2 @@
+{# Where the book is listened to: the audiobook stores and the podcast platforms in one card, the two being the same gesture for a reader #}
+<twig:c975LBook:Book:Links lang="{{ book.language }}" id="podcasts" title="{{ 'label.podcasts'|trans({}, 'book', book.language) }}" links="{{ book.linksOf('audio').toArray|merge(book.linksOf('podcast').toArray) }}" />

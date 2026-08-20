@@ -30,9 +30,7 @@ class BookMarketingType extends AbstractType
                 'download_uri' => true,
                 'asset_helper' => true,
                 'constraints' => [
-                    new File([
-                        'maxSize' => '100M',
-                    ])
+                    new File(maxSize: '100M'),
                 ],
             ])
         ;
@@ -42,6 +40,7 @@ class BookMarketingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => BookMarketing::class,
+            'translation_domain' => 'book',
         ]);
     }
 }
