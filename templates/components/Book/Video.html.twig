@@ -1,4 +1,24 @@
-{% if null != video %}
-    <twig:c975LUi:Video:Video src="{{ video.name }}" type="video/mp4" autoplay="true" muted="true" loop="true" width="320" class="img-thumbnail" width="320" height="180"/>
-    <p class="text text-center text-muted">{{ 'label.video'|trans({}, 'book', language|default(null)) }}</p>
+{# <twig:c975LBook:Book:Video video="{{ video }}" [language="fr"] /> #}
+{# One of the book's own videos, played from wherever it is held: a file uploaded here, or a YouTube identifier behind the consent gate. Its own title is what names it, the generic word standing in for one nobody typed #}
+{# A row being neither prints nothing at all: a caption on its own is a name with nothing under it #}
+{% if null != video and (video.youtubeUrl or video.name) %}
+    {# The title the editor wrote, and nothing in its place: "Video" under a video says nothing the image does not say already #}
+    {% set caption = video.title|default('') %}
+    {% if video.youtubeUrl %}
+        {# caption="false": the line below names every video the same way, whichever of the two it is #}
+        {# A real player and not a thumbnail: it is the book's video, and the size asked also bounds the consent screen preceding it (see UiBundle, assets/js/video-iframe.js) #}
+        {# The stored address is already the player's, brought back to its platform's canonical form on save (see BookVideoNoCookieListener): nothing is built here #}
+        {# Neither width nor height asked: the video takes its card's own, like the trailer above it - a size in pixels bounded the player to 720 in a card narrower than that (see sass/_book.scss) #}
+        <twig:c975LUi:Video:Iframe src="{{ video.youtubeUrl }}" caption="false"/>
+    {% elseif video.name %}
+        {# asset() and the media's own mimeType: the raw name is not a path a browser can fetch, and a webm forced to "video/mp4" is a player that plays nothing #}
+        <twig:c975LUi:Video:Video src="{{ asset(video.name) }}" type="{{ video.mimeType }}" autoplay="true" muted="true" loop="true" class="img-thumbnail" width="320" height="180"/>
+    {% endif %}
+    {% if caption %}
+        <p class="text text-center text-muted">{{ caption }}</p>
+    {% endif %}
+    {# The platform itself, for whoever wants to subscribe, read the comments or go full screen: the page it opens the video on, read on the player's address above (see UiBundle, VideoExtension::toWatchUrl()) #}
+    {% if video.youtubeUrl %}
+        <twig:c975LUi:Button:Button type="secondary" label="{{ 'label.watch_on_youtube'|trans({}, 'book', language|default(null)) }}" url="{{ video.youtubeUrl|video_watch_url }}" target="_blank"/>
+    {% endif %}
 {% endif %}

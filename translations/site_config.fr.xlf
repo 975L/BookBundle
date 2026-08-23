@@ -2,53 +2,117 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="fr" datatype="plaintext" original="site_config.fr.xlf">
         <body>
-            <trans-unit id="d150d69">
+            <trans-unit id="Q6bTgHt">
+                <source>description.book_catalog_title</source>
+                <target>Le mot sous lequel la page listant les livres se présente (« Les histoires », « Nos albums »). Vide, elle garde le mot du bundle.</target>
+            </trans-unit>
+            <trans-unit id="0kXsg9a">
+                <source>description.book_confetti</source>
+                <target>Lance une pluie de confettis à l'ouverture de la page d'un livre. Rien ne se déclenche chez un visiteur ayant demandé moins d'animations.</target>
+            </trans-unit>
+            <trans-unit id="HC5m5kS">
+                <source>description.book_gplay_affiliate</source>
+                <target>Ajoutée aux adresses Google Play des livres, pour que les ventes venues du site vous soient rattachées. Laissée vide, une adresse s'ouvre telle qu'elle est enregistrée</target>
+            </trans-unit>
+            <trans-unit id="DXvp5yF">
+                <source>description.book_rating</source>
+                <target>Affiche la note des lecteurs sur la page d'un livre, d'une série et d'une planche, ainsi que sur chaque vignette des listes de livres et de planches. L'icône et l'échelle se règlent dans les réglages d'UiBundle.</target>
+            </trans-unit>
+            <trans-unit id="FVHF9Tx">
                 <source>description.book_route_book</source>
                 <target>Premier segment de l'URL d'un livre, ex. "livre" pour /livre/mon-titre. Vide, la page n'est plus servie du tout.</target>
             </trans-unit>
-            <trans-unit id="296d207">
+            <trans-unit id="JLsjBEA">
+                <source>description.book_route_book_shortcut</source>
+                <target>Lettre du lien court par lequel un livre se partage, ex. « b » pour /b3, le nombre étant le numéro du livre. Pratique sur un réseau social, où une adresse courte se lit et se tape. Vide, aucune adresse de ce genre n'est servie.</target>
+            </trans-unit>
+            <trans-unit id="sKxO26f">
                 <source>description.book_route_books</source>
                 <target>Premier segment de l'URL listant les livres, ex. "livres" pour /livres. La modification est immédiate, mais les anciennes URL renvoient une page introuvable : prévoyez une redirection si elles sont indexées. Vide, la page n'est plus servie du tout - c'est ce que règle un site dont les livres se lisent sous ses propres adresses.</target>
             </trans-unit>
-            <trans-unit id="8f5b5f7">
-                <source>description.book_route_serie</source>
-                <target>Premier segment de l'URL d'une série, ex. "serie" pour /serie/ma-serie. Vide, la page n'est plus servie du tout.</target>
-            </trans-unit>
-            <trans-unit id="99a6b3f">
+            <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
-                <target>Premier segment de l'URL listant les séries, ex. "series". Vide, la page n'est plus servie du tout.</target>
+                <target>Premier segment de l'URL listant les séries de livres, ex. "series", et de la page de chaque série en dessous (/series/ma-serie). Vide, les pages ne sont plus servies du tout.</target>
             </trans-unit>
-            <trans-unit id="5945670">
+            <trans-unit id="WHOfVA_">
                 <source>description.book_route_strip</source>
                 <target>Premier segment de l'URL d'une planche, ex. "strip" pour /strip/ma-planche. Vide, la page n'est plus servie du tout.</target>
             </trans-unit>
-            <trans-unit id="add95e4">
-                <source>description.book_route_strips</source>
-                <target>Premier segment de l'URL listant les planches, ex. "strips". Vide, la page n'est plus servie du tout.</target>
+            <trans-unit id="1VPI5Vc">
+                <source>description.book_route_strip_shortcut</source>
+                <target>Lettre du lien court par lequel une planche se partage, ex. « s » pour /s3, le nombre étant le numéro de la planche. Vide, aucune adresse de ce genre n'est servie.</target>
             </trans-unit>
-            <trans-unit id="7238148">
+            <trans-unit id="dSr9fKF">
+                <source>description.book_route_strips</source>
+                <target>Premier segment de l'URL listant les séries de planches, ex. "strips", et de la page de chaque série en dessous (/strips/ma-serie). Une planche se lit dans sa série, jamais ici. Vide, les pages ne sont plus servies du tout.</target>
+            </trans-unit>
+            <trans-unit id="50YtJwJ">
+                <source>description.book_strip_card</source>
+                <target>Ce que montre la carte d'une planche dans la liste : "image" son dessin, "text" son résumé, "both" les deux.</target>
+            </trans-unit>
+            <trans-unit id="V3_94QE">
+                <source>description.book_strip_card_icon</source>
+                <target>Le fichier de la marque posée sur une carte de planche, ex. "logo.webp". Vide, la carte n'en porte aucune.</target>
+            </trans-unit>
+            <trans-unit id="97tKwDe">
+                <source>description.book_strip_rating_icon</source>
+                <target>L'icône avec laquelle une planche se note, quand elle doit se distinguer de celle du reste du site. Vide, la planche suit le réglage général.</target>
+            </trans-unit>
+            <trans-unit id="71hczgd">
+                <source>label.book_catalog_title</source>
+                <target>Titre du catalogue</target>
+            </trans-unit>
+            <trans-unit id="YqtsJyE">
+                <source>label.book_confetti</source>
+                <target>Confettis à l'ouverture</target>
+            </trans-unit>
+            <trans-unit id="pasNlFf">
+                <source>label.book_gplay_affiliate</source>
+                <target>Identifiant d'affiliation Google Play</target>
+            </trans-unit>
+            <trans-unit id="ZRe0eUt">
+                <source>label.book_rating</source>
+                <target>Notes des lecteurs</target>
+            </trans-unit>
+            <trans-unit id="WO0oclL">
                 <source>label.book_route_book</source>
                 <target>Préfixe URL de la page d'un livre</target>
             </trans-unit>
-            <trans-unit id="5d987dd">
+            <trans-unit id="KF3jgYn">
+                <source>label.book_route_book_shortcut</source>
+                <target>Lettre du lien court d'un livre</target>
+            </trans-unit>
+            <trans-unit id="MGsjb2q">
                 <source>label.book_route_books</source>
                 <target>Préfixe URL de la liste des livres</target>
             </trans-unit>
-            <trans-unit id="52e8296">
-                <source>label.book_route_serie</source>
-                <target>Préfixe URL de la page d'une série</target>
-            </trans-unit>
-            <trans-unit id="50e647c">
+            <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>
-                <target>Préfixe URL de la liste des séries</target>
+                <target>Préfixe URL de la liste des séries de livres</target>
             </trans-unit>
-            <trans-unit id="1c61032">
+            <trans-unit id="HBhNDc6">
                 <source>label.book_route_strip</source>
                 <target>Préfixe URL de la page d'une planche</target>
             </trans-unit>
-            <trans-unit id="c86b92a">
+            <trans-unit id="3xRtgFn">
+                <source>label.book_route_strip_shortcut</source>
+                <target>Lettre du lien court d'une planche</target>
+            </trans-unit>
+            <trans-unit id="hLojFlN">
                 <source>label.book_route_strips</source>
-                <target>Préfixe URL de la liste des planches</target>
+                <target>Préfixe URL de la liste des séries de planches</target>
+            </trans-unit>
+            <trans-unit id="V.QanLq">
+                <source>label.book_strip_card</source>
+                <target>Carte d'une planche</target>
+            </trans-unit>
+            <trans-unit id="eTyg50T">
+                <source>label.book_strip_card_icon</source>
+                <target>Marque des cartes de planches</target>
+            </trans-unit>
+            <trans-unit id="QBcKIBY">
+                <source>label.book_strip_rating_icon</source>
+                <target>Icône des notes des planches</target>
             </trans-unit>
         </body>
     </file>

@@ -1,4 +1,7 @@
-<twig:c975LUi:Card:Card id="informations" class="toc-target" title="{{ 'label.informations'|trans({}, 'book', book.language) }}" lang="{{ book.language }}">
+{# <twig:c975LBook:Book:Informations book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
+{% props book, section = {}, editUrl = "" %}
+{% set section = {anchor: 'informations', label: 'label.informations'|trans({}, 'book', book.language)}|merge(section) %}
+{% set body %}
     <div class="text-left">
         <p>
             {{ 'label.published_date'|trans({}, 'book', book.language) }} :
@@ -12,36 +15,82 @@
                 {% endif %}
             </strong>
         </p>
-        <p>
-            {{ 'label.author'|trans({}, 'book', book.language) }} :
-            {% if book.authorWebsite %}
-                <a href="{{ book.authorWebsite }}" title="Site de l'auteur {{ book.author }}" target="_blank">{{ book.author }}</a>
-            {% else %}
-                <strong>{{ book.author }}</strong>
-            {% endif %}
-        </p>
-        {% if book.illustrator %}
-            <p>{{ 'label.illustrator'|trans({}, 'book', book.language) }} : <strong>{{ book.illustrator }}</strong></p>
+        {# The serie's author and illustrator stand for a book naming none of its own - the same reading BookSnippetBuilder gives the structured data, so the page and the snippet never name two different people #}
+        {% if book.effectiveAuthor %}
+            <p>
+                {{ 'label.author'|trans({}, 'book', book.language) }} :
+                {% if book.effectiveAuthorWebsite %}
+                    <a href="{{ book.effectiveAuthorWebsite }}" title="{{ 'label.author_website'|trans({}, 'book', book.language) }}" target="_blank" rel="noopener">{{ book.effectiveAuthor }}</a>
+                {% else %}
+                    <strong>{{ book.effectiveAuthor }}</strong>
+                {% endif %}
+            </p>
         {% endif %}
-        {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
-        <p>{{ 'label.language'|trans({}, 'book', book.language) }} : <strong>{{ languageLabels[book.language]|default(book.language) }}</strong></p>
-        <p>{{ 'label.format'|trans({}, 'book', book.language) }} : <strong>{{ book.format }}</strong></p>
-        <p>{{ 'label.pages'|trans({}, 'book', book.language) }} : <strong>{{ book.pages }}</strong></p>
-        <p>{{ 'label.age'|trans({}, 'book', book.language) }} : <strong>{{ book.age }}</strong></p>
-        {# One line per edition, each with its own ISBN and its own release date - an edition with no date yet is announced rather than hidden #}
+        {% if book.effectiveIllustrator %}
+            <p>
+                {{ 'label.illustrator'|trans({}, 'book', book.language) }} :
+                {% if book.effectiveIllustratorWebsite %}
+                    <a href="{{ book.effectiveIllustratorWebsite }}" title="{{ 'label.illustrator_website'|trans({}, 'book', book.language) }}" target="_blank" rel="noopener">{{ book.effectiveIllustrator }}</a>
+                {% else %}
+                    <strong>{{ book.effectiveIllustrator }}</strong>
+                {% endif %}
+            </p>
+        {% endif %}
+        {# The endonym, read from the one place the bundle names languages (see BookTranslationExtension) rather than from a list of this template's own #}
+        <p>{{ 'label.language'|trans({}, 'book', book.language) }} : <strong>{{ book_language_label(book.language) }}</strong></p>
+        {% if book.age %}
+            <p>{{ 'label.age'|trans({}, 'book', book.language) }} : <strong>{{ book.age }}</strong></p>
+        {% endif %}
+        {# The serie on one line and no longer in a card of its own: its cover and its summary spoke of another work. The hero names it, the informations lead to it - the path being null on a site serving books but no series (see BookUrlExtension), where the name stays written but is clickable nowhere #}
+        {% if book.serie %}
+            {% set seriePath = serie_path(book.serie) %}
+            <p>
+                {{ 'label.serie'|trans({}, 'book', book.language) }} :
+                {% if seriePath %}
+                    <a href="{{ seriePath }}">{{ book.serie.title }}</a>
+                {% else %}
+                    <strong>{{ book.serie.title }}</strong>
+                {% endif %}
+            </p>
+        {% endif %}
+        {# The other languages and the other versions of the same text: they read in the book's informations rather than in the hero, where three buttons already say what a reader came for #}
+        {# Each language by its endonym, each version by the title its publisher gave it: the bundle translates neither (see BookTranslationExtension and BookVersionExtension) #}
+        {% set others = [] %}
+        {% for translation in book_translations(book) %}
+            {% set path = book_path('book_display', {'slug': translation.slug}) %}
+            {% if path %}{% set others = others|merge([{label: book_language_label(translation.language), url: path}]) %}{% endif %}
+        {% endfor %}
+        {% if others|length %}
+            <p>
+                {{ 'label.translations'|trans({}, 'book', book.language) }} :
+                {% for other in others %}<a href="{{ other.url }}">{{ other.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+            </p>
+        {% endif %}
+        {% set versions = [] %}
+        {% for version in book_versions(book) %}
+            {% set path = book_path('book_display', {'slug': version.slug}) %}
+            {% if path %}{% set versions = versions|merge([{label: version.title, url: path}]) %}{% endif %}
+        {% endfor %}
+        {% if versions|length %}
+            <p>
+                {{ 'label.other_versions'|trans({}, 'book', book.language) }} :
+                {% for version in versions %}<a href="{{ version.url }}">{{ version.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+            </p>
+        {% endif %}
+        {# One line per edition: its name, its ISBN, and what it is physically - the date is the book's and reads above #}
         {% if book.editions|length %}
             <h3>{{ 'label.editions'|trans({}, 'book', book.language) }}</h3>
             {% for edition in book.editions %}
                 <p>
                     {{ book_edition_label(edition, book.language) }} :
                     <strong>{{ edition.isbn ? edition.isbn|isbn : "-" }}</strong>
-                    {% if edition.published is null %}
-                        ({{ 'label.to_be_published'|trans({}, 'book', book.language) }})
-                    {% elseif not edition.released %}
-                        ({{ 'label.to_be_published'|trans({}, 'book', book.language) }} {{ edition.published|date('d/m/Y') }})
-                    {% endif %}
+                    {# The format and the pagination belong to the edition, not to the book: an epub has neither the size nor the page count of its paperback. The date is the book's and reads above #}
+                    {% if edition.format %} - {{ edition.format }}{% endif %}
+                    {% if edition.pages %} - {{ edition.pages }} {{ 'label.pages'|trans({}, 'book', book.language)|lower }}{% endif %}
                 </p>
             {% endfor %}
         {% endif %}
     </div>
-</twig:c975LUi:Card:Card>
+{% endset %}
+{# Framed like the summary: the book's informations read in one go, and the frame sets them apart from the prose around them #}
+{{ include('@c975LBook/book/_section.html.twig', {form: 'framed', book: book, section: section, editUrl: editUrl, body: body}) }}

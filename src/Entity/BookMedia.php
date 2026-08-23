@@ -18,23 +18,6 @@ class BookMedia extends Media implements VichMediaNamableInterface
     #[ORM\JoinColumn(nullable: true)]
     private ?Book $book = null;
 
-    // The version this file belongs to - the pages of the illustrated one are not those of the original. A file is added from the version's own screen, so it always names one; the column stays nullable for the rows a site holds from before versions were edited apart
-    #[ORM\ManyToOne(targetEntity: BookEdition::class, inversedBy: 'medias')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
-    private ?BookEdition $edition = null;
-
-    public function getEdition(): ?BookEdition
-    {
-        return $this->edition;
-    }
-
-    public function setEdition(?BookEdition $edition): static
-    {
-        $this->edition = $edition;
-
-        return $this;
-    }
-
     public function getBook(): ?Book
     {
         return $this->book;

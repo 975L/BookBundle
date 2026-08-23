@@ -1,9 +1,13 @@
+{# <twig:c975LBook:Book:Marketings book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
+{% props book, section = {}, editUrl = "" %}
+{% set section = {anchor: 'marketing', label: 'label.marketing'|trans({}, 'book', book.language)}|merge(section) %}
 {% if book.marketings is not empty %}
-    <twig:c975LUi:Card:Card id="marketing" class="toc-target" title="{{ 'label.marketing'|trans({}, 'book', book.language) }}" lang="{{ book.language }}">
+    {% set body %}
         <div class="cards">
             {% for marketing in book.marketings %}
                 <twig:c975LBook:Book:Marketing marketing="{{ marketing }}"/>
             {% endfor %}
         </div>
-    </twig:c975LUi:Card:Card>
+    {% endset %}
+    {{ include('@c975LBook/book/_section.html.twig', {form: 'links', book: book, section: section, editUrl: editUrl, body: body}) }}
 {% endif %}

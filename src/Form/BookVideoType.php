@@ -3,39 +3,22 @@
 namespace c975L\BookBundle\Form;
 
 use c975L\BookBundle\Entity\BookVideo;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
-use Vich\UploaderBundle\Form\Type\VichFileType;
 
-class BookVideoType extends AbstractType
+// A video of a book is hosted as readily as it is uploaded, exactly as a presse row is - without the address field the id could never be typed, and Book:Video's embed was unreachable
+class BookVideoType extends BookOwnedMediaType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    protected function dataClass(): string
     {
-        $builder
-            ->add('position', HiddenType::class, [
-                'attr' => ['class' => 'ui-sort-position'],
-            ])
-            ->add('file', VichFileType::class, [
-                'label' => 'label.video',
-                'required' => false,
-                'allow_delete' => true,
-                'download_uri' => true,
-                'asset_helper' => true,
-                'constraints' => [
-                    new File(maxSize: '100M'),
-                ],
-            ])
-        ;
+        return BookVideo::class;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    protected function fileLabel(): string
     {
-        $resolver->setDefaults([
-            'data_class' => BookVideo::class,
-            'translation_domain' => 'book',
-        ]);
+        return 'label.video';
+    }
+
+    protected function hasHostedVideo(): bool
+    {
+        return true;
     }
 }

@@ -23,7 +23,7 @@
     ],
     "require": {
         "php": ">=8.4",
-        "c975l/core-bundle": "^1.12.7",
+        "c975l/core-bundle": "^1.16",
         "doctrine/orm": "^3.6",
         "easycorp/easyadmin-bundle": "^5.1",
         "knplabs/knp-paginator-bundle": "^6.10",

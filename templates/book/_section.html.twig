@@ -1,0 +1,41 @@
+{# {% set body %}…{% endset %}{{ include('@c975LBook/book/_section.html.twig', {book: book, section: section, editUrl: editUrl, body: body}) }} #}
+{# The card every section of a display page prints: the anchor, the name and the look the site gave it (see BookCustomizationProviderInterface::getSections()), the fragment it adds inside, and the editor's pencil - so a section component writes nothing but what goes in the card #}
+{# The contents arrive already rendered, as a "body" string, rather than through a block the caller overrides: a block declared by an {% embed %} never reaches the inside of a component's slot - it is the component that owns the block namespace its own template renders in - and the card came out titled but empty, which neither the Twig lint nor a test reading the template can see #}
+{% set animation = section.animation|default('') %}
+{% set editAttribute = editUrl|default('') ? {'data-block-edit-url': editUrl} : {} %}
+{% set sectionLang = lang|default('') ?: (book|default(null) ? book.language : '') %}
+{# What the section carries decides its shape, not its contents: text reads at a paragraph's measure, a media is bounded in height, a row of platforms fits on one line. The card is no longer the wrapper of everything (see sass/_book.scss) #}
+{# "framed" is the summary's shape: no card and no header, but laid in a shadowed frame - what a section read in one go takes rather than one that is scanned #}
+{% set form = form|default('text') %}
+{# What the site adds inside this very section and no other site has - a shop button, a smartlink, a field of its own. Rendered once here, whichever form the section takes below #}
+{% set contents %}
+    {# The sentence saying in one line what is found in the section, under its name and before what it carries (see BookSectionsExtension::intro()). Absent for a section the catalog says nothing about #}
+    {% if section.intro|default('') %}
+        <p class="book-section__intro">{{ section.intro }}</p>
+    {% endif %}
+    {{ body|default('')|raw }}
+    {% if section.template|default('') %}
+        {{ include(section.template, {book: book|default(null), section: section}) }}
+    {% endif %}
+{% endset %}
+
+{# The very wrapper a block's entrance effect uses (see UiBundle's BlockExtension::wrapInAnimation()): "display: contents", so the section stays the element the layout addresses, and hidden until animate-scroll.js swaps the effect's class in - the page mounts that controller on the column holding the sections #}
+{% if animation %}<div class="block-animation scroll" data-animation="{{ animation }}">{% endif %}
+    {% if form in ['text', 'framed'] %}
+        {# Prose carries no frame: a summary and a serie read on the page itself, right under the hero, where a panel around them only draws a box around a paragraph. The anchor, the name and the pencil are the card's own job everywhere else, and this form has to do them itself #}
+        {# Written by hand: attribute unpacking belongs to <twig:...> components, an HTML tag does not understand it #}
+        <section id="{{ section.anchor|default('') }}" class="toc-target book-section book-section--{{ form }}"{% if sectionLang %} lang="{{ sectionLang }}"{% endif %}{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+            {% if section.label|default('') %}
+                <h2 class="book-section__title">
+                    {% if section.icon|default([])|length %}<twig:c975LUi:Image:Icon src="{{ section.icon[0] }}" class="{{ section.icon[1] }}" width="{{ section.icon[2] }}" height="{{ section.icon[3] }}"/> {% endif %}
+                    {{ section.label }}
+                </h2>
+            {% endif %}
+            {{ contents }}
+        </section>
+    {% else %}
+        <twig:c975LUi:Card:Card id="{{ section.anchor|default('') }}" class="toc-target book-section book-section--{{ form }}" title="{{ section.label|default('') }}" lang="{{ sectionLang }}" icon="{{ section.icon|default([]) }}" {{ ...editAttribute }}>
+            {{ contents }}
+        </twig:c975LUi:Card:Card>
+    {% endif %}
+{% if animation %}</div>{% endif %}

@@ -1,27 +1,66 @@
-{# <twig:c975LBook:Book:Hero book="{{ book }}" [sections="{{ book_sections(book) }}"] /> #}
+{# <twig:c975LBook:Book:Hero book="{{ book }}" [sections="{{ book_sections(book) }}"] [cover="path/to/file.webp"] [coverBack="path/to/file.webp"] [background="path/to/file.webp"] [editUrl=""]>optional content, under the actions</twig:c975LBook:Book:Hero> #}
 {# The page's opening: cover, serie, title, the versions the book holds, and a way into the sections that matter most. Carries the page's only h1 - book/display.html.twig leaves the layout's own title block empty, so the title stands inside the container where the cover can sit beside it #}
 {% set sections = sections|default([]) %}
-{% set anchors = sections|column('anchor') %}
-<header class="book-hero book-page__hero">
-    {% set coverSrc = book.medias|first != false ? book.medias|first : "bundles/c975lbook/images/no-cover.webp" %}
-    {# fetchpriority: the cover is what the page is about, and on a phone it is the whole first screen #}
-    <img class="book-hero__cover" src="{{ asset(coverSrc) }}" alt="{{ 'label.cover'|trans({}, 'book', book.language) }} - {{ book.title }}" width="240" fetchpriority="high">
+{# The sections by their key, the only name that does not move: a site renames its card's anchor and label (see BookCustomizationProviderInterface::getSections()), and a button read on the anchor then vanished silently, its link pointing at an anchor the page no longer wrote #}
+{% set sectionsByKey = sections|reduce((map, section) => map|merge({(section.key|default('')): section}), {}) %}
+{# The editor's pencil, added only when the caller passed a url (see book/display.html.twig) #}
+{% set background = background|default('') %}
+<header class="book-hero book-page__hero{{ background ? ' book-hero--has-bg' : '' }}"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+    {# A real <img> and a veil over it, never a CSS background-image: a nonce-based style-src covers no style attribute, which is how UiBundle's own Hero paints its background too #}
+    {% if background %}
+        <img class="book-hero__bg" src="{{ asset(background) }}" alt="" aria-hidden="true" fetchpriority="high">
+        <div class="book-hero__veil" aria-hidden="true"></div>
+    {% endif %}
+
+    {# A site knowing better than book_cover() which of its files stands for the book hands it over - a catalog whose covers are not uploaded on the field of their own, say #}
+    {% set coverSrc = cover|default(null) ?: (book_cover(book) ?: "bundles/c975lbook/images/no-cover.webp") %}
+    {% set coverBackSrc = coverBack|default('') %}
+    {% set coverAlt = 'label.cover'|trans({}, 'book', book.language) ~ ' - ' ~ book.title %}
+    {% if coverBackSrc %}
+        {# A book has two covers, and the fourth is where its blurb is printed: given one, the hero turns instead of stacking them - the very fold UiBundle's flip card block uses, borrowed by its classes and its "flipCard" controller rather than by its component, which reads Media entities where a hero is handed plain paths (see UiBundle sass/_flip-card.scss). The face's own frame is undone in sass/_book.scss: a cover is printed to its own edge #}
+        <div class="flip-card book-hero__cover-flip" data-controller="flipCard">
+            <div class="flip-card-inner">
+                <div class="flip-card-face flip-card-front" data-flipCard-target="face">
+                    {# fetchpriority: the cover is what the page is about, and on a phone it is the whole first screen #}
+                    <img class="book-hero__cover-face" src="{{ asset(coverSrc) }}" alt="{{ coverAlt }}" width="240" fetchpriority="high">
+                    {# Hidden until flip-card.js takes over, and the whole face once it has: a control turning nothing would be a dead one #}
+                    <button type="button" class="flip-card-toggle" data-action="flipCard#toggle" aria-label="{{ 'label.flip_card_show_back'|trans({}, 'ui', book.language) }} : {{ book.title }}" hidden></button>
+                </div>
+                <div class="flip-card-face flip-card-back" data-flipCard-target="face">
+                    <img class="book-hero__cover-face" src="{{ asset(coverBackSrc) }}" alt="{{ 'label.back_cover'|trans({}, 'book', book.language) }} - {{ book.title }}" width="240" loading="lazy">
+                    <button type="button" class="flip-card-toggle" data-action="flipCard#toggle" aria-label="{{ 'label.flip_card_show_front'|trans({}, 'ui', book.language) }} : {{ book.title }}" hidden></button>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {# fetchpriority: the cover is what the page is about, and on a phone it is the whole first screen #}
+        <img class="book-hero__cover" src="{{ asset(coverSrc) }}" alt="{{ coverAlt }}" width="240" fetchpriority="high">
+    {% endif %}
 
     <div class="book-hero__body">
         {% if book.serie %}
-            {# The serie's own logo when it has one, at the size of a line rather than of a banner: on a book's page the serie is where the book comes from, not what the page is about #}
-            {% if book.serie.logos is not empty %}
-                <a href="{{ path('serie_display', {'slug': book.serie.slug}) }}"><img class="book-hero__logo" src="{{ asset(book.serie.logos|first) }}" alt="{{ book.serie.title }}" height="48"></a>
-            {% endif %}
+            {# The serie is named and neither painted nor clickable any more: on a book's page it says where the book comes from, it is not what the page is about - its logo took a banner's room and its link carried away the reader who had just found the book #}
             <p class="book-hero__eyebrow">
-                <a href="{{ path('serie_display', {'slug': book.serie.slug}) }}">{{ book.serie.title }}</a>{% if book.number %} - {{ 'label.number'|trans({}, 'book', book.language) }} {{ book.number }}{% endif %}
+                {{ book.serie.title }}{% if book.number %} - {{ 'label.number'|trans({}, 'book', book.language) }} {{ book.number }}{% endif %}
             </p>
+        {% elseif book.number %}
+            {# A numbered book outside any serie still says which one it is: the number used to be printed inside the serie's own line and went with it #}
+            <p class="book-hero__eyebrow">{{ 'label.number'|trans({}, 'book', book.language) }} {{ book.number }}</p>
         {% endif %}
 
         <h1 class="book-hero__title">{{ book.title }}</h1>
 
+        {# Right under the title: what the site has to say about the book where the book is introduced - Papa Câlin names the child whose idea the story was written from. Declared rather than nested, this component being called self-closed by book/display.html.twig, where a slot would never reach it #}
+        {% set ownLine = book_section_template('hero') %}
+        {% if ownLine %}
+            {{ include(ownLine, {book: book}) }}
+        {% endif %}
+
         <p class="book-hero__meta">
-            {{ book.author }}{% if book.illustrator %} - {{ book.illustrator }}{% endif %} -
+            {# The same readings as Book:Informations and as the structured data, which fall back on the serie - and the illustrator is only named when not already the author, failing which the line repeats the same name twice #}
+            {% set author = book.effectiveAuthor %}
+            {% set illustrator = book.effectiveIllustrator %}
+            {{ author }}{% if illustrator and illustrator != author %} - {{ illustrator }}{% endif %} -
             {% if book.published == null or book.published|date("Ymd") > "now"|date("Ymd") %}
                 {{ 'label.to_be_published'|trans({}, 'book', book.language) }}{% if book.published %} ({{ book.published|date('d/m/Y') }}){% endif %}
             {% else %}
@@ -29,30 +68,31 @@
             {% endif %}
         </p>
 
-        {# Which versions the book holds, read off its editions rather than ticked by hand. One it does not hold yet stays on the page: for a reader that is an answer, not a gap - and the word says so, the shape only repeating it #}
-        {% if book.editions|length %}
-            <ul class="book-badges">
-                {% for edition in book.editions %}
-                    <li class="book-badge {{ edition.released ? 'book-badge--available' : 'book-badge--announced' }}">
-                        {{ book_edition_label(edition, book.language) }}{% if not edition.released %} - {{ 'label.to_be_published'|trans({}, 'book', book.language) }}{% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
+        {# Under the line that says who wrote it and when, which is where a reader looks for it. Off unless the site turned it on: a bundle update must not make every book page suddenly ask for a vote. The icon and the scale are UiBundle's own settings, this only says whether a book carries the widget at all #}
+        {% if config('book-rating')|to_bool %}
+            <twig:c975LUi:Rating:Rating ownerType="book" ownerId="{{ book.id }}"/>
         {% endif %}
 
+        {# The gestures the page offers and nothing else: read, listen, watch, buy - the order the page lays them in below (see BookSectionsExtension::book()), a reader tasting the book before paying for it. Each carries the name of its section, so the button and the card title say the same verb. Buy keeps the full color wherever it sits in the row, and the row is only written when one of them exists #}
+        {% set actionKeys = ['extracts', 'podcasts', 'apercu', 'shops']|filter(key => sectionsByKey[key] is defined) %}
+        {% if actionKeys|length %}
         <div class="book-hero__actions">
-            {% if 'shops' in anchors %}
-                <twig:c975LUi:Button:Button label="{{ 'label.shops'|trans({}, 'book', book.language) }}" url="#shops" inline="true"/>
+            {% if sectionsByKey.extracts is defined %}
+                <twig:c975LUi:Button:Button type="secondary" label="{{ sectionsByKey.extracts.label }}" url="#{{ sectionsByKey.extracts.anchor }}" inline="true"/>
             {% endif %}
-            {% if 'podcasts' in anchors %}
-                <twig:c975LUi:Button:Button type="secondary" label="{{ 'label.podcasts'|trans({}, 'book', book.language) }}" url="#podcasts" inline="true"/>
+            {% if sectionsByKey.podcasts is defined %}
+                <twig:c975LUi:Button:Button type="secondary" label="{{ sectionsByKey.podcasts.label }}" url="#{{ sectionsByKey.podcasts.anchor }}" inline="true"/>
             {% endif %}
-            {# The other language of this very book, absent rather than disabled when there is none to go to #}
-            {% if book.getTranslation('en') %}
-                <twig:c975LUi:Button:Button type="secondary" label="{{ 'label.english'|trans({}, 'book', book.language) }}" url="{{ path('book_display', {'slug': book.getTranslation('en').slug}) }}" inline="true"/>
-            {% elseif book.getTranslation('fr') %}
-                <twig:c975LUi:Button:Button type="secondary" label="{{ 'label.french'|trans({}, 'book', book.language) }}" url="{{ path('book_display', {'slug': book.getTranslation('fr').slug}) }}" inline="true"/>
+            {% if sectionsByKey.apercu is defined %}
+                <twig:c975LUi:Button:Button type="secondary" label="{{ sectionsByKey.apercu.label }}" url="#{{ sectionsByKey.apercu.anchor }}" inline="true"/>
+            {% endif %}
+            {% if sectionsByKey.shops is defined %}
+                <twig:c975LUi:Button:Button label="{{ sectionsByKey.shops.label }}" url="#{{ sectionsByKey.shops.anchor }}" inline="true"/>
             {% endif %}
         </div>
+        {% endif %}
+
+        {# What the site has to say right where the book is introduced - Papa Câlin names the child whose idea the story was written from. Nested content, so a site adds it without overriding this template #}
+        {% block content %}{% endblock %}
     </div>
 </header>

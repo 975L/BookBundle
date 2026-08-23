@@ -22,6 +22,21 @@ class MediaTest extends TestCase
         $this->assertSame('application/epub+zip', new BookMedia()->setName('medias/book/book.epub')->getMimeType());
     }
 
+    // A recording can also arrive as ogg: without it the "Listen" card did not see the file, its type falling back on a binary one
+    public function testARecordingIsRecognizedWhateverTheAudioExtension(): void
+    {
+        $this->assertSame('audio/mpeg', new BookMedia()->setName('medias/book/chapter-01.mp3')->getMimeType());
+        $this->assertSame('audio/ogg', new BookMedia()->setName('medias/book/chapter-01.ogg')->getMimeType());
+        $this->assertSame('audio/ogg', new BookMedia()->setName('medias/book/chapter-01.OGA')->getMimeType());
+    }
+
+    // Ticked from the start: the privacy-respecting address is the only origin the site's security policy allows
+    public function testAMediaAsksForThePrivacyRespectingAddressUntilToldOtherwise(): void
+    {
+        $this->assertTrue(new BookMedia()->isNoCookie());
+        $this->assertFalse(new BookMedia()->setNoCookie(false)->isNoCookie());
+    }
+
     // Whatever the Slider is handed must still be told apart from a video, so an unnamed or unknown file answers rather than breaking
     public function testAnUnknownExtensionFallsBackOnABinaryMimeType(): void
     {

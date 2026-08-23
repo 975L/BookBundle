@@ -2,7 +2,15 @@
 {# Same opening as a book's, the serie's own logo standing where a book shows the serie it comes from. Carries the page's only h1 - serie/display.html.twig leaves the layout's title block empty #}
 {% set sections = sections|default([]) %}
 {% set anchors = sections|column('anchor') %}
-<header class="book-hero book-page__hero">
+{# The editor's pencil, added only when the caller passed a url (see book/display.html.twig) #}
+{# The serie opens on its background image when it carries one, like a book on its own: a real <img> and a veil above it, never a background-image - a nonce style-src covers no style attribute (see Book:Hero) #}
+{% set background = serie.backgrounds|first != false ? serie.backgrounds|first : '' %}
+<header class="book-hero book-page__hero{{ background ? ' book-hero--has-bg' : '' }}"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+    {% if background %}
+        <img class="book-hero__bg" src="{{ asset(background) }}" alt="" aria-hidden="true" fetchpriority="high">
+        <div class="book-hero__veil" aria-hidden="true"></div>
+    {% endif %}
+
     {% set coverSrc = serie.covers|first != false ? serie.covers|first : "bundles/c975lbook/images/no-cover.webp" %}
     <img class="book-hero__cover" src="{{ asset(coverSrc) }}" alt="{{ 'label.cover'|trans({}, 'book', serie.language) }} - {{ serie.title }}" width="240" fetchpriority="high">
 
@@ -18,9 +26,17 @@
             {% if serie.books|length %} - {{ serie.books|length }} {{ 'label.books'|trans({}, 'book', serie.language)|lower }}{% endif %}
         </p>
 
+        {# Same place as on a book and on a planche: under the line that qualifies what the page is about (see Book:Hero) #}
+        {% if config('book-rating')|to_bool %}
+            <twig:c975LUi:Rating:Rating ownerType="serie" ownerId="{{ serie.id }}"/>
+        {% endif %}
+
         <div class="book-hero__actions">
             {% if 'books' in anchors %}
                 <twig:c975LUi:Button:Button label="{{ 'label.serie_books'|trans({}, 'book', serie.language) }}" url="#books" inline="true"/>
+            {% endif %}
+            {% if 'strips' in anchors %}
+                <twig:c975LUi:Button:Button label="{{ 'label.strips'|trans({}, 'book', serie.language) }}" url="#strips" inline="true"/>
             {% endif %}
         </div>
     </div>

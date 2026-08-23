@@ -2,53 +2,117 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="en" datatype="plaintext" original="site_config.en.xlf">
         <body>
-            <trans-unit id="9aed734">
+            <trans-unit id="Q6bTgHt">
+                <source>description.book_catalog_title</source>
+                <target>The word the page listing the books goes by ("Our stories", "Our albums"). Left empty, it keeps the bundle’s own.</target>
+            </trans-unit>
+            <trans-unit id="0kXsg9a">
+                <source>description.book_confetti</source>
+                <target>Drops a burst of confetti when a book's page opens. Nothing fires for a visitor who asked for reduced motion.</target>
+            </trans-unit>
+            <trans-unit id="HC5m5kS">
+                <source>description.book_gplay_affiliate</source>
+                <target>Added to the books' Google Play addresses, so the sales coming from the site are credited to you. Left empty, an address opens exactly as it is stored</target>
+            </trans-unit>
+            <trans-unit id="DXvp5yF">
+                <source>description.book_rating</source>
+                <target>Shows the readers' score on the page of a book, of a serie and of a strip, and on every card of the book and strip listings. The icon and the scale are UiBundle's own settings.</target>
+            </trans-unit>
+            <trans-unit id="FVHF9Tx">
                 <source>description.book_route_book</source>
                 <target>First segment of a book's url, e.g. "book" for /book/my-title. Left empty, the page is not served at all.</target>
             </trans-unit>
-            <trans-unit id="35d55a2">
+            <trans-unit id="JLsjBEA">
+                <source>description.book_route_book_shortcut</source>
+                <target>Letter of the short link a book is shared with, e.g. "b" for /b3, the number being the book's own. Handy on a social network, where a short address is read and typed. Left empty, no such url is served.</target>
+            </trans-unit>
+            <trans-unit id="sKxO26f">
                 <source>description.book_route_books</source>
                 <target>First segment of the url listing the books, e.g. "books" for /books. The change applies straight away, but the former urls return a not-found page: set up a redirect if they are indexed. Left empty, the page is not served at all — which is what a site whose books are read under its own addresses sets here.</target>
             </trans-unit>
-            <trans-unit id="2aef3b4">
-                <source>description.book_route_serie</source>
-                <target>First segment of a serie's url, e.g. "serie" for /serie/my-serie. Left empty, the page is not served at all.</target>
-            </trans-unit>
-            <trans-unit id="f349e22">
+            <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
-                <target>First segment of the url listing the series, e.g. "series". Left empty, the page is not served at all.</target>
+                <target>First segment of the url listing the book series, e.g. "series", and of each serie's own page below it (/series/my-serie). Left empty, the pages are not served at all.</target>
             </trans-unit>
-            <trans-unit id="e0cab83">
+            <trans-unit id="WHOfVA_">
                 <source>description.book_route_strip</source>
                 <target>First segment of a strip's url, e.g. "strip" for /strip/my-strip. Left empty, the page is not served at all.</target>
             </trans-unit>
-            <trans-unit id="35eb84a">
-                <source>description.book_route_strips</source>
-                <target>First segment of the url listing the strips, e.g. "strips". Left empty, the page is not served at all.</target>
+            <trans-unit id="1VPI5Vc">
+                <source>description.book_route_strip_shortcut</source>
+                <target>Letter of the short link a strip is shared with, e.g. "s" for /s3, the number being the strip's own. Left empty, no such url is served.</target>
             </trans-unit>
-            <trans-unit id="ddf15c2">
+            <trans-unit id="dSr9fKF">
+                <source>description.book_route_strips</source>
+                <target>First segment of the url listing the strip series, e.g. "strips", and of each serie's own page below it (/strips/my-serie). A strip is read inside its serie, never here. Left empty, the pages are not served at all.</target>
+            </trans-unit>
+            <trans-unit id="50YtJwJ">
+                <source>description.book_strip_card</source>
+                <target>What a strip's card shows in the listing: "image" its drawing, "text" its summary, "both" of them.</target>
+            </trans-unit>
+            <trans-unit id="V3_94QE">
+                <source>description.book_strip_card_icon</source>
+                <target>The file of the mark set on a strip's card, e.g. "logo.webp". Empty, the card carries none.</target>
+            </trans-unit>
+            <trans-unit id="97tKwDe">
+                <source>description.book_strip_rating_icon</source>
+                <target>The icon a strip is rated with, when it has to differ from the rest of the site's. Empty, the strip follows the general setting.</target>
+            </trans-unit>
+            <trans-unit id="71hczgd">
+                <source>label.book_catalog_title</source>
+                <target>Catalog title</target>
+            </trans-unit>
+            <trans-unit id="YqtsJyE">
+                <source>label.book_confetti</source>
+                <target>Confetti on opening</target>
+            </trans-unit>
+            <trans-unit id="pasNlFf">
+                <source>label.book_gplay_affiliate</source>
+                <target>Google Play affiliate identifier</target>
+            </trans-unit>
+            <trans-unit id="ZRe0eUt">
+                <source>label.book_rating</source>
+                <target>Reader ratings</target>
+            </trans-unit>
+            <trans-unit id="WO0oclL">
                 <source>label.book_route_book</source>
                 <target>Book page url prefix</target>
             </trans-unit>
-            <trans-unit id="a158a45">
+            <trans-unit id="KF3jgYn">
+                <source>label.book_route_book_shortcut</source>
+                <target>Book short link letter</target>
+            </trans-unit>
+            <trans-unit id="MGsjb2q">
                 <source>label.book_route_books</source>
                 <target>Books list url prefix</target>
             </trans-unit>
-            <trans-unit id="645b0a0">
-                <source>label.book_route_serie</source>
-                <target>Serie page url prefix</target>
-            </trans-unit>
-            <trans-unit id="ae4e94c">
+            <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>
-                <target>Series list url prefix</target>
+                <target>Book series list url prefix</target>
             </trans-unit>
-            <trans-unit id="87765a4">
+            <trans-unit id="HBhNDc6">
                 <source>label.book_route_strip</source>
                 <target>Strip page url prefix</target>
             </trans-unit>
-            <trans-unit id="a286fa5">
+            <trans-unit id="3xRtgFn">
+                <source>label.book_route_strip_shortcut</source>
+                <target>Strip short link letter</target>
+            </trans-unit>
+            <trans-unit id="hLojFlN">
                 <source>label.book_route_strips</source>
-                <target>Strips list url prefix</target>
+                <target>Strip series list url prefix</target>
+            </trans-unit>
+            <trans-unit id="V.QanLq">
+                <source>label.book_strip_card</source>
+                <target>Strip card</target>
+            </trans-unit>
+            <trans-unit id="eTyg50T">
+                <source>label.book_strip_card_icon</source>
+                <target>Strip cards mark</target>
+            </trans-unit>
+            <trans-unit id="QBcKIBY">
+                <source>label.book_strip_rating_icon</source>
+                <target>Strip rating icon</target>
             </trans-unit>
         </body>
     </file>

@@ -1,11 +1,96 @@
 [
     {
+        "date": "2026-08-23",
+        "description": [
+            {
+                "en": "A book's page now carries the reviews its readers write about it, and the link to leave one, right under the blocks at its foot. It is off until \"Reader reviews\" is switched on in the general settings, and a review published now shows up on the very next visit",
+                "fr": "La page d'un livre porte désormais les avis que ses lecteurs écrivent sur lui, et le lien pour en laisser un, juste sous les blocs du bas de page. C'est désactivé tant que « Avis des lecteurs » n'est pas coché dans les réglages généraux, et un avis publié se voit dès la visite suivante",
+                "es": "La página de un libro lleva ahora las reseñas que sus lectores escriben sobre él, y el enlace para dejar una, justo debajo de los bloques del pie de página. Está desactivado mientras no se marque «Reseñas de los lectores» en los ajustes generales, y una reseña publicada se ve en la visita siguiente"
+            },
+            {
+                "en": "A book rewritten, revised or newly illustrated is published in one click, through the \"Publish a new version\" button of its screen: the book keeps its address, its ratings and its translations, and a twin book takes over what came out until now - which keeps its own page and is reached from the book replacing it",
+                "fr": "Un livre réécrit, revu ou nouvellement illustré se publie en un clic, par le bouton « Publier une nouvelle version » de son écran : le livre garde son adresse, ses notes et ses traductions, et un livre jumeau reprend ce qui est paru jusqu'ici — celui-ci garde sa page et se rejoint depuis le livre qui le remplace",
+                "es": "Un libro reescrito, revisado o recién ilustrado se publica en un clic, con el botón «Publier une nouvelle version» de su pantalla: el libro conserva su dirección, sus valoraciones y sus traducciones, y un libro gemelo recoge lo publicado hasta ahora - este conserva su página y se llega a él desde el libro que lo sustituye"
+            },
+            {
+                "en": "The files of a book - its pages, its recordings, its press and its promotional visuals - are entered once for the book and no longer edition by edition, each under the heading a reader finds it at. An edition now asks only for its ISBN, its size and its page count, and a file is moved from one list to another without being uploaded again",
+                "fr": "Les fichiers d'un livre — ses pages, ses enregistrements, sa presse et ses visuels de promotion — se saisissent une fois pour le livre et non plus format par format, chacun sous la rubrique où un lecteur le trouve. Un format ne demande plus que son ISBN, sa taille et sa pagination, et un fichier se déplace d'une liste à l'autre sans être téléversé une seconde fois",
+                "es": "Los archivos de un libro - sus páginas, sus grabaciones, su prensa y sus imágenes promocionales - se introducen una vez para el libro y ya no edición por edición, cada uno bajo la sección donde un lector lo encuentra. Una edición solo pide ya su ISBN, su tamaño y su paginación, y un archivo se mueve de una lista a otra sin volver a subirlo"
+            }
+        ]
+    },
+    {
+        "date": "2026-08-22",
+        "description": [
+            {
+                "en": "A book and a strip now answer to their number as well as to their slug: \"/livre/3\" and \"/livre/003-le-tracteur\" both lead to the book's page, so the numbered addresses a site served before keep working. Shorter still, the short link - one letter and the number, \"/b3\" - is the address to read out and type on a social network; the letter is yours to choose in the Catalogue settings",
+                "fr": "Un livre et une planche répondent désormais à leur numéro autant qu'à leur slug : « /livre/3 » et « /livre/003-le-tracteur » mènent tous deux à la page du livre, donc les adresses numérotées qu'un site servait auparavant continuent de fonctionner. Plus court encore, le lien court — une lettre et le numéro, « /b3 » — est l'adresse qu'on lit à voix haute et qu'on tape sur un réseau social ; la lettre se choisit dans les réglages Catalogue",
+                "es": "Un libro y una lámina responden ahora a su número tanto como a su slug: «/libro/3» y «/libro/003-el-tractor» llevan ambos a la página del libro, así que las direcciones numeradas que un sitio servía antes siguen funcionando. Más corto aún, el enlace corto - una letra y el número, «/b3» - es la dirección que se lee en voz alta y se escribe en una red social; la letra se elige en los ajustes Catálogo"
+            },
+            {
+                "en": "A serie is now read below the listing it appears on, sharing its address: \"/series/my-serie\" for the ones telling books, \"/strips/my-serie\" for the ones telling planches. A serie has but one address: asked under the other listing, it leads to its own",
+                "fr": "Une série se lit désormais sous la liste où elle figure, à la même adresse qu'elle : « /series/ma-serie » pour celles qui racontent des livres, « /strips/ma-serie » pour celles qui racontent des planches. Une série n'a qu'une adresse : demandée sous l'autre liste, elle mène à la sienne",
+                "es": "Una serie se lee ahora bajo la lista en la que figura, compartiendo su dirección: «/series/mi-serie» para las que cuentan libros, «/strips/mi-serie» para las que cuentan láminas. Una serie tiene una sola dirección: pedida bajo la otra lista, lleva a la suya"
+            },
+            {
+                "en": "The listing of planches now lists the series telling them rather than the planches themselves: a planche is read inside its serie, which lists them whole, so the same set is no longer served at two addresses. The listing of series and the listing of planches share none: a serie is on the one matching its kind",
+                "fr": "La liste des planches liste désormais les séries qui les racontent et non plus les planches elles-mêmes : une planche se lit dans sa série, qui les liste toutes, donc le même contenu n'est plus servi à deux adresses. La liste des séries et celle des planches ne partagent aucune série : chacune est sur celle qui correspond à son genre",
+                "es": "La lista de páginas de cómic ahora lista las series que las cuentan y ya no las páginas en sí: una página se lee dentro de su serie, que las lista todas, así que el mismo contenido ya no se sirve en dos direcciones. La lista de series y la de páginas no comparten ninguna serie: cada una está en la que corresponde a su tipo"
+            },
+            {
+                "en": "A book replaced by a newer version leaves the page of its serie and the count it shows, as it had already left the catalog: it keeps its page, and a reader reaches it through the search - which answers replaced versions again - or from the book replacing it, whose informations name it",
+                "fr": "Un livre remplacé par une version plus récente quitte la page de sa série et le compte qu'elle affiche, comme il avait déjà quitté le catalogue : il garde sa page, et un lecteur y arrive par la recherche — qui répond de nouveau les versions remplacées — ou par le livre qui le remplace, dont l'état civil le nomme",
+                "es": "Un libro sustituido por una versión más reciente sale de la página de su serie y del recuento que esta muestra, como ya había salido del catálogo: conserva su página, y un lector llega a ella por la búsqueda - que vuelve a responder las versiones sustituidas - o desde el libro que lo sustituye, cuyos datos lo nombran"
+            }
+        ]
+    },
+    {
         "date": "2026-08-20",
         "description": [
             {
-                "en": "A book is declined into versions, each edited on a screen of its own: its ISBN, its release date, its files and the platforms selling it - the pages of the illustrated version no longer sit next to those of the original",
-                "fr": "Un livre se décline en versions, chacune éditée sur son propre écran : son ISBN, sa date de parution, ses fichiers et les plateformes qui la vendent — les pages de la version illustrée ne côtoient plus celles de l'originelle",
-                "es": "Un libro se declina en versiones, cada una editada en su propia pantalla: su ISBN, su fecha de publicación, sus archivos y las plataformas que la venden - las páginas de la versión ilustrada ya no conviven con las de la original"
+                "en": "The whole catalog - the series, the books with their versions, their platforms and their files, the planches - travels in the \"Export sync (all)\" tile and comes back through the import button, so a site is carried from one environment to another in one archive - a few rows only leave through the \"Export selection\" action of each list",
+                "fr": "Tout le catalogue — les séries, les livres avec leurs versions, leurs plateformes et leurs fichiers, les planches — part dans la tuile « Exporter la synchro (tout) » et revient par le bouton d'import, de quoi porter un site d'un environnement à l'autre en une seule archive — quelques lignes seulement partent par l'action « Exporter la sélection » de chaque liste",
+                "es": "Todo el catálogo - las series, los libros con sus versiones, sus plataformas y sus archivos, las páginas de cómic - viaja en el mosaico «Exportar la sincronización (todo)» y vuelve por el botón de importación, para llevar un sitio de un entorno a otro en un solo archivo - solo unas pocas filas salen por la acción «Exportar la selección» de cada lista"
+            },
+            {
+                "en": "A book's page can now carry the ratings its readers give it, right under the author and the date. It is on out of the box, and the \"Reader ratings\" setting turns it off; the symbol and how many of them are offered are chosen once for the whole site, in the general settings",
+                "fr": "La page d'un livre peut désormais porter les notes que ses lecteurs lui donnent, juste sous l'auteur et la date. C'est actif d'emblée, et le réglage « Notes des lecteurs » le désactive ; le symbole et le nombre proposé se choisissent une fois pour tout le site, dans les réglages généraux",
+                "es": "La página de un libro puede ahora llevar las valoraciones que le dan sus lectores, justo debajo del autor y la fecha. Está activo de entrada, y el ajuste «Valoraciones de los lectores» lo desactiva; el símbolo y cuántos se ofrecen se eligen una sola vez para todo el sitio, en los ajustes generales"
+            },
+            {
+                "en": "Ausha joins the platforms a book is listened to on, its smartlink opening the episode in whichever podcast app the listener uses",
+                "fr": "Ausha rejoint les plateformes où l'on écoute un livre, son smartlink ouvrant l'épisode dans l'appli de podcast de l'auditeur",
+                "es": "Ausha se suma a las plataformas donde se escucha un libro, con su smartlink que abre el episodio en la app de podcast del oyente"
+            },
+            {
+                "en": "Deleting a serie, a book or a planche puts it in the trash instead of losing it: its page answers \"gone\" while it sits there, and one click brings it back - the url of one removed for good keeps saying so rather than turning into a plain dead end",
+                "fr": "Supprimer une série, un livre ou une planche les met à la corbeille au lieu de les perdre : leur page répond « supprimée » tant qu'ils y sont, et un clic les remet en ligne — l'adresse de ce qui est supprimé pour de bon continue de le dire au lieu de devenir un simple lien mort",
+                "es": "Eliminar una serie, un libro o una página los mueve a la papelera en lugar de perderlos: su página responde «eliminada» mientras están allí, y un clic los devuelve - la dirección de lo eliminado definitivamente lo sigue indicando en lugar de convertirse en un enlace muerto"
+            },
+            {
+                "en": "Every platform of a book - its shops, the apps it is listened to on, the sites it is watched on - is reached through a tile of its own size, on a translucent white plate with rounded corners, so a logo drawn for a light ground is read the same wherever the site is dark",
+                "fr": "Chaque plateforme d'un livre — ses boutiques, les applis où on l'écoute, les sites où on le regarde — se rejoint par un pavé de même taille, sur une plaque blanche translucide aux coins arrondis, pour qu'un logo dessiné pour un fond clair se lise aussi bien sur un site sombre",
+                "es": "Cada plataforma de un libro - sus tiendas, las apps donde se escucha, los sitios donde se ve - se alcanza mediante un recuadro del mismo tamaño, sobre una placa blanca translúcida con esquinas redondeadas, para que un logotipo dibujado para un fondo claro se lea igual en un sitio oscuro"
+            },
+            {
+                "en": "A book, a serie or a planche is duplicated in one click from its list or its own screen, with its files, its versions, its platforms and its blocks - the copy opens straight away to be reworked",
+                "fr": "Un livre, une série ou une planche se duplique en un clic depuis sa liste ou son écran, avec ses fichiers, ses versions, ses plateformes et ses blocks — la copie s'ouvre aussitôt pour être retravaillée",
+                "es": "Un libro, una serie o una página de cómic se duplica con un clic desde su lista o su pantalla, con sus archivos, sus versiones, sus plataformas y sus bloques - la copia se abre enseguida para retocarla"
+            },
+            {
+                "en": "The summary of a book, a serie or a planche is rephrased by Donovan, the button sitting under the editor like everywhere else in the back office",
+                "fr": "Le résumé d'un livre, d'une série ou d'une planche se fait reformuler par Donovan, le bouton se trouvant sous l'éditeur comme partout ailleurs dans le back-office",
+                "es": "El resumen de un libro, una serie o una página de cómic lo reformula Donovan, con el botón bajo el editor como en todo el back-office"
+            },
+            {
+                "en": "From the public page of a book, a serie or a planche, a pencil hovers each section and opens the back-office straight on the field it is written in",
+                "fr": "Depuis la page publique d'un livre, d'une série ou d'une planche, un crayon survole chaque section et ouvre le back-office directement sur le champ où elle s'écrit",
+                "es": "Desde la página pública de un libro, una serie o una página de cómic, un lápiz sobrevuela cada sección y abre el back-office directamente en el campo donde se escribe"
+            },
+            {
+                "en": "A book is declined into versions, each unfolded in a panel of its own: its ISBN, its release date, its files and the platforms selling it - the pages of the illustrated version no longer sit next to those of the original",
+                "fr": "Un livre se décline en versions, chacune dépliée dans son propre panneau : son ISBN, sa date de parution, ses fichiers et les plateformes qui la vendent — les pages de la version illustrée ne côtoient plus celles de l'originelle",
+                "es": "Un libro se declina en versiones, cada una desplegada en su propio panel: su ISBN, su fecha de publicación, sus archivos y las plataformas que la venden - las páginas de la versión ilustrada ya no conviven con las de la original"
             },
             {
                 "en": "The page of a book, a serie and a planche is laid out mobile first: a cover never cropped, a sticky summary of anchors becoming a column on a wide screen, and on a planche the next one always within a thumb's reach",

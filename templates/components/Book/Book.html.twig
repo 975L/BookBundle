@@ -1,5 +1,7 @@
-<article class="text-center width-150" lang="{{ book.language }}">
-    {% set imageSrc = book.medias|first != false ? book.medias|first : "bundles/c975lbook/images/no-cover.webp" %}
+{# "editable": the pencil leading to the book's own edit screen, drawn by UiBundle's overlay over whatever carries the url. Only a listing rendered outside the block cache asks for it, that cache being shared by every visitor - the same condition the score goes by #}
+{% set editUrl = editable|default(false) and is_granted(config('site-role-editor')) ? book_edit_url(book) : null %}
+<article class="text-center width-150" lang="{{ book.language }}"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+    {% set imageSrc = book_cover(book) ?: "bundles/c975lbook/images/no-cover.webp" %}
     <twig:c975LUi:Image:Link src="{{ asset(imageSrc) }}" url="{{ path('book_display', {'slug': book.slug}) }}" class="img-thumbnail box-shadow" width="150"/>
     <h3>{{ book.title|replace({' - ': '<br>'})|raw }}</h3>
     {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
@@ -14,4 +16,9 @@
             {{ 'label.published_on'|trans({}, 'messages', book.language) }} {{ book.published|date('d/m/Y') }}
         {% endif %}
     </p>
+
+    {# The score the catalog shows and lets the visitor set, without how many voted - a card is read at a glance, the book's own page is where the tally is spelled out (see Book:Hero) #}
+    {% if rating|default(false) %}
+        <twig:c975LUi:Rating:Rating ownerType="book" ownerId="{{ book.id }}" compact="true" :aggregate="aggregate|default(null)"/>
+    {% endif %}
 </article>

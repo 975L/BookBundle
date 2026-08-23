@@ -10,6 +10,8 @@
 
 namespace c975L\BookBundle\Tests\Service;
 
+use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Enum\SerieKind;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Tests\BookPublicUrlGeneratorTestTrait;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
@@ -35,8 +37,21 @@ class BookPublicUrlResolverTest extends TestCase
 
         $this->assertSame('https://example.com/livres', $resolver->resolve('book_index'));
         $this->assertSame('https://example.com/livre/tome-1', $resolver->resolve('book_display', ['slug' => 'tome-1']));
-        $this->assertSame('https://example.com/serie/la-guilde', $resolver->resolve('serie_display', ['slug' => 'la-guilde']));
+        $this->assertSame('https://example.com/series/la-guilde', $resolver->resolve('serie_display', ['slug' => 'la-guilde']));
         $this->assertSame('https://example.com/strip/planche-1', $resolver->resolve('strip_display', ['slug' => 'planche-1']));
+    }
+
+    // A serie sits below the index listing it, sharing its very segment - which of the two being what its kind says (see SerieKind), a serie declaring none being filed by what it holds
+    public function testASerieIsReadBelowTheIndexListingIt(): void
+    {
+        $resolver = $this->createResolver();
+        $books = new Serie()->setSlug('la-guilde')->setKind(SerieKind::Book->value);
+        $strips = new Serie()->setSlug('repliques')->setKind(SerieKind::Strip->value);
+
+        $this->assertSame('serie_display', BookPublicUrlResolver::serieRoute($books));
+        $this->assertSame('strip_serie_display', BookPublicUrlResolver::serieRoute($strips));
+        $this->assertSame('https://example.com/series/la-guilde', $resolver->resolve(BookPublicUrlResolver::serieRoute($books), ['slug' => 'la-guilde']));
+        $this->assertSame('https://example.com/strips/repliques', $resolver->resolve(BookPublicUrlResolver::serieRoute($strips), ['slug' => 'repliques']));
     }
 
     // A site serving its catalog in its own words is followed there, the prefix being read at each call rather than baked in

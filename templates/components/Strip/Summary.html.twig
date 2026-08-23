@@ -1,5 +1,5 @@
 {% if summary is not null %}
-    <div class="text text-left">
+    <div class="text text-left"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
         {{ summary|raw }}
     </div>
 {% endif %}

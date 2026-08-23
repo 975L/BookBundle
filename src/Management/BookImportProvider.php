@@ -1,0 +1,225 @@
+<?php
+
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace c975L\BookBundle\Management;
+
+use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookLink;
+use c975L\BookBundle\Entity\BookMarketing;
+use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\BookPresse;
+use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Repository\BookRepository;
+use c975L\ConfigBundle\Management\ImportProviderInterface;
+use c975L\UiBundle\Management\BlockDataImporter;
+use Doctrine\ORM\EntityManagerInterface;
+
+// Imports a "book_book" content export (see BookExportProvider) - matches by slug, which is what a book answers at, and never by the exported id
+// Every child row is written over rather than dropped and built anew, each on the one natural key it has: a version by its kind, a platform by the version and the kind it sells for, a file by the name it is served under. That is what keeps a re-import from rewriting the whole catalog on disk, and what a version's files depend on - dropping a version takes them with it (see BookEdition::$medias)
+class BookImportProvider implements ImportProviderInterface
+{
+    public const KIND = 'book_book';
+
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly BookRepository $bookRepository,
+        private readonly BlockDataImporter $blockDataImporter,
+        private readonly MediaArchiver $mediaArchiver,
+        private readonly SerieResolver $serieResolver,
+    ) {
+    }
+
+    public function supportsImport(string $kind): bool
+    {
+        return self::KIND === $kind;
+    }
+
+    public function import(array $items, ?string $filesDir = null): array
+    {
+        $created = 0;
+        $updated = 0;
+        $written = [];
+        $series = [];
+        // The books written by this very run, keyed by slug: what the translations are resolved against below, findOneBy() not seeing a book persisted but not yet flushed
+        $books = [];
+
+        foreach ($items as $item) {
+            $book = $this->bookRepository->findOneBy(['slug' => $item['slug']]);
+            $isNew = null === $book;
+            $book ??= new Book();
+
+            $this->fillBook($book, $item, $series);
+            $this->replaceBlocks($book, $item['blocks'] ?? [], $filesDir);
+
+            $this->syncEditions($book, $item['editions'] ?? []);
+            $written = [...$written, ...$this->syncMedias($book, $item)];
+            $this->syncLinks($book, $item['links'] ?? []);
+
+            $this->em->persist($book);
+            $books[$item['slug']] = $book;
+            $isNew ? $created++ : $updated++;
+        }
+
+        // A second pass, the translated book being a book like any other: the archive lists the two in whichever order, and the one named may not have been read yet when the row naming it was
+        foreach ($items as $item) {
+            $this->linkTranslation($books[$item['slug']], $item['translationBook'] ?? null, $books);
+            $this->linkNewerVersion($books[$item['slug']], $item['newerVersion'] ?? null, $books);
+        }
+
+        $this->em->flush();
+
+        $this->mediaArchiver->restoreFiles($written, $filesDir);
+
+        return ['created' => $created, 'updated' => $updated];
+    }
+
+    // @param array<string, \c975L\BookBundle\Entity\Serie> $series
+    private function fillBook(Book $book, array $item, array &$series): void
+    {
+        $book
+            ->setSlug($item['slug'])
+            ->setTitle($item['title'])
+            ->setAuthor($item['author'] ?? '')
+            ->setAuthorWebsite($item['authorWebsite'] ?? null)
+            ->setIllustrator($item['illustrator'] ?? null)
+            ->setIllustratorWebsite($item['illustratorWebsite'] ?? null)
+            ->setSummary($item['summary'] ?? '')
+            ->setPublished(isset($item['published']) ? new \DateTime($item['published']) : null)
+            // Both columns are required, so an archive predating them dates the book from the import rather than leaving it unwritten
+            ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
+            ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime())
+            ->setAge($item['age'] ?? null)
+            ->setNumber($item['number'] ?? null)
+            ->setLanguage($item['language'] ?? null)
+            ->setCrowdfunding($item['crowdfunding'] ?? null)
+            ->setCrowdfundingEndDate(isset($item['crowdfundingEndDate']) ? new \DateTime($item['crowdfundingEndDate']) : null)
+            ->setData($item['data'] ?? null)
+            // Optional like the rest, an archive predating the trash importing as a book that is not in it - which is what such an archive describes
+            ->setIsDeleted($item['isDeleted'] ?? false)
+            ->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
+    }
+
+    // Existing Blocks have no natural key to match the imported ones against, so the whole collection is replaced - BlockRemovalListener removes the orphaned rows (and their Medias) on flush, same as PageImportProvider
+    private function replaceBlocks(Book $book, array $blocksData, ?string $filesDir): void
+    {
+        foreach ($book->getBlocks()->toArray() as $existingBlock) {
+            $book->removeBlock($existingBlock);
+        }
+
+        foreach ($this->blockDataImporter->buildBlocks($blocksData, $filesDir) as $block) {
+            $book->addBlock($block);
+        }
+    }
+
+    // The versions written over on their kind, which is what names one within its book. A version the archive no longer holds is dropped last, after the files have been re-bound: dropping it takes whatever still hangs off it (see BookEdition::$medias)
+    // @return array<string, BookEdition> keyed by kind, for the files and the platforms to name theirs
+    private function syncEditions(Book $book, array $editionsData): array
+    {
+        $existing = [];
+        foreach ($book->getEditions() as $edition) {
+            $existing[(string) $edition->getKind()] = $edition;
+        }
+
+        $editions = [];
+        foreach ($editionsData as $editionData) {
+            $kind = (string) ($editionData['kind'] ?? '');
+            $edition = $existing[$kind] ?? new BookEdition();
+            $edition
+                ->setKind($kind)
+                ->setIsbn($editionData['isbn'] ?? null)
+                ->setPages($editionData['pages'] ?? null)
+                ->setFormat($editionData['format'] ?? null)
+                ->setPosition($editionData['position'] ?? 0);
+            $this->em->persist($edition);
+            $book->addEdition($edition);
+            $editions[$kind] = $edition;
+        }
+
+        foreach ($existing as $kind => $edition) {
+            if (!isset($editions[$kind])) {
+                $book->removeEdition($edition);
+            }
+        }
+
+        return $editions;
+    }
+
+    // The book's five families of files, each written over on the name it is served under (see MediaArchiver::sync()) - a version's own files then bound back to it by its kind
+    // @param array<string, BookEdition> $editions
+    // @return list<array{0: \c975L\BookBundle\Entity\Media, 1: array}>
+    private function syncMedias(Book $book, array $item): array
+    {
+        $written = $this->mediaArchiver->sync(
+            $book->getMedias(),
+            $item['medias'] ?? [],
+            static fn (): BookMedia => new BookMedia(),
+            $book->addMedia(...),
+            $book->removeMedia(...),
+        );
+
+        return [
+            ...$written,
+            ...$this->mediaArchiver->sync($book->getVideos(), $item['videos'] ?? [], static fn (): BookVideo => new BookVideo(), $book->addVideo(...), $book->removeVideo(...)),
+            ...$this->mediaArchiver->sync($book->getPresses(), $item['presses'] ?? [], static fn (): BookPresse => new BookPresse(), $book->addPresse(...), $book->removePresse(...)),
+            ...$this->mediaArchiver->sync($book->getMarketings(), $item['marketings'] ?? [], static fn (): BookMarketing => new BookMarketing(), $book->addMarketing(...), $book->removeMarketing(...)),
+        ];
+    }
+
+    // The platforms overwritten on their kind, a book having one address per platform - what the archive no longer holds is detached, orphanRemoval deleting the row on flush
+    private function syncLinks(Book $book, array $linksData): void
+    {
+        $existing = [];
+        foreach ($book->getLinks() as $link) {
+            $existing[(string) $link->getKind()] = $link;
+        }
+
+        $kept = [];
+        foreach ($linksData as $linkData) {
+            $key = (string) ($linkData['kind'] ?? '');
+            $link = $existing[$key] ?? new BookLink();
+            $link
+                ->setKind($linkData['kind'] ?? null)
+                ->setUrl($linkData['url'] ?? null)
+                ->setPosition($linkData['position'] ?? 0);
+            $this->em->persist($link);
+            $book->addLink($link);
+            $kept[$key] = true;
+        }
+
+        foreach ($existing as $key => $link) {
+            if (!isset($kept[$key])) {
+                $book->removeLink($link);
+            }
+        }
+    }
+
+    // The book this one translates, taken from what the run has just written first and from the site's own catalog otherwise - null for an archive naming a book neither holds, which is what a partial selection carries
+    // @param array<string, Book> $books
+    private function linkTranslation(Book $book, ?string $slug, array $books): void
+    {
+        $book->setTranslationBook(
+            null === $slug || $slug === $book->getSlug()
+                ? null
+                : $books[$slug] ?? $this->bookRepository->findOneBy(['slug' => $slug])
+        );
+    }
+
+    // Resolved in the same second pass and against the same map: the book that replaces this one is a book of the archive like any other, listed before or after it
+    // @param array<string, Book> $books
+    private function linkNewerVersion(Book $book, ?string $slug, array $books): void
+    {
+        $book->setNewerVersion(
+            null === $slug || $slug === $book->getSlug()
+                ? null
+                : $books[$slug] ?? $this->bookRepository->findOneBy(['slug' => $slug])
+        );
+    }
+}

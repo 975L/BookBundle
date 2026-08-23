@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle;
 
+use c975L\BookBundle\Contract\BookCatalogProviderInterface;
 use c975L\BookBundle\Contract\BookCustomizationProviderInterface;
 use c975L\ConfigBundle\DependencyInjection\Compiler\TaggedInterfacePass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -41,6 +42,7 @@ class c975LBookBundle extends AbstractBundle
         parent::build($container);
 
         $container->addCompilerPass(new TaggedInterfacePass(BookCustomizationProviderInterface::class, 'book.customization_provider'));
+        $container->addCompilerPass(new TaggedInterfacePass(BookCatalogProviderInterface::class, 'book.catalog_provider'));
     }
 
     public function getPath(): string

@@ -4,20 +4,17 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Repository\BookRepository;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\InputBag;
 
 class BookService implements BookServiceInterface
 {
     public function __construct(
         private readonly PaginatorInterface $paginator,
         private readonly BookRepository $bookRepository,
+        private readonly BookCatalogRegistry $catalogRegistry,
     ) {
-    }
-
-    // Finds by slug
-    public function findOneBySlug(string $slug): ?Book
-    {
-        return $this->bookRepository->findOneBySlug($slug);
     }
 
     // Finds all
@@ -26,20 +23,50 @@ class BookService implements BookServiceInterface
         return $this->bookRepository->findAll();
     }
 
-    // Gets the stories paginated
-    public function findAllPaginated($query)
+    // The site's own list when it declares one, the bundle's otherwise: a catalog published in editions does not say "out" the way a book with a single date does (see BookCatalogProviderInterface)
+    public function findAllPaginated(InputBag $query): PaginationInterface
     {
         return $this->paginator->paginate(
-            $this->findAllPublished(),
+            $this->catalogRegistry->getBooks() ?? $this->findAllPublished(),
             (int) $query->get('p') > 0 ? (int) $query->get('p') : 1,
             10
         );
     }
 
     // Finds all published
-    public function findAllPublished(?int $number = null): array
+    public function findAllPublished(?int $number = null, ?string $language = null): array
     {
-        return $this->bookRepository->findAllPublished($number);
+        return $this->bookRepository->findAllPublished($number, $language);
+    }
+
+    // Every book whose page answers, the ones a newer version replaces included
+    public function findAllOnline(): array
+    {
+        return $this->bookRepository->findAllOnline();
+    }
+
+    // How many books are out, without building a single one of them
+    public function countPublished(?string $language = null): int
+    {
+        return $this->bookRepository->countPublished($language);
+    }
+
+    // The languages the catalog is written in
+    public function findLanguages(): array
+    {
+        return $this->bookRepository->findLanguages();
+    }
+
+    // The book carrying that slug, which the page of a book asks for before falling back on the number (see BookController::display())
+    public function findOneBySlug(string $slug): ?Book
+    {
+        return $this->bookRepository->findOneBy(['slug' => $slug]);
+    }
+
+    // The book a number leads to, the one the catalog still lists
+    public function findOneByNumber(int $number): ?Book
+    {
+        return $this->bookRepository->findOneByNumber($number);
     }
 
     // Finds all to be published
@@ -49,8 +76,8 @@ class BookService implements BookServiceInterface
     }
 
     // Searches for book
-    public function search(string $query)
+    public function search(string $query, ?int $serieId = null): array
     {
-        return $this->bookRepository->search($query);
+        return $this->bookRepository->search($query, $serieId);
     }
 }

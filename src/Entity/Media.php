@@ -33,6 +33,9 @@ abstract class Media implements \Stringable
         'jpg' => 'image/jpeg',
         'mp3' => 'audio/mpeg',
         'mp4' => 'video/mp4',
+        // A recording can also come in ogg: without it the "Listen" card did not see the file, its type falling back on "application/octet-stream"
+        'oga' => 'audio/ogg',
+        'ogg' => 'audio/ogg',
         'pdf' => 'application/pdf',
         'png' => 'image/png',
         'svg' => 'image/svg+xml',
@@ -60,8 +63,13 @@ abstract class Media implements \Stringable
     #[ORM\Column(nullable: true)]
     private ?int $size = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    // The player's whole address and no longer the id alone: it is what an editor pastes, and what the rendering hands as is to the iframe (see BookVideoNoCookieListener, which brings it back to its platform's canonical form)
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $youtubeUrl = null;
+
+    // Ticked, the pasted address is rewritten into a privacy-respecting one on save - youtube-nocookie.com for YouTube, "dnt=1" for Vimeo (see c975L\UiBundle\Video\VideoPlatform). Ticked by default: it is the only origin the site's security policy allows, and a "watch?v=" address does not embed
+    #[ORM\Column(options: ['default' => true])]
+    private bool $noCookie = true;
 
     protected ?File $file = null;
 
@@ -252,6 +260,18 @@ abstract class Media implements \Stringable
         return false;
     }
 
+    public function isNoCookie(): bool
+    {
+        return $this->noCookie;
+    }
+
+    public function setNoCookie(bool $noCookie): static
+    {
+        $this->noCookie = $noCookie;
+
+        return $this;
+    }
+
     public function getYoutubeUrl(): ?string
     {
         return $this->youtubeUrl;
@@ -261,9 +281,9 @@ abstract class Media implements \Stringable
     {
         $this->youtubeUrl = $youtubeUrl;
 
+        // No name is written: it is unique across the whole book_media table, and the same video may legitimately appear on two rows
         if (!empty($youtubeUrl)) {
             $this->setUpdatedAt(new \DateTimeImmutable());
-            $this->setName('YouTube (' . $youtubeUrl . ')');
         }
 
         return $this;

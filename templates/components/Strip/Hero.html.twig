@@ -1,11 +1,14 @@
 {# <twig:c975LBook:Strip:Hero strip="{{ strip }}" /> #}
 {# A planche opens on its own title rather than on a cover: the picture below is the planche itself, and showing it twice would push it below the fold. Carries the page's only h1 - strip/display.html.twig leaves the layout's title block empty #}
 {% set language = strip.serie ? strip.serie.language : null %}
-<header class="book-hero book-page__hero">
+{# The editor's pencil, added only when the caller passed a url (see book/display.html.twig) #}
+<header class="book-hero book-page__hero"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
     <div class="book-hero__body">
+{# The serie is named in every case, but it is a link only when the site serves its page: the path is null otherwise (see BookUrlExtension) #}
         {% if strip.serie %}
+            {% set seriePath = serie_path(strip.serie) %}
             <p class="book-hero__eyebrow">
-                <a href="{{ path('serie_display', {'slug': strip.serie.slug}) }}">{{ strip.serie.title }}</a>{% if strip.number %} - {{ 'label.number'|trans({}, 'book', language) }} {{ strip.number }}{% endif %}
+                {% if seriePath %}<a href="{{ seriePath }}">{{ strip.serie.title }}</a>{% else %}{{ strip.serie.title }}{% endif %}{% if strip.number %} - {{ 'label.number'|trans({}, 'book', language) }} {{ strip.number }}{% endif %}
             </p>
         {% endif %}
 
@@ -13,6 +16,12 @@
 
         {% if strip.published %}
             <p class="book-hero__meta">{{ 'label.published_on'|trans({}, 'book', language) }} {{ strip.published|date('d/m/Y') }}</p>
+        {% endif %}
+
+        {# Under the line saying when it came out, where a book carries its own (see Book:Hero). Off unless the site turned it on, one setting for the three families this bundle serves #}
+        {# A planche can be rated with an icon of its own, a serie of gags calling for something else than the stars a novel is given - left empty, and it is the site's own icon that is used #}
+        {% if config('book-rating')|to_bool %}
+            <twig:c975LUi:Rating:Rating ownerType="strip" ownerId="{{ strip.id }}" icon="{{ config('book-strip-rating-icon') }}"/>
         {% endif %}
     </div>
 </header>

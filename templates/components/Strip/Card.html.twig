@@ -1,15 +1,43 @@
-<article>
-    {% set firstMedia = card.medias.first %}
-    {% if firstMedia %}
-        <twig:c975LUi:Image:Link
-            src="{{ asset(firstMedia.name) }}"
-            url="{{ path('strip_display', {'slug': card.slug}) }}"
-            class="img-thumbnail box-shadow img-150"
-            alt="{{ card.title }}"
-        />
+{# UiBundle's own card, so a site restyling its cards restyles these along with them - only what a planche adds to one is written here #}
+{# What the card holds is the site's call, not this bundle's: a planche is read for its drawing where a reply is read for what was said (setting "book-strip-card", one of "image", "text" or "both") #}
+{# The three of them are given on the planche's own page, where the card is shown as it is but neither linked to the page it is on nor titled below the page's own heading #}
+{# "rating": the score the listing shows and lets the visitor set, without how many voted - a card is read at a glance, the planche's own page is where the tally is spelled out (see Strip:Hero). "aggregate" is the tally the listing already read for the whole page (see Strip:Cards) #}
+{# "editable": the pencil leading to the planche's own edit screen, drawn by UiBundle's overlay over whatever carries the url. Only a listing rendered outside the block cache asks for it, that cache being shared by every visitor (see Strip:Cards, and ShopBundle's own card for the same reason) #}
+{% props card, display = null, level = 'h2', linked = true, rating = false, aggregate = null, editable = false %}
+{% set display = display ?? config('book-strip-card')|default('image') %}
+{# The mark a text card opens on, named by the site (setting "book-strip-card-icon") - a drawing is its own mark, so it is only worn where there is none #}
+{# "mark" and not "icon": the nested content is rendered in the card's own context, where "icon" is one of its props (see UiBundle's Card.html.twig) and would shadow this one #}
+{% set mark = config('book-strip-card-icon')|default('') %}
+{% set firstMedia = card.medias.first %}
+{% set url = path('strip_display', {'slug': card.slug}) %}
+{% set editUrl = editable and is_granted(config('site-role-editor')) ? strip_edit_url(card) : null %}
+{# Renamed for the same reason as "mark" above, and it was found the same way: the nested content is rendered in the card's own context, where "rating" is one of its props (the read-only row of its "stat" variant) and shadowed this one, silently leaving every card of the listing without its icons #}
+{% set showRating = rating %}
+{% set ratingTally = aggregate %}
+
+{# The url goes on a wrapper and not on the card itself: a component's tag takes attributes by name, and one written only when there is something to write cannot be expressed there. The wrapper is transparent to the layout (UiBundle's ".block-editable" is display:contents), and its overlay walks down to the card to measure where to draw the pencil #}
+{% if editUrl %}<div class="block-editable" data-block-edit-url="{{ editUrl }}">{% endif %}
+<twig:c975LUi:Card:Card
+    id="strip-{{ card.slug }}"
+    title="{{ card.title }}"
+    titleUrl="{{ linked ? url : '' }}"
+    level="{{ level }}"
+    class="strip-card strip-card--{{ display }}{{ linked ? '' : ' strip-card--full' }}"
+    titleAside="{{ card.published is not null ? card.published|date("d/m/Y") : '' }}"
+    src="{{ firstMedia and 'text' != display ? asset(firstMedia.name) : '' }}"
+    alt="{{ card.title }}"
+>
+    {# An Image and not an Icon: an icon is a glyph, repainted to the color of what it sits on (UiBundle's "--icon-filter" turns it white in dark mode) - the mark a site names here is a picture of its own, shown as it is #}
+    {% if mark and 'image' != display %}
+        <twig:c975LUi:Image:Image src="{{ mark }}" alt="" class="strip-card__mark"/>
     {% endif %}
-    <h2>{{ card.title }}</h2>
-    {% if card.published is not null %}
-        <p class="text-center">{{ card.published|date("d/m/Y") }}</p>
+    {# Bounded to a few lines so every card of a row keeps the same height, whatever the length of what it summarizes - the whole of it is read on the planche's own page, where the same card is shown uncut (see "strip-card--full") #}
+    {% if card.summary is not null and 'image' != display %}
+        <div class="strip-card__text">{{ card.summary|raw }}</div>
     {% endif %}
-</article>
+    {# Under everything else, so the card keeps reading as a drawing first: the icons are the only thing here the visitor acts on rather than follows #}
+    {% if showRating %}
+        <twig:c975LUi:Rating:Rating ownerType="strip" ownerId="{{ card.id }}" icon="{{ config('book-strip-rating-icon') }}" compact="true" :aggregate="ratingTally"/>
+    {% endif %}
+</twig:c975LUi:Card:Card>
+{% if editUrl %}</div>{% endif %}

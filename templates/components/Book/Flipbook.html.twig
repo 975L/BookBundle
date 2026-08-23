@@ -1,0 +1,10 @@
+{# <twig:c975LBook:Book:Flipbook book="{{ book }}" [editUrl=""] /> #}
+{# The video turning the book's pages, laid on the page without a frame: it shows the book, it is no section to be announced #}
+{% props book, editUrl = "" %}
+{% if book.flipbooks|length %}
+    <div class="book-page__flipbook"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+        {% for flipbook in book.flipbooks %}
+            <twig:c975LUi:Video:Video src="{{ vich_uploader_asset(flipbook) }}" type="{{ flipbook.mimeType }}" caption="false" autoplay="true" muted="true" loop="true"/>
+        {% endfor %}
+    </div>
+{% endif %}

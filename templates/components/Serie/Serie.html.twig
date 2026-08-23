@@ -1,6 +1,8 @@
-<article class="width-150">
+{# "editable": the pencil leading to the serie's screen, drawn by UiBundle's overlay above what carries the url - the same condition as a book's card, a listing rendered outside the blocks cache #}
+{% set editUrl = editable|default(false) and is_granted(config('site-role-editor')) ? serie_edit_url(serie) : null %}
+<article class="width-150"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
     {% set imageSrc = serie.covers|first != false ? serie.covers|first : "bundles/c975lbook/images/no-cover.webp" %}
-    <twig:c975LUi:Image:Link src="{{ asset(imageSrc) }}" url="{{ path('serie_display', {'slug': serie.slug}) }}" class="img-thumbnail box-shadow" width="150"/>
+    <twig:c975LUi:Image:Link src="{{ asset(imageSrc) }}" url="{{ serie_path(serie) }}" class="img-thumbnail box-shadow" width="150"/>
     <h3>{{ serie.title }}</h3>
     {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
     <p class="text text-center small bold">({{ languageLabels[serie.language]|default(serie.language) }})</p>

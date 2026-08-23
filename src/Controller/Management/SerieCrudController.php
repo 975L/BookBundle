@@ -2,24 +2,28 @@
 
 namespace c975L\BookBundle\Controller\Management;
 
+use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Enum\SerieKind;
 use c975L\BookBundle\Form\SerieMediaType;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
+use c975L\BookBundle\Management\SerieExportProvider;
+use c975L\BookBundle\Management\SerieImportProvider;
+use c975L\BookBundle\Service\BookDuplicator;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
-use c975L\ConfigBundle\Management\EasyAdminActionHelper;
+use c975L\BookBundle\Service\BookTrashManager;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use c975L\ConfigBundle\Service\Export\ExportFormat;
+use c975L\ConfigBundle\Service\Export\ContentExporter;
 use c975L\ConfigBundle\Service\Export\TableExporter;
 use c975L\UiBundle\Form\BlockType;
+use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\ActionGroup;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -28,22 +32,50 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
-use Symfony\Component\HttpFoundation\Response;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
 
 class SerieCrudController extends AbstractCrudController
 {
+    use TrashableCrudTrait;
+
+    // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
+    public const string RESTORE_CSRF_TOKEN = 'book_serie_restore';
+    public const string DELETE_PERMANENTLY_CSRF_TOKEN = 'book_serie_delete_permanently';
+    public const string DUPLICATE_CSRF_TOKEN = 'book_serie_duplicate';
+
+    // What the shared screen of the trash, of the exports and of the copy needs to name this very family (see Trait\TrashableCrudTrait)
+    private const string DISPLAY_ROUTE = 'serie_display';
+    private const string EXPORT_TABLE = 'book_serie';
+    private const string EXPORT_KIND = SerieImportProvider::KIND;
+    private const string TRASH_BACK_LABEL = 'label.series';
+    private const string TRASH_BACK_ICON = 'fas fa-layer-group';
+    private const string FLASH_DUPLICATED = 'flash.serie_duplicated';
+    private const string FLASH_RESTORED = 'flash.serie_restored';
+    private const string FLASH_DELETED_PERMANENTLY = 'flash.serie_deleted_permanently';
+
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
+        private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly BlockMoveRowAttrBuilder $blockMoveRowAttrBuilder,
+        private readonly BookDuplicator $duplicator,
+        private readonly SerieExportProvider $serieExportProvider,
         private readonly BookPublicUrlResolver $publicUrlResolver,
+        private readonly BookTrashManager $trashManager,
         private readonly ConfigServiceInterface $configService,
         private readonly Connection $connection,
+        private readonly ContentExporter $contentExporter,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly RequestStack $requestStack,
         private readonly TableExporter $tableExporter,
         private readonly TranslatorInterface $translator,
     ) {
@@ -57,25 +89,34 @@ class SerieCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $entity = $this->adminContextProvider->getContext()?->getEntity()?->getInstance();
+        // The serie being edited, null on the creation screen: its images say which slots are already taken
+        $serie = $entity instanceof Serie ? $entity : null;
 
         return [
             IntegerField::new('id')
                 ->setFormTypeOption('disabled', 'disabled'),
+            // The order of the series, laid by dragging them on this screen: it is the column the handle hooks onto (see serie_crud_index.html.twig and UiBundle's assets/js/ea-index-sort.js)
+            IntegerField::new('position')
+                ->setLabel(t('label.position', [], 'book'))
+                ->setFormTypeOption('attr', ['class' => 'ui-sort-position']),
             TextField::new('title')
                 ->setLabel(t('label.title', [], 'book')),
             SlugField::new('slug')
                 ->hideOnIndex()
                 ->setLabel(t('label.slug', [], 'book'))
                 ->setTargetFieldName('title'),
+            // What the serie tells, which decides the index listing it (see SerieKind and StripController::index())
             ChoiceField::new('kind')
                 ->setLabel(t('label.kind', [], 'book'))
                 ->setTranslatableChoices([
-                    'book' => t('label.book', [], 'book'),
-                    'strip' => t('label.strip', [], 'book'),
+                    SerieKind::Book->value => t(SerieKind::Book->label(), [], 'book'),
+                    SerieKind::Strip->value => t(SerieKind::Strip->label(), [], 'book'),
                 ]),
-            TextEditorField::new('summary')
+            // TrixEditorType rather than EasyAdmin's own TextEditorField: its widget is where the rephrase button is wired, EasyAdmin's own rendering through a different form block
+            TextareaField::new('summary')
                 ->hideOnIndex()
-                ->setLabel(t('label.summary', [], 'book')),
+                ->setLabel(t('label.summary', [], 'book'))
+                ->setFormType(TrixEditorType::class),
             ChoiceField::new('language')
                 ->setLabel(t('label.language', [], 'book'))
                 ->setTranslatableChoices([
@@ -107,14 +148,16 @@ class SerieCrudController extends AbstractCrudController
             // Media management
             FormField::addFieldset(t('label.cover', [], 'book'))
                 ->hideOnIndex(),
+            // The marker laid on the row is what BookGuidedProjectProvider's tour points at, a collection printing no field id of its own
             CollectionField::new('covers')
                 ->setLabel(t('label.cover', [], 'book'))
                 ->setHelp(t('label.cover-help', [], 'book'))
                 ->hideOnIndex()
                 ->setEntryType(SerieMediaType::class)
-                ->allowAdd()
+                ->allowAdd(self::isEmpty($serie?->getCovers()))
                 ->allowDelete()
-                ->setFormTypeOption('by_reference', false),
+                ->setFormTypeOption('by_reference', false)
+                ->setFormTypeOption('row_attr', ['data-serie-covers' => '1']),
 
             FormField::addFieldset(t('label.logo', [], 'book'))
                 ->hideOnIndex(),
@@ -123,7 +166,19 @@ class SerieCrudController extends AbstractCrudController
                 ->setHelp(t('label.logo-help', [], 'book'))
                 ->hideOnIndex()
                 ->setEntryType(SerieMediaType::class)
-                ->allowAdd()
+                ->allowAdd(self::isEmpty($serie?->getLogos()))
+                ->allowDelete()
+                ->setFormTypeOption('by_reference', false),
+
+            // The hero's background image, like a book's: one only, laid behind the title and veiled by the template (see Serie:Hero)
+            FormField::addFieldset(t('label.background', [], 'book'))
+                ->hideOnIndex(),
+            CollectionField::new('backgrounds')
+                ->setLabel(t('label.background', [], 'book'))
+                ->setHelp(t('label.background-help', [], 'book'))
+                ->hideOnIndex()
+                ->setEntryType(SerieMediaType::class)
+                ->allowAdd(self::isEmpty($serie?->getBackgrounds()))
                 ->allowDelete()
                 ->setFormTypeOption('by_reference', false),
 
@@ -154,126 +209,82 @@ class SerieCrudController extends AbstractCrudController
         ];
     }
 
-    public function persistEntity(EntityManagerInterface $entityManager, mixed $serie): void
+    // A serie has one cover and one logo only: "Add an item" under the one already laid invited a second nothing would have shown. Read on the row as it stands in database, so the link comes back on saving a removal - laying another file on the existing row stays the gesture replacing an image
+    /** @param Collection<int, mixed>|null $medias */
+    private static function isEmpty(?Collection $medias): bool
     {
-        $serie->setCreation(new \DateTime());
-        $serie->setModification(new \DateTime());
-        $serie->setUser($this->getUser());
-
-        parent::persistEntity($entityManager, $serie);
-    }
-
-    public function updateEntity(EntityManagerInterface $entityManager, mixed $serie): void
-    {
-        $serie->setModification(new \DateTime());
-        $serie->setUser($this->getUser());
-
-        parent::updateEntity($entityManager, $serie);
-    }
-
-    public function configureActions(Actions $actions): Actions
-    {
-        $role = $this->configService->get('site-role-admin');
-
-        $exportGroup = ActionGroup::new('export', t('label.export', [], 'book'), 'fa fa-download')
-            ->createAsGlobalActionGroup()
-            ->addAction(Action::new('exportSql', t('label.export_sql', [], 'book'))->linkToCrudAction('exportSql'))
-            ->addAction(Action::new('exportCsv', t('label.export_csv', [], 'book'))->linkToCrudAction('exportCsv'))
-            ->addAction(Action::new('exportJson', t('label.export_json', [], 'book'))->linkToCrudAction('exportJson'))
-        ;
-
-        // Opens the public page of the serie on the site, in a new tab - hidden when this site doesn't serve that family (empty route prefix) or when the serie has no slug yet
-        $viewOnSiteAction = Action::new('viewOnSite', t('action.view_on_site', [], 'book'), 'fa fa-external-link-alt')
-            ->linkToUrl(fn (Serie $serie): string => (string) $this->publicPath($serie))
-            ->setHtmlAttributes(['target' => '_blank'])
-            ->displayIf(fn (Serie $serie): bool => null !== $this->publicPath($serie))
-            ->addCssClass('btn btn-secondary');
-
-        // Lets the admin back out of a create/edit without saving - mirrors EasyAdmin's own built-in actions (linkToCrudAction targeting INDEX, same as Action::INDEX itself)
-        $cancelAction = Action::new('cancel', $this->translator->trans('action.cancel', [], 'EasyAdminBundle'), 'fa fa-times')
-            ->linkToCrudAction(Action::INDEX)
-            ->addCssClass('btn btn-secondary');
-
-        return $actions
-            ->add(Crud::PAGE_INDEX, $exportGroup)
-            ->add(Crud::PAGE_NEW, $cancelAction)
-            ->add(Crud::PAGE_EDIT, $cancelAction)
-            ->add(Crud::PAGE_INDEX, $viewOnSiteAction)
-            ->add(Crud::PAGE_EDIT, $viewOnSiteAction)
-            ->update(Crud::PAGE_INDEX, Action::EDIT, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
-                $action,
-                $this->translator->trans('action.edit', [], 'EasyAdminBundle'),
-            ))
-            ->update(Crud::PAGE_INDEX, 'viewOnSite', fn (Action $action) => EasyAdminActionHelper::toIconOnly(
-                $action,
-                $this->translator->trans('action.view_on_site', [], 'book'),
-            ))
-            ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
-                $action,
-                $this->translator->trans('action.delete', [], 'EasyAdminBundle'),
-            ))
-            ->reorder(Crud::PAGE_INDEX, [Action::EDIT, 'viewOnSite', Action::DELETE])
-            ->setPermission(Action::INDEX, $role)
-            ->setPermission(Action::NEW, $role)
-            ->setPermission(Action::EDIT, $role)
-            ->setPermission(Action::DELETE, $role)
-            ->setPermission('viewOnSite', $role)
-            ->setPermission('exportSql', $role)
-            ->setPermission('exportCsv', $role)
-            ->setPermission('exportJson', $role)
-            // Detail adds no information beyond what edit already shows
-            ->disable(Action::DETAIL)
-        ;
+        return null === $medias || $medias->isEmpty();
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
             ->showEntityActionsInlined()
+            // In the order the editor laid, the very one the public pages follow (see SerieRepository)
+            ->setDefaultSort(['position' => 'ASC'])
             ->overrideTemplate('crud/index', '@c975LBook/management/serie_crud_index.html.twig')
             ->overrideTemplate('crud/edit', '@c975LBook/management/serie_crud_edit.html.twig')
             ->overrideTemplate('crud/new', '@c975LBook/management/serie_crud_new.html.twig')
-            ->setEntityPermission($this->configService->get('site-role-admin'))
+            ->setEntityPermission($this->configService->get('site-role-editor'))
         ;
     }
 
-    #[AdminRoute]
-    public function exportSql(AdminContext $context): Response
+    // Deleting only takes the serie off the site: it goes to the trash, where it can be brought back or removed for good. Refused while it still holds a book or a strip - what it holds would otherwise stay on the site naming a serie that is not on it any more, and the foreign key would refuse the day the serie is removed for good. Trashed books and strips count just as much: they name it too
+    // Saves a new order for the series, as the drag and drop asks (see serie_crud_index.html.twig and UiBundle's assets/js/ea-index-sort.js). The ids received are read back from database rather than taken on trust
+    #[AdminRoute(path: '/reorder', options: ['methods' => ['POST']])]
+    public function reorder(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
+        $this->denyAccessUnlessGranted($this->configService->get('site-role-editor'));
 
-        return $this->tableExporter->export(ExportFormat::Sql, 'book_serie', $this->fetchExportRows());
-    }
-
-    #[AdminRoute]
-    public function exportCsv(AdminContext $context): Response
-    {
-        $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
-
-        return $this->tableExporter->export(ExportFormat::Csv, 'book_serie', $this->fetchExportRows());
-    }
-
-    #[AdminRoute]
-    public function exportJson(AdminContext $context): Response
-    {
-        $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
-
-        return $this->tableExporter->export(ExportFormat::Json, 'book_serie', $this->fetchExportRows());
-    }
-
-    // Path of the public page, null when the family isn't served here or the serie has no slug - what hides the action rather than offering a dead link (see c975L\BookBundle\Service\BookPublicUrlResolver)
-    private function publicPath(Serie $serie): ?string
-    {
-        $slug = $serie->getSlug();
-        if (null === $slug || '' === $slug) {
-            return null;
+        $payload = json_decode($request->getContent(), true) ?? [];
+        if (!$this->isCsrfTokenValid('serie_reorder', $payload['_token'] ?? null)) {
+            throw $this->createAccessDeniedException();
         }
 
-        return $this->publicUrlResolver->resolvePath('serie_display', ['slug' => $slug]);
+        $ids = array_map(intval(...), (array) ($payload['ids'] ?? []));
+        $series = [];
+        foreach ($entityManager->getRepository(Serie::class)->findBy(['id' => $ids]) as $serie) {
+            $series[$serie->getId()] = $serie;
+        }
+
+        $positions = [];
+        foreach (array_values($ids) as $position => $id) {
+            if (isset($series[$id])) {
+                $series[$id]->setPosition($position);
+                $positions[$id] = $position;
+            }
+        }
+
+        $entityManager->flush();
+
+        // What was saved, so the screen shows the new numbers without being reloaded
+        return new JsonResponse(['positions' => $positions]);
     }
 
-    private function fetchExportRows(): array
+    public function deleteEntity(EntityManagerInterface $entityManager, mixed $serie): void
     {
-        return $this->connection->fetchAllAssociative('SELECT * FROM `book_serie` ORDER BY `id`');
+        if ($serie->holdsContent()) {
+            $this->addFlash('danger', $this->translator->trans('flash.serie_holds_content', [], 'book'));
+
+            return;
+        }
+
+        $this->trashManager->moveToTrash($serie);
+    }
+
+    protected function duplicateEntity(mixed $entity): object
+    {
+        return $this->duplicator->duplicateSerie($entity);
+    }
+
+    protected function serializeSelection(array $ids): array
+    {
+        return $this->serieExportProvider->serializeIds($ids);
+    }
+
+    // A serie is read below the index listing its kind, so this family wears two routes where the others wear one (see BookPublicUrlResolver::serieRoute())
+    private function displayRoute(mixed $entity): string
+    {
+        return $entity instanceof Serie ? BookPublicUrlResolver::serieRoute($entity) : self::DISPLAY_ROUTE;
     }
 }

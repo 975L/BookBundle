@@ -1,0 +1,20 @@
+{# <twig:c975LBook:Book:Crowdfunding book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
+{% props book, section = {}, editUrl = "" %}
+{% set section = {anchor: 'crowdfunding', label: 'label.crowdfunding'|trans({}, 'book', book.language)}|merge(section) %}
+{% if book.crowdfunding %}
+    {% set over = book.crowdfundingEndDate and book.crowdfundingEndDate|date('Ymd') < "now"|date('Ymd') %}
+    {% set body %}
+        {# A campaign that ended keeps its page: the date says the state, and the button is gone rather than led to a form nobody can fill any more #}
+        {% if book.crowdfundingEndDate %}
+            <p class="text text-center">
+                {{ 'label.crowdfunding_end_date'|trans({}, 'book', book.language) }} :
+                <strong>{{ book.crowdfundingEndDate|date('d/m/Y') }}</strong>
+                {% if over %}- {{ 'label.crowdfunding_ended'|trans({}, 'book', book.language) }}{% endif %}
+            </p>
+        {% endif %}
+        {% if not over %}
+            <twig:c975LUi:Button:Button label="{{ 'label.crowdfunding_support'|trans({}, 'book', book.language) }}" url="{{ book.crowdfunding }}" target="_blank"/>
+        {% endif %}
+    {% endset %}
+    {{ include('@c975LBook/book/_section.html.twig', {form: 'links', book: book, section: section, editUrl: editUrl, body: body}) }}
+{% endif %}

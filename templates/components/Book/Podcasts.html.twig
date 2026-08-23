@@ -1,2 +1,38 @@
-{# Where the book is listened to: the audiobook stores and the podcast platforms in one card, the two being the same gesture for a reader #}
-<twig:c975LBook:Book:Links lang="{{ book.language }}" id="podcasts" title="{{ 'label.podcasts'|trans({}, 'book', book.language) }}" links="{{ book_links_of(book, 'audio', 'podcast') }}" />
+{# <twig:c975LBook:Book:Podcasts book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
+{# Where the book is listened to, and everything is there: the episode's video, the recording itself, the files taken away, then the podcast apps and the audio bookshops. One gesture for one reader, so one card #}
+{# One column, from the largest to the smallest: watch, listen, take away, subscribe. Everything in it is optional #}
+{% props book, section = {}, editUrl = "" %}
+{% set section = {anchor: 'podcasts', label: 'label.podcasts'|trans({}, 'book', book.language)}|merge(section) %}
+{% set medias = book_audio_medias(book) %}
+{% set links = book_links_of(book, 'audio', 'podcast') %}
+{# The episode's video, whatever version carries it: it is printed here and nowhere else (see BookSectionsExtension::CARD_KINDS) #}
+{% set video = book_medias_of_kind(book, 'podcast')|first|default(null) %}
+{% if medias|length or links|length or video %}
+    {% set body %}
+        {% if video %}
+            {# Neither autoplay nor loop, unlike the flipbook: it is an episode to be watched, not an animated thumbnail #}
+            <twig:c975LUi:Video:Video src="{{ vich_uploader_asset(video) }}" type="{{ video.mimeType }}" caption="false" title="{{ book.title }}"/>
+        {% endif %}
+        {# The first recording is listened to on the spot: it is the book read aloud, not an attachment #}
+        {% if medias|length %}
+            <div class="book-listen">
+                <twig:c975LUi:Audio:Audio src="{{ vich_uploader_asset(medias|first) }}" type="{{ (medias|first).mimeType }}" title="{{ book.title }}"/>
+                {# Then the files themselves, named by their format: one button per recording, the one just played included #}
+                <div class="book-listen__files">
+                    {% for media in medias %}
+                        {# "Download MP3": the word comes from UiBundle, already translated everywhere a file is downloaded #}
+                        <twig:c975LUi:Button:Button label="{{ 'label.download'|trans({}, 'ui', book.language) }} {{ media.name|split('.')|last|upper }}" url="{{ vich_uploader_asset(media) }}" inline="true"/>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        {% if links|length %}
+            <div class="flex-center text-center">
+                {% for link in links %}
+                    <twig:c975LUi:Image:Link label="{{ book_link_label(link, book.language) }}" src="{{ book_link_icon(link) }}" url="{{ book_link_url(link) }}" width="48" height="48" target="_blank"/>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endset %}
+    {{ include('@c975LBook/book/_section.html.twig', {form: 'media', book: book, section: section, lang: book.language, editUrl: editUrl, body: body}) }}
+{% endif %}

@@ -1,7 +1,14 @@
-<section id="strips">
-    <div class="cards">
+{# "editable": the pencil on each card, for a listing rendered outside the block cache - the same condition the score goes by, and for the same reason #}
+{# "rating": the score under each planche, and the icons to set it - only a listing rendered outside the block cache asks for it, the html of a cached block being shared by every visitor and its averages frozen with it, and only where the site rates its catalog at all (the setting the planche's own page reads, see Strip:Hero) #}
+{% set rating = rating|default(false) and config('book-rating')|to_bool %}
+{# One query for the whole page rather than one per planche: each card is handed the tally already read for it (see ui_ratings()) #}
+{% set ratings = rating ? ui_ratings('strip', strips|map(s => s.id)) : [] %}
+{# "id": what "#strips" lands on, and what a page linking to its own listing points at. A page already naming the block that holds this one passes an empty id rather than writing the same id twice #}
+<section{% if id|default('strips') %} id="{{ id|default('strips') }}"{% endif %}>
+    {# "infinite" marks the list for UiBundle's infiniteScroll controller, which reads the page it fetches through this very attribute - only the listing that grows carries it, the results of a search sitting on the same page would otherwise answer in its place #}
+    <div class="cards"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
         {% for card in strips %}
-            <twig:c975LBook:Strip:Card card="{{ card }}"/>
+            <twig:c975LBook:Strip:Card card="{{ card }}" :rating="rating" :aggregate="rating ? ratings[card.id] : null" :editable="editable|default(false)"/>
         {% endfor %}
     </div>
 </section>

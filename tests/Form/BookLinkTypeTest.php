@@ -18,13 +18,14 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BookLinkTypeTest extends TestCase
 {
     // No provider declared, which is every site not naming its own editions - the form then offers the bundle's own
     private static function type(): BookLinkType
     {
-        return new BookLinkType(new BookCustomizationRegistry([]));
+        return new BookLinkType(new BookCustomizationRegistry([], self::registryTranslator()));
     }
 
     /** @return array<string, array{type: ?string, options: array<string, mixed>}> */
@@ -38,7 +39,7 @@ class BookLinkTypeTest extends TestCase
             return $builder;
         });
 
-        self::type()->buildForm($builder, $options + ['book' => null]);
+        self::type()->buildForm($builder, $options);
 
         return $added;
     }
@@ -67,7 +68,7 @@ class BookLinkTypeTest extends TestCase
         $this->assertSame('ui-sort-position', $this->build()['position']['options']['attr']['class']);
     }
 
-    public function testConfigureOptionsBindsTheLinkAndItsCatalog(): void
+    public function testConfigureOptionsBindsTheLink(): void
     {
         $resolver = new OptionsResolver();
         self::type()->configureOptions($resolver);
@@ -75,12 +76,20 @@ class BookLinkTypeTest extends TestCase
 
         $this->assertSame(BookLink::class, $options['data_class']);
         $this->assertSame('book', $options['translation_domain']);
-        $this->assertNull($options['book']);
     }
 
-    // A book with no edition yet - a new one, or a site not publishing any - gets no edition field rather than an empty list
-    public function testTheEditionIsOnlyAskedForWhenTheBookHasOne(): void
+    // The edition a link belongs to is not asked: the panel the form is opened in already names it (see BookEditionType)
+    public function testTheEditionIsNeverAsked(): void
     {
         $this->assertArrayNotHasKey('edition', $this->build());
+    }
+
+    // The translator the registry asks for: it returns the key as is, which the real one does for a brand - a label that is no translation key is not translated
+    private static function registryTranslator(): TranslatorInterface
+    {
+        $translator = self::createStub(TranslatorInterface::class);
+        $translator->method('trans')->willReturnArgument(0);
+
+        return $translator;
     }
 }

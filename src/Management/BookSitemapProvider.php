@@ -50,7 +50,7 @@ class BookSitemapProvider implements SitemapProviderInterface
     {
         $urls = $this->getIndexUrls('book_index', 'label.books');
 
-        foreach ($this->bookService->findAllPublished() as $book) {
+        foreach ($this->bookService->findAllOnline() as $book) {
             $url = $this->bookPublicUrlResolver->resolve('book_display', ['slug' => $book->getSlug()]);
             if (null === $url) {
                 continue;
@@ -75,7 +75,8 @@ class BookSitemapProvider implements SitemapProviderInterface
         $urls = $this->getIndexUrls('serie_index', 'label.series');
 
         foreach ($this->serieService->findAll() as $serie) {
-            $url = $this->bookPublicUrlResolver->resolve('serie_display', ['slug' => $serie->getSlug()]);
+            // Each serie under the index listing it, the two families having their own segment (see BookPublicUrlResolver::serieRoute())
+            $url = $this->bookPublicUrlResolver->resolve(BookPublicUrlResolver::serieRoute($serie), ['slug' => $serie->getSlug()]);
             if (null === $url) {
                 continue;
             }
@@ -95,7 +96,8 @@ class BookSitemapProvider implements SitemapProviderInterface
 
     private function getStripUrls(): array
     {
-        $urls = $this->getIndexUrls('strip_index', 'label.strips');
+        // The index lists the series telling the planches, the entries below being the planches themselves (see StripController::index())
+        $urls = $this->getIndexUrls('strip_index', 'label.strips_series');
 
         foreach ($this->stripService->findAllPublished() as $strip) {
             $url = $this->bookPublicUrlResolver->resolve('strip_display', ['slug' => $strip->getSlug()]);

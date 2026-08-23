@@ -1,8 +1,9 @@
 {% if sourceUrl is not null %}
-    <div class="text-center">
+    {# The button carries a key of its own and not the field's: "label.source_url" names the url in the back-office, where "URL source" is true of any site, when what is read here is where the visitor is being sent - a site renaming one has no reason to rename the other #}
+    <div class="text-center"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
         <twig:c975LUi:Button:Button
             type="secondary"
-            label="{{ 'label.source_url'|trans({}, 'book', language|default(null)) }}"
+            label="{{ 'label.source_url_link'|trans({}, 'book', language|default(null)) }}"
             url="{{ sourceUrl }}"
             target="_blank"
             inline="true"

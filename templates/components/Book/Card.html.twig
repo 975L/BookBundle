@@ -1,0 +1,13 @@
+{# <twig:c975LBook:Book:Card book="{{ book }}"/> #}
+{# The book as a listing shows it: its cover in portrait, its summary under it, and the language it reads in - which Book:Book does not do, its thumbnail being a catalog row and not a card. What the home page collection prints (see BookCollectionSourceProvider) #}
+{% props book %}
+{% set cover = book_cover(book) %}
+<twig:c975LUi:Card:Card id="book-{{ book.id }}" title="{{ book.title }}" lang="{{ book.language }}">
+    {# The link carries the title in aria-label: the image alone says nothing to whoever listens to it #}
+    <a href="{{ book_path('book_display', {'slug': book.slug}) }}" aria-label="{{ book.title }}">
+        <twig:c975LUi:Image:Image class="img-rounded box-shadow img-300" src="{{ asset(cover ?: 'bundles/c975lbook/images/no-cover.webp') }}" alt="{{ book.title }}" width="300" height="425"/>
+    </a>
+    {% if book.summary %}<p class="lead text-center">{{ book.summary|nl2br }}</p>{% endif %}
+    {# The language by its endonym, never translated - the same rule as the hero's selector (see BookTranslationExtension) #}
+    {% if book.language %}<p class="text text-center small bold">({{ book_language_label(book.language) }})</p>{% endif %}
+</twig:c975LUi:Card:Card>

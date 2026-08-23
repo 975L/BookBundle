@@ -2,24 +2,24 @@
 
 namespace c975L\BookBundle\Controller\Management;
 
+use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Form\StripMediaType;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
+use c975L\BookBundle\Management\StripExportProvider;
+use c975L\BookBundle\Management\StripImportProvider;
+use c975L\BookBundle\Service\BookDuplicator;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
-use c975L\ConfigBundle\Management\EasyAdminActionHelper;
+use c975L\BookBundle\Service\BookTrashManager;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use c975L\ConfigBundle\Service\Export\ExportFormat;
+use c975L\ConfigBundle\Service\Export\ContentExporter;
 use c975L\ConfigBundle\Service\Export\TableExporter;
 use c975L\UiBundle\Form\BlockType;
+use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManagerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\ActionGroup;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -29,22 +29,49 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
-use Symfony\Component\HttpFoundation\Response;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
 
 class StripCrudController extends AbstractCrudController
 {
+    use TrashableCrudTrait;
+
+    // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
+    public const string RESTORE_CSRF_TOKEN = 'book_strip_restore';
+    public const string DELETE_PERMANENTLY_CSRF_TOKEN = 'book_strip_delete_permanently';
+    public const string DUPLICATE_CSRF_TOKEN = 'book_strip_duplicate';
+
+    // What the shared screen of the trash, of the exports and of the copy needs to name this very family (see Trait\TrashableCrudTrait)
+    private const string DISPLAY_ROUTE = 'strip_display';
+    private const string EXPORT_TABLE = 'book_strip';
+    private const string EXPORT_KIND = StripImportProvider::KIND;
+    private const string TRASH_BACK_LABEL = 'label.strips';
+    private const string TRASH_BACK_ICON = 'fas fa-border-all';
+    private const string FLASH_DUPLICATED = 'flash.strip_duplicated';
+    private const string FLASH_RESTORED = 'flash.strip_restored';
+    private const string FLASH_DELETED_PERMANENTLY = 'flash.strip_deleted_permanently';
+
     public function __construct(
         private readonly AdminContextProviderInterface $adminContextProvider,
+        private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly BlockMoveRowAttrBuilder $blockMoveRowAttrBuilder,
+        private readonly BookDuplicator $duplicator,
+        private readonly StripExportProvider $stripExportProvider,
         private readonly BookPublicUrlResolver $publicUrlResolver,
+        private readonly BookTrashManager $trashManager,
         private readonly ConfigServiceInterface $configService,
         private readonly Connection $connection,
+        private readonly ContentExporter $contentExporter,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly RequestStack $requestStack,
         private readonly TableExporter $tableExporter,
         private readonly TranslatorInterface $translator,
     ) {
@@ -84,9 +111,11 @@ class StripCrudController extends AbstractCrudController
             TextField::new('characters')
                 ->setLabel(t('label.characters', [], 'book'))
                 ->hideOnIndex(),
-            TextEditorField::new('summary')
+            // TrixEditorType rather than EasyAdmin's own TextEditorField: its widget is where the rephrase button is wired, EasyAdmin's own rendering through a different form block
+            TextareaField::new('summary')
                 ->setLabel(t('label.summary', [], 'book'))
-                ->hideOnIndex(),
+                ->hideOnIndex()
+                ->setFormType(TrixEditorType::class),
             UrlField::new('sourceUrl')
                 ->setLabel(t('label.source_url', [], 'book'))
                 ->hideOnIndex(),
@@ -104,12 +133,14 @@ class StripCrudController extends AbstractCrudController
             // Media
             FormField::addTab(t('label.media', [], 'book'))
                 ->hideOnIndex(),
+            // The marker laid on the row is what BookGuidedProjectProvider's tour points at, a collection printing no field id of its own
             CollectionField::new('medias')
                 ->hideOnIndex()
                 ->setEntryType(StripMediaType::class)
                 ->allowAdd()
                 ->allowDelete()
-                ->setFormTypeOption('by_reference', false),
+                ->setFormTypeOption('by_reference', false)
+                ->setFormTypeOption('row_attr', ['data-strip-medias' => '1']),
 
             // Blocks
             FormField::addTab(t('label.blocks', [], 'book'))
@@ -126,78 +157,6 @@ class StripCrudController extends AbstractCrudController
         ];
     }
 
-    public function persistEntity(EntityManagerInterface $entityManager, mixed $strip): void
-    {
-        $strip->setCreation(new \DateTime());
-        $strip->setModification(new \DateTime());
-        $strip->setUser($this->getUser());
-
-        parent::persistEntity($entityManager, $strip);
-    }
-
-    public function updateEntity(EntityManagerInterface $entityManager, mixed $strip): void
-    {
-        $strip->setModification(new \DateTime());
-        $strip->setUser($this->getUser());
-
-        parent::updateEntity($entityManager, $strip);
-    }
-
-    public function configureActions(Actions $actions): Actions
-    {
-        $role = $this->configService->get('site-role-admin');
-
-        $exportGroup = ActionGroup::new('export', t('label.export', [], 'book'), 'fa fa-download')
-            ->createAsGlobalActionGroup()
-            ->addAction(Action::new('exportSql', t('label.export_sql', [], 'book'))->linkToCrudAction('exportSql'))
-            ->addAction(Action::new('exportCsv', t('label.export_csv', [], 'book'))->linkToCrudAction('exportCsv'))
-            ->addAction(Action::new('exportJson', t('label.export_json', [], 'book'))->linkToCrudAction('exportJson'))
-        ;
-
-        // Opens the public page of the strip on the site, in a new tab - hidden when this site doesn't serve that family (empty route prefix) or when the strip has no slug yet
-        $viewOnSiteAction = Action::new('viewOnSite', t('action.view_on_site', [], 'book'), 'fa fa-external-link-alt')
-            ->linkToUrl(fn (Strip $strip): string => (string) $this->publicPath($strip))
-            ->setHtmlAttributes(['target' => '_blank'])
-            ->displayIf(fn (Strip $strip): bool => null !== $this->publicPath($strip))
-            ->addCssClass('btn btn-secondary');
-
-        // Lets the admin back out of a create/edit without saving - mirrors EasyAdmin's own built-in actions (linkToCrudAction targeting INDEX, same as Action::INDEX itself)
-        $cancelAction = Action::new('cancel', $this->translator->trans('action.cancel', [], 'EasyAdminBundle'), 'fa fa-times')
-            ->linkToCrudAction(Action::INDEX)
-            ->addCssClass('btn btn-secondary');
-
-        return $actions
-            ->add(Crud::PAGE_INDEX, $exportGroup)
-            ->add(Crud::PAGE_NEW, $cancelAction)
-            ->add(Crud::PAGE_EDIT, $cancelAction)
-            ->add(Crud::PAGE_INDEX, $viewOnSiteAction)
-            ->add(Crud::PAGE_EDIT, $viewOnSiteAction)
-            ->update(Crud::PAGE_INDEX, Action::EDIT, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
-                $action,
-                $this->translator->trans('action.edit', [], 'EasyAdminBundle'),
-            ))
-            ->update(Crud::PAGE_INDEX, 'viewOnSite', fn (Action $action) => EasyAdminActionHelper::toIconOnly(
-                $action,
-                $this->translator->trans('action.view_on_site', [], 'book'),
-            ))
-            ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
-                $action,
-                $this->translator->trans('action.delete', [], 'EasyAdminBundle'),
-            ))
-            ->reorder(Crud::PAGE_INDEX, [Action::EDIT, 'viewOnSite', Action::DELETE])
-            ->setPermission(Action::INDEX, $role)
-            ->setPermission(Action::NEW, $role)
-            ->setPermission(Action::EDIT, $role)
-            ->setPermission(Action::DELETE, $role)
-            ->setPermission('viewOnSite', $role)
-            ->setPermission('exportSql', $role)
-            ->setPermission('exportCsv', $role)
-            ->setPermission('exportJson', $role)
-            // Detail adds no information beyond what edit already shows
-            ->disable(Action::DETAIL)
-        ;
-    }
-
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -205,47 +164,17 @@ class StripCrudController extends AbstractCrudController
             ->overrideTemplate('crud/index', '@c975LBook/management/strip_crud_index.html.twig')
             ->overrideTemplate('crud/edit', '@c975LBook/management/strip_crud_edit.html.twig')
             ->overrideTemplate('crud/new', '@c975LBook/management/strip_crud_new.html.twig')
-            ->setEntityPermission($this->configService->get('site-role-admin'))
+            ->setEntityPermission($this->configService->get('site-role-editor'))
         ;
     }
 
-    #[AdminRoute]
-    public function exportSql(AdminContext $context): Response
+    protected function duplicateEntity(mixed $entity): object
     {
-        $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
-
-        return $this->tableExporter->export(ExportFormat::Sql, 'book_strip', $this->fetchExportRows());
+        return $this->duplicator->duplicateStrip($entity);
     }
 
-    #[AdminRoute]
-    public function exportCsv(AdminContext $context): Response
+    protected function serializeSelection(array $ids): array
     {
-        $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
-
-        return $this->tableExporter->export(ExportFormat::Csv, 'book_strip', $this->fetchExportRows());
-    }
-
-    #[AdminRoute]
-    public function exportJson(AdminContext $context): Response
-    {
-        $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
-
-        return $this->tableExporter->export(ExportFormat::Json, 'book_strip', $this->fetchExportRows());
-    }
-
-    // Path of the public page, null when the family isn't served here or the strip has no slug - what hides the action rather than offering a dead link (see c975L\BookBundle\Service\BookPublicUrlResolver)
-    private function publicPath(Strip $strip): ?string
-    {
-        $slug = $strip->getSlug();
-        if (null === $slug || '' === $slug) {
-            return null;
-        }
-
-        return $this->publicUrlResolver->resolvePath('strip_display', ['slug' => $slug]);
-    }
-
-    private function fetchExportRows(): array
-    {
-        return $this->connection->fetchAllAssociative('SELECT * FROM `book_strip` ORDER BY `id`');
+        return $this->stripExportProvider->serializeIds($ids);
     }
 }

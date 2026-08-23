@@ -89,17 +89,20 @@ class StripImportCommand extends Command
 
         $serieSlug = $input->getOption('serie');
         $tableName = $input->getOption('table');
-        $mediaDir = rtrim($input->getOption('media-dir'), '/');
+        $mediaDir = $input->getOption('media-dir');
         $numberColumn = $input->getOption('number-column');
         $urlTemplate = $input->getOption('source-url-template');
         $urlMax = (int) $input->getOption('source-url-max');
         $dryRun = $input->getOption('dry-run');
 
+        // Checked before anything is done with them: an option left out is null, which no string function is to be handed
         if (!$serieSlug || !$tableName || !$mediaDir) {
             $io->error('Options --serie, --table and --media-dir are all required.');
 
             return Command::FAILURE;
         }
+
+        $mediaDir = rtrim($mediaDir, '/');
 
         $serie = $this->serieRepository->findOneBy(['slug' => $serieSlug]);
         if (!$serie) {

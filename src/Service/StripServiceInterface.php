@@ -17,49 +17,52 @@ interface StripServiceInterface
     public function findAllPublished(?int $number = null): array;
 
     /**
-     * The published strips, 24 per page.
-     *
-     * @param InputBag $query the request's query bag, its "p" parameter holding the 1-based page number
-     *
-     * @return PaginationInterface<int, Strip>
-     */
-    public function findAllPaginated($query);
-
-    /**
      * @param int|null $number caps the result, null returning them all
      *
      * @return Strip[]
      */
-    public function findAllPublishedBySerie(Serie $serie, ?int $number = null): array;
+    public function findAllPublishedBySerie(Serie $serie, ?int $number = null, ?string $character = null): array;
 
     /**
-     * @param string $character the url slug of the character, as stored in the strip's slugged characters list
+     * The characters speaking in one serie, each named once and sorted by name - the chips a serie's own listing offers to filter on.
      *
+     * @return array<int, array{name: string, slug: string}>
+     */
+    public function findCharactersBySerie(Serie $serie): array;
+
+    /**
      * @return Strip[] the strips whose characters list mentions $character
      */
     public function findAllByCharacter(string $character): array;
 
     /**
-     * The published strips of a character, 24 per page.
-     *
-     * @param string   $character the url slug of the character
-     * @param InputBag $query     the request's query bag, its "p" parameter holding the 1-based page number
+     * The planches of one serie, 24 per page: a serie's own page lists them whole, in the order it tells them, rather than showing a handful (see serie/display.html.twig, which grows the list as the visitor scrolls).
      *
      * @return PaginationInterface<int, Strip>
      */
-    public function findAllByCharacterPaginated(string $character, $query);
+    public function findAllBySeriePaginated(Serie $serie, InputBag $query, ?string $character = null): PaginationInterface;
 
     /**
      * The strips surrounding $strip within its own serie, for the reader's prev/next links.
      *
      * @return array{previous: ?Strip, next: ?Strip} null on either side at the ends of the serie
      */
+    /**
+     * Returns the planche carrying that slug, null when none does.
+     */
+    public function findOneBySlug(string $slug): ?Strip;
+
+    /**
+     * Returns the planche a number leads to, null when none does.
+     */
+    public function findOneByNumber(int $number): ?Strip;
+
     public function findPreviousNext(Strip $strip): array;
 
     /**
-     * Matches published strips on their title and characters.
+     * Matches published strips on their title, their characters and their summary - within one serie when $serieId is given, which is what a serie's own page searches.
      *
      * @return Strip[] empty for an empty search
      */
-    public function search(string $query): array;
+    public function search(string $query, ?int $serieId = null): array;
 }

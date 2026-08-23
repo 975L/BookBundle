@@ -1,4 +1,27 @@
-{# The digital stores of a published book. A site selling its own paper edition adds its button by overriding this template in templates/bundles/c975LBookBundle/components/Book/Shops.html.twig #}
+{# <twig:c975LBook:Book:Shops book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
+{# Where a published book is bought. A site adds its own button inside that very card through the section's "template" (see BookCustomizationProviderInterface::getSections()), rather than by overriding this template #}
+{# The site's own shop comes at the head of the row and carries the site color: it is the same book everywhere, but it is here the publisher sells it himself #}
+{% props book, section = {}, editUrl = "" %}
+{% set section = {anchor: 'shops', label: 'label.buy'|trans({}, 'book', book.language)}|merge(section) %}
 {% if book.published and book.published|date("Ymd") <= "now"|date("Ymd") %}
-    <twig:c975LBook:Book:Links lang="{{ book.language }}" id="shops" title="{{ 'label.shops'|trans({}, 'book', book.language) }}" links="{{ book_links_of(book, 'epub') }}" />
+    {% set links = book_links_of(book, 'epub') %}
+    {# The basket belongs to the site itself (see c975L\BookBundle\Enum\BookLinkKind::Shop): it takes the bookshops' tile, at the head and accented, rather than leaving the row #}
+    {% set own = links|filter(link => link.kind == 'shop')|first|default(null) %}
+    {% set others = links|filter(link => link.kind != 'shop') %}
+    {% if links|length %}
+        {% set body %}
+            <div class="flex-center text-center">
+                {# At the head of the row and held by the site color: the same tile as the bookshops, the same book being bought there (see sass/_book.scss, .book-tile--own) #}
+                {% if own %}
+                    <div class="book-tile--own">
+                        <twig:c975LUi:Image:Link label="{{ book_link_label(own, book.language) }}" src="{{ book_link_icon(own) }}" url="{{ book_link_url(own) }}" width="48" height="48"/>
+                    </div>
+                {% endif %}
+                {% for link in others %}
+                    <twig:c975LUi:Image:Link label="{{ book_link_label(link, book.language) }}" src="{{ book_link_icon(link) }}" url="{{ book_link_url(link) }}" width="48" height="48" target="_blank"/>
+                {% endfor %}
+            </div>
+        {% endset %}
+        {{ include('@c975LBook/book/_section.html.twig', {form: 'links', book: book, section: section, lang: book.language, editUrl: editUrl, body: body}) }}
+    {% endif %}
 {% endif %}

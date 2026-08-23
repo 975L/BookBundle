@@ -25,7 +25,6 @@ trait BookPublicUrlGeneratorTestTrait
         'book-route-books' => 'livres',
         'book-route-book' => 'livre',
         'book-route-series' => 'series',
-        'book-route-serie' => 'serie',
         'book-route-strips' => 'strips',
         'book-route-strip' => 'strip',
     ];
@@ -36,8 +35,9 @@ trait BookPublicUrlGeneratorTestTrait
         $routes->add('book_index', new Route('/{books_prefix}'));
         $routes->add('book_display', new Route('/{book_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
         $routes->add('serie_index', new Route('/{series_prefix}'));
-        $routes->add('serie_display', new Route('/{serie_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
+        $routes->add('serie_display', new Route('/{series_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
         $routes->add('strip_index', new Route('/{strips_prefix}'));
+        $routes->add('strip_serie_display', new Route('/{strips_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
         $routes->add('strip_display', new Route('/{strip_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
 
         return new UrlGenerator($routes, new RequestContext());

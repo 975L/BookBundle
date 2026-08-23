@@ -1,7 +1,9 @@
+{# The stored address is already the player's, brought back to its platform's canonical form on save (see BookVideoNoCookieListener): nothing is built here #}
 {% if presse.youtubeUrl %}
-    <twig:c975LUi:Video:Iframe src="https://www.youtube-nocookie.com/embed/{{ presse.youtubeUrl }}" width="125"/>
+    <twig:c975LUi:Video:Iframe src="{{ presse.youtubeUrl }}" width="125"/>
     <p class="text-center">{{ presse.title }}</p>
 {% elseif presse.name matches '/\.mp3$/' %}
+    <div class="text-center width-150">
         <twig:c975LUi:Audio:Audio src="{{ asset(presse.name) }}" type="audio/mpeg"/>
         <p class="text-center">{{ presse.title }}</p>
     </div>

@@ -13,6 +13,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BookLinksTest extends TestCase
 {
@@ -30,10 +31,10 @@ class BookLinksTest extends TestCase
         return $book;
     }
 
-    // Aucun site ne nomme de plateforme ici : le registre sert donc le vocabulaire du bundle
+    // No site names a platform here: the registry therefore serves the bundle's own vocabulary
     private function registry(): BookCustomizationRegistry
     {
-        return new BookCustomizationRegistry([]);
+        return new BookCustomizationRegistry([], self::registryTranslator());
     }
 
     public function testLinksOfKeepsOnlyTheGroupAsked(): void
@@ -55,16 +56,16 @@ class BookLinksTest extends TestCase
         $this->assertCount(0, $this->registry()->getLinksOf($book, 'audio'));
     }
 
-    // Un groupe qui n'en est pas ne fait plus lever d'exception : le vocabulaire est celui du site, et un mot qu'il ne déclare pas ne désigne simplement aucun lien
+    // A group that is none raises no exception any more: the vocabulary is the site's, and a word it does not declare simply names no link
     public function testAGroupThatIsNotOneHoldsNoLink(): void
     {
         $this->assertSame([], $this->registry()->getLinksOf($this->book(), 'epub_kobo'));
     }
 
-    // Une plateforme que le site ne déclare pas relève d'aucune carte, plutôt que de faire tomber la page
+    // A platform the site does not declare belongs to no card, rather than bringing the page down
     public function testAnUndeclaredPlatformBelongsToNoGroup(): void
     {
-        $registry = new BookCustomizationRegistry([]);
+        $registry = new BookCustomizationRegistry([], self::registryTranslator());
 
         $this->assertNull($registry->getLinkGroup('boutique_inconnue'));
         $this->assertSame('boutique_inconnue', $registry->getLinkLabel('boutique_inconnue'));
@@ -76,5 +77,14 @@ class BookLinksTest extends TestCase
 
         $this->assertSame($this->links['epub_kobo'], $book->getLink('epub_kobo'));
         $this->assertNull($book->getLink('epub_fnac'));
+    }
+
+    // The translator the registry asks for: it returns the key as is, which the real one does for a brand - a label that is no translation key is not translated
+    private static function registryTranslator(): TranslatorInterface
+    {
+        $translator = self::createStub(TranslatorInterface::class);
+        $translator->method('trans')->willReturnArgument(0);
+
+        return $translator;
     }
 }

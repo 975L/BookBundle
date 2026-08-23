@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Routing\BookRoutePrefix;
+use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\ConfigBundle\Management\LinkableRouteProviderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -50,27 +51,27 @@ class LinkableRouteProvider implements LinkableRouteProviderInterface
 
         if ($this->routePrefix->isEnabled('book-route-strips')) {
             $routes['strip_index'] = [
-                'label' => 'label.strips',
+                'label' => 'label.strips_series',
                 'translation_domain' => 'book',
             ];
         }
 
-        if (!$this->routePrefix->isEnabled('book-route-serie')) {
-            return $routes;
-        }
-
         $serie = $this->translator->trans('label.serie', [], 'book');
 
-        // Every serie the index itself lists, alphabetically as the repository returns them
+        // Every serie the two indexes list, alphabetically as the repository returns them - each below the index listing its kind, and left out when that index is not served here (see BookPublicUrlResolver::serieRoute())
         // Keyed by id rather than by slug: a renamed serie keeps the menu item pointing at it, its slug and its title both being read here again at each render
         foreach ($this->serieRepository->findAll() as $entity) {
+            if (!$this->routePrefix->isEnabled($entity->isStripSerie() ? 'book-route-strips' : 'book-route-series')) {
+                continue;
+            }
+
             $routes[self::SERIE_PREFIX . $entity->getId()] = [
                 // The title is the publisher's own, not a key to translate - shown as it is in the rendered menu, where "Série - " would only take room in a navbar
                 'label' => (string) $entity->getTitle(),
                 'translation_domain' => false,
                 // The picker holds it among every page of the site, so it says what it is there, and the series sit together once the list is sorted
                 'picker_label' => $serie . ' - ' . $entity->getTitle(),
-                'route' => 'serie_display',
+                'route' => BookPublicUrlResolver::serieRoute($entity),
                 'params' => ['slug' => (string) $entity->getSlug()],
             ];
         }

@@ -20,14 +20,15 @@ class BookRoutePrefix
 {
     public const string ALIAS = 'book_route_prefix';
 
-    // slug of the ConfigBundle entry => name of the route parameter carrying it. One pair per family, the index and the page of a single entry being named apart ("/livres" and "/livre/{slug}")
+    // slug of the ConfigBundle entry => name of the route parameter carrying it. One pair per family, the index and the page of a single entry being named apart ("/livres" and "/livre/{slug}") - except the series, read under the very segment of the index listing them ("/series/{slug}", "/strips/{slug}"), so a serie's page sits below its own index rather than beside it (see SerieController). The last two are not segments but short links - one letter and a number, "/b3", the way a book is handed over on a social network
     public const array PREFIXES = [
         'book-route-books' => 'books_prefix',
         'book-route-book' => 'book_prefix',
         'book-route-series' => 'series_prefix',
-        'book-route-serie' => 'serie_prefix',
         'book-route-strips' => 'strips_prefix',
         'book-route-strip' => 'strip_prefix',
+        'book-route-book-shortcut' => 'book_shortcut',
+        'book-route-strip-shortcut' => 'strip_shortcut',
     ];
 
     public function __construct(

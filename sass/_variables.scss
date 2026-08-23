@@ -15,19 +15,132 @@
     --book-cover-radius: var(--block-radius-medium, 14px);
     --book-cover-shadow: var(--block-shadow-medium, 0 5px 10px 0 rgba(0, 0, 0, 0.5));
 
-    /* What parts the summary's column from the text beside it, and the hero's cover from its body */
-    --book-column-gap: clamp(1.5rem, 4vw, 3rem);
+    /* What parts the toc column from the text beside it, and the hero's cover from its body - set on the site's own vertical step (--section-space) rather than on a measure of its own */
+    --book-column-gap: var(--section-space, clamp(1.5rem, 4vw, 3rem));
     --book-hero-gap: clamp(1rem, 3vw, 2rem);
+
+    /* What airs the hero vertically: between its lines, and before the row of buttons, which was sitting against the author line */
+    --book-hero-body-gap: clamp(0.9rem, 1.6vw, 1.4rem);
+    --book-hero-actions-gap: clamp(0.7rem, 1.4vw, 1rem);
+    --book-hero-actions-space: clamp(0.6rem, 1.6vw, 1.2rem);
 
     /* The eyebrow above a title - the serie and the number, set apart from the title by size rather than by a color of its own */
     --book-eyebrow-size: 0.8rem;
     --book-eyebrow-spacing: 0.14em;
 
-    /* The badges saying which versions a book holds. Filled for one that exists, outlined for one announced - the word carries the information, the shape only repeats it */
-    --book-badge-radius: 999px;
-    --book-badge-size: 0.78rem;
 
-    /* The bar a planche is browsed from, resting against the bottom of the screen on a phone. Opaque: the planche scrolls under it */
-    --book-bar-background: var(--surface-alt, #f2f2f2);
-    --book-bar-height: 64px;
+    /* The measure of the sentence a hero prints under the title, short enough to stay one paragraph rather than a column of text */
+    --book-hero-summary-measure: 60ch;
+
+    /* What a section holds decides its shape (see sass/_book.scss): text reads at a paragraph's measure, a media is bounded in height rather than taking its natural size, and a row of platforms fits on one line - the ceiling in vh on a phone, in px once there is room enough */
+    /* The flipbook shows the book being turned: it accompanies, it does not take over */
+    --book-flipbook-max-height: 40vh;
+    --book-flipbook-max-height-wide: 400px;
+
+    /* The extracts are what a reader comes for: a notch above the other medias */
+    /* The slider's box follows the picture rather than the column, its arrows being laid on its edges */
+    --book-slider-max-width: 400px;
+
+    --book-slider-max-height: 70vh;
+    --book-slider-max-height-wide: 560px;
+
+    --book-media-max-height: 60vh;
+    --book-media-max-height-wide: 560px;
+    /* The shape of a platform player, which has no size of its own until one is given to it */
+    --book-video-ratio: 16 / 9;
+
+    /* The lead: the sentence a book opens on, centered under the hero it belongs to, a notch above the body text */
+    /* The lead is framed: it is the book's own sentence, not a caption laid on the ground */
+    --book-lead-background: var(--card-background);
+    --book-lead-border: 1px solid var(--border-color);
+    --book-lead-radius: var(--block-radius-medium, 14px);
+    --book-lead-shadow: var(--block-shadow-medium, 0 5px 10px 0 rgba(0, 0, 0, 0.5));
+    --book-lead-padding: clamp(1rem, 3vw, 1.75rem);
+
+    --book-lead-size: 1.6rem;
+    --book-lead-line-height: 1.4;
+    --book-lead-color: var(--text);
+    --book-lead-family: var(--font-family-title);
+
+    /* What parts a text section from its neighbours, having no frame left to do it */
+    --book-text-padding-block: 0.5rem;
+    --book-text-padding-block-wide: 1rem;
+
+    /* The measure of a text section: a paragraph, not the page's width */
+    --book-text-measure: var(--reading-max-width, 65ch);
+
+    /* A section's name - Extracts, Videos, Press. A notch above a card title, these names being the page's reading marks */
+    --book-section-title-size: calc(var(--card-title-size, 19px) * 1.25);
+
+    /* The gap between two sections laid side by side from the wide step on */
+    /* What parts the items laid one after another in the sections column - the lead, the flipbook, the grid */
+    --book-column-flow-gap: clamp(1rem, 3vw, 2rem);
+
+    --book-grid-gap: clamp(1rem, 2vw, 1.5rem);
+
+    /* A hero laid over a picture of the book itself (Book:Hero's "background"). The veil is opaque at the foot and clear at the top, so the page continues out of the picture instead of stopping against an edge - and the title keeps its contrast wherever the picture happens to be light */
+    --book-hero-radius: var(--block-radius-large, 28px);
+    --book-hero-padding: clamp(1.2rem, 4vw, 2.5rem);
+    --book-hero-veil: linear-gradient(to top, var(--background) 4%, color-mix(in srgb, var(--background) 72%, transparent) 45%, color-mix(in srgb, var(--background) 35%, transparent));
+
+    /* A planche is bounded on every screen: a hair short of the full width on a phone, where the edge of the paper is what tells it apart from the page, and stopped well before the column on a wide one - a drawing read at arm's length is not read better at 1200px. A site whose planches are wide pages rather than single panels raises the last number */
+    --book-strip-media-max-width: clamp(280px, 88vw, 640px);
+
+    /* A planche card is three per row in the box holding the listing, not at the page's measure, so the width is taken on the parent (see sass/_book.scss). This token is the floor under which the row falls to two cards, then to one */
+    --book-strip-card-min-width: 300px;
+
+    /* The drawing on a card of the listing, and the lines of summary shown on one - both bounded so a row of cards reads as a row rather than as a column of assorted heights */
+    --book-strip-card-image-width: 150px;
+
+    /* A card showing words rather than a drawing has no shape of its own: it is given one, square, so a listing reads as a grid. A card showing the drawing keeps the shape of what it shows */
+    --book-strip-card-min-height: 320px;
+    --book-strip-card-icon-size: 72px;
+    --book-strip-card-title-size: 0.95rem;
+    --book-strip-card-lift: -3px;
+
+    /* The summary on a card is what the card is read for, so it is set a notch above the page's own text, and the turns of a dialogue are parted by a real space - one paragraph each, not one line each */
+    --book-strip-card-text-size: 1.15rem;
+    --book-strip-card-text-gap: 0.75em;
+
+    /* What parts the summary from the mark above it. A measure and not a centring: every card of a row opens its text at the same height, whether it holds two lines or six */
+    --book-strip-card-text-space: 0.75em;
+
+
+    /* The arrows a planche is browsed with, laid over what the page shows rather than waiting under it */
+    --book-strip-nav-size: 2.5rem;
+    --book-strip-nav-offset: 4px;
+    --book-strip-nav-radius: 5px;
+    --book-strip-nav-color: #fff;
+    --book-strip-nav-background: rgba(0, 0, 0, 0.55);
+    --book-strip-nav-opacity: 0.7;
+
+    /* The trail saying where a page sits - the series, the serie, the planche */
+    --book-breadcrumb-font-size: 1.1rem;
+    --book-breadcrumb-color: color-mix(in srgb, var(--text) 60%, var(--background));
+
+    /* The tile a platform is reached through - a shop, a podcast app, any of the Links card's buttons. All one size whatever the mark inside, so a row reads as a row of buttons rather than as logos of assorted heights */
+    --book-link-tile-width: 104px;
+    --book-link-tile-height: 96px;
+    --book-link-tile-padding: 0.55rem 0.4rem;
+    --book-link-tile-gap: 0.15rem;
+    --book-link-tile-radius: var(--block-radius-medium, 14px);
+    --book-link-tile-icon-size: 46px;
+    --book-link-tile-label-size: 0.72rem;
+
+    /* The lines a platform's name is given before it is cut short. The tile's height is firm rather than a floor, so a name that wraps never raises its row - which is also what lets the mark and its name be centered in the tile instead of hanging from its top edge, the room left over falling equally above and below them */
+    --book-link-tile-label-lines: 2;
+
+    /* The only fixed colors of this sheet, and for the same reason as UiBundle's --hero-media-grid-background - a platform's mark is drawn in the brand's own colors on a light ground, so it needs one wherever the page is dark. Translucent, so the site still shows through, and the label is set on that plate rather than on the page - hence an ink of its own, --text being the page's and unreadable here */
+    --book-link-tile-background: rgba(255, 255, 255, 0.88);
+    --book-link-tile-background-hover: rgba(255, 255, 255, 1);
+    /* Neutral rather than white: on a light site the plate melts into the page, and the hairline is then the only thing saying where one button ends and the next begins */
+    --book-link-tile-border-color: rgba(0, 0, 0, 0.12);
+    --book-link-tile-color: #1a1a1a;
+    /* The site's own shop among the bookshops: the site color fills the tile, neither larger nor otherwise shaped. The ink follows the ground, and the mark with it through a filter, an <img> icon not taking currentColor - a site whose mark must keep its colors sets it back to "none" */
+    --book-link-tile-own-background: var(--primary, #1a1a1a);
+    --book-link-tile-own-border-color: var(--primary, #1a1a1a);
+    --book-link-tile-own-color: var(--button-color, #fff);
+    --book-link-tile-own-mark-filter: brightness(0) invert(1);
+    /* What sets the site's own shop apart from the bookshops laid after it */
+    --book-link-tile-own-space: 1.25rem;
 }

@@ -7,38 +7,68 @@
 {% set ogImage = absolute_url(asset(strip.medias|first != false ? strip.medias|first : "bundles/c975lbook/images/no-cover.webp")) %}
 {% set language = strip.serie ? strip.serie.language : null %}
 
+{# Editor-only: the pencil UiBundle floats over anything carrying "data-block-edit-url" (see its assets/js/block-edit-overlay.js), leading to the very field the section is written in. Gated on the very role the edit screen asks for (see configureCrud()), the same one the blocks below go by: a pencil leading to a 403 would be worse than no pencil #}
+{% set editUrls = is_granted(config('site-role-editor')) ? strip_edit_urls(strip) : {} %}
+
 {# The hero carries the page's only h1, above the planche itself #}
-{% block title %}{% endblock %}
+{% block heading %}{% endblock %}
 
 {% block content %}
     {# Same skeleton as a book's page, with one difference the planche asks for: what stays on screen is the way to the next one, not a summary of sections - a planche has one picture and a line or two around it #}
-    <div class="book-page" lang="{{ language }}">
+    <div class="book-page" lang="{{ language }}"{% if editUrls %} data-controller="blockEditOverlay" data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
         {% if isPublished %}
-            <twig:c975LBook:Strip:Hero strip="{{ strip }}"/>
+            {# Where the planche sits, and the way back out of it - the arrows below only lead sideways #}
+            <twig:c975LBook:Breadcrumb serie="{{ strip.serie }}" current="{{ strip.title }}" language="{{ language }}"/>
+
+            <twig:c975LBook:Strip:Hero strip="{{ strip }}" editUrl="{{ editUrls.hero|default('') }}"/>
 
             <div class="book-page__sections">
-                <twig:c975LBook:Strip:Medias strip="{{ strip }}"/>
+                {# The very card the listing shows, uncut and leading nowhere - it is the page it would lead to. What comes first is what the site reads a planche for (setting "book-strip-card"): the words when it is them, the drawing otherwise #}
+                {% set textFirst = 'text' == config('book-strip-card')|default('image') and strip.summary is not null %}
 
-                {% if strip.summary is not null %}
-                    <twig:c975LBook:Strip:Summary summary="{{ strip.summary }}"/>
-                {% endif %}
+                {# The card and the drawing held together, the arrows to the neighbouring planches laid over the pair: whichever of the two comes first, they flank what the page is read for #}
+                <div class="strip-viewer">
+                    {% if textFirst %}
+                        {% if editUrls.summary|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.summary }}">{% endif %}
+                        <twig:c975LBook:Strip:Card card="{{ strip }}" display="text" :linked="false"/>
+                        {% if editUrls.summary|default('') %}</div>{% endif %}
+                    {% endif %}
+
+                    {# The planche itself draws either an image or a slider, neither of which is this bundle's own markup to write an attribute on: the pencil goes on a wrapper, transparent to the layout (see UiBundle's sass/_block-edit-overlay.scss) #}
+                    {% if editUrls.medias|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.medias }}">{% endif %}
+                    <twig:c975LBook:Strip:Medias strip="{{ strip }}"/>
+                    {% if editUrls.medias|default('') %}</div>{% endif %}
+
+                    {% if not textFirst and strip.summary is not null %}
+                        {% if editUrls.summary|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.summary }}">{% endif %}
+                        <twig:c975LBook:Strip:Card card="{{ strip }}" display="text" :linked="false"/>
+                        {% if editUrls.summary|default('') %}</div>{% endif %}
+                    {% endif %}
+
+                    <twig:c975LBook:Strip:Previous previousNext="{{ previousNext }}" language="{{ language }}"/>
+                    <twig:c975LBook:Strip:Next previousNext="{{ previousNext }}" language="{{ language }}"/>
+                </div>
                 {% if strip.characters is not null %}
-                    <twig:c975LBook:Strip:Characters characters="{{ strip.charactersList }}" language="{{ language }}"/>
+                    <twig:c975LBook:Strip:Characters characters="{{ strip.charactersList }}" serie="{{ strip.serie }}" language="{{ language }}" editUrl="{{ editUrls.characters|default('') }}"/>
                 {% endif %}
                 {% if strip.sourceUrl is not null %}
-                    <twig:c975LBook:Strip:SourceUrl sourceUrl="{{ strip.sourceUrl }}" language="{{ language }}"/>
+                    <twig:c975LBook:Strip:SourceUrl sourceUrl="{{ strip.sourceUrl }}" language="{{ language }}" editUrl="{{ editUrls.sourceUrl|default('') }}"/>
                 {% endif %}
 
                 {# Renders the blocks composed in the back-office, on a published strip only #}
                 <twig:c975LUi:Blocks:Blocks blocks="{{ strip.blocks }}"/>
             </div>
 
-            <twig:c975LBook:Strip:Navigation previousNext="{{ previousNext }}" language="{{ language }}"/>
         {% elseif strip.published is not null %}
             <twig:c975LUi:Alert:Alert type="warning">
                 {{ 'label.to_be_published'|trans({}, 'book', language) }} {{ strip.published|date("d/m/Y") }}
             </twig:c975LUi:Alert:Alert>
-            <twig:c975LUi:Button:Button label="{{ 'label.strips'|trans({}, 'book', language) }}" url="{{ path('strip_index') }}"/>
+            {# To its serie, which holds the listing of planches; to the index of planche series when it has none and the site serves it - the "book-route-strips" setting emptied, that route answers nothing (see BookRoutePrefix) #}
+            {% if strip.serie and serie_path(strip.serie) %}
+                <twig:c975LUi:Button:Button label="{{ strip.serie.title }}" url="{{ serie_path(strip.serie) }}"/>
+            {% elseif config('book-route-strips')|default('') is not empty %}
+                <twig:c975LUi:Button:Button label="{{ 'label.strips_series'|trans({}, 'book', language) }}" url="{{ path('strip_index') }}"/>
+            {% endif %}
         {% endif %}
     </div>
 

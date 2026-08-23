@@ -3,33 +3,73 @@
 {# Defines specific variables #}
 {% set title = book.title %}
 {% set summarySocialNetwork = book.summary %}
-{% set ogImage = absolute_url(asset(book.medias|first)) %}
+{# The cover, which is also what social networks make the link's card of: a book has no two images to introduce itself #}
+{% set ogImage = absolute_url(asset(book_cover(book) ?: "bundles/c975lbook/images/no-cover.webp")) %}
 {% set locale = book.language %}
+{# The other languages this very book is written in, each naming the whole group: without them a translated book and its original read as two pages saying the same thing, when they are the same page twice. Empty for a book no one has translated, and the layout then writes nothing #}
+{% set alternates = book_alternates(book) %}
 
 {# The hero carries the page's only h1, inside the container where the cover can stand beside it - the layout's own would print the title a second time, above it #}
-{% block title %}{% endblock %}
+{% block heading %}{% endblock %}
 
 {% block content %}
-    {# Read once, used twice: the summary offers exactly the sections rendered below it, and no section is rendered without an anchor pointing at it #}
+    {# Read once, used twice: the hero offers exactly the sections rendered below it, and no section is rendered without one of the page's own names #}
     {% set sections = book_sections(book) %}
-    {% set anchors = sections|column('anchor') %}
 
-    <div class="book-page" lang="{{ book.language }}">
-        <twig:c975LBook:Book:Hero book="{{ book }}" sections="{{ sections }}"/>
-        <twig:c975LUi:Text:Toc entries="{{ sections }}" id="book-toc" class="book-page__toc"/>
+    {# Editor-only: each section then hovers the pencil UiBundle floats over anything carrying "data-block-edit-url" (see its assets/js/block-edit-overlay.js), and lands on the very field it is written in. Gated on the very role the edit screen asks for (see BookCrudController::configureCrud()), the same one the blocks below go by: a pencil leading to a 403 would be worse than no pencil #}
+    {% set editUrls = is_granted(config('site-role-editor')) ? book_edit_urls(book) : {} %}
 
-        <div class="book-page__sections">
-            {% if 'resume' in anchors %}<twig:c975LBook:Book:Resume book="{{ book }}"/>{% endif %}
-            {% if 'apercu' in anchors %}<twig:c975LBook:Book:Videos book="{{ book }}"/>{% endif %}
-            {% if 'extracts' in anchors %}<twig:c975LBook:Book:Extracts book="{{ book }}"/>{% endif %}
-            {% if 'shops' in anchors %}<twig:c975LBook:Book:Shops book="{{ book }}"/>{% endif %}
-            {% if 'podcasts' in anchors %}<twig:c975LBook:Book:Podcasts book="{{ book }}"/>{% endif %}
-            {% if 'presse' in anchors %}<twig:c975LBook:Book:Presses book="{{ book }}"/>{% endif %}
-            {% if 'marketing' in anchors %}<twig:c975LBook:Book:Marketings book="{{ book }}"/>{% endif %}
-            {% if 'serie' in anchors %}<twig:c975LBook:Book:Serie book="{{ book }}"/>{% endif %}
-            <twig:c975LBook:Book:Informations book="{{ book }}"/>
+    {# Confetti do not belong to every book: it is a site setting, unticked by default. The controller does not even load its library for a visitor asking for fewer animations (see UiBundle, assets/js/confetti.js) #}
+    {% set controllers = (editUrls ? ['blockEditOverlay'] : [])|merge(config('book-confetti')|to_bool ? ['confetti'] : []) %}
+    <div class="book-page" lang="{{ book.language }}"{% if controllers %} data-controller="{{ controllers|join(' ') }}"{% endif %}{% if editUrls %} data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
+        {# Where the book sits and the way back out: the serie holding it, as a planche's page does with its own. It is no longer a card of the page, where its cover spoke of another work - the trail names it at the top, the informations lead to it at the foot (see Book:Informations) #}
+        <twig:c975LBook:Breadcrumb serie="{{ book.serie }}" current="{{ book.title }}" language="{{ book.language }}"/>
+
+        {# The two images the hero has to be handed: the fourth cover, given which it turns between the two, and the backdrop it opens on. The first cover is not among them - book_cover() reads the field it is uploaded on, which is also what the social card above is built from. A book given none of the three keeps the page it always had #}
+        <twig:c975LBook:Book:Hero book="{{ book }}" sections="{{ sections }}" coverBack="{{ book_media(book, 'cover_back') }}" background="{{ book_media(book, 'background') }}" editUrl="{{ editUrls.hero|default('') }}"/>
+        {# No summary of anchors: the hero's four verbs already open the sections a reader looks for, and the bar overflowed on a phone where the row of buttons wraps. The page therefore keeps its whole width, its cards laid two by two on a wide screen (see sass/_book.scss, .book-page:has(> .book-page__toc)) #}
+
+        {# Which component prints which section: the page's own business. What the site decides is the order, the words and the look of them (see BookCustomizationProviderInterface::getSections()), which is what book_sections() already laid out above #}
+        {% set components = {
+            'apercu': 'Videos',
+            'extracts': 'Extracts',
+            'crowdfunding': 'Crowdfunding',
+            'shops': 'Shops',
+            'podcasts': 'Podcasts',
+            'presse': 'Presses',
+            'marketing': 'Marketings',
+            'informations': 'Informations',
+        } %}
+        {# Only mounted for a page actually holding an entrance effect - the blocks below mount it for their own, and two controllers watching the same scroll would do the same work twice #}
+        {% set animated = sections|filter(section => section.animation|default(''))|length > 0 %}
+        <div class="book-page__sections"{% if animated %} data-controller="animateScroll"{% endif %}>
+            {# First of the sections column: the summary is the sentence the book opens on, and it reads under the hero before any section #}
+            <twig:c975LBook:Book:Resume book="{{ book }}" editUrl="{{ editUrls.resume|default('') }}"/>
+            {# After the summary and outside any card: the flipbook shows the book, it is no section to be announced #}
+            <twig:c975LBook:Book:Flipbook book="{{ book }}" editUrl="{{ editUrls.extracts|default('') }}"/>
+            {# The sections have a grid of their own rather than the column having it: the player below rests against the bottom of the screen, which position: sticky only does for a child of a box taller than itself - a grid item's own area is exactly its size, and the player would stop sticking #}
+            <div class="book-page__grid">
+            {% for section in sections %}
+                {% if components[section.key] is defined %}
+                    {{ component('c975LBook:Book:' ~ components[section.key], {book: book, section: section, editUrl: editUrls[section.key]|default('')}) }}
+                {# A section the site adds and this bundle knows nothing about: the fragment it declared, in the card every other section takes (see BookCustomizationProviderInterface::getSections()) #}
+                {% elseif section.template|default('') %}
+                    {{ include('@c975LBook/book/_section.html.twig', {book: book, section: section, form: section.form|default('card'), editUrl: editUrls[section.key]|default('')}) }}
+                {% endif %}
+            {% endfor %}
+            </div>
             <twig:c975LUi:Blocks:Blocks blocks="{{ book.blocks }}"/>
         </div>
+
+        {# What readers wrote about this book, and the link leading to the form. Nothing at all until the site enables "ui-enable-reviews": the function answers an empty list and the section does not show #}
+        {# Outside the blocks cache, so a published review shows on the next request: this is why this page no longer sets a cache header of its own (see BookController::display()) #}
+        {% if ui_reviews_enabled() %}
+            {% include '@c975LUi/components/Review/List.html.twig' with {
+                reviews: ui_reviews('book', book.id),
+                ownerType: 'book',
+                ownerId: book.id,
+            } only %}
+        {% endif %}
     </div>
 
     {# The book's structured data, built by BookSnippetBuilder from the very fields displayed above #}

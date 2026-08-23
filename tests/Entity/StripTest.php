@@ -48,6 +48,17 @@ class StripTest extends TestCase
         $this->assertSame('zoe', $strip->getCharactersSlug());
     }
 
+    // Static so a listing names the characters of a whole serie without loading every planche of it
+    public function testCharactersAreSplitWithoutAPlancheToReadThemOff(): void
+    {
+        $this->assertSame(
+            [['name' => 'Maman', 'slug' => 'maman'], ['name' => 'Zoé', 'slug' => 'zoe']],
+            Strip::splitCharacters('Maman, Zoé')
+        );
+        $this->assertSame([], Strip::splitCharacters(null));
+        $this->assertSame([], Strip::splitCharacters(' , '));
+    }
+
     public function testCoversAlsoMatchTheLegacyMediasStoredWithNoKind(): void
     {
         $serie = new Serie();

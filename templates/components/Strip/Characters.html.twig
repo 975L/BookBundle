@@ -1,13 +1,35 @@
+{# <twig:c975LBook:Strip:Characters characters="{{ … }}" [serie="{{ serie }}"] [selected="slug"] [heading="h2"] [language] [editUrl]/> #}
+{# "serie": the row narrows this serie's listing down to who speaks (an address of the form "/strips/x?character=maman"), the only listing of planches a site now serves #}
+{# "heading": the title's level, the row being laid under a section's own when a serie carries it #}
 {% if characters|length > 0 %}
-    <h2>{{ 'label.characters'|trans({}, 'book', language|default(null)) }}</h2>
-    <div class="flex-center">
+    {% set heading = heading|default('h2') %}
+    {% set serie = serie|default(null) %}
+    {% set selected = selected|default('') %}
+    <{{ heading }}>{{ 'label.characters'|trans({}, 'book', language|default(null)) }}</{{ heading }}>
+    {# Where a chip leads: the serie's listing when the page holds one, nowhere otherwise - the name then reads without being a link #}
+    <div class="flex-center"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
         {% for character in characters %}
+            {% set url = serie ? serie_path(serie, {'character': character.slug}) ~ '#strips' : '' %}
+            {% if url %}
+                <twig:c975LUi:Button:Button
+                    label="{{ character.name|capitalize }}"
+                    url="{{ url }}"
+                    type="{{ selected == character.slug ? 'primary' : 'secondary' }}"
+                    inline="true"
+                />
+            {% else %}
+                <span class="badge">{{ character.name|capitalize }}</span>
+            {% endif %}
+        {% endfor %}
+
+        {# The way back to the whole listing, beside the name it is filtered on: that name's own chip leads to the page being read, so without this the visitor has no way out of the filter #}
+        {% if selected and serie %}
             <twig:c975LUi:Button:Button
-                label="{{ character.name|capitalize }}"
-                url="{{ path('strip_character', {'character': character.slug}) }}"
-                type="{{ selected is defined and selected == character.slug ? 'primary' : 'secondary' }}"
+                label="{{ 'label.strips'|trans({}, 'book', language|default(null)) }}"
+                url="{{ serie_path(serie) }}#strips"
+                type="secondary"
                 inline="true"
             />
-        {% endfor %}
+        {% endif %}
     </div>
 {% endif %}

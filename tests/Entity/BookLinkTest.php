@@ -19,12 +19,12 @@ class BookLinkTest extends TestCase
     {
         $link = new BookLink()
             ->setKind('epub_gplay')
-            ->setUrl('https://play.google.com/store/books/details?PAffiliateID=1011l46DJf&id=fxGQLX8D-bIC');
+            ->setUrl('https://play.google.com/store/books/details?PAffiliateID=affiliate123&id=fxGQLX8D-bIC');
 
-        $this->assertSame('https://play.google.com/store/books/details?PAffiliateID=1011l46DJf&id=fxGQLX8D-bIC', $link->getUrl());
+        $this->assertSame('https://play.google.com/store/books/details?PAffiliateID=affiliate123&id=fxGQLX8D-bIC', $link->getUrl());
     }
 
-    // Le libellé et l'icône ne sont plus portés par le lien : ils relèvent du vocabulaire que le site déclare (voir BookCustomizationRegistryTest)
+    // The label and the icon are no longer carried by the link: they belong to the vocabulary the site declares (see BookCustomizationRegistryTest)
     public function testALinkSaysTheKindItIs(): void
     {
         $this->assertSame('epub_kobo', (string) new BookLink()->setKind('epub_kobo'));

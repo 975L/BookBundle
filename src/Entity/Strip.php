@@ -2,6 +2,8 @@
 
 namespace c975L\BookBundle\Entity;
 
+use c975L\BookBundle\Contract\TrashableInterface;
+use c975L\BookBundle\Entity\Trait\TrashableTrait;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use c975L\UiBundle\Contract\HasBlocksInterface;
@@ -17,9 +19,10 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 #[ORM\Entity(repositoryClass: StripRepository::class)]
 #[ORM\Table(name: 'book_strip')]
 #[UniqueEntity('slug')]
-class Strip implements HasBlocksInterface, \Stringable
+class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
 {
     use HasBlocksTrait;
+    use TrashableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -152,22 +155,32 @@ class Strip implements HasBlocksInterface, \Stringable
      */
     public function getCharactersList(): array
     {
-        if (null === $this->characters) {
+        return self::splitCharacters($this->characters);
+    }
+
+    /**
+     * The names held by one comma-separated field, each with the slug its own page is reached by - static so a listing can name the characters of a whole serie without loading every planche of it (see StripRepository::findCharactersBySerie()).
+     *
+     * @return array<int, array{name: string, slug: string}>
+     */
+    public static function splitCharacters(?string $characters): array
+    {
+        if (null === $characters) {
             return [];
         }
 
         $slugger = new AsciiSlugger();
-        $characters = [];
+        $list = [];
 
-        foreach (explode(',', $this->characters) as $character) {
+        foreach (explode(',', $characters) as $character) {
             $character = trim($character);
 
             if ('' !== $character) {
-                $characters[] = ['name' => $character, 'slug' => $slugger->slug($character)->lower()->toString()];
+                $list[] = ['name' => $character, 'slug' => $slugger->slug($character)->lower()->toString()];
             }
         }
 
-        return $characters;
+        return $list;
     }
 
     public function getSummary(): ?string
@@ -254,6 +267,7 @@ class Strip implements HasBlocksInterface, \Stringable
         return $this;
     }
 
+    /** @return Collection<int, StripMedia> */
     public function getMedias(): Collection
     {
         return $this->medias;

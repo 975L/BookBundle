@@ -33,17 +33,6 @@
         "description": "description.book_route_series"
     },
     {
-        "label": "label.book_route_serie",
-        "slug": "book-route-serie",
-        "sensitive": false,
-        "restricted": false,
-        "value": "serie",
-        "kind": "text",
-        "group": "book",
-        "severity": null,
-        "description": "description.book_route_serie"
-    },
-    {
         "label": "label.book_route_strips",
         "slug": "book-route-strips",
         "sensitive": false,
@@ -64,5 +53,115 @@
         "group": "book",
         "severity": null,
         "description": "description.book_route_strip"
+    },
+    {
+        "label": "label.book_route_book_shortcut",
+        "slug": "book-route-book-shortcut",
+        "sensitive": false,
+        "restricted": false,
+        "value": "b",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_book_shortcut"
+    },
+    {
+        "label": "label.book_route_strip_shortcut",
+        "slug": "book-route-strip-shortcut",
+        "sensitive": false,
+        "restricted": false,
+        "value": "s",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_strip_shortcut"
+    },
+    {
+        "label": "label.book_strip_card",
+        "slug": "book-strip-card",
+        "sensitive": false,
+        "restricted": false,
+        "value": "image",
+        "kind": "choice",
+        "choices": [
+            "image",
+            "text",
+            "both"
+        ],
+        "group": "book",
+        "severity": null,
+        "description": "description.book_strip_card"
+    },
+    {
+        "label": "label.book_strip_card_icon",
+        "slug": "book-strip-card-icon",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_strip_card_icon"
+    },
+    {
+        "label": "label.book_strip_rating_icon",
+        "slug": "book-strip-rating-icon",
+        "sensitive": false,
+        "restricted": false,
+        "value": null,
+        "kind": "choice",
+        "choices": [
+            "star",
+            "heart",
+            "thumbs-up",
+            "face-smile"
+        ],
+        "group": "book",
+        "severity": null,
+        "description": "description.book_strip_rating_icon"
+    },
+    {
+        "label": "label.book_confetti",
+        "slug": "book-confetti",
+        "sensitive": false,
+        "restricted": false,
+        "value": "false",
+        "kind": "bool",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_confetti"
+    },
+    {
+        "label": "label.book_rating",
+        "slug": "book-rating",
+        "sensitive": false,
+        "restricted": false,
+        "value": "true",
+        "kind": "bool",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_rating"
+    },
+    {
+        "label": "label.book_gplay_affiliate",
+        "slug": "book-gplay-affiliate",
+        "sensitive": true,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_gplay_affiliate"
+    },
+    {
+        "label": "label.book_catalog_title",
+        "slug": "book-catalog-title",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_catalog_title"
     }
 ]

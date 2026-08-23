@@ -20,7 +20,7 @@ use c975L\BookBundle\Entity\Strip;
 // Price and availability are deliberately absent: they are an "offers" node, which belongs to whoever sells the book (see TODO-ShopBundle.md) - emitted twice, they would diverge.
 class BookSnippetBuilder
 {
-    // What schema.org calls the edition a kind names. A kind is the site's own word (see c975L\BookBundle\Contract\BookCustomizationProviderInterface), so it is matched on rather than mapped: "illustrated_paper" is a paperback, "audio" an audiobook, and anything else - an epub, a pdf, a web edition - an ebook
+    // What schema.org calls the edition a kind names. A kind is the site's own word (see c975L\BookBundle\Contract\BookCustomizationProviderInterface), so it is matched on rather than mapped: any kind holding "paper" is a paperback, one holding "audio" an audiobook, and anything else - an epub, a pdf, a web edition - an ebook
     private const array BOOK_FORMATS = [
         'paper' => 'Paperback',
         'audio' => 'AudiobookFormat',
@@ -52,7 +52,6 @@ class BookSnippetBuilder
             'illustrator' => $this->person($book->getEffectiveIllustrator(), $book->getEffectiveIllustratorWebsite()),
             'inLanguage' => trim((string) $book->getLanguage()),
             'datePublished' => $book->getPublished()?->format('Y-m-d') ?? '',
-            'numberOfPages' => $book->getPages() ?? 0,
             'bookFormat' => $this->bookFormat($book),
             'typicalAgeRange' => trim((string) $book->getAge()),
             // One workExample per edition rather than a single "isbn": a paperback and an ebook are two editions of the same work, and schema.org has no way to say which of two ISBNs belongs to which
@@ -60,6 +59,8 @@ class BookSnippetBuilder
             // The same work in another language, said as a pair rather than as two unrelated books: a translation is not an edition, and carries neither the ISBNs nor the pages of the one it translates
             'translationOfWork' => $this->translation($book->getTranslationBook()),
             'workTranslation' => $this->translations($book),
+            // The version this one replaces - the text before it was illustrated, revised or recomposed. Said one way only, schema.org having no inverse of "isBasedOn": the old one says nothing of the new, which is exactly what lets an engine tell them apart (see Book::$newerVersion)
+            'isBasedOn' => $this->translation($book->getPreviousVersion()),
             'isPartOf' => $this->partOfSerie($book->getSerie()),
             'position' => $this->positionInSerie($book),
         ]);
@@ -170,7 +171,7 @@ class BookSnippetBuilder
         foreach ($book->getEditions() as $edition) {
             $isbn = trim((string) $edition->getIsbn());
 
-            if ('' === $isbn || !$edition->isReleased()) {
+            if ('' === $isbn) {
                 continue;
             }
 
@@ -183,10 +184,10 @@ class BookSnippetBuilder
                 'name' => trim((string) $book->getTitle()),
                 'isbn' => $isbn,
                 'inLanguage' => trim((string) $book->getLanguage()),
-                'datePublished' => $edition->getPublished()?->format('Y-m-d') ?? '',
-                'numberOfPages' => $edition->getDisplayedPages() ?? 0,
+                'datePublished' => $book->getPublished()?->format('Y-m-d') ?? '',
+                'numberOfPages' => $edition->getPages() ?? 0,
                 // The platforms carrying this edition, as identities and not as offers: what it costs and whether it is in stock belong to whoever sells it (see the note at the top)
-                'sameAs' => $this->editionLinks($edition),
+                'sameAs' => $this->editionLinks($book, $edition),
             ]);
         }
 
@@ -207,12 +208,13 @@ class BookSnippetBuilder
         return 'EBook';
     }
 
-    // The addresses of the platforms publishing this very edition, read off the edition itself - it used to be guessed from the format, a group of links standing in for the edition selling them
-    private function editionLinks(BookEdition $edition): array
+    // The addresses this edition is found at: the book's own, taken in the gesture the edition serves - a recording is listened to where the podcast apps carry it, a printed or digital book is bought where the bookshops sell it. The platforms belong to the book, an edition saying only what it comes out under (see BookEditionType)
+    private function editionLinks(Book $book, BookEdition $edition): array
     {
         $urls = [];
+        $links = str_contains((string) $edition->getKind(), 'audio') ? $book->getListenLinks() : $book->getBuyLinks();
 
-        foreach ($edition->getLinks() as $link) {
+        foreach ($links as $link) {
             $url = trim((string) $link->getUrl());
 
             if ('' !== $url) {

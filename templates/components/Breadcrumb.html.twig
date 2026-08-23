@@ -1,0 +1,28 @@
+{# <twig:c975LBook:Breadcrumb serie="{{ strip.serie }}" [current="{{ strip.title }}"]/> - where a page sits, and the way back out of it #}
+{# One component for the two pages, as GalleryBundle's own trail serves its three: "current" is left out on a serie's page, which then stops the trail one level earlier - a page prints the level it is on as text rather than linking to itself #}
+{# The hierarchy is the gallery's: the series answer to their index and a book or a planche to the serie telling it, never to a pile holding every planche the site owns #}
+{% props serie = null, current = '', language = null %}
+{# Which index a serie answers to: the one listing its kind, the two sharing no serie (see SerieKind). A site serving neither has no first level to offer, and the entry is left out rather than pointing at a route that matches nothing (see BookRoutePrefix) #}
+{% set isStripSerie = serie and serie.isStripSerie %}
+{% set indexRoute = isStripSerie ? 'strip_index' : 'serie_index' %}
+{% set indexLabel = isStripSerie ? 'label.strips_series' : 'label.series' %}
+{% set hasIndex = config(isStripSerie ? 'book-route-strips' : 'book-route-series')|default('') is not empty %}
+<nav class="book-breadcrumb" aria-label="{{ 'label.breadcrumb'|trans({}, 'book', language) }}">
+    {% if serie %}
+        {% if hasIndex %}
+            <a href="{{ path(indexRoute) }}">{{ indexLabel|trans({}, 'book', language) }}</a>
+            <span class="book-breadcrumb__separator" aria-hidden="true">&rsaquo;</span>
+        {% endif %}
+        {% if current is empty %}
+            <span class="book-breadcrumb__current" aria-current="page">{{ serie.title }}</span>
+        {% else %}
+            <a href="{{ serie_path(serie) }}">{{ serie.title }}</a>
+        {% endif %}
+    {% endif %}
+    {% if current is not empty %}
+        {% if serie %}
+            <span class="book-breadcrumb__separator" aria-hidden="true">&rsaquo;</span>
+        {% endif %}
+        <span class="book-breadcrumb__current" aria-current="page">{{ current }}</span>
+    {% endif %}
+</nav>

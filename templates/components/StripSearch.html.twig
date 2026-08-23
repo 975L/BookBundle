@@ -2,15 +2,15 @@
     <input
         type="search"
         data-model="query"
-        aria-label="Recherche dans les planches"
-        placeholder="Entrer les caractères recherchés"
+        aria-label="{{ 'label.strip_search'|trans({}, 'book') }}"
+        placeholder="{{ 'label.search_placeholder'|trans({}, 'book') }}"
         class="img-500"
     >
-    <p class="text text-center">&nbsp;</p>
+    <twig:c975LUi:Search:Busy/>
     <div class="flex-center flex-start">
         {% set strips = this.strips %}
         {% if strips is not null and strips is empty %}
-            <p class="text text-center">Aucun résultat trouvé pour votre recherche.</p>
+            <p class="text text-center">{{ 'label.no_result'|trans({}, 'book') }}</p>
         {% elseif strips is not empty %}
             <twig:c975LBook:Strip:Cards :strips="strips"/>
         {% endif %}

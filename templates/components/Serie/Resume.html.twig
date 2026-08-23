@@ -1,3 +1,10 @@
-<div class="text lead">
-    <twig:c975LUi:Text:Readmore text="{{ serie.summary }}" id="serie-summary"/>
-</div>
+{# <twig:c975LBook:Serie:Resume serie="{{ serie }}" [editUrl=""] /> #}
+{# The sentence the serie opens on, laid under the hero like a book's (see Book:Resume): neither title nor anchor, a summary being no destination to jump to #}
+{% props serie, editUrl = "" %}
+{% if serie.summary %}
+    <div class="book-page__lead"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+        <div class="text lead">
+            <twig:c975LUi:Text:Readmore text="{{ serie.summary }}" id="serie-summary"/>
+        </div>
+    </div>
+{% endif %}

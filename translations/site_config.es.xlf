@@ -2,53 +2,117 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="es" datatype="plaintext" original="site_config.es.xlf">
         <body>
-            <trans-unit id="e2f6aa3">
+            <trans-unit id="Q6bTgHt">
+                <source>description.book_catalog_title</source>
+                <target>La palabra bajo la que se presenta la página que lista los libros («Nuestros cuentos», «Nuestros álbumes»). Vacía, conserva la del bundle.</target>
+            </trans-unit>
+            <trans-unit id="0kXsg9a">
+                <source>description.book_confetti</source>
+                <target>Lanza una lluvia de confeti al abrirse la página de un libro. No se activa nada si el visitante ha pedido menos animaciones.</target>
+            </trans-unit>
+            <trans-unit id="HC5m5kS">
+                <source>description.book_gplay_affiliate</source>
+                <target>Se añade a las direcciones de Google Play de los libros, para que las ventas procedentes del sitio se le atribuyan. Si se deja vacío, una dirección se abre tal como está guardada</target>
+            </trans-unit>
+            <trans-unit id="DXvp5yF">
+                <source>description.book_rating</source>
+                <target>Muestra la nota de los lectores en la página de un libro, de una serie y de una plancha, así como en cada tarjeta de las listas de libros y de planchas. El icono y la escala se ajustan en los ajustes de UiBundle.</target>
+            </trans-unit>
+            <trans-unit id="FVHF9Tx">
                 <source>description.book_route_book</source>
                 <target>Primer segmento de la URL de un libro, p. ej. "libro" para /libro/mi-titulo. Vacío, la página deja de servirse.</target>
             </trans-unit>
-            <trans-unit id="5690162">
+            <trans-unit id="JLsjBEA">
+                <source>description.book_route_book_shortcut</source>
+                <target>Letra del enlace corto con el que se comparte un libro, p. ej. «b» para /b3, siendo el número el del libro. Práctico en una red social, donde una dirección corta se lee y se escribe. Vacío, no se sirve ninguna dirección de este tipo.</target>
+            </trans-unit>
+            <trans-unit id="sKxO26f">
                 <source>description.book_route_books</source>
                 <target>Primer segmento de la URL que lista los libros, p. ej. "libros" para /libros. El cambio es inmediato, pero las URL anteriores devuelven una página no encontrada: prevea una redirección si están indexadas. Vacío, la página deja de servirse.</target>
             </trans-unit>
-            <trans-unit id="bc47da0">
-                <source>description.book_route_serie</source>
-                <target>Primer segmento de la URL de una serie, p. ej. "serie" para /serie/mi-serie. Vacío, la página deja de servirse.</target>
-            </trans-unit>
-            <trans-unit id="38a0aa8">
+            <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
-                <target>Primer segmento de la URL que lista las series, p. ej. "series". Vacío, la página deja de servirse.</target>
+                <target>Primer segmento de la URL que lista las series de libros, p. ej. "series", y de la página de cada serie bajo ella (/series/mi-serie). Vacío, las páginas dejan de servirse.</target>
             </trans-unit>
-            <trans-unit id="96da72d">
+            <trans-unit id="WHOfVA_">
                 <source>description.book_route_strip</source>
                 <target>Primer segmento de la URL de una lámina, p. ej. "strip" para /strip/mi-lamina. Vacío, la página deja de servirse.</target>
             </trans-unit>
-            <trans-unit id="34c7dc5">
-                <source>description.book_route_strips</source>
-                <target>Primer segmento de la URL que lista las láminas, p. ej. "strips". Vacío, la página deja de servirse.</target>
+            <trans-unit id="1VPI5Vc">
+                <source>description.book_route_strip_shortcut</source>
+                <target>Letra del enlace corto con el que se comparte una lámina, p. ej. «s» para /s3, siendo el número el de la lámina. Vacío, no se sirve ninguna dirección de este tipo.</target>
             </trans-unit>
-            <trans-unit id="db5c3b4">
+            <trans-unit id="dSr9fKF">
+                <source>description.book_route_strips</source>
+                <target>Primer segmento de la URL que lista las series de láminas, p. ej. "strips", y de la página de cada serie bajo ella (/strips/mi-serie). Una lámina se lee dentro de su serie, nunca aquí. Vacío, las páginas dejan de servirse.</target>
+            </trans-unit>
+            <trans-unit id="50YtJwJ">
+                <source>description.book_strip_card</source>
+                <target>Lo que muestra la tarjeta de una plancha en la lista: "image" su dibujo, "text" su resumen, "both" ambos.</target>
+            </trans-unit>
+            <trans-unit id="V3_94QE">
+                <source>description.book_strip_card_icon</source>
+                <target>El archivo de la marca puesta en la tarjeta de una plancha, p. ej. "logo.webp". Vacío, la tarjeta no lleva ninguna.</target>
+            </trans-unit>
+            <trans-unit id="97tKwDe">
+                <source>description.book_strip_rating_icon</source>
+                <target>El icono con el que se valora una plancha, cuando debe distinguirse del resto del sitio. Vacío, la plancha sigue el ajuste general.</target>
+            </trans-unit>
+            <trans-unit id="71hczgd">
+                <source>label.book_catalog_title</source>
+                <target>Título del catálogo</target>
+            </trans-unit>
+            <trans-unit id="YqtsJyE">
+                <source>label.book_confetti</source>
+                <target>Confeti al abrir</target>
+            </trans-unit>
+            <trans-unit id="pasNlFf">
+                <source>label.book_gplay_affiliate</source>
+                <target>Identificador de afiliado de Google Play</target>
+            </trans-unit>
+            <trans-unit id="ZRe0eUt">
+                <source>label.book_rating</source>
+                <target>Valoraciones de los lectores</target>
+            </trans-unit>
+            <trans-unit id="WO0oclL">
                 <source>label.book_route_book</source>
                 <target>Prefijo URL de la página de un libro</target>
             </trans-unit>
-            <trans-unit id="8f1c115">
+            <trans-unit id="KF3jgYn">
+                <source>label.book_route_book_shortcut</source>
+                <target>Letra del enlace corto de un libro</target>
+            </trans-unit>
+            <trans-unit id="MGsjb2q">
                 <source>label.book_route_books</source>
                 <target>Prefijo URL de la lista de libros</target>
             </trans-unit>
-            <trans-unit id="de97a96">
-                <source>label.book_route_serie</source>
-                <target>Prefijo URL de la página de una serie</target>
-            </trans-unit>
-            <trans-unit id="392e619">
+            <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>
-                <target>Prefijo URL de la lista de series</target>
+                <target>Prefijo URL de la lista de series de libros</target>
             </trans-unit>
-            <trans-unit id="5dc32a7">
+            <trans-unit id="HBhNDc6">
                 <source>label.book_route_strip</source>
                 <target>Prefijo URL de la página de una lámina</target>
             </trans-unit>
-            <trans-unit id="4215fca">
+            <trans-unit id="3xRtgFn">
+                <source>label.book_route_strip_shortcut</source>
+                <target>Letra del enlace corto de una lámina</target>
+            </trans-unit>
+            <trans-unit id="hLojFlN">
                 <source>label.book_route_strips</source>
-                <target>Prefijo URL de la lista de láminas</target>
+                <target>Prefijo URL de la lista de series de láminas</target>
+            </trans-unit>
+            <trans-unit id="V.QanLq">
+                <source>label.book_strip_card</source>
+                <target>Tarjeta de una plancha</target>
+            </trans-unit>
+            <trans-unit id="eTyg50T">
+                <source>label.book_strip_card_icon</source>
+                <target>Marca de las tarjetas de planchas</target>
+            </trans-unit>
+            <trans-unit id="QBcKIBY">
+                <source>label.book_strip_rating_icon</source>
+                <target>Icono de las valoraciones de planchas</target>
             </trans-unit>
         </body>
     </file>

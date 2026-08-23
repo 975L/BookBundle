@@ -3,52 +3,22 @@
 namespace c975L\BookBundle\Form;
 
 use c975L\BookBundle\Entity\BookPresse;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
-use Vich\UploaderBundle\Form\Type\VichFileType;
 
-class BookPresseType extends AbstractType
+// A press article is an uploaded file as well as a player address: a filmed review is pasted like a video of the book (see BookVideoType)
+class BookPresseType extends BookOwnedMediaType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    protected function dataClass(): string
     {
-        $builder
-            ->add('position', HiddenType::class, [
-                'attr' => ['class' => 'ui-sort-position'],
-            ])
-            ->add('title', TextType::class, [
-                'label' => 'label.title',
-                'required' => false,
-            ])
-            ->add('youtubeUrl', null, [
-                'label' => 'label.youtube_id',
-                'help' => 'label.youtube_id_help',
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'xxx',
-                ],
-            ])
-            ->add('file', VichFileType::class, [
-                'label' => 'label.presse',
-                'required' => false,
-                'allow_delete' => true,
-                'download_uri' => true,
-                'asset_helper' => true,
-                'constraints' => [
-                    new File(maxSize: '100M'),
-                ],
-            ])
-        ;
+        return BookPresse::class;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    protected function fileLabel(): string
     {
-        $resolver->setDefaults([
-            'data_class' => BookPresse::class,
-            'translation_domain' => 'book',
-        ]);
+        return 'label.presse';
+    }
+
+    protected function hasHostedVideo(): bool
+    {
+        return true;
     }
 }

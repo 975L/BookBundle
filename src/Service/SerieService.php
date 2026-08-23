@@ -4,7 +4,9 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Repository\SerieRepository;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\InputBag;
 
 class SerieService implements SerieServiceInterface
 {
@@ -21,13 +23,9 @@ class SerieService implements SerieServiceInterface
     }
 
     // Gets the series paginated
-    public function findAllPaginated($query)
+    public function findAllPaginated(InputBag $query): PaginationInterface
     {
-        return $this->paginator->paginate(
-            $this->findAll(),
-            (int) $query->get('p') > 0 ? (int) $query->get('p') : 1,
-            10
-        );
+        return $this->paginate($this->findAll(), $query);
     }
 
     // Find all random
@@ -51,9 +49,32 @@ class SerieService implements SerieServiceInterface
         return $this->serieRepository->findWithStrips();
     }
 
+    // What the books' index lists, paginated as it was when it listed every serie
+    public function findWithBooksPaginated(InputBag $query): PaginationInterface
+    {
+        return $this->paginate($this->findWithBooks(), $query);
+    }
+
+    // What the planches' index lists: the series telling them, and no longer the planches themselves - those are read inside the serie that tells them (see StripController::index())
+    public function findWithStripsPaginated(InputBag $query): PaginationInterface
+    {
+        return $this->paginate($this->findWithStrips(), $query);
+    }
+
     // Finds all with sorted books by published date, null first
     public function findOneBySlugWithSortedBooks(string $slug): ?Serie
     {
         return $this->serieRepository->findOneBySlugWithSortedBooks($slug);
+    }
+
+    // How a page of series is cut, the three listings above sharing it rather than each spelling the page size again
+    /** @param Serie[] $series */
+    private function paginate(array $series, InputBag $query): PaginationInterface
+    {
+        return $this->paginator->paginate(
+            $series,
+            (int) $query->get('p') > 0 ? (int) $query->get('p') : 1,
+            10
+        );
     }
 }

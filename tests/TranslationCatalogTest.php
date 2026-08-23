@@ -42,7 +42,7 @@ class TranslationCatalogTest extends TestCase
     {
         $catalog = self::catalog($locale);
 
-        foreach (['label.links', 'label.link_kind', 'label.link_url', 'label.link_url-help', 'label.edition', 'label.edition_kind', 'label.edition_medias-help', 'label.edition_links-help', 'label.editions_none', 'label.editions_save_first', 'action.edition_new', 'label.info_book_edition'] as $key) {
+        foreach (['label.links', 'label.link_kind', 'label.link_url', 'label.link_url-help', 'label.edition', 'label.editions', 'label.editions-help', 'label.edition_kind', 'label.isbn', 'label.published', 'label.pages', 'label.edition_pages-help', 'label.media', 'label.audios-help', 'label.listen_links-help', 'label.buy_links-help', 'label.to_be_published'] as $key) {
             $this->assertArrayHasKey($key, $catalog, sprintf('"%s" is missing from the %s catalog', $key, $locale));
             $this->assertNotSame('', $catalog[$key]);
         }

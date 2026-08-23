@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Service;
 
+use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,8 +24,9 @@ class BookPublicUrlResolver
         'book_index' => 'book-route-books',
         'book_display' => 'book-route-book',
         'serie_index' => 'book-route-series',
-        'serie_display' => 'book-route-serie',
+        'serie_display' => 'book-route-series',
         'strip_index' => 'book-route-strips',
+        'strip_serie_display' => 'book-route-strips',
         'strip_display' => 'book-route-strip',
     ];
 
@@ -33,6 +35,12 @@ class BookPublicUrlResolver
         private readonly BookRoutePrefix $routePrefix,
         private readonly UrlGeneratorInterface $urlGenerator,
     ) {
+    }
+
+    // Which of the two routes reads a serie, the one below the index listing its kind (see SerieKind): said once here rather than at each of the dozen places generating that url
+    public static function serieRoute(Serie $serie): string
+    {
+        return $serie->isStripSerie() ? 'strip_serie_display' : 'serie_display';
     }
 
     // Null when "site-url" isn't configured yet, a sitemap accepting no relative url, and null too for a family this site doesn't serve

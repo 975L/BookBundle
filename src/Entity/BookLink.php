@@ -29,23 +29,6 @@ class BookLink implements \Stringable
     #[ORM\Column(nullable: true)]
     private ?int $position = null;
 
-    // The version this platform sells or plays. A link is added from the version's own screen, so it always names one; the column stays nullable for the rows a site holds from before versions were edited apart
-    #[ORM\ManyToOne(targetEntity: BookEdition::class, inversedBy: 'links')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
-    private ?BookEdition $edition = null;
-
-    public function getEdition(): ?BookEdition
-    {
-        return $this->edition;
-    }
-
-    public function setEdition(?BookEdition $edition): static
-    {
-        $this->edition = $edition;
-
-        return $this;
-    }
-
     public function __toString(): string
     {
         return (string) $this->kind;

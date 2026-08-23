@@ -1,2 +1,5 @@
-<h2>Chercher une planche</h2>
-{{ component('StripSearch') }}
+{# <twig:c975LBook:Strip:Search [serie="{{ serie }}"] [heading="h2"]/> - the field a listing is searched from #}
+{# Given a serie, the search is held inside it: the same field on a serie's page asks that serie alone, where the listing of every planche asks the whole site #}
+{% props serie = null, heading = 'h2' %}
+<{{ heading }}>{{ 'label.strip_search'|trans({}, 'book', serie ? serie.language : null) }}</{{ heading }}>
+{{ component('StripSearch', {serieId: serie ? serie.id : null}) }}

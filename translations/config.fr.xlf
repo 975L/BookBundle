@@ -2,7 +2,7 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="fr" datatype="plaintext" original="config.fr.xlf">
         <body>
-            <trans-unit id="5f8553d">
+            <trans-unit id="LDYkqL9">
                 <source>label.group_book</source>
                 <target>Catalogue</target>
             </trans-unit>

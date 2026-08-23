@@ -18,11 +18,9 @@ interface SerieServiceInterface
     /**
      * Every serie, 10 per page.
      *
-     * @param InputBag $query the request's query bag, its "p" parameter holding the 1-based page number
-     *
      * @return PaginationInterface<int, Serie>
      */
-    public function findAllPaginated($query);
+    public function findAllPaginated(InputBag $query): PaginationInterface;
 
     /**
      * @return Serie[] at most $number, shuffled in PHP rather than by the query
@@ -38,6 +36,12 @@ interface SerieServiceInterface
      * @return Serie[] the series holding at least one strip
      */
     public function findWithStrips(): array;
+
+    // What the books' index lists, paginated.
+    public function findWithBooksPaginated(InputBag $query): PaginationInterface;
+
+    // What the planches' index lists: the series telling them, paginated.
+    public function findWithStripsPaginated(InputBag $query): PaginationInterface;
 
     // The serie and its books, ordered by publication date with the undated ones first.
     public function findOneBySlugWithSortedBooks(string $slug): ?Serie;

@@ -2,9 +2,53 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="es" datatype="plaintext" original="book.en.xlf">
         <body>
+            <trans-unit id="sSgetpg">
+                <source>action.delete_permanently</source>
+                <target>Eliminar definitivamente</target>
+            </trans-unit>
+            <trans-unit id="IzBoXOt">
+                <source>action.duplicate</source>
+                <target>Duplicar</target>
+            </trans-unit>
+            <trans-unit id="vUjYe27">
+                <source>action.move_to_trash</source>
+                <target>Mover a la papelera</target>
+            </trans-unit>
+            <trans-unit id="cm16A9p">
+                <source>action.publish_new_version</source>
+                <target>Publicar una nueva versión</target>
+            </trans-unit>
+            <trans-unit id="He.mYrO">
+                <source>action.publish_new_version_disabled</source>
+                <target>Este libro ya está sustituido por una versión más reciente — es esa la que se declina a su vez</target>
+            </trans-unit>
+            <trans-unit id="KrzhzB_">
+                <source>action.restore</source>
+                <target>Restaurar</target>
+            </trans-unit>
+            <trans-unit id="8w7xgsI">
+                <source>action.trash</source>
+                <target>Papelera</target>
+            </trans-unit>
             <trans-unit id="CTyRVpC">
                 <source>action.view_on_site</source>
                 <target>Ver en el sitio</target>
+            </trans-unit>
+            <trans-unit id="X4j.TeG">
+                <source>confirm.delete_permanently</source>
+                <target>¿Eliminar definitivamente este elemento y todos sus archivos? Su dirección responderá 410 para siempre.</target>
+            </trans-unit>
+            <trans-unit id="gtzKxeG">
+                <source>confirm.duplicate</source>
+                <target>¿Crear una copia de este elemento con todo lo que contiene?</target>
+            </trans-unit>
+            <trans-unit id="dm8sVDz">
+                <source>confirm.move_to_trash</source>
+                <target>¿Mover este elemento a la papelera? Su página deja de servirse, pero no se pierde nada: puede restaurarse.</target>
+            </trans-unit>
+            <trans-unit id="2pKncNB">
+                <source>confirm.publish_new_version</source>
+                <target>¿Apartar lo que este libro ha publicado hasta ahora? Nace un libro gemelo que recibe los formatos aparecidos con sus archivos y sus plataformas; este conserva su dirección, sus valoraciones y sus traducciones, y vuelve a empezar con formatos por rellenar. El gemelo sigue a la venta con su ISBN, solo sale del catálogo.</target>
             </trans-unit>
             <trans-unit id="YT.YFdA">
                 <source>description.guided_project_book_composition</source>
@@ -17,6 +61,18 @@
             <trans-unit id="vfRiQY8">
                 <source>description.guided_project_book_serie_creation</source>
                 <target>Una serie agrupa los libros o las láminas de una misma colección. Crearla primero evita volver a cada libro para vincularlo.</target>
+            </trans-unit>
+            <trans-unit id="0ebzwCX">
+                <source>description.guided_project_book_strip_creation</source>
+                <target>Una página, la serie que la cuenta, su lugar y su dibujo: lo necesario para publicarla.</target>
+            </trans-unit>
+            <trans-unit id="pNsC2xL">
+                <source>description.guided_project_book_trash</source>
+                <target>Nada se pierde con un clic: un libro movido a la papelera conserva su página y sus archivos, y la misma pantalla muestra lo que hay en ella.</target>
+            </trans-unit>
+            <trans-unit id="5xAALK6">
+                <source>description.guided_project_book_version_publication</source>
+                <target>Lo publicado hasta ahora se aparta en un gemelo, y el libro conserva su dirección, sus valoraciones y sus traducciones para recibir el nuevo texto.</target>
             </trans-unit>
             <trans-unit id="QmMk4WE">
                 <source>description.guided_step_book_composition_add</source>
@@ -42,6 +98,14 @@
                 <source>description.guided_step_book_creation_done</source>
                 <target>Su página está en línea, y el sitemap la declara en la siguiente regeneración, cuyo acceso directo está en el panel.</target>
             </trans-unit>
+            <trans-unit id="QLpGkWa">
+                <source>description.guided_step_book_creation_editions</source>
+                <target>Cada forma publicada del libro — papel, digital, audio — con su ISBN y su fecha de publicación, desplegada en el sitio</target>
+            </trans-unit>
+            <trans-unit id="6qon4AP">
+                <source>description.guided_step_book_creation_editions_add</source>
+                <target>El botón despliega una edición más, cuyos archivos y plataformas se añaden en el propio panel</target>
+            </trans-unit>
             <trans-unit id=".KDAbfg">
                 <source>description.guided_step_book_creation_new</source>
                 <target>El botón de añadir abre el formulario de un libro vacío.</target>
@@ -57,6 +121,10 @@
             <trans-unit id="Gcj9PEQ">
                 <source>description.guided_step_book_creation_serie</source>
                 <target>El libro ocupa su lugar en la serie, cuya página muestra entonces sus tomos.</target>
+            </trans-unit>
+            <trans-unit id="eJkp167">
+                <source>description.guided_step_book_creation_technical_tab</source>
+                <target>La segunda pestaña del formulario, donde están las ediciones y la financiación colectiva</target>
             </trans-unit>
             <trans-unit id="x5k_Kqu">
                 <source>description.guided_step_book_creation_title</source>
@@ -90,9 +158,145 @@
                 <source>description.guided_step_book_serie_creation_title</source>
                 <target>El título aparece en la página pública de la serie y en los menús que la enlazan.</target>
             </trans-unit>
+            <trans-unit id="hualbfA">
+                <source>description.guided_step_book_strip_creation_characters</source>
+                <target>Los nombres separados por comas: son los que filtran las etiquetas de la serie.</target>
+            </trans-unit>
+            <trans-unit id="i_zWQS3">
+                <source>description.guided_step_book_strip_creation_done</source>
+                <target>Se lee dentro de su serie, se filtra por sus personajes y responde a su número.</target>
+            </trans-unit>
+            <trans-unit id="0L78Tsk">
+                <source>description.guided_step_book_strip_creation_media_tab</source>
+                <target>La segunda pestaña del formulario, donde se adjunta el dibujo.</target>
+            </trans-unit>
+            <trans-unit id="354TFBQ">
+                <source>description.guided_step_book_strip_creation_medias</source>
+                <target>Es la imagen que la página muestra en grande, y que su tarjeta reproduce en pequeño.</target>
+            </trans-unit>
+            <trans-unit id="2AOvCAN">
+                <source>description.guided_step_book_strip_creation_new</source>
+                <target>El botón «Crear» abre el formulario de una página vacía.</target>
+            </trans-unit>
+            <trans-unit id="sk.4dMp">
+                <source>description.guided_step_book_strip_creation_number</source>
+                <target>El número indica su lugar en la serie, y también responde como dirección corta.</target>
+            </trans-unit>
+            <trans-unit id="1JBYG2.">
+                <source>description.guided_step_book_strip_creation_open</source>
+                <target>La lista de todas las páginas, desde donde se crea la siguiente.</target>
+            </trans-unit>
+            <trans-unit id="JL9wRS1">
+                <source>description.guided_step_book_strip_creation_serie</source>
+                <target>La serie es lo que permite leerla a continuación de las demás, y la ruta de navegación remonta a ella.</target>
+            </trans-unit>
+            <trans-unit id="FckYTEl">
+                <source>description.guided_step_book_strip_creation_title</source>
+                <target>El título nombra la página en todas las listas, y de él se deriva su dirección.</target>
+            </trans-unit>
+            <trans-unit id="Kl4RXD0">
+                <source>description.guided_step_book_trash_delete</source>
+                <target>El icono pide confirmación; el libro sale del catálogo sin perder nada más.</target>
+            </trans-unit>
+            <trans-unit id="jd8UjNW">
+                <source>description.guided_step_book_trash_done</source>
+                <target>Restaurarlo o eliminarlo definitivamente corresponde al administrador del sitio.</target>
+            </trans-unit>
+            <trans-unit id="Tgr4TqW">
+                <source>description.guided_step_book_trash_open</source>
+                <target>La lista de libros, de donde parte y a donde vuelve el gesto.</target>
+            </trans-unit>
+            <trans-unit id="Qzxgk28">
+                <source>description.guided_step_book_trash_switch</source>
+                <target>La misma pantalla cambia a lo que se ha apartado, y vuelve con un segundo clic.</target>
+            </trans-unit>
+            <trans-unit id="W_pjSq.">
+                <source>description.guided_step_book_version_publication_done</source>
+                <target>El libro conserva su dirección y sus lectores, y la versión anterior se alcanza desde él.</target>
+            </trans-unit>
+            <trans-unit id="A7nY5mN">
+                <source>description.guided_step_book_version_publication_editions</source>
+                <target>Su ISBN y su fecha de publicación: es lo que hace aparecer el nuevo texto.</target>
+            </trans-unit>
+            <trans-unit id="b3DtjTg">
+                <source>description.guided_step_book_version_publication_open</source>
+                <target>La lista de libros, donde cada fila lleva el gesto de las versiones.</target>
+            </trans-unit>
+            <trans-unit id="BgcIQsS">
+                <source>description.guided_step_book_version_publication_previous</source>
+                <target>El campo «Sustituye a» nombra la versión apartada: conserva su página y su ISBN, y solo sale del catálogo.</target>
+            </trans-unit>
+            <trans-unit id="RYYQFGu">
+                <source>description.guided_step_book_version_publication_publish</source>
+                <target>El botón pide confirmación y luego abre el libro que permanece, vacío de sus formatos, que se han ido con el gemelo.</target>
+            </trans-unit>
+            <trans-unit id="MgK60xZ">
+                <source>description.guided_step_book_version_publication_technical_tab</source>
+                <target>La segunda pestaña del formulario, donde se declaran los formatos.</target>
+            </trans-unit>
+            <trans-unit id="YKVN37A">
+                <source>flash.book_deleted_permanently</source>
+                <target>El libro ha sido eliminado definitivamente</target>
+            </trans-unit>
+            <trans-unit id="0Mn0vSP">
+                <source>flash.book_duplicated</source>
+                <target>El libro ha sido duplicado, está editando la copia</target>
+            </trans-unit>
+            <trans-unit id="eSzpG8h">
+                <source>flash.book_restored</source>
+                <target>El libro ha sido restaurado</target>
+            </trans-unit>
+            <trans-unit id="eNUVmpk">
+                <source>flash.media_move_failed</source>
+                <target>No se ha podido mover el archivo</target>
+            </trans-unit>
+            <trans-unit id="eqbgrdb">
+                <source>flash.media_moved</source>
+                <target>El archivo ha sido movido</target>
+            </trans-unit>
+            <trans-unit id="NRvx77P">
+                <source>flash.serie_deleted_permanently</source>
+                <target>La serie ha sido eliminada definitivamente</target>
+            </trans-unit>
+            <trans-unit id="QU4rm78">
+                <source>flash.serie_duplicated</source>
+                <target>La serie ha sido duplicada, está editando la copia</target>
+            </trans-unit>
+            <trans-unit id="6yEyPcO">
+                <source>flash.serie_holds_content</source>
+                <target>Esta serie todavía contiene libros o páginas: reasígnelos o elimínelos primero</target>
+            </trans-unit>
+            <trans-unit id="cBZeBZe">
+                <source>flash.serie_restored</source>
+                <target>La serie ha sido restaurada</target>
+            </trans-unit>
+            <trans-unit id="9FAEA3k">
+                <source>flash.strip_deleted_permanently</source>
+                <target>La página ha sido eliminada definitivamente</target>
+            </trans-unit>
+            <trans-unit id="5_bZbvB">
+                <source>flash.strip_duplicated</source>
+                <target>La página ha sido duplicada, está editando la copia</target>
+            </trans-unit>
+            <trans-unit id="0cOiVcE">
+                <source>flash.strip_restored</source>
+                <target>La página ha sido restaurada</target>
+            </trans-unit>
+            <trans-unit id="bVh5q5f">
+                <source>flash.version_already_published</source>
+                <target>Este libro ya aparta una versión: un libro solo sustituye a una</target>
+            </trans-unit>
+            <trans-unit id="HZ5ISPs">
+                <source>flash.version_published</source>
+                <target>La versión anterior es ahora «%title%» — rellene aquí los formatos de la nueva</target>
+            </trans-unit>
             <trans-unit id="dnzVgba">
                 <source>label.age</source>
                 <target>Edad</target>
+            </trans-unit>
+            <trans-unit id="cUeKXyD">
+                <source>label.audios-help</source>
+                <target>La grabación del libro, en cada uno de los formatos que un lector puede llevarse. Pertenece al libro: el formato de audio, más abajo, solo indica el ISBN con el que se publica.</target>
             </trans-unit>
             <trans-unit id="J2_zmdF">
                 <source>label.author</source>
@@ -102,6 +306,22 @@
                 <source>label.author_website</source>
                 <target>Sitio web del autor</target>
             </trans-unit>
+            <trans-unit id="BOFffHi">
+                <source>label.back_cover</source>
+                <target>Contraportada</target>
+            </trans-unit>
+            <trans-unit id="8GWFHc0">
+                <source>label.back_cover-help</source>
+                <target>Contraportada. Subida aquí, la portada se da la vuelta al hacer clic para mostrarla</target>
+            </trans-unit>
+            <trans-unit id="LsBidrc">
+                <source>label.background</source>
+                <target>Fondo del encabezado</target>
+            </trans-unit>
+            <trans-unit id="N42gEu7">
+                <source>label.background-help</source>
+                <target>Imagen de fondo del encabezado de la página del libro. Sin ella el encabezado se queda sobre el fondo del sitio</target>
+            </trans-unit>
             <trans-unit id="_qvWPOd">
                 <source>label.block_books</source>
                 <target>Libros publicados</target>
@@ -110,15 +330,15 @@
                 <source>label.block_books_description</source>
                 <target>Destaca una selección de libros</target>
             </trans-unit>
-            <trans-unit id="Rd3xKmT">
+            <trans-unit id="w8_6t_3">
                 <source>label.block_reader</source>
                 <target>Lector ilustrado</target>
             </trans-unit>
-            <trans-unit id="Zp7qLvA">
+            <trans-unit id="bvfK8ka">
                 <source>label.block_reader_description</source>
                 <target>Pasa las páginas de un álbum al ritmo de la banda sonora</target>
             </trans-unit>
-            <trans-unit id="Hn2wJcE">
+            <trans-unit id="us3SJ0p">
                 <source>label.block_reader_media_help</source>
                 <target>Las páginas del álbum en orden, luego la banda sonora</target>
             </trans-unit>
@@ -158,9 +378,33 @@
                 <source>label.book</source>
                 <target>Libro</target>
             </trans-unit>
+            <trans-unit id="Cva7dGG">
+                <source>label.book_cover-help</source>
+                <target>Portada del libro, la que muestra su página en cabecera</target>
+            </trans-unit>
+            <trans-unit id="l.w15Mh">
+                <source>label.book_search</source>
+                <target>Buscar un libro</target>
+            </trans-unit>
             <trans-unit id="QMoEfWk">
                 <source>label.books</source>
                 <target>Libros</target>
+            </trans-unit>
+            <trans-unit id="eCcX0_G">
+                <source>label.breadcrumb</source>
+                <target>Ruta de navegación</target>
+            </trans-unit>
+            <trans-unit id="MJfK172">
+                <source>label.buy</source>
+                <target>Comprar</target>
+            </trans-unit>
+            <trans-unit id="cr038xh">
+                <source>label.buy-intro</source>
+                <target>Este libro está a la venta en las direcciones siguientes.</target>
+            </trans-unit>
+            <trans-unit id="lJESZdW">
+                <source>label.buy_links-help</source>
+                <target>Las librerías donde se compra el libro, y la propia tienda del sitio, destacada en la página.</target>
             </trans-unit>
             <trans-unit id="hGAxJ_T">
                 <source>label.catalog</source>
@@ -173,6 +417,10 @@
             <trans-unit id="J2ePCOx">
                 <source>label.characters</source>
                 <target>Personajes</target>
+            </trans-unit>
+            <trans-unit id="eyjXZ2b">
+                <source>label.copy_suffix</source>
+                <target>copia</target>
             </trans-unit>
             <trans-unit id="iFh7z4x">
                 <source>label.cover</source>
@@ -194,6 +442,62 @@
                 <source>label.crowdfunding_end_date</source>
                 <target>Fecha de fin del crowdfunding</target>
             </trans-unit>
+            <trans-unit id="x5e1r02">
+                <source>label.crowdfunding_ended</source>
+                <target>Campaña finalizada</target>
+            </trans-unit>
+            <trans-unit id="vFl.DpO">
+                <source>label.crowdfunding_support</source>
+                <target>Apoyar el libro</target>
+            </trans-unit>
+            <trans-unit id="aIZFxNx">
+                <source>label.data</source>
+                <target>Información propia del sitio</target>
+            </trans-unit>
+            <trans-unit id="TdQ3Sze">
+                <source>label.edition</source>
+                <target>Formato</target>
+            </trans-unit>
+            <trans-unit id="fC_vJAg">
+                <source>label.edition_audio</source>
+                <target>Audio</target>
+            </trans-unit>
+            <trans-unit id="RSLhjze">
+                <source>label.edition_digital</source>
+                <target>Digital</target>
+            </trans-unit>
+            <trans-unit id="JsXZydc">
+                <source>label.edition_format-help</source>
+                <target>Bajo qué forma se presenta este formato: 15 x 21 cm, PDF, MP3…</target>
+            </trans-unit>
+            <trans-unit id="l9nCA.O">
+                <source>label.edition_kind</source>
+                <target>Formato</target>
+            </trans-unit>
+            <trans-unit id="N1XBJc6">
+                <source>label.edition_links-help</source>
+                <target>Las plataformas que venden o difunden este formato — una línea por plataforma. Para el papel, la dirección de la tienda donde se encarga</target>
+            </trans-unit>
+            <trans-unit id="ouaKwGN">
+                <source>label.edition_medias-help</source>
+                <target>Los archivos de este formato solamente — sus páginas, su grabación, su portada</target>
+            </trans-unit>
+            <trans-unit id="7FRsJeY">
+                <source>label.edition_pages-help</source>
+                <target>El número de páginas de esta versión</target>
+            </trans-unit>
+            <trans-unit id="cC9wtp5">
+                <source>label.edition_paper</source>
+                <target>Papel</target>
+            </trans-unit>
+            <trans-unit id="NbK0Mua">
+                <source>label.editions</source>
+                <target>Formatos</target>
+            </trans-unit>
+            <trans-unit id="dA4zsHN">
+                <source>label.editions-help</source>
+                <target>Cada formato en el que aparece el libro — audio, digital, papel — desplegado aquí mismo con su ISBN, su fecha, sus archivos y sus plataformas. Un texto reescrito, revisado o recién ilustrado no es un formato: es un libro aparte, vinculado a este por «Sustituido por». Borrar un formato borra también sus archivos</target>
+            </trans-unit>
             <trans-unit id="Qlj16Mb">
                 <source>label.english</source>
                 <target>Inglés</target>
@@ -210,17 +514,33 @@
                 <source>label.export_json</source>
                 <target>JSON</target>
             </trans-unit>
+            <trans-unit id="D3JAAvE">
+                <source>label.export_selection</source>
+                <target>Exportar la selección</target>
+            </trans-unit>
             <trans-unit id="u_a7b8K">
                 <source>label.export_sql</source>
                 <target>SQL</target>
             </trans-unit>
-            <trans-unit id="L86bICc">
-                <source>label.extracts</source>
+            <trans-unit id="4FbGSaQ">
+                <source>label.extract</source>
                 <target>Extractos</target>
+            </trans-unit>
+            <trans-unit id="pUGQ84e">
+                <source>label.extract-help</source>
+                <target>Las páginas que un lector hojea antes de comprar. Las páginas de un álbum pertenecen a la edición en la que se publicaron y se añaden en ella.</target>
+            </trans-unit>
+            <trans-unit id="Na2sWb9">
+                <source>label.flipbook</source>
+                <target>Hojeo</target>
+            </trans-unit>
+            <trans-unit id="tqRCFmw">
+                <source>label.flipbook-help</source>
+                <target>El vídeo que pasa las páginas del libro. Un mp4. El hojeo de un álbum pertenece a la edición que lo publicó y se añade en ella.</target>
             </trans-unit>
             <trans-unit id="gv8hrJY">
                 <source>label.format</source>
-                <target>Formato</target>
+                <target>Presentación</target>
             </trans-unit>
             <trans-unit id="GtyZWrj">
                 <source>label.french</source>
@@ -270,6 +590,18 @@
                 <source>label.guided_project_book_serie_creation</source>
                 <target>Crear una serie</target>
             </trans-unit>
+            <trans-unit id="9Q84XCP">
+                <source>label.guided_project_book_strip_creation</source>
+                <target>Publicar una página</target>
+            </trans-unit>
+            <trans-unit id="dMs_Dy.">
+                <source>label.guided_project_book_trash</source>
+                <target>Apartar un libro</target>
+            </trans-unit>
+            <trans-unit id="a0rsniN">
+                <source>label.guided_project_book_version_publication</source>
+                <target>Publicar una nueva versión</target>
+            </trans-unit>
             <trans-unit id="8EtrFFM">
                 <source>label.guided_step_book_composition_add</source>
                 <target>Añadir un bloque</target>
@@ -298,6 +630,14 @@
                 <source>label.guided_step_book_creation_done</source>
                 <target>El libro está publicado</target>
             </trans-unit>
+            <trans-unit id="PwRtO8d">
+                <source>label.guided_step_book_creation_editions</source>
+                <target>Añada sus ediciones</target>
+            </trans-unit>
+            <trans-unit id="kHcVJom">
+                <source>label.guided_step_book_creation_editions_add</source>
+                <target>Añada una edición</target>
+            </trans-unit>
             <trans-unit id="bCq2l8L">
                 <source>label.guided_step_book_creation_new</source>
                 <target>Crear un libro</target>
@@ -317,6 +657,10 @@
             <trans-unit id="Q6u5St9">
                 <source>label.guided_step_book_creation_serie</source>
                 <target>Vincular a una serie</target>
+            </trans-unit>
+            <trans-unit id="QKFhS_d">
+                <source>label.guided_step_book_creation_technical_tab</source>
+                <target>Abra la pestaña «Página»</target>
             </trans-unit>
             <trans-unit id="r8dIS66">
                 <source>label.guided_step_book_creation_title</source>
@@ -353,6 +697,114 @@
             <trans-unit id="2IxEFDa">
                 <source>label.guided_step_book_serie_creation_title</source>
                 <target>Poner un título</target>
+            </trans-unit>
+            <trans-unit id="0LQKKD8">
+                <source>label.guided_step_book_strip_creation_characters</source>
+                <target>Diga quién habla</target>
+            </trans-unit>
+            <trans-unit id="KCK8HEk">
+                <source>label.guided_step_book_strip_creation_done</source>
+                <target>La página está publicada</target>
+            </trans-unit>
+            <trans-unit id="iqbMk5d">
+                <source>label.guided_step_book_strip_creation_media_tab</source>
+                <target>Abra la pestaña «Medios»</target>
+            </trans-unit>
+            <trans-unit id="Et9Ju5b">
+                <source>label.guided_step_book_strip_creation_medias</source>
+                <target>Adjunte el dibujo</target>
+            </trans-unit>
+            <trans-unit id="KQ_EU6l">
+                <source>label.guided_step_book_strip_creation_new</source>
+                <target>Cree una página</target>
+            </trans-unit>
+            <trans-unit id="cdYPadH">
+                <source>label.guided_step_book_strip_creation_number</source>
+                <target>Numérela</target>
+            </trans-unit>
+            <trans-unit id="mUJ6X4C">
+                <source>label.guided_step_book_strip_creation_open</source>
+                <target>Abra las páginas</target>
+            </trans-unit>
+            <trans-unit id="Lvu9crm">
+                <source>label.guided_step_book_strip_creation_save</source>
+                <target>Guarde</target>
+            </trans-unit>
+            <trans-unit id="V_B.uPO">
+                <source>label.guided_step_book_strip_creation_serie</source>
+                <target>Vincúlela a su serie</target>
+            </trans-unit>
+            <trans-unit id="eJnKowv">
+                <source>label.guided_step_book_strip_creation_title</source>
+                <target>Póngale un título</target>
+            </trans-unit>
+            <trans-unit id="omgz67L">
+                <source>label.guided_step_book_trash_delete</source>
+                <target>Mueva el libro a la papelera</target>
+            </trans-unit>
+            <trans-unit id="pA9ispE">
+                <source>label.guided_step_book_trash_done</source>
+                <target>El libro está apartado</target>
+            </trans-unit>
+            <trans-unit id="tw899tf">
+                <source>label.guided_step_book_trash_open</source>
+                <target>Abra el catálogo</target>
+            </trans-unit>
+            <trans-unit id="zTUSiEd">
+                <source>label.guided_step_book_trash_switch</source>
+                <target>Mire la papelera</target>
+            </trans-unit>
+            <trans-unit id="6nOpxha">
+                <source>label.guided_step_book_version_publication_done</source>
+                <target>La nueva versión ha salido</target>
+            </trans-unit>
+            <trans-unit id="7ej4vQO">
+                <source>label.guided_step_book_version_publication_editions</source>
+                <target>Declare el nuevo formato</target>
+            </trans-unit>
+            <trans-unit id="IXNadIW">
+                <source>label.guided_step_book_version_publication_open</source>
+                <target>Abra el catálogo</target>
+            </trans-unit>
+            <trans-unit id="IreQ5kh">
+                <source>label.guided_step_book_version_publication_previous</source>
+                <target>Compruebe el gemelo</target>
+            </trans-unit>
+            <trans-unit id="9CpPQbg">
+                <source>label.guided_step_book_version_publication_publish</source>
+                <target>Derive el libro</target>
+            </trans-unit>
+            <trans-unit id="zsR1kmI">
+                <source>label.guided_step_book_version_publication_save</source>
+                <target>Guarde</target>
+            </trans-unit>
+            <trans-unit id="8uZwQXB">
+                <source>label.guided_step_book_version_publication_technical_tab</source>
+                <target>Abra la pestaña «Página»</target>
+            </trans-unit>
+            <trans-unit id="T5sqP.N">
+                <source>label.health_check_link_broken</source>
+                <target>Enlace roto (HTTP %code%)</target>
+            </trans-unit>
+            <trans-unit id="7cT9Emx">
+                <source>label.health_check_link_invalid</source>
+                <target>Dirección no válida: una plataforma se declara con su dirección completa, protocolo incluido</target>
+            </trans-unit>
+            <trans-unit id="0Mnj4tJ">
+                <source>label.health_check_link_ok</source>
+                <target>Enlace accesible (HTTP %code%)</target>
+            </trans-unit>
+            <trans-unit id="7QuGHmg">
+                <source>label.health_check_link_refused</source>
+                <target>La plataforma rechaza las verificaciones automáticas (HTTP %code%)</target>
+            </trans-unit>
+            <trans-unit id="CXF8rlr">
+                <source>label.health_check_link_unreachable</source>
+                <target>Sin respuesta: tiempo agotado, dominio desconocido o conexión rechazada</target>
+            </trans-unit>
+            <trans-unit id="F3Oy_bs">
+                <source>label.hero</source>
+                <target>Cabecera</target>
             </trans-unit>
             <trans-unit id="n8eShlM">
                 <source>label.illustrator</source>
@@ -394,6 +846,34 @@
                 <source>label.language</source>
                 <target>Idioma</target>
             </trans-unit>
+            <trans-unit id="O2cYnja">
+                <source>label.link_kind</source>
+                <target>Plataforma</target>
+            </trans-unit>
+            <trans-unit id="1o36fiC">
+                <source>label.link_shop</source>
+                <target>Nuestra tienda</target>
+            </trans-unit>
+            <trans-unit id="a_COAJl">
+                <source>label.link_url</source>
+                <target>Dirección</target>
+            </trans-unit>
+            <trans-unit id="QFClv0P">
+                <source>label.link_url-help</source>
+                <target>La dirección de la página del libro en la plataforma, copiada tal cual</target>
+            </trans-unit>
+            <trans-unit id="7BYqEbj">
+                <source>label.links</source>
+                <target>Enlaces</target>
+            </trans-unit>
+            <trans-unit id="GJrzplD">
+                <source>label.listen_links-help</source>
+                <target>Las aplicaciones de podcast y las librerías de audio donde se escucha el libro.</target>
+            </trans-unit>
+            <trans-unit id="knMSD8.">
+                <source>label.load_more</source>
+                <target>Ver más</target>
+            </trans-unit>
             <trans-unit id="CicLx_A">
                 <source>label.logo</source>
                 <target>Logo</target>
@@ -410,33 +890,141 @@
                 <source>label.media</source>
                 <target>Medios</target>
             </trans-unit>
+            <trans-unit id="NjiEgem">
+                <source>label.media_audio_mp3</source>
+                <target>Audio MP3</target>
+            </trans-unit>
+            <trans-unit id="Toeh2vi">
+                <source>label.media_audio_ogg</source>
+                <target>Audio OGG</target>
+            </trans-unit>
+            <trans-unit id="N.4jGcp">
+                <source>label.media_background</source>
+                <target>Fondo de página</target>
+            </trans-unit>
+            <trans-unit id="KVlWaEg">
+                <source>label.media_cover</source>
+                <target>Portada</target>
+            </trans-unit>
+            <trans-unit id="q.6gwge">
+                <source>label.media_cover_back</source>
+                <target>Contraportada</target>
+            </trans-unit>
+            <trans-unit id="yTUio4u">
+                <source>label.media_extract</source>
+                <target>Extracto</target>
+            </trans-unit>
+            <trans-unit id="JkZCnc5">
+                <source>label.media_flipbook</source>
+                <target>Hojeado</target>
+            </trans-unit>
+            <trans-unit id="RrU6t5I">
+                <source>label.media_kind</source>
+                <target>Tipo de archivo</target>
+            </trans-unit>
+            <trans-unit id="gNZs8lY">
+                <source>label.media_page</source>
+                <target>Página</target>
+            </trans-unit>
+            <trans-unit id="J71iTWc">
+                <source>label.media_podcast</source>
+                <target>Vídeo del pódcast</target>
+            </trans-unit>
+            <trans-unit id="v5X_Lk_">
+                <source>label.media_trailer</source>
+                <target>Tráiler</target>
+            </trans-unit>
             <trans-unit id="baXk6pr">
                 <source>label.modification</source>
                 <target>Modificado el</target>
             </trans-unit>
-            <trans-unit id="b17c942">
+            <trans-unit id="h4VMNLj">
+                <source>label.newer_version</source>
+                <target>Sustituido por</target>
+            </trans-unit>
+            <trans-unit id="uNwDDu9">
+                <source>label.newer_version-help</source>
+                <target>El libro que sustituye a este — una versión recién ilustrada, revisada o recompuesta. Relleno, este libro sale del catálogo pero conserva su página, su ISBN y su lugar en el sitemap: se llega a él desde el que lo sustituye.</target>
+            </trans-unit>
+            <trans-unit id="C62419s">
                 <source>label.next</source>
                 <target>Siguiente</target>
+            </trans-unit>
+            <trans-unit id="hNBabny">
+                <source>label.next_strip</source>
+                <target>Plancha siguiente</target>
+            </trans-unit>
+            <trans-unit id="soosUuE">
+                <source>label.no_result</source>
+                <target>No se ha encontrado ningún resultado para su búsqueda.</target>
             </trans-unit>
             <trans-unit id="ETm69DF">
                 <source>label.number</source>
                 <target>Número</target>
             </trans-unit>
+            <trans-unit id="_uPHbFb">
+                <source>label.number-help</source>
+                <target>El número del tomo en la serie</target>
+            </trans-unit>
+            <trans-unit id="NO1olHI">
+                <source>label.other_links-help</source>
+                <target>Plataformas cuyo tipo no pertenece al vocabulario de este paquete: ninguna tarjeta de la página las imprime.</target>
+            </trans-unit>
             <trans-unit id="NNJfHkT">
                 <source>label.other_shops</source>
                 <target>Otras tiendas</target>
+            </trans-unit>
+            <trans-unit id="v3vowTX">
+                <source>label.other_versions</source>
+                <target>Otras versiones</target>
+            </trans-unit>
+            <trans-unit id="OmyXHwr">
+                <source>label.page</source>
+                <target>Página</target>
             </trans-unit>
             <trans-unit id="dfCuHTM">
                 <source>label.pages</source>
                 <target>Páginas</target>
             </trans-unit>
-            <trans-unit id="c58e103">
-                <source>label.previous</source>
-                <target>Anterior</target>
+            <trans-unit id="SZxvwI9">
+                <source>label.podcast_media-help</source>
+                <target>El episodio filmado, reproducido al principio de la tarjeta « Escuchar ». Un solo vídeo por libro.</target>
+            </trans-unit>
+            <trans-unit id="Nupwtac">
+                <source>label.podcasts</source>
+                <target>Escuchar</target>
+            </trans-unit>
+            <trans-unit id="G6x7ccq">
+                <source>label.podcasts-intro</source>
+                <target>Escuche este libro leído en voz alta, llévese la grabación o sígalo en su aplicación de podcast.</target>
+            </trans-unit>
+            <trans-unit id="Rfi.GLm">
+                <source>label.position</source>
+                <target>Posición</target>
             </trans-unit>
             <trans-unit id="Sf1AIVC">
                 <source>label.presse</source>
                 <target>Prensa</target>
+            </trans-unit>
+            <trans-unit id="qRwFlMY">
+                <source>label.previous</source>
+                <target>Anterior</target>
+            </trans-unit>
+            <trans-unit id="NP8UY1s">
+                <source>label.previous_strip</source>
+                <target>Plancha anterior</target>
+            </trans-unit>
+            <trans-unit id="iRGRYsw">
+                <source>label.previous_version</source>
+                <target>Sustituye a</target>
+            </trans-unit>
+            <trans-unit id="zqt.DUP">
+                <source>label.previous_version-help</source>
+                <target>El libro al que este sustituye — la versión anterior a que fuera ilustrado, revisado o recompuesto. Es el mismo vínculo que «Sustituido por» visto desde el otro extremo: rellenarlo aquí equivale a abrir el otro libro para escribirlo allí.</target>
+            </trans-unit>
+            <trans-unit id="._9LubL">
+                <source>label.previous_version_suffix</source>
+                <target> — versión anterior</target>
             </trans-unit>
             <trans-unit id="JNo2Slc">
                 <source>label.published</source>
@@ -450,6 +1038,18 @@
                 <source>label.published_on</source>
                 <target>Publicado el</target>
             </trans-unit>
+            <trans-unit id="MbC7mHW">
+                <source>label.read</source>
+                <target>Leer</target>
+            </trans-unit>
+            <trans-unit id="WJDa7ZT">
+                <source>label.read-intro</source>
+                <target>Hojee las primeras páginas de este libro.</target>
+            </trans-unit>
+            <trans-unit id="wuLVBeQ">
+                <source>label.search_placeholder</source>
+                <target>Introduzca los caracteres buscados</target>
+            </trans-unit>
             <trans-unit id="k_6r8.5">
                 <source>label.serie</source>
                 <target>Serie</target>
@@ -462,10 +1062,6 @@
                 <source>label.series</source>
                 <target>Series</target>
             </trans-unit>
-            <trans-unit id="e0O9HdH">
-                <source>label.shops</source>
-                <target>Tiendas</target>
-            </trans-unit>
             <trans-unit id="0kGqgMZ">
                 <source>label.slug</source>
                 <target>Slug</target>
@@ -473,6 +1069,10 @@
             <trans-unit id="cAzQ79U">
                 <source>label.source_url</source>
                 <target>URL fuente</target>
+            </trans-unit>
+            <trans-unit id="RTbheVs">
+                <source>label.source_url_link</source>
+                <target>Ver la fuente</target>
             </trans-unit>
             <trans-unit id="ZoszVGs">
                 <source>label.spanish</source>
@@ -482,21 +1082,25 @@
                 <source>label.strip</source>
                 <target>Página</target>
             </trans-unit>
+            <trans-unit id="DSj269.">
+                <source>label.strip_search</source>
+                <target>Buscar una plancha</target>
+            </trans-unit>
             <trans-unit id="3ORIptn">
                 <source>label.strips</source>
                 <target>Páginas</target>
             </trans-unit>
-            <trans-unit id="Kq7mXbA">
-                <source>label.strips_list</source>
-                <target>Lista de todas las páginas publicadas</target>
+            <trans-unit id="rU_RhF3">
+                <source>label.strips_series</source>
+                <target>Series de páginas</target>
+            </trans-unit>
+            <trans-unit id="tPc3s5d">
+                <source>label.strips_series_list</source>
+                <target>Lista de las series de páginas</target>
             </trans-unit>
             <trans-unit id="WuyBhau">
                 <source>label.summary</source>
                 <target>Resumen</target>
-            </trans-unit>
-            <trans-unit id="5JJiHfE">
-                <source>label.technical_informations</source>
-                <target>Información técnica</target>
             </trans-unit>
             <trans-unit id="ZIbme0L">
                 <source>label.title</source>
@@ -505,6 +1109,10 @@
             <trans-unit id="ILdbCR.">
                 <source>label.to_be_published</source>
                 <target>Por publicar</target>
+            </trans-unit>
+            <trans-unit id="8sc6InZ">
+                <source>label.trailer_media-help</source>
+                <target>El tráiler, reproducido al principio de la tarjeta « Ver ». Un solo vídeo por libro.</target>
             </trans-unit>
             <trans-unit id="R_14dQa">
                 <source>label.translations</source>
@@ -518,141 +1126,29 @@
                 <source>label.videos</source>
                 <target>Vídeos</target>
             </trans-unit>
-            <trans-unit id="hnZ3.Y.">
-                <source>label.youtube_id</source>
-                <target>Identificador YouTube</target>
+            <trans-unit id="bihMliu">
+                <source>label.videos-help</source>
+                <target>Los vídeos del libro: un archivo subido o el identificador de un vídeo de YouTube. El tráiler no está aquí — se sube en el formato que anuncia y se muestra a la izquierda de esa misma tarjeta</target>
             </trans-unit>
-            <trans-unit id="4gmBjrK">
-                <source>label.youtube_id_help</source>
-                <target>BIEN un identificador de YouTube, BIEN un archivo de vídeo a continuación</target>
+            <trans-unit id="m7mVNh_">
+                <source>label.watch</source>
+                <target>Ver</target>
+            </trans-unit>
+            <trans-unit id="haFwvlg">
+                <source>label.watch-intro</source>
+                <target>Vea este libro en imágenes: su tráiler y sus vídeos.</target>
+            </trans-unit>
+            <trans-unit id="KIMWThR">
+                <source>label.watch_links-help</source>
+                <target>Las plataformas donde se ve el libro.</target>
+            </trans-unit>
+            <trans-unit id="yNfDnqa">
+                <source>label.watch_on_youtube</source>
+                <target>Ver en YouTube</target>
             </trans-unit>
             <trans-unit id="7TID4un">
                 <source>text.series</source>
                 <target>Esta historia forma parte de nuestra serie</target>
-            </trans-unit>
-            <trans-unit id="38e0a57">
-                <source>label.links</source>
-                <target>Enlaces</target>
-            </trans-unit>
-            <trans-unit id="d93df30">
-                <source>label.link_kind</source>
-                <target>Plataforma</target>
-            </trans-unit>
-            <trans-unit id="ef4cd6d">
-                <source>label.link_url</source>
-                <target>Dirección</target>
-            </trans-unit>
-            <trans-unit id="e560c63">
-                <source>label.link_url-help</source>
-                <target>La dirección de la página del libro en la plataforma, copiada tal cual</target>
-            </trans-unit>
-            <trans-unit id="994a3a3">
-                <source>label.number</source>
-                <target>Número</target>
-            </trans-unit>
-            <trans-unit id="b53171b">
-                <source>label.number-help</source>
-                <target>El número del tomo en la serie</target>
-            </trans-unit>
-            <trans-unit id="78a340e">
-                <source>label.podcasts</source>
-                <target>Escuchar</target>
-            </trans-unit>
-            <trans-unit id="279a35e">
-                <source>label.editions</source>
-                <target>Ediciones</target>
-            </trans-unit>
-            <trans-unit id="61440a7">
-                <source>label.editions-help</source>
-                <target>Cada forma publicada del libro — cada una editada en su propia pantalla, con su ISBN, sus archivos y sus plataformas</target>
-            </trans-unit>
-            <trans-unit id="84510a2">
-                <source>label.edition_kind</source>
-                <target>Edición</target>
-            </trans-unit>
-            <trans-unit id="aac8678">
-                <source>label.edition_paper</source>
-                <target>Papel</target>
-            </trans-unit>
-            <trans-unit id="b06e0fa">
-                <source>label.edition_digital</source>
-                <target>Digital</target>
-            </trans-unit>
-            <trans-unit id="90de76c">
-                <source>label.edition_audio</source>
-                <target>Audio</target>
-            </trans-unit>
-            <trans-unit id="e5790b4">
-                <source>label.edition_published-help</source>
-                <target>Dejar vacío mientras la edición no haya salido - el ISBN se reserva mucho antes</target>
-            </trans-unit>
-            <trans-unit id="4a0b499">
-                <source>label.edition_pages-help</source>
-                <target>Solo si difiere del número de páginas del libro</target>
-            </trans-unit>
-            <trans-unit id="9e4616b">
-                <source>label.media_kind</source>
-                <target>Tipo de archivo</target>
-            </trans-unit>
-            <trans-unit id="0905aca">
-                <source>label.data</source>
-                <target>Información propia del sitio</target>
-            </trans-unit>
-            <trans-unit id="dd5cd03">
-                <source>label.guided_step_book_creation_technical_tab</source>
-                <target>Abra las informaciones técnicas</target>
-            </trans-unit>
-            <trans-unit id="a4b1577">
-                <source>description.guided_step_book_creation_technical_tab</source>
-                <target>La segunda pestaña del formulario, donde están las ediciones y la financiación colectiva</target>
-            </trans-unit>
-            <trans-unit id="5a18620">
-                <source>label.guided_step_book_creation_editions</source>
-                <target>Añada sus ediciones</target>
-            </trans-unit>
-            <trans-unit id="84e1b17">
-                <source>description.guided_step_book_creation_editions</source>
-                <target>Cada forma publicada del libro — papel, digital, audio — con su ISBN y su fecha de publicación. Se añaden una vez guardado el libro, cada una en su propia pantalla</target>
-            </trans-unit>
-            <trans-unit id="71b046b">
-                <source>label.edition</source>
-                <target>Edición</target>
-            </trans-unit>
-            <trans-unit id="cdd49f0">
-                <source>label.position</source>
-                <target>Posición</target>
-            </trans-unit>
-            <trans-unit id="444bfee">
-                <source>label.edition_medias-help</source>
-                <target>Los archivos de esta edición únicamente — sus páginas, su grabación, su portada</target>
-            </trans-unit>
-            <trans-unit id="ee49881">
-                <source>label.edition_links-help</source>
-                <target>Las plataformas que venden o difunden esta edición — una línea por plataforma</target>
-            </trans-unit>
-            <trans-unit id="5682176">
-                <source>label.editions_save_first</source>
-                <target>Guarde el libro para poder añadirle ediciones</target>
-            </trans-unit>
-            <trans-unit id="88c9774">
-                <source>label.editions_none</source>
-                <target>Ninguna edición por el momento</target>
-            </trans-unit>
-            <trans-unit id="2065d1c">
-                <source>action.edition_new</source>
-                <target>Nueva edición</target>
-            </trans-unit>
-            <trans-unit id="7c1a61d">
-                <source>label.info_book_edition</source>
-                <target>Los archivos y las plataformas siguientes pertenecen únicamente a esta edición. Eliminar la edición elimina también sus archivos, tanto la grabación como las imágenes</target>
-            </trans-unit>
-            <trans-unit id="4aeb46d">
-                <source>label.guided_step_book_creation_editions_add</source>
-                <target>Añada sus ediciones</target>
-            </trans-unit>
-            <trans-unit id="f00187a">
-                <source>description.guided_step_book_creation_editions_add</source>
-                <target>El botón Ediciones abre las ediciones de este libro — una por forma publicada: papel, digital, audio. Cada una tiene su propia pantalla, donde se añaden sus archivos y sus plataformas</target>
             </trans-unit>
         </body>
     </file>

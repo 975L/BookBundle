@@ -6,31 +6,388 @@ $book-bp-column: 1200px;
 
 // PAGE
 
-// Mobile first: one column, the hero, then the summary bar, then the sections - which is also the source order, so nothing is reordered for a phone
+// Mobile first: one column, the hero, then the sections - which is also the source order, so nothing is reordered for a phone
 .book-page {
     display: grid;
+    // An explicit minmax(0, 1fr) rather than the implicit "auto" track: an auto track is sized on its content's max-content, and a hero laying its cover beside an unwrapped row of buttons then made the whole page 926px wide on a 390px screen
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--book-column-gap);
+    // The measure the site declares for its sections, the one all its other pages use: without it a grid of cards spread across the whole template while a book page stayed in the column
+    max-width: var(--section-wrap-max-width, var(--body-max-width, 1440px));
+    margin-inline: auto;
+}
+
+// UiBundle leaves room above every "toc-target" for the bar of chips resting over it (see its sass/_toc.scss). A book page has no bar - its hero says the same in four verbs - so a jump from one of those buttons landed 4rem below the title it aimed at, on the very phone the bar was dropped for. The serie page, which keeps its summary, keeps the room it needs
+.book-page:not(:has(> .book-page__toc)) .toc-target {
+    scroll-margin-top: var(--toc-sticky-top);
 }
 
 .book-page__sections {
     display: flex;
     flex-direction: column;
+    gap: var(--book-column-flow-gap);
     min-width: 0;
 }
 
+// SECTION FORMS
+
+// Mobile first: one column, every section the width of the screen. What a section carries decides its form, not
+// its contents - see the three modifiers below, set by templates/book/_section.html.twig
+.book-page__grid {
+    display: grid;
+    gap: var(--book-grid-gap);
+}
+
+// A section of a book page is a panel, not one tile of a row: --card-width is the measure of a card standing three abreast in a grid (380px), which left every section of the page as a narrow column floating in the middle of it
+// Centered rather than set left: the auto margin is what holds the card in the middle of the page once it has taken the measure of the book's informations, and a "margin: 0" crushed it from here
+.book-page__sections .card,
+.book-page__grid > .card {
+    width: 100%;
+    margin: 0 auto;
+}
+
+// LEAD - the sentence a book opens on, under the hero and outside the sections grid: neither title nor anchor, a summary being no destination to jump to
+// It keeps the gap the sections have between them rather than being pulled up to the hero, against which it read as the end of the opening
+.book-page__lead {
+    max-width: var(--book-text-measure);
+    margin-inline: auto;
+    padding: var(--book-lead-padding);
+    background: var(--book-lead-background);
+    border: var(--book-lead-border);
+    border-radius: var(--book-lead-radius);
+    box-shadow: var(--book-lead-shadow);
+    padding-block: 0 var(--book-text-padding-block);
+    font-family: var(--book-lead-family);
+    font-size: var(--book-lead-size);
+    line-height: var(--book-lead-line-height);
+    color: var(--book-lead-color);
+    text-align: center;
+    text-wrap: pretty;
+}
+
+// The book's sentence is what is read first: it takes the lead's color and face, not those of a secondary body text
+.book-page__lead .text,
+.book-page__lead .lead {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+}
+
+// FLIPBOOK - the video turning the pages, under the hero and outside any card, bounded like every media
+.book-page__flipbook {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--book-grid-gap);
+}
+
+// The same width as the extracts slider: the two read one under the other, and two measures would show
+.book-page__flipbook video {
+    display: block;
+    width: 100%;
+    max-width: min(100%, var(--book-slider-max-width));
+    max-height: var(--book-flipbook-max-height);
+    margin-inline: auto;
+    object-fit: contain;
+}
+
+// SLIDER - the extracts: what a reader comes to leaf through, so no frame around them and a notch larger than the other medias. The same card-less form as the text, with a measure of its own
+// The box follows the picture: its height is computed on its width by the slider itself, so the width is what is bounded - a height ceiling shrank the box without shrinking its width, and the arrows laid on its edges ended up beside the picture rather than over it
+.book-section--slider .slider {
+    width: 100%;
+    max-width: min(100%, var(--book-slider-max-width));
+    margin-inline: auto;
+}
+
+.book-section--slider .slider-img {
+    object-fit: contain;
+}
+
+// TEXT - prose carries no frame: a summary and a serie read on the page itself, right under the hero, where a
+// panel around them only draws a box around a paragraph. Read at the measure of a paragraph whatever the width
+// the section is given: a summary set across 1142px is a line nobody follows to its end
+// The width is stated rather than left to the computation: a frameless <section> was sized on its content and fell to 69px in a column of 559, where the card already carried its width: 100%
+.book-section--text,
+.book-section--framed {
+    width: 100%;
+    padding-block: var(--book-text-padding-block);
+}
+
+// The measure is the one of the book's informations, and it is every section's: mobile first, the bound only bites past that measure, a phone never reaching it
+.book-section {
+    max-width: var(--book-text-measure);
+    margin-inline: auto;
+}
+
+.book-section--text > *,
+.book-section--framed > * {
+    max-width: var(--book-text-measure);
+    margin-inline: auto;
+}
+
+// FRAMED - the lead's form without its face: the same shadowed frame (--book-lead-*) at the measure and size of a body text, for a section read in one go where a card would hand it a full header
+.book-section--framed {
+    max-width: var(--book-text-measure);
+    margin-inline: auto;
+    padding: var(--book-lead-padding);
+    background: var(--book-lead-background);
+    border: var(--book-lead-border);
+    border-radius: var(--book-lead-radius);
+    box-shadow: var(--book-lead-shadow);
+}
+
+// A listing of books or series is laid from the left: centered, the last row shifts its cards by half a column and the grid stops reading in columns
+.book-cards {
+    justify-content: flex-start;
+}
+
+// The sentence opening a section: at a paragraph's measure and not the card's, and laid like the name above it
+.book-section__intro {
+    width: 100%;
+    max-width: var(--book-text-measure);
+    margin: 0 auto 1rem;
+    color: var(--text-muted, var(--text));
+    text-align: start;
+}
+
+// The name of a section that has no card header to carry it
+.book-section__title {
+    margin: 0 auto 0.6em;
+    font-family: var(--font-family-title);
+    font-size: var(--book-section-title-size);
+    color: var(--section-text, var(--text));
+    text-align: start;
+}
+
+// The same name when a card carries it: the section's class is laid on the card itself, so the header is its direct child
+.card.book-section > .card-header {
+    font-size: var(--book-section-title-size);
+}
+
+// MEDIA - bounded rather than natural. A video carries its own pixel size and took it: 1080x1920 for a trailer
+// filmed on a phone, two full screens for one file. Height is what is capped, the width following from it
+// The ceiling holds for every section and not for the "media" form alone: the trailer, the podcast episode and the book's video are watched at the same size in three different cards
+.book-section video,
+.book-section img:not(.slider-img),
+.book-section--media .slider,
+.book-section .video-iframe-consent {
+    max-height: var(--book-media-max-height);
+    max-width: 100%;
+    margin-inline: auto;
+}
+
+// The slider is measured on the text it usually sits with (--reading-max-width); inside a media section it sits
+// with nothing, and two different measures in one card read as a mistake
+.book-section--media .slider {
+    width: 100%;
+    max-width: 100%;
+}
+
+// The whole width of the card rather than its natural size: a video shot 640 wide floated in the middle of a card twice as wide, smaller than the paragraph above it
+.book-section video,
+.book-section .video-iframe-consent {
+    display: block;
+    width: 100%;
+    object-fit: contain;
+}
+
+// A platform player is an <iframe>, worth 300x150 until something says otherwise. The box is given to the container and not to the player, so the consent screen and the player replacing it both fill it and the card does not jump from one size to another (see Book:Video and UiBundle's assets/js/video-iframe.js)
+.book-section .video-iframe-consent {
+    aspect-ratio: var(--book-video-ratio);
+}
+
+.book-section .video-iframe-consent iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+// The picture keeps its format: the slider crops to "cover" as soon as it takes a height, which cuts a page drawn in portrait - contained, it fits the ceiling losing nothing
+.book-section--media .slider-img {
+    object-fit: contain;
+}
+
+// CARD - a card is a column whatever the section: watch, then listen, then take away, then subscribe are gestures following one another, not choices laid side by side
+.book-section .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+// LINKS - a row of platforms, wrapping rather than stretching: four icons never justify a panel the height of a screen
+// The tiles are aligned on their top and bottom edges rather than on their middles, so a label wrapping onto a
+// second line raises its whole row instead of leaving the row staggered
+.book-section .flex-center {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+// LISTEN - the recording the book is heard in, and the file taken away below it: the same gesture as the play button above
+.book-section .book-listen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.book-section .book-listen__files {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+// Every platform is the same tile whatever the mark it carries, so the row reads as a row of buttons rather
+// than as logos of assorted heights. The paragraph Image:Link wraps each one in is only a carrier from here
+// on, the link itself being the tile. The content hangs from the top edge rather than sitting in the middle:
+// centered, a name running onto a second line pushed its own mark up, and the row's logos stopped lining up
+.book-section .flex-center p {
+    display: flex;
+    margin: 0;
+}
+
+.book-section .flex-center p > a,
+.book-section .flex-center p > span {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--book-link-tile-gap);
+    width: var(--book-link-tile-width);
+    height: var(--book-link-tile-height);
+    padding: var(--book-link-tile-padding);
+    background: var(--book-link-tile-background);
+    border: 1px solid var(--book-link-tile-border-color);
+    border-radius: var(--book-link-tile-radius);
+    color: var(--book-link-tile-color);
+    text-decoration: none;
+}
+
+.book-section .flex-center p > a:hover,
+.book-section .flex-center p > a:focus-visible {
+    background: var(--book-link-tile-background-hover);
+    color: var(--book-link-tile-color);
+}
+
+// The site's own shop among the bookshops: the same tile, filled with the site color rather than the pale plate of the others. The container is only there to name it - erased from the layout, its paragraph is what the row aligns
+.book-section .flex-center .book-tile--own {
+    display: contents;
+}
+
+// A little air behind it, so it reads as the publisher's shop and not as the first of the bookshops - a margin and not a place apart, the tile staying in the row and wrapping with it
+.book-section .flex-center .book-tile--own > p {
+    margin-inline-end: var(--book-link-tile-own-space);
+}
+
+.book-section .flex-center .book-tile--own a,
+.book-section .flex-center .book-tile--own a:hover,
+.book-section .flex-center .book-tile--own a:focus-visible {
+    background: var(--book-link-tile-own-background);
+    border-color: var(--book-link-tile-own-border-color);
+    color: var(--book-link-tile-own-color);
+}
+
+// The shop's mark is an <img>: it does not follow its link's ink, and would stay black on the fill
+.book-section .flex-center .book-tile--own img {
+    filter: var(--book-link-tile-own-mark-filter);
+}
+
+// Image:Link parts its mark from its label with a line break, which the flex column now does - left in place
+// it would only be one more empty item for the gap to space out
+.book-section .flex-center p br {
+    display: none;
+}
+
+// The mark is given a square of its own rather than its natural height: a wide logo and a tall one would
+// otherwise make two tiles of two different sizes out of the same rule above
+.book-section .flex-center p .img {
+    width: var(--book-link-tile-icon-size);
+    height: var(--book-link-tile-icon-size);
+    object-fit: contain;
+    margin: 0;
+}
+
+// The label's own margin is dropped: UiBundle sets 20px under an image, which is the room a caption needs on a
+// page and half the height of a tile here - the gap above is the tile's, and that margin was also what pushed
+// the longest name past the bottom edge. Capped at the lines the token allows, at the line-height set just below
+.book-section .flex-center p .img-below,
+.book-section .flex-center p .img-above {
+    flex: none;
+    margin: 0;
+    max-height: calc(var(--book-link-tile-label-lines) * 1.2em);
+    overflow: hidden;
+    font-size: var(--book-link-tile-label-size);
+    line-height: 1.2;
+    text-align: center;
+    text-wrap: balance;
+}
+
 @media (min-width: $book-bp-column) {
-    .book-page {
+    // Two columns only where there is a summary of anchors to stand in the first one. A page with none - a planche, a serie - laid its whole content in that first column and left the second empty, the sections reading in a 260px gutter beside a blank half-page
+    .book-page:has(> .book-page__toc) {
         grid-template-columns: var(--toc-column-width) minmax(0, 1fr);
         align-items: start;
     }
 
-    // The hero keeps the page's whole width, the summary only standing beside the sections it points at
+    // No second column: the sections read one under the other, all at the same measure - laid two by two, a card of two buttons ended up beside a card of videos three times taller
+    .book-page__flipbook video {
+        max-height: var(--book-flipbook-max-height-wide);
+    }
+
+    // Frameless, a text section no longer has the ground that parted it from the previous one: the white above and below does it
+    .book-section--text {
+        padding-block: var(--book-text-padding-block-wide);
+    }
+
+    .book-section video,
+    .book-section img:not(.slider-img),
+    .book-section--media .slider,
+    .book-section .video-iframe-consent {
+        max-height: var(--book-media-max-height-wide);
+    }
+
+    // The hero keeps the page's whole width, the summary only standing beside the sections it points at - and the lead with it, being the sentence that hero opens on
     .book-page__hero {
         grid-column: 1 / -1;
     }
+
 }
 
 // HERO
+
+// The page's opening laid over a picture of the book itself: the image is a real <img> and the veil a real element, both taken out of the flow behind the text - a CSS background-image would need a style attribute no CSP nonce covers
+.book-hero--has-bg {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: var(--book-hero-radius);
+    padding: var(--book-hero-padding);
+}
+
+.book-hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+// Opaque at the foot, clear at the top: the page continues out of the picture rather than stopping against an edge, and the text keeps its contrast wherever the picture is light
+.book-hero__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--book-hero-veil);
+}
 
 .book-hero {
     display: flex;
@@ -50,10 +407,35 @@ $book-bp-column: 1200px;
     height: auto;
 }
 
+// The same cover, when the book also carries its fourth: UiBundle's flip card paints the object, this only sizes it and undoes the frame it comes with.
+// Two classes deep on purpose: ".flip-card" declares its own width and margin from the card tokens, and a single class would win or lose on the order the two stylesheets happen to load in
+.book-hero .book-hero__cover-flip {
+    flex: none;
+    width: var(--book-cover-width);
+    max-width: 100%;
+    margin: 0;
+}
+
+// A cover is printed to its own edge: the outline, the padding and the paper a flip card's face is drawn with would frame it, where the shadow and the corners belong to the image itself (see .book-hero__cover above)
+.book-hero .book-hero__cover-flip .flip-card-face {
+    border: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+}
+
+.book-hero__cover-face {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--book-cover-radius);
+    box-shadow: var(--book-cover-shadow);
+}
+
 .book-hero__body {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--book-hero-body-gap);
     min-width: 0;
 }
 
@@ -78,21 +460,36 @@ $book-bp-column: 1200px;
     font-family: var(--font-family-title);
 }
 
+// The book in one sentence, right under its title - for a page that does not open a section of its own for it
+.book-hero__summary {
+    margin: 0;
+    max-width: var(--book-hero-summary-measure);
+    color: var(--label-color, inherit);
+    text-wrap: pretty;
+}
+
 .book-hero__meta {
     margin: 0;
     font-size: 0.9rem;
     opacity: 0.75;
 }
 
-.book-hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
+// The score is a flex row of its own, so the centring the hero states in text has no hold on it: without this the icons start at the left edge of a block whose every other line is centred
+.book-hero .rating-vote {
     justify-content: center;
 }
 
+.book-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--book-hero-actions-gap);
+    justify-content: center;
+    margin-block-start: var(--book-hero-actions-space);
+}
+
 @media (min-width: $book-bp-wide) {
-    .book-hero {
+    // Only a hero carrying a cover reads as two columns, text set beside a picture. A planche has none: laid out in a row, its title and its date would be pushed against the left edge of a page whose planche, below, is centered
+    .book-hero:has(.book-hero__cover, .book-hero__cover-flip) {
         flex-direction: row;
         align-items: flex-start;
         text-align: start;
@@ -102,88 +499,230 @@ $book-bp-column: 1200px;
         width: var(--book-cover-width-wide);
     }
 
-    .book-hero__actions {
+    .book-hero .book-hero__cover-flip {
+        width: var(--book-cover-width-wide);
+    }
+
+    .book-hero:has(.book-hero__cover, .book-hero__cover-flip) .book-hero__actions,
+    .book-hero:has(.book-hero__cover, .book-hero__cover-flip) .rating-vote {
         justify-content: flex-start;
     }
 }
 
-// BADGES
-
-// Which versions a book holds. A version it does not hold stays on the page rather than being hidden: for a reader that is an answer, not a gap
-.book-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    justify-content: center;
-}
-
-.book-badge {
-    border: 1px solid var(--border-color);
-    border-radius: var(--book-badge-radius);
-    font-size: var(--book-badge-size);
-    font-weight: bold;
-    padding: 0.3em 0.8em;
-}
-
-// Filled for a version that exists, outlined for one only announced - the word says which, this only repeats it
-.book-badge--available {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: var(--button-color);
-}
-
-.book-badge--announced {
-    border-style: dashed;
-    opacity: 0.7;
-}
-
-@media (min-width: $book-bp-wide) {
-    .book-badges {
-        justify-content: flex-start;
-    }
-}
 
 // PLANCHE
 
-// A planche is one tall image: it takes the width it is given and nothing crops it
+// A planche is one tall image: it takes the width it is given, nothing crops it, and it stops growing where reading it stops improving
 .strip-media {
     display: block;
     width: 100%;
     height: auto;
-    max-width: 100%;
+    max-width: min(100%, var(--book-strip-media-max-width));
     margin-inline: auto;
 }
 
-// The bar a planche is browsed from - resting against the bottom of the screen where a thumb is, rather than waiting at the end of an image the height of three screens
-.strip-bar {
-    position: sticky;
-    bottom: 0;
-    z-index: 2;
+// The card a planche is reached by - UiBundle's own card (see Strip/Card.html.twig), so a site restyling its cards restyles these too. Only what a planche adds to one is set here
+.strip-card {
+    max-width: 100%;
+    position: relative;
     display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.15s ease;
+}
+
+// The whole card is the link: the title's own anchor is stretched over it rather than a second link being added, so a screen reader still hears one link and reads its title
+.strip-card .card-header a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+// Lifted under the pointer and when the link inside takes focus, so the keyboard sees what the mouse sees
+.strip-card:hover,
+.strip-card:focus-within {
+    transform: translateY(var(--book-strip-card-lift));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .strip-card {
+        transition: none;
+    }
+
+    .strip-card:hover,
+    .strip-card:focus-within {
+        transform: none;
+    }
+}
+
+.strip-card .card-header {
+    margin: 0;
+}
+
+// The mark rests at the top and the dialogue holds the middle of what is left, which is what the card is read for
+.strip-card .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 0.5rem;
-    min-height: var(--book-bar-height);
-    padding-block: 0.5rem;
-    background: var(--book-bar-background);
-    border-top: 1px solid var(--border-color);
+    min-height: 0;
 }
 
-// 44px whatever the font size: these three are how a planche is left at all on a phone
-.strip-bar a,
-.strip-bar span {
-    display: flex;
-    align-items: center;
-    min-height: 44px;
-    padding-inline: 0.8em;
+// The score sits at the foot of the card whatever the length of what it follows, pushed there by the body's own free space - two cards side by side then carry their icons on the same line
+.strip-card .rating-vote {
+    margin-block-start: auto;
 }
 
-// A bar of links to the neighbouring planches leads nowhere on paper
+// Started under the mark at a measure of its own rather than centred in what is left: two cards side by side open their dialogue on the same line, whatever the length of what follows
+.strip-card--text .strip-card__text {
+    margin-block-start: var(--book-strip-card-text-space);
+}
+
+// A card carrying words has no shape of its own, so it is given a floor - one showing a drawing takes the shape of the drawing.
+// A minimum height and not a ratio: "aspect-ratio" sets the height from the width, and a longer dialogue overflowed under the card instead of growing it - here the card starts from that floor and grows with what it carries
+.strip-card--text {
+    min-height: var(--book-strip-card-min-height);
+}
+
+// Three abreast in the box holding the listing, whatever it is: the measure is taken on the parent and not on the page, the step subtracted being the row's own (UiBundle, --cards-gap). Two classes deep, and on the row rather than on the card, ".book-page__sections .card" stretching a card to the whole column
+.cards .strip-card {
+    width: calc((100% - 2 * var(--cards-gap, 20px)) / 3);
+    min-width: min(100%, var(--book-strip-card-min-width));
+}
+
+// On a planche's own page the card is in no row: it is set on the measure of the drawing it accompanies, the two reading as one aligned block
+.book-page__sections .strip-card--full {
+    width: min(100%, var(--book-strip-media-max-width));
+    margin-inline: auto;
+}
+
+.strip-card__mark {
+    width: var(--book-strip-card-icon-size);
+    height: auto;
+    flex: none;
+}
+
+// The Image component centres what it shows in a paragraph of its own: the card spaces its rows itself, so that paragraph carries no margin here
+.strip-card .card-body p:has(.strip-card__mark) {
+    margin: 0;
+}
+
+// The drawing, sized here rather than in the gabarit so a site can hand it another measure
+.strip-card .card-body img:not(.strip-card__mark) {
+    width: var(--book-strip-card-image-width);
+    max-width: 100%;
+    height: auto;
+}
+
+// The dialogue is read whole, never cut: it is what the card is there to say, and the square below is a floor, not a frame
+.strip-card__text {
+    font-size: var(--book-strip-card-text-size);
+    text-align: start;
+    text-wrap: pretty;
+}
+
+// Who speaks, in the face titles are set in: the name parts from what it says without a color or a weight of its own
+.strip-card__text strong {
+    font-family: var(--font-family-title);
+    font-weight: inherit;
+}
+
+// One block per turn of the dialogue, whatever the editor wrote it with - Trix parts its lines with a <div> where an imported text uses a <p>, and a rule naming the tag would space one and not the other. The first carries no margin, the ones after are parted from what they answer
+.strip-card__text > * {
+    margin: 0;
+}
+
+.strip-card__text > * + * {
+    margin-block-start: var(--book-strip-card-text-gap);
+}
+
+// What a planche is browsed from: the card and the drawing held together, the arrows laid over them - the eye is already there, and so is the thumb on a phone
+.strip-viewer {
+    position: relative;
+}
+
+// The same object as the gallery's arrows, and drawn the same way: a glyph on a disc, the neighbour's own title being carried by the label rather than printed beside it
+.strip-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+    padding: 0.3em 0.2em;
+    border-radius: var(--book-strip-nav-radius);
+    background: var(--book-strip-nav-background);
+    font-family: var(--font-family-title);
+    font-size: var(--book-strip-nav-size);
+    line-height: 1.4;
+    color: var(--book-strip-nav-color);
+    text-decoration: none;
+    opacity: var(--book-strip-nav-opacity);
+    transition: opacity 0.2s ease;
+}
+
+// Restated: a site's own "a:hover" would underline the arrow and repaint it, these being links and not buttons
+.strip-nav:hover,
+.strip-nav:focus-visible {
+    color: var(--book-strip-nav-color);
+    text-decoration: none;
+    opacity: 1;
+}
+
+.strip-nav--previous {
+    left: var(--book-strip-nav-offset);
+}
+
+.strip-nav--next {
+    right: var(--book-strip-nav-offset);
+}
+
+// Out of the way until the visitor points at the planche, which is what the page is for. Held inside "hover: hover" on purpose: a touch screen has none to reveal them with, so on a phone they simply stay on.
+// Hidden with pointer-events rather than with visibility: an invisible link still takes the clicks meant for what is under it, and one taken out of the layout would leave the focus order with it - the keyboard being the other way to reach them
+@media (hover: hover) {
+    .strip-nav {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .strip-viewer:hover .strip-nav,
+    .strip-nav:focus-visible {
+        opacity: var(--book-strip-nav-opacity);
+        pointer-events: auto;
+    }
+
+    .strip-viewer .strip-nav:hover,
+    .strip-viewer .strip-nav:focus-visible {
+        opacity: 1;
+    }
+}
+
+// The trail above the planche: where it sits, and the two ways back out
+.book-breadcrumb {
+    margin-block-end: 1rem;
+    font-family: var(--font-family-body);
+    font-size: var(--book-breadcrumb-font-size);
+    color: var(--book-breadcrumb-color);
+    text-align: center;
+}
+
+.book-breadcrumb a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.book-breadcrumb__separator {
+    margin: 0 0.4em;
+}
+
+// The level the page itself sits on - nothing to follow there, and the weight is what says so
+.book-breadcrumb__current {
+    font-weight: 600;
+}
+
+// Arrows leading to another page lead nowhere on paper
 @media print {
-    .strip-bar {
+    .strip-nav {
         display: none;
     }
 }

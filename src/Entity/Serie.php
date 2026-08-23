@@ -2,6 +2,9 @@
 
 namespace c975L\BookBundle\Entity;
 
+use c975L\BookBundle\Contract\TrashableInterface;
+use c975L\BookBundle\Entity\Trait\TrashableTrait;
+use c975L\BookBundle\Enum\SerieKind;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use c975L\UiBundle\Contract\HasBlocksInterface;
@@ -16,14 +19,19 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\Table(name: 'book_serie')]
 #[UniqueEntity('slug')]
-class Serie implements HasBlocksInterface, \Stringable
+class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
 {
     use HasBlocksTrait;
+    use TrashableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    // The order the series show in, which the editor lays by dragging them on their screen (see SerieCrudController::reorder()): without it a catalog read in the order its series were created
+    #[ORM\Column(options: ['default' => 0])]
+    private int $position = 0;
 
     #[ORM\Column(length: 50)]
     private ?string $title = null;
@@ -94,6 +102,18 @@ class Serie implements HasBlocksInterface, \Stringable
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
+
+        return $this;
     }
 
     public function getTitle(): ?string
@@ -258,6 +278,7 @@ class Serie implements HasBlocksInterface, \Stringable
         return $this;
     }
 
+    /** @return Collection<int, SerieMedia> */
     public function getMedias(): Collection
     {
         return $this->medias;
@@ -301,6 +322,16 @@ class Serie implements HasBlocksInterface, \Stringable
         return $this->strips;
     }
 
+    // Which of the two indexes this serie answers to, they share none: what it declares, and what it holds when it declares nothing (see SerieKind). The same rule SerieRepository::findWithStrips() writes in DQL, said once here for the pages reading a serie in hand - the breadcrumb above all, which would otherwise send a visitor back to an index this serie is not on
+    public function isStripSerie(): bool
+    {
+        if (null !== $this->kind) {
+            return SerieKind::Strip->value === $this->kind;
+        }
+
+        return !$this->strips->isEmpty();
+    }
+
     public function addStrip(Strip $strip): static
     {
         if (!$this->strips->contains($strip)) {
@@ -320,6 +351,12 @@ class Serie implements HasBlocksInterface, \Stringable
         }
 
         return $this;
+    }
+
+    // Whether any book or strip still names this serie - what refuses it the trash, a serie being removed once it is empty and not before (see SerieCrudController::deleteEntity()). Counts the rows already in the trash too: they name it just as much, and are what the foreign key would trip on the day the serie is removed for good
+    public function holdsContent(): bool
+    {
+        return !$this->books->isEmpty() || !$this->strips->isEmpty();
     }
 
     // Also matches the legacy covers, stored with no kind before it was introduced
@@ -353,6 +390,28 @@ class Serie implements HasBlocksInterface, \Stringable
     }
 
     public function removeLogo(SerieMedia $media): static
+    {
+        return $this->removeMedia($media);
+    }
+
+    /**
+     * The picture the page opens on, behind its title - the same "background" a book carries (see BookMediaKind), a serie being presented the same way.
+     *
+     * @return Collection<int, SerieMedia>
+     */
+    public function getBackgrounds(): Collection
+    {
+        return $this->medias->filter(fn (SerieMedia $m) => 'background' === $m->getKind());
+    }
+
+    public function addBackground(SerieMedia $media): static
+    {
+        $media->setKind('background');
+
+        return $this->addMedia($media);
+    }
+
+    public function removeBackground(SerieMedia $media): static
     {
         return $this->removeMedia($media);
     }

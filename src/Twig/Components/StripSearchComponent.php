@@ -15,6 +15,10 @@ class StripSearchComponent
     #[LiveProp(writable: true)]
     public string $query = '';
 
+    // The serie the search is held inside, when a serie's own page carries it - null everywhere else, where the field asks the whole site
+    #[LiveProp]
+    public ?int $serieId = null;
+
     public function __construct(private StripServiceInterface $stripService)
     {
     }
@@ -25,6 +29,6 @@ class StripSearchComponent
             return null;
         }
 
-        return $this->stripService->search($this->query);
+        return $this->stripService->search($this->query, $this->serieId);
     }
 }

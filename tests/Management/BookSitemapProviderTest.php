@@ -40,7 +40,8 @@ class BookSitemapProviderTest extends TestCase
         $configService->method('get')->willReturn($siteUrl);
 
         $bookService = $this->createStub(BookServiceInterface::class);
-        $bookService->method('findAllPublished')->willReturn($books);
+        // The sitemap lists every page that answers, replaced versions included (see BookRepository::findAllOnline())
+        $bookService->method('findAllOnline')->willReturn($books);
         $serieService = $this->createStub(SerieServiceInterface::class);
         $serieService->method('findAll')->willReturn($series);
         $stripService = $this->createStub(StripServiceInterface::class);
@@ -100,7 +101,7 @@ class BookSitemapProviderTest extends TestCase
             ['https://example.com/livres', 'https://example.com/series', 'https://example.com/strips'],
             array_column($urls, 'loc')
         );
-        $this->assertSame(['label.books', 'label.series', 'label.strips'], array_column($urls, 'title'));
+        $this->assertSame(['label.books', 'label.series', 'label.strips_series'], array_column($urls, 'title'));
     }
 
     // A published book is declared under its own route, with its modification date as lastmod
@@ -123,7 +124,7 @@ class BookSitemapProviderTest extends TestCase
         $urls = $this->createProvider([], [$this->serie()])->getUrls();
 
         $this->assertSame([
-            'loc' => 'https://example.com/serie/la-guilde-des-seigneurs',
+            'loc' => 'https://example.com/series/la-guilde-des-seigneurs',
             'lastmod' => '2026-02-20',
             'changefreq' => 'monthly',
             'priority' => 8,

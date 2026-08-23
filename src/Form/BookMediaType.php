@@ -9,33 +9,25 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
-use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class BookMediaType extends AbstractType
 {
+    use MediaFileFieldTrait;
+
     public function __construct(private readonly BookCustomizationRegistry $customizationRegistry)
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('position', HiddenType::class, [
-                'attr' => ['class' => 'ui-sort-position'],
-            ])
-            // VichFileType and not VichImageType: a version's files are its pages, but also its recording, its trailer and its flipbook - the kind says which, and is left out entirely by a site naming none (see BookCustomizationProviderInterface::getMediaKinds()). Which version the file belongs to is not asked: the form is only ever shown inside the version that holds it (see BookEditionCrudController)
-            ->add('file', VichFileType::class, [
-                'label' => 'label.media',
-                'required' => false,
-                'allow_delete' => true,
-                'download_uri' => true,
-                'asset_helper' => true,
-                'constraints' => [
-                    new File(maxSize: '100M'),
-                ],
-            ])
-        ;
+        $builder->add('position', HiddenType::class, [
+            'attr' => ['class' => 'ui-sort-position'],
+        ]);
+
+        $this->addIdField($builder);
+
+        // A version's files are its pages, but also its recording, its trailer and its flipbook - the kind says which, on the site's own vocabulary or the bundle's (see BookCustomizationProviderInterface::getMediaKinds()). Which version the file belongs to is not asked: the form is only ever shown inside the version that holds it (see BookEditionType)
+        $this->addFileField($builder, 'label.media');
 
         $kinds = $this->customizationRegistry->getMediaKinds();
 

@@ -1,4 +1,10 @@
+{# <twig:c975LBook:Strip:Random strip="{{ strip }}"/> - a random planche, and the way to all of them #}
 <article>
     <twig:c975LBook:Strip:Card card="{{ strip }}"/>
-    <twig:c975LUi:Button:Button label="Toutes les planches" url="{{ path('strip_index') }}"/>
+    {# To its serie, which holds the listing of planches; to the index of planche series when it has none and the site serves it - the "book-route-strips" setting emptied, that route answers nothing (see BookRoutePrefix) #}
+    {% if strip.serie and serie_path(strip.serie) %}
+        <twig:c975LUi:Button:Button label="{{ strip.serie.title }}" url="{{ serie_path(strip.serie) }}"/>
+    {% elseif config('book-route-strips')|default('') is not empty %}
+        <twig:c975LUi:Button:Button label="{{ 'label.strips_series'|trans({}, 'book') }}" url="{{ path('strip_index') }}"/>
+    {% endif %}
 </article>

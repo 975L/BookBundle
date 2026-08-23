@@ -28,7 +28,7 @@ class ManagementTargetsTest extends ManagementTargetsTestCase
     protected function managementProviders(): iterable
     {
         return [
-            new MenuProvider(),
+            new MenuProvider($this->createStub(ConfigServiceInterface::class)),
             new LinkableRouteProvider($this->createRoutePrefix(), $this->serieRepository(), $this->createStub(TranslatorInterface::class)),
             // The recording generator, so the CRUD controllers each project opens on are captured on their way through
             new BookGuidedProjectProvider($this->adminUrlGenerator(), $this->createStub(ConfigServiceInterface::class)),

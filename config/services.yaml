@@ -12,10 +12,20 @@ services:
         arguments:
             $providers: !tagged_iterator book.customization_provider
 
+    # Which rows the catalog page lists, and under what name - a query and not a word, hence a contract of its own
+    c975L\BookBundle\Service\BookCatalogRegistry:
+        arguments:
+            $providers: !tagged_iterator book.catalog_provider
+
     # The bundle's own stylesheet, loaded before the site's themes/*.css so a design still wins over it
     c975L\BookBundle\Service\StylesheetProvider:
         tags:
             - { name: 'ui.stylesheet', priority: 100 }
+
+    # The reader's Stimulus controller, loaded on the front pages only - the back-office has no reader
+    c975L\BookBundle\Service\ScriptProvider:
+        tags:
+            - { name: 'ui.script', priority: 100 }
 
     # Block kinds registered in UiBundle
     # cacheable: false on all 4 below - their templates call book_block_*() (BookBlockExtension), which queries Book/Serie/Strip live at render time; those entities aren't watched by BlockCacheInvalidationListener, so caching by this block's own id would go stale as soon as a book/serie/strip is published/edited elsewhere, with nothing to invalidate it

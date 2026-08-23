@@ -1,7 +1,11 @@
 {% set displayMore = displayMore | default(false) %}
-<div class="cards">
+{# "rating": the score under each cover, and the icons to set it - only a listing rendered outside the block cache asks for it, the html of a cached block being shared by every visitor and its averages frozen with it, and only where the site rates its catalog at all (the setting the book's own page reads, see Book:Hero) #}
+{% set rating = rating|default(false) and config('book-rating')|to_bool %}
+{# One query for the whole page rather than one per cover: each card is handed the tally already read for it (see ui_ratings()) #}
+{% set ratings = rating ? ui_ratings('book', books|map(b => b.id)) : [] %}
+<div class="cards book-cards">
     {% for book in books %}
-        <twig:c975LBook:Book:Book book="{{ book }}"/>
+        <twig:c975LBook:Book:Book book="{{ book }}" :rating="rating" :aggregate="rating ? ratings[book.id] : null" :editable="editable|default(false)"/>
     {% endfor %}
     {% if displayMore == "true" %}
         <article class="text-center width-150">

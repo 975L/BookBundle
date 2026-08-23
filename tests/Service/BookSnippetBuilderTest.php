@@ -53,7 +53,6 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertSame('https://example.org/cover.webp', $snippet['image']);
         $this->assertSame('fr', $snippet['inLanguage']);
         $this->assertSame('2026-01-15', $snippet['datePublished']);
-        $this->assertSame(48, $snippet['numberOfPages']);
         $this->assertSame('7-10', $snippet['typicalAgeRange']);
         $this->assertSame(['@type' => 'Person', 'name' => 'Tim Loval', 'url' => 'https://example.org/auteur'], $snippet['author']);
     }
@@ -88,11 +87,11 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertSame('https://schema.org/Paperback', $this->builder->buildBook($book)['bookFormat']);
     }
 
-    // An ISBN reserved ahead of the edition it names identifies a book nobody can get yet
-    public function testAnEditionNotOutYetIsLeftOut(): void
+    // An edition without an ISBN names a book no page can identify: it does not join the graph
+    public function testAFormatWithoutAnIsbnIsLeftOut(): void
     {
         $book = $this->book();
-        $book->getEdition('digital')->setPublished(new \DateTime('+1 year'));
+        $book->getEdition('digital')->setIsbn(null);
 
         $this->assertCount(1, $this->builder->buildBook($book)['workExample']);
     }
@@ -124,17 +123,20 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertSame('https://schema.org/AudiobookFormat', $this->builder->buildBook($book)['bookFormat']);
     }
 
-    // The platforms are given as identities, never as offers: a price and a stock belong to whoever sells the book. Each edition carries its own, read off the edition rather than guessed from the format the links group under
-    public function testAnEditionCarriesTheAddressesOfThePlatformsPublishingIt(): void
+    // The platforms are given as identities, never as offers: a price and a stock belong to whoever sells the book. They belong to the book and are read by the gesture the edition serves - a recording is listened to where the podcast apps carry it, a book is bought where the bookshops sell it
+    public function testAFormatIsReachedWhereTheGestureItServesIsOffered(): void
     {
         $book = $this->book();
-        $book->getEditions()[1]->addLink(new BookLink()->setKind('epub_kobo')->setUrl('https://kobo.example/tome-1'));
+        $book->addLink(new BookLink()->setKind('epub_kobo')->setUrl('https://kobo.example/tome-1'));
+        $book->addLink(new BookLink()->setKind('podcast_spotify')->setUrl('https://spotify.example/tome-1'));
 
         $editions = $this->builder->buildBook($book)['workExample'];
 
-        // The store selling the digital edition reaches it alone, the paperback being sold where the book holds no link
-        $this->assertArrayNotHasKey('sameAs', $editions[0]);
+        // Paper and digital are bought at the same addresses, audio is listened to at its own
+        $this->assertSame(['https://kobo.example/tome-1'], $editions[0]['sameAs']);
         $this->assertSame(['https://kobo.example/tome-1'], $editions[1]['sameAs']);
+        // The book does not come out in audio here: what the graph carries is its two editions
+        $this->assertCount(2, $editions);
     }
 
     // A translation is the same work in another language, not another edition of it: it has its own page, and neither the ISBNs nor the pages of the book it translates
@@ -250,7 +252,6 @@ class BookSnippetBuilderTest extends TestCase
             ->setAuthorWebsite('https://example.org/auteur')
             ->setLanguage('fr')
             ->setPublished(new \DateTime('2026-01-15'))
-            ->setPages(48)
             ->setAge('7-10')
             ->addEdition(self::edition('paper', '9791092030143'))
             ->addEdition(self::edition('digital', '9791092030150'))
@@ -274,13 +275,13 @@ class BookSnippetBuilderTest extends TestCase
         return $strip;
     }
 
-    // An edition out well before today, an unreleased one carrying no ISBN a page could print
+    // An edition, which says only what the book comes out under: the date is the book's, the only one there is
     private static function edition(string $kind, string $isbn): BookEdition
     {
         return new BookEdition()
             ->setKind($kind)
             ->setIsbn($isbn)
-            ->setPublished(new \DateTime('2026-01-15'))
+            ->setPages(48)
         ;
     }
 
