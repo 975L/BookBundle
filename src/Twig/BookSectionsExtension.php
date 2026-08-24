@@ -13,7 +13,6 @@ namespace c975L\BookBundle\Twig;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\Serie;
-use c975L\BookBundle\Enum\BookMediaKind;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Attribute\AsTwigFunction;
@@ -21,9 +20,6 @@ use Twig\Attribute\AsTwigFunction;
 // Which sections a display page actually holds, in the order it lays them out. Read twice by each of those pages - once by the hero, which offers the ones a reader comes for, once to decide what to render - so a button is never offered for a section the page left out, and a section never rendered without a name of its own. A serie's page still draws its summary of anchors from this (<twig:c975LUi:Text:Toc>); a book's has none, its hero saying the same in four verbs
 class BookSectionsExtension
 {
-    // What the book's two cards claim: the trailer is watched under "Videos", the podcast video under "Listen". A version carrying them therefore does not print them a second time under its own name
-    public const array CARD_KINDS = [BookMediaKind::Trailer->value, BookMediaKind::Podcast->value];
-
     // The sections this bundle prints itself, plus the two parts of the page that are no section (the hero and the summary). A site declaring any other key is naming a section of its own, which this bundle knows nothing about but the fragment rendering it
     // "edition" and "serie" are listed without being printed: the contract announced them for a while, and a site having declared them then would otherwise open a ghost card
     private const array OWN_KEYS = [
@@ -64,9 +60,9 @@ class BookSectionsExtension
                 // The pages a reader leafs through before buying (Book::getExtracts())
                 'extracts' => ['label.read', !$book->getExtracts()->isEmpty()],
                 // Where the book is listened to: the recording itself as much as the platforms carrying it, the card holding both
-                'podcasts' => ['label.podcasts', [] !== self::audioMedias($book) || [] !== self::mediasOfKind($book, BookMediaKind::Podcast->value) || [] !== $this->customizationRegistry->getLinksOf($book, 'audio') || [] !== $this->customizationRegistry->getLinksOf($book, 'podcast')],
+                'podcasts' => ['label.podcasts', [] !== self::audioMedias($book) || [] !== $this->customizationRegistry->getLinksOf($book, 'audio') || [] !== $this->customizationRegistry->getLinksOf($book, 'podcast')],
                 // The videos the book holds as files, and the platforms it is watched on - one card, the way the stores and the podcast apps share theirs. The "video" group had a name and a place in the vocabulary and was printed by nothing
-                'apercu' => ['label.watch', !$book->getVideos()->isEmpty() || [] !== self::mediasOfKind($book, BookMediaKind::Trailer->value) || [] !== $this->customizationRegistry->getLinksOf($book, 'video')],
+                'apercu' => ['label.watch', !$book->getVideos()->isEmpty() || [] !== $this->customizationRegistry->getLinksOf($book, 'video')],
             ], $locale),
             $this->sections([
                 // Where a book not yet paid for is helped along, which comes before where a book already out is bought
@@ -187,15 +183,7 @@ class BookSectionsExtension
         ));
     }
 
-    // The two kinds the book's cards print, read by the templates rather than rewritten by them (see Book:Podcasts and Book:Videos)
-    /** @return list<string> */
-    #[AsTwigFunction('book_card_kinds')]
-    public static function cardKinds(): array
-    {
-        return self::CARD_KINDS;
-    }
-
-    // The files of a given kind, whatever version carries them - which book_media() does not do, reading only those of the book itself. The trailer and the podcast video are read this way: they are announced in a card of the book, wherever they were uploaded
+    // The files of a given kind, whatever version carries them - which book_media() does not do, reading only those of the book itself
     /**
      * @return list<Media>
      */

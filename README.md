@@ -77,6 +77,9 @@ php bin/console doctrine:migrations:diff
 php bin/console doctrine:migrations:migrate
 ```
 
+[`UPGRADE.md`](UPGRADE.md) names the breaking changes of each version and what a consuming app does about
+them — the notes below are the ones asking for SQL of their own.
+
 Upgrading from a version where a serie's covers were stored with no kind, tag them so they keep their `cover` kind:
 
 ```sql
@@ -278,11 +281,11 @@ the information and the shape only repeating it. A version the book does not hol
 for a reader that is an answer, not a gap.
 
 A book's page carries **what its readers wrote about it**, under the blocks composed at its foot: the
-reviews left on it and the link leading to the form (UiBundle's own `ui_reviews()` and its
-`Review/List.html.twig`, filed under the `book` owner type). Nothing shows until the site enables
-`ui-enable-reviews` — the function answers an empty list and the section stays away. It is rendered
-outside the blocks cache, so a review published now shows on the next request, which is also why none of
-the six public pages sets a browser cache header of its own any more.
+reviews left on it and the fold leading to the form (UiBundle's own `ui_reviews_section()`, filed under
+the `book` owner type). Nothing shows until the site enables `ui-enable-reviews` — the function answers
+an empty string and the section stays away. It is held in the very cache the blocks above it are held in,
+tagged so that publishing a review empties it: nothing in it belongs to one visitor. None of the six
+public pages sets a browser cache header of its own all the same.
 
 `Service\BookFavoriteItemProvider` is what names a book wherever UiBundle holds nothing but an owner type
 and an id — the heading of the page a review is left from, an entry of a reader's wishlist. It answers
@@ -585,7 +588,7 @@ A saved block moves from one container to another by drag and drop, `BookBlockOw
 
 A block hovers the same editing pencil as the sections above it (see *Display pages*): `BookBlockEditUrlProvider` answers UiBundle which screen composes a given block row, and the link opens it on that very row (`focusBlock`).
 
-The bundle also ships five block kinds of its own. Four put a selection of the catalog on any page of the site — `book_series`, `book_books`, `book_to_be_published` and `book_serie_strips`.
+The bundle also ships five block kinds of its own. Four put a selection of the catalog on any page of the site — `book_series`, `book_books`, `book_to_be_published` and `book_serie_strips`. Set to UiBundle's `compact` variant, they print a book at a thumbnail's width, with its cover, its title and its language and without its summary.
 
 The fifth, `book_reader`, reads an illustrated album page by page along its recording. Its medias are the album's pages in order, then the audio file; its `cues` say at which second of the recording each page is turned. The voice is the clock: it turns the pages, and a page turned by hand moves the playhead to that page's cue. Left without cues, the pages are turned by hand alone. It drives UiBundle's `slider` through the slider's own dots, so the two stay independent.
 

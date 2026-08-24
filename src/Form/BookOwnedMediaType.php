@@ -64,9 +64,6 @@ abstract class BookOwnedMediaType extends AbstractType
                 'label' => 'label.video_url',
                 'required' => false,
                 'translation_domain' => 'ui',
-                'attr' => [
-                    'placeholder' => 'https://www.youtube.com/watch?v=xxx',
-                ],
             ])
             // Ticked by default (see Media::$noCookie): the rewriting happens once, on save, and the template never has to care (see BookVideoNoCookieListener)
             ->add('noCookie', CheckboxType::class, [

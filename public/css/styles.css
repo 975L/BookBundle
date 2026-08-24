@@ -250,8 +250,7 @@
 
 .book-section video,
 .book-section img:not(.slider-img),
-.book-section--media .slider,
-.book-section .video-iframe-consent {
+.book-section--media .slider {
   max-height: var(--book-media-max-height);
   max-width: 100%;
   margin-inline: auto;
@@ -269,7 +268,14 @@
   object-fit: contain;
 }
 
+.book-section .video-iframe-figure,
+.book-section .video-figure {
+  width: 100%;
+}
+
 .book-section .video-iframe-consent {
+  max-width: 100%;
+  margin-inline: auto;
   aspect-ratio: var(--book-video-ratio);
 }
 
@@ -399,8 +405,7 @@
   }
   .book-section video,
   .book-section img:not(.slider-img),
-  .book-section--media .slider,
-  .book-section .video-iframe-consent {
+  .book-section--media .slider {
     max-height: var(--book-media-max-height-wide);
   }
   .book-page__hero {

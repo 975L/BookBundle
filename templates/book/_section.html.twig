@@ -34,7 +34,7 @@
             {{ contents }}
         </section>
     {% else %}
-        <twig:c975LUi:Card:Card id="{{ section.anchor|default('') }}" class="toc-target book-section book-section--{{ form }}" title="{{ section.label|default('') }}" lang="{{ sectionLang }}" icon="{{ section.icon|default([]) }}" {{ ...editAttribute }}>
+        <twig:c975LUi:Card:Card tag="section" id="{{ section.anchor|default('') }}" class="toc-target book-section book-section--{{ form }}" title="{{ section.label|default('') }}" lang="{{ sectionLang }}" icon="{{ section.icon|default([]) }}" {{ ...editAttribute }}>
             {{ contents }}
         </twig:c975LUi:Card:Card>
     {% endif %}

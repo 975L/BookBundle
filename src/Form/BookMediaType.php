@@ -26,7 +26,7 @@ class BookMediaType extends AbstractType
 
         $this->addIdField($builder);
 
-        // A version's files are its pages, but also its recording, its trailer and its flipbook - the kind says which, on the site's own vocabulary or the bundle's (see BookCustomizationProviderInterface::getMediaKinds()). Which version the file belongs to is not asked: the form is only ever shown inside the version that holds it (see BookEditionType)
+        // A version's files are its pages, but also its recording and its flipbook - the kind says which, on the site's own vocabulary or the bundle's (see BookCustomizationProviderInterface::getMediaKinds()). Which version the file belongs to is not asked: the form is only ever shown inside the version that holds it (see BookEditionType)
         $this->addFileField($builder, 'label.media');
 
         $kinds = $this->customizationRegistry->getMediaKinds();

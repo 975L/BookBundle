@@ -18,6 +18,7 @@
 {# The url goes on a wrapper and not on the card itself: a component's tag takes attributes by name, and one written only when there is something to write cannot be expressed there. The wrapper is transparent to the layout (UiBundle's ".block-editable" is display:contents), and its overlay walks down to the card to measure where to draw the pencil #}
 {% if editUrl %}<div class="block-editable" data-block-edit-url="{{ editUrl }}">{% endif %}
 <twig:c975LUi:Card:Card
+    tag="article"
     id="strip-{{ card.slug }}"
     title="{{ card.title }}"
     titleUrl="{{ linked ? url : '' }}"

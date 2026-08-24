@@ -267,15 +267,6 @@ class BookCrudController extends AbstractCrudController
                 ->allowAdd()
                 ->allowDelete()
                 ->setFormTypeOption('by_reference', false),
-            // The filmed episode, printed at the head of the "Listen" card: one video only, hence allowAdd() closed as soon as it is there, like the cover
-            CollectionField::new('podcasts')
-                ->setLabel(t('label.media_podcast', [], 'book'))
-                ->setHelp(t('label.podcast_media-help', [], 'book'))
-                ->hideOnIndex()
-                ->setEntryType(BookFlipbookType::class)
-                ->allowAdd(self::isEmpty($book?->getPodcasts()))
-                ->allowDelete()
-                ->setFormTypeOption('by_reference', false),
             CollectionField::new('listenLinks')
                 ->setLabel(t('label.links', [], 'book'))
                 ->setHelp(t('label.listen_links-help', [], 'book'))
@@ -287,15 +278,6 @@ class BookCrudController extends AbstractCrudController
             // "Watch" - the same section of the page. Like the collections following it, each is alone of its kind in its fieldset
             FormField::addFieldset(t('label.watch', [], 'book'))
                 ->hideOnIndex(),
-            // The trailer, played at the head of the "Watch" card: one only, like the podcast episode above
-            CollectionField::new('trailers')
-                ->setLabel(t('label.media_trailer', [], 'book'))
-                ->setHelp(t('label.trailer_media-help', [], 'book'))
-                ->hideOnIndex()
-                ->setEntryType(BookFlipbookType::class)
-                ->allowAdd(self::isEmpty($book?->getTrailers()))
-                ->allowDelete()
-                ->setFormTypeOption('by_reference', false),
             CollectionField::new('videos')
                 ->setLabel(t('label.videos', [], 'book'))
                 ->setHelp(t('label.videos-help', [], 'book'))

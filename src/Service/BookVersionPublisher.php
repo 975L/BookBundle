@@ -78,7 +78,7 @@ class BookVersionPublisher
         $edition->setBook($target);
     }
 
-    // What the version set aside takes with it: the pages leafed through and the flipbook animating them. They tell the text as it came out, and the book staying behind gets its own - the recording, the trailer and the filmed episode do not move, the text being the same from one version to the other
+    // What the version set aside takes with it: the pages leafed through and the flipbook animating them. They tell the text as it came out, and the book staying behind gets its own - the recording does not move, the text being the same from one version to the other
     // The owning side only, like moveEdition(): a book's collections are "orphanRemoval: true", and taking a row out of one schedules it for deletion
     /** @param list<string> $kinds */
     public function moveMedias(Book $source, Book $target, array $kinds): int

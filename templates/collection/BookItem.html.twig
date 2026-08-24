@@ -1,2 +1,3 @@
 {# One item of the "book.collection.books" sources (BookCollectionSourceProvider) - the book travels in the item's data, Book:Card draws it #}
-<twig:c975LBook:Book:Card book="{{ book }}"/>
+{# "variant" is set by CollectionRuntime::renderItem() off the block's own field: "compact" hands the card the width of a thumbnail, which is also what it drops its summary for #}
+<twig:c975LBook:Book:Card book="{{ book }}" :compact="variant|default('') == 'compact'"/>

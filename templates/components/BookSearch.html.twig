@@ -3,8 +3,8 @@
     <input
         type="search"
         data-model="query"
-        aria-label="Recherche dans les histoires"
-        placeholder="Entrer les caractères recherchés"
+        aria-label="{{ 'label.book_search'|trans({}, 'book') }}"
+        placeholder="{{ 'label.search_placeholder'|trans({}, 'book') }}"
         class="img-500"
     >
 
@@ -12,7 +12,7 @@
     <div class="flex-center flex-start">
         {% set books = this.books %}
         {% if books is not null and books is empty %}
-            <p class="text text-center">Aucun résultat trouvé pour votre recherche.</p>
+            <p class="text text-center">{{ 'label.no_result'|trans({}, 'book') }}</p>
         {% elseif books is not empty %}
             <twig:c975LBook:Book:Books :books="books"/>
         {% endif %}

@@ -165,13 +165,10 @@ $book-bp-column: 1200px;
     font-size: var(--book-section-title-size);
 }
 
-// MEDIA - bounded rather than natural. A video carries its own pixel size and took it: 1080x1920 for a trailer
-// filmed on a phone, two full screens for one file. Height is what is capped, the width following from it
-// The ceiling holds for every section and not for the "media" form alone: the trailer, the podcast episode and the book's video are watched at the same size in three different cards
+// MEDIA - height capped rather than natural, the width following from it: a video carries its own pixel size, two full screens for one file. Every section, not the "media" form alone
 .book-section video,
 .book-section img:not(.slider-img),
-.book-section--media .slider,
-.book-section .video-iframe-consent {
+.book-section--media .slider {
     max-height: var(--book-media-max-height);
     max-width: 100%;
     margin-inline: auto;
@@ -192,8 +189,16 @@ $book-bp-column: 1200px;
     object-fit: contain;
 }
 
-// A platform player is an <iframe>, worth 300x150 until something says otherwise. The box is given to the container and not to the player, so the consent screen and the player replacing it both fill it and the card does not jump from one size to another (see Book:Video and UiBundle's assets/js/video-iframe.js)
+// The figure is a flex item of a centring column, so it takes its content's width, and a framed player asks for nothing: "width: 100%" below resolved against the 300px an <iframe> is worth
+.book-section .video-iframe-figure,
+.book-section .video-figure {
+    width: 100%;
+}
+
+// The box goes to the container and not to the <iframe>, so the consent screen and the player replacing it fill the same 16/9 and the card never jumps (see Book:Video and UiBundle's assets/js/video-iframe.js). No height ceiling, that one having been cut for files shot in portrait
 .book-section .video-iframe-consent {
+    max-width: 100%;
+    margin-inline: auto;
     aspect-ratio: var(--book-video-ratio);
 }
 
@@ -349,8 +354,7 @@ $book-bp-column: 1200px;
 
     .book-section video,
     .book-section img:not(.slider-img),
-    .book-section--media .slider,
-    .book-section .video-iframe-consent {
+    .book-section--media .slider {
         max-height: var(--book-media-max-height-wide);
     }
 

@@ -581,43 +581,6 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this->removeMedia($media);
     }
 
-    // The two videos the book announces in its cards: the trailer under "Watch", the filmed episode under "Listen" (see BookSectionsExtension::CARD_KINDS). One each, like the cover: they are two files of the book and not two collections
-    /** @return Collection<int, BookMedia> */
-    public function getTrailers(): Collection
-    {
-        return $this->mediasOfKind('trailer');
-    }
-
-    public function addTrailer(BookMedia $media): static
-    {
-        $media->setKind('trailer');
-
-        return $this->addMedia($media);
-    }
-
-    public function removeTrailer(BookMedia $media): static
-    {
-        return $this->removeMedia($media);
-    }
-
-    /** @return Collection<int, BookMedia> */
-    public function getPodcasts(): Collection
-    {
-        return $this->mediasOfKind('podcast');
-    }
-
-    public function addPodcast(BookMedia $media): static
-    {
-        $media->setKind('podcast');
-
-        return $this->addMedia($media);
-    }
-
-    public function removePodcast(BookMedia $media): static
-    {
-        return $this->removeMedia($media);
-    }
-
     // The pages a reader leafs through before buying: they belong to the book and not to one of its editions, unlike an album's pages, which are those of the edition they came out in
     public function getExtracts(): Collection
     {

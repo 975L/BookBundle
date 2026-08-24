@@ -77,10 +77,10 @@ class BookCustomizationRegistryTest extends TestCase
         $kinds = new BookCustomizationRegistry([self::provider()], self::registryTranslator())->getMediaKinds();
 
         $this->assertSame(BookMediaKind::defaults(), $kinds);
-        // The three the bundle lays itself on a dedicated field, and the two the cards go and fetch
+        // The ones the bundle lays itself on a dedicated field
         $this->assertArrayHasKey('cover', $kinds);
-        $this->assertArrayHasKey('trailer', $kinds);
-        $this->assertArrayHasKey('podcast', $kinds);
+        $this->assertArrayHasKey('flipbook', $kinds);
+        $this->assertArrayHasKey('extract', $kinds);
     }
 
     public function testASiteNamingItsOwnMediaKindsReplacesTheDefaults(): void

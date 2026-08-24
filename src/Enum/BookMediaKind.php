@@ -16,9 +16,6 @@ enum BookMediaKind: string
     case Extract = 'extract';
     // The video flicking through the book, which its page opens on rather than announces
     case Flipbook = 'flipbook';
-    case Trailer = 'trailer';
-    // The video of the episode the book is read in, watched where the book is listened to
-    case Podcast = 'podcast';
     case AudioMp3 = 'audio_mp3';
     case AudioOgg = 'audio_ogg';
 

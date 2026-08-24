@@ -8,7 +8,7 @@
         {# caption="false": the line below names every video the same way, whichever of the two it is #}
         {# A real player and not a thumbnail: it is the book's video, and the size asked also bounds the consent screen preceding it (see UiBundle, assets/js/video-iframe.js) #}
         {# The stored address is already the player's, brought back to its platform's canonical form on save (see BookVideoNoCookieListener): nothing is built here #}
-        {# Neither width nor height asked: the video takes its card's own, like the trailer above it - a size in pixels bounded the player to 720 in a card narrower than that (see sass/_book.scss) #}
+        {# Neither width nor height asked: the player takes its card's own - a size in pixels bounded it to 720 in a card wider than that (see sass/_book.scss) #}
         <twig:c975LUi:Video:Iframe src="{{ video.youtubeUrl }}" caption="false"/>
     {% elseif video.name %}
         {# asset() and the media's own mimeType: the raw name is not a path a browser can fetch, and a webm forced to "video/mp4" is a player that plays nothing #}

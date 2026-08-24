@@ -61,15 +61,9 @@
             <twig:c975LUi:Blocks:Blocks blocks="{{ book.blocks }}"/>
         </div>
 
-        {# What readers wrote about this book, and the link leading to the form. Nothing at all until the site enables "ui-enable-reviews": the function answers an empty list and the section does not show #}
-        {# Outside the blocks cache, so a published review shows on the next request: this is why this page no longer sets a cache header of its own (see BookController::display()) #}
-        {% if ui_reviews_enabled() %}
-            {% include '@c975LUi/components/Review/List.html.twig' with {
-                reviews: ui_reviews('book', book.id),
-                ownerType: 'book',
-                ownerId: book.id,
-            } only %}
-        {% endif %}
+        {# What readers wrote about this book, and the fold leading to the form. Nothing at all until the site enables "ui-enable-reviews": the function answers an empty string and the section does not show #}
+        {# Held in the very cache the blocks above are held in, tagged so that publishing a review empties it - nothing in it belongs to one visitor (see ReviewRuntime::section()) #}
+        {{ ui_reviews_section('book', book.id) }}
     </div>
 
     {# The book's structured data, built by BookSnippetBuilder from the very fields displayed above #}

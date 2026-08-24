@@ -1,5 +1,35 @@
 [
     {
+        "date": "2026-08-24",
+        "description": [
+            {
+                "en": "The trailer and the filmed episode leave a book: the two fields are gone from its screen, and the \"Watch\" and \"Listen\" cards no longer show those two videos. The book's own videos, its recording, its download buttons and its platforms are untouched",
+                "fr": "La bande-annonce et l'épisode filmé quittent le livre : les deux champs disparaissent de son écran, et les cartes « Regarder » et « Écouter » ne montrent plus ces deux vidéos. Les vidéos du livre, son enregistrement, ses boutons de téléchargement et ses plateformes ne bougent pas",
+                "es": "El tráiler y el episodio filmado dejan el libro: los dos campos desaparecen de su pantalla, y las tarjetas «Ver» y «Escuchar» ya no muestran esos dos vídeos. Los vídeos del libro, su grabación, sus botones de descarga y sus plataformas no cambian"
+            },
+            {
+                "en": "The search for books now speaks the visitor's language: its label, the words in the field and the answer when nothing matches are translated instead of being French for everyone",
+                "fr": "La recherche de livres parle désormais la langue du visiteur : son intitulé, le texte du champ et la réponse quand rien ne correspond sont traduits au lieu d'être en français pour tout le monde",
+                "es": "La búsqueda de libros habla ahora el idioma del visitante: su título, el texto del campo y la respuesta cuando nada coincide están traducidos en lugar de estar en francés para todos"
+            },
+            {
+                "en": "A video hosted on a platform now fills its card once the visitor accepts it, instead of shrinking to a small rectangle in a corner",
+                "fr": "Une vidéo hébergée sur une plateforme occupe désormais toute sa carte une fois que le visiteur l'accepte, au lieu de se réduire à un petit rectangle dans un coin",
+                "es": "Un vídeo alojado en una plataforma ocupa ahora toda su tarjeta una vez que el visitante lo acepta, en lugar de encogerse a un pequeño rectángulo en una esquina"
+            },
+            {
+                "en": "A block listing books can now print them as thumbnails - the cover, the title and the language, without the summary - for a row of books at the foot of a page",
+                "fr": "Un bloc qui liste des livres peut désormais les afficher en vignettes — la couverture, le titre et la langue, sans le résumé — pour une rangée de livres en bas de page",
+                "es": "Un bloque que lista libros puede ahora mostrarlos como miniaturas - la portada, el título y el idioma, sin el resumen - para una fila de libros al pie de una página"
+            },
+            {
+                "en": "A book's summary keeps the lists and the quotations written in it when it shows on a card, instead of running them into one paragraph",
+                "fr": "Le résumé d'un livre garde les listes et les citations qui y sont écrites lorsqu'il s'affiche sur une carte, au lieu de les fondre en un seul paragraphe",
+                "es": "El resumen de un libro conserva las listas y las citas escritas en él cuando aparece en una tarjeta, en lugar de fundirlas en un solo párrafo"
+            }
+        ]
+    },
+    {
         "date": "2026-08-23",
         "description": [
             {

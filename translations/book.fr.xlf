@@ -926,14 +926,6 @@
                 <source>label.media_page</source>
                 <target>Page</target>
             </trans-unit>
-            <trans-unit id="J71iTWc">
-                <source>label.media_podcast</source>
-                <target>Vidéo du podcast</target>
-            </trans-unit>
-            <trans-unit id="v5X_Lk_">
-                <source>label.media_trailer</source>
-                <target>Bande-annonce</target>
-            </trans-unit>
             <trans-unit id="baXk6pr">
                 <source>label.modification</source>
                 <target>Modifié le</target>
@@ -985,10 +977,6 @@
             <trans-unit id="dfCuHTM">
                 <source>label.pages</source>
                 <target>Pages</target>
-            </trans-unit>
-            <trans-unit id="SZxvwI9">
-                <source>label.podcast_media-help</source>
-                <target>L'épisode filmé, joué en tête de la carte « Écouter ». Une seule vidéo par livre.</target>
             </trans-unit>
             <trans-unit id="Nupwtac">
                 <source>label.podcasts</source>
@@ -1110,10 +1098,6 @@
                 <source>label.to_be_published</source>
                 <target>À paraître</target>
             </trans-unit>
-            <trans-unit id="8sc6InZ">
-                <source>label.trailer_media-help</source>
-                <target>La bande-annonce, jouée en tête de la carte « Regarder ». Une seule vidéo par livre.</target>
-            </trans-unit>
             <trans-unit id="R_14dQa">
                 <source>label.translations</source>
                 <target>Traductions</target>
@@ -1128,7 +1112,7 @@
             </trans-unit>
             <trans-unit id="bihMliu">
                 <source>label.videos-help</source>
-                <target>Les vidéos du livre : un fichier téléversé, ou l'identifiant d'une vidéo YouTube. La bande-annonce n'est pas ici — elle se téléverse dans le format qu'elle annonce, et s'affiche à gauche de cette même carte</target>
+                <target>Les vidéos du livre : un fichier téléversé, ou l'identifiant d'une vidéo YouTube.</target>
             </trans-unit>
             <trans-unit id="m7mVNh_">
                 <source>label.watch</source>
@@ -1136,7 +1120,7 @@
             </trans-unit>
             <trans-unit id="haFwvlg">
                 <source>label.watch-intro</source>
-                <target>Regardez ce livre en images : sa bande-annonce et ses vidéos.</target>
+                <target>Regardez ce livre en images : ses vidéos.</target>
             </trans-unit>
             <trans-unit id="KIMWThR">
                 <source>label.watch_links-help</source>

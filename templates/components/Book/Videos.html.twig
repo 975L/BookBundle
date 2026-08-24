@@ -1,18 +1,11 @@
 {# <twig:c975LBook:Book:Videos book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
-{# Where the book is watched: its trailer, the videos it carries - uploaded file or YouTube id - and the platforms it is watched on elsewhere. The same gesture for a reader, so the same card #}
-{# One column, from the largest to the smallest: the trailer, the videos, then the platforms. Everything in it is optional #}
+{# Where the book is watched: the videos it carries - uploaded file or YouTube id - and the platforms it is watched on elsewhere. The same gesture for a reader, so the same card #}
+{# One column, from the largest to the smallest: the videos, then the platforms. Everything in it is optional #}
 {% props book, section = {}, editUrl = "" %}
 {% set section = {anchor: 'apercu', label: 'label.watch'|trans({}, 'book', book.language)}|merge(section) %}
 {% set links = book_links_of(book, 'video') %}
-{# The trailer, whatever version carries it: it is printed here and nowhere else (see BookSectionsExtension::CARD_KINDS) #}
-{% set trailer = book_medias_of_kind(book, 'trailer')|first|default(null) %}
-{% if book.videos is not empty or links|length or trailer %}
+{% if book.videos is not empty or links|length %}
     {% set body %}
-        {% if trailer %}
-            {# Looped and muted, like the flipbook: a trailer plays by itself, it announces the book rather than being watched #}
-            <twig:c975LUi:Video:Video src="{{ vich_uploader_asset(trailer) }}" type="{{ trailer.mimeType }}" caption="false" autoplay="true" muted="true" loop="true"/>
-            <p class="text text-center text-muted">{{ 'label.media_trailer'|trans({}, 'book', book.language) }}</p>
-        {% endif %}
         {% for video in book.videos %}
             <twig:c975LBook:Book:Video video="{{ video }}" language="{{ book.language }}"/>
         {% endfor %}

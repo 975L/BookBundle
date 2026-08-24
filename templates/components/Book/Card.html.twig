@@ -1,13 +1,17 @@
-{# <twig:c975LBook:Book:Card book="{{ book }}"/> #}
+{# <twig:c975LBook:Book:Card book="{{ book }}" [:compact="false"]/> #}
 {# The book as a listing shows it: its cover in portrait, its summary under it, and the language it reads in - which Book:Book does not do, its thumbnail being a catalog row and not a card. What the home page collection prints (see BookCollectionSourceProvider) #}
-{% props book %}
+{# "compact": the card at a thumbnail's width, the "compact" variant of the collection block (see UiBundle's CollectionType). The summary goes with the width - three lines of prose across 190px are not read - leaving the cover, the title and the language, which is what a catalog row shows too #}
+{% props book, compact = false %}
+{# The prop accepts both forms, as UiBundle's components do: written compact="false", Twig hands over the string "false", which is true #}
+{% set compact = compact|default(false)|to_bool %}
 {% set cover = book_cover(book) %}
-<twig:c975LUi:Card:Card id="book-{{ book.id }}" title="{{ book.title }}" lang="{{ book.language }}">
+<twig:c975LUi:Card:Card tag="article" id="book-{{ book.id }}" title="{{ book.title }}" lang="{{ book.language }}" class="{{ compact ? 'card--compact' : '' }}">
     {# The link carries the title in aria-label: the image alone says nothing to whoever listens to it #}
     <a href="{{ book_path('book_display', {'slug': book.slug}) }}" aria-label="{{ book.title }}">
         <twig:c975LUi:Image:Image class="img-rounded box-shadow img-300" src="{{ asset(cover ?: 'bundles/c975lbook/images/no-cover.webp') }}" alt="{{ book.title }}" width="300" height="425"/>
     </a>
-    {% if book.summary %}<p class="lead text-center">{{ book.summary|nl2br }}</p>{% endif %}
+    {# A <div>, not a <p>: Trix stores the summary as html, already block-level, and a <p> would be split by a list or a quotation #}
+    {% if book.summary and not compact %}<div class="lead text-center">{{ book.summary|raw }}</div>{% endif %}
     {# The language by its endonym, never translated - the same rule as the hero's selector (see BookTranslationExtension) #}
     {% if book.language %}<p class="text text-center small bold">({{ book_language_label(book.language) }})</p>{% endif %}
 </twig:c975LUi:Card:Card>

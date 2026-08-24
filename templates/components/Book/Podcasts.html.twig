@@ -1,18 +1,12 @@
 {# <twig:c975LBook:Book:Podcasts book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
-{# Where the book is listened to, and everything is there: the episode's video, the recording itself, the files taken away, then the podcast apps and the audio bookshops. One gesture for one reader, so one card #}
-{# One column, from the largest to the smallest: watch, listen, take away, subscribe. Everything in it is optional #}
+{# Where the book is listened to, and everything is there: the recording itself, the files taken away, then the podcast apps and the audio bookshops. One gesture for one reader, so one card #}
+{# One column, from the largest to the smallest: listen, take away, subscribe. Everything in it is optional #}
 {% props book, section = {}, editUrl = "" %}
 {% set section = {anchor: 'podcasts', label: 'label.podcasts'|trans({}, 'book', book.language)}|merge(section) %}
 {% set medias = book_audio_medias(book) %}
 {% set links = book_links_of(book, 'audio', 'podcast') %}
-{# The episode's video, whatever version carries it: it is printed here and nowhere else (see BookSectionsExtension::CARD_KINDS) #}
-{% set video = book_medias_of_kind(book, 'podcast')|first|default(null) %}
-{% if medias|length or links|length or video %}
+{% if medias|length or links|length %}
     {% set body %}
-        {% if video %}
-            {# Neither autoplay nor loop, unlike the flipbook: it is an episode to be watched, not an animated thumbnail #}
-            <twig:c975LUi:Video:Video src="{{ vich_uploader_asset(video) }}" type="{{ video.mimeType }}" caption="false" title="{{ book.title }}"/>
-        {% endif %}
         {# The first recording is listened to on the spot: it is the book read aloud, not an attachment #}
         {% if medias|length %}
             <div class="book-listen">

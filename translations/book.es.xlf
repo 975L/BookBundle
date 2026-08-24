@@ -926,14 +926,6 @@
                 <source>label.media_page</source>
                 <target>Página</target>
             </trans-unit>
-            <trans-unit id="J71iTWc">
-                <source>label.media_podcast</source>
-                <target>Vídeo del pódcast</target>
-            </trans-unit>
-            <trans-unit id="v5X_Lk_">
-                <source>label.media_trailer</source>
-                <target>Tráiler</target>
-            </trans-unit>
             <trans-unit id="baXk6pr">
                 <source>label.modification</source>
                 <target>Modificado el</target>
@@ -985,10 +977,6 @@
             <trans-unit id="dfCuHTM">
                 <source>label.pages</source>
                 <target>Páginas</target>
-            </trans-unit>
-            <trans-unit id="SZxvwI9">
-                <source>label.podcast_media-help</source>
-                <target>El episodio filmado, reproducido al principio de la tarjeta « Escuchar ». Un solo vídeo por libro.</target>
             </trans-unit>
             <trans-unit id="Nupwtac">
                 <source>label.podcasts</source>
@@ -1110,10 +1098,6 @@
                 <source>label.to_be_published</source>
                 <target>Por publicar</target>
             </trans-unit>
-            <trans-unit id="8sc6InZ">
-                <source>label.trailer_media-help</source>
-                <target>El tráiler, reproducido al principio de la tarjeta « Ver ». Un solo vídeo por libro.</target>
-            </trans-unit>
             <trans-unit id="R_14dQa">
                 <source>label.translations</source>
                 <target>Traducciones</target>
@@ -1128,7 +1112,7 @@
             </trans-unit>
             <trans-unit id="bihMliu">
                 <source>label.videos-help</source>
-                <target>Los vídeos del libro: un archivo subido o el identificador de un vídeo de YouTube. El tráiler no está aquí — se sube en el formato que anuncia y se muestra a la izquierda de esa misma tarjeta</target>
+                <target>Los vídeos del libro: un archivo subido o el identificador de un vídeo de YouTube.</target>
             </trans-unit>
             <trans-unit id="m7mVNh_">
                 <source>label.watch</source>
@@ -1136,7 +1120,7 @@
             </trans-unit>
             <trans-unit id="haFwvlg">
                 <source>label.watch-intro</source>
-                <target>Vea este libro en imágenes: su tráiler y sus vídeos.</target>
+                <target>Vea este libro en imágenes: sus vídeos.</target>
             </trans-unit>
             <trans-unit id="KIMWThR">
                 <source>label.watch_links-help</source>

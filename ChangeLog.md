@@ -1,5 +1,23 @@
 # Changelog
 
+## v2.1.0
+
+A book no longer holds a trailer or a filmed episode
+
+- The video address field no longer carries a `placeholder` (`BookOwnedMediaType`) (24/08/2026)
+- The books search reads its label, its placeholder and its empty answer off the `book` catalog (`BookSearch`) (24/08/2026)
+- **BC break** — The `trailer` and `podcast` kinds leave `BookMediaKind`, their collections leave the back office, and the cards no longer print them (24/08/2026)
+- **BC break** — Removed `BookSectionsExtension::CARD_KINDS`, the `book_card_kinds()` Twig function, and `Book::getTrailers()` and `getPodcasts()` with their accessors (24/08/2026)
+- **BC break** — `label.media_trailer`, `label.media_podcast`, `label.trailer_media-help` and `label.podcast_media-help` leave the `book` domain (24/08/2026)
+- A book's reviews are held in the very cache its blocks are held in (`ui_reviews_section()`) (24/08/2026)
+- Added `UPGRADE.md`, naming the breaking changes and the steps a consuming app takes (24/08/2026)
+- A book's card and a planche's are drawn as `<article>`, a book's section as the `<section>` it is (24/08/2026)
+- A book's card takes the `compact` variant of the collection block drawing it (`Book:Card`, `BookItem`) (24/08/2026)
+- A book's summary is printed as the html the editor wrote (`Book:Card`) (24/08/2026)
+- A component's boolean prop documented in its string form fails the suite (`BooleanPropDocblockTest`) (24/08/2026)
+- A platform player no longer collapses to a 300x150 thumbnail when it replaces its consent screen (24/08/2026)
+- A platform player is no longer bound by the media height ceiling, taking that width at 16/9 (24/08/2026)
+
 ## v2.0.0
 
 A book owns its files and publishes its own versions
@@ -272,7 +290,7 @@ A book owns its files and publishes its own versions
 - Added a "Regenerate sitemap" dashboard shortcut via ConfigBundle's new `ShortcutProviderInterface`, reusing `SitemapCreateCommand` (05/07/2026)
 - Added help text to the Book, Serie and Strip CRUD indexes (13/07/2026)
 
-## v1.1
+## v1.1
 
 - Added Export dropdown (SQL/CSV/JSON) to Book, Serie, and Strip CRUD controllers, using ConfigBundle's `TableExporter` (04/07/2026)
 - Added SerieLogo component (28/06/2026)

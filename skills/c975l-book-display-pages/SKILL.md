@@ -1,6 +1,6 @@
 ---
 name: c975l-book-display-pages
-description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie and of a planche, their hero, their sections and the order they come in, the summary of anchors, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Strip:Card, Strip:Cards, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_alternates, book_versions, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css."
+description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie and of a planche, their hero, their sections and the order they come in, the summary of anchors, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Strip:Card, Strip:Cards, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_alternates, book_versions, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css."
 ---
 
 # c975L BookBundle — display pages
@@ -102,7 +102,7 @@ They all live in `templates/components/` and are overridden in
 | `<twig:c975LBook:Book:Videos>` | one card for everything it is watched by |
 | `<twig:c975LBook:Book:Shops>` | the bookshops, the site's own shop first and in the site colour |
 | `<twig:c975LBook:Book:Informations>` | the framed civil status — serie, editions, languages, versions |
-| `<twig:c975LBook:Book:Card>` | a book in a listing: cover in portrait, summary, language |
+| `<twig:c975LBook:Book:Card>` | a book in a listing: cover in portrait, summary, language — `:compact="true"` prints it at a thumbnail's width, without its summary |
 | `<twig:c975LBook:Strip:Card>` | a planche, the whole card being the link |
 | `<twig:c975LBook:Strip:Characters>` | who speaks, as chips narrowing the serie's listing |
 | `<twig:c975LBook:Strip:Previous>` / `<twig:c975LBook:Strip:Next>` | the arrows laid over the planche |
@@ -118,7 +118,7 @@ is what keeps the pencil. Dropping either leaves a right page with a wrong langu
 ```twig
 {{ book_cover(book) }}                    {# what stands for the book: its cover field, then its first image #}
 {{ book_media(book, 'flipbook') }}        {# one file of a kind #}
-{{ book_medias_of_kind(book, 'trailer') }}
+{{ book_medias_of_kind(book, 'extract') }}
 {{ book_audio_medias(book) }}
 {{ book_translations(book) }}             {# read from either end of the family #}
 {{ book_language_label(book.language) }}  {# the endonym, never translated #}
@@ -165,6 +165,7 @@ never the built files.
 - **Do not give the summary a title or an anchor** — it is not a destination.
 - **Do not link to a public route without asking `BookPublicUrlResolver::resolvePath()`** — a prefix may be emptied.
 - **Do not drop a component's props when overriding it** — the language and the pencil ride on them.
+- **Do not pass a boolean prop as a string** — `compact="false"` reaches Twig as a true string; write `:compact="false"`.
 - **Do not edit `public/css/*`** — they are built from `sass/`.
 - **Do not hardcode a colour or a size in `sass/`** — every one goes through a token.
 - **Do not add a section to a page without adding it to `BookEditUrlExtension`'s map.**

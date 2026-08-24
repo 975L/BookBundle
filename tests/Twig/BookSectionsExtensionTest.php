@@ -139,6 +139,16 @@ class BookSectionsExtensionTest extends TestCase
         $this->assertSame(['podcasts', 'informations'], $this->anchors($book));
     }
 
+    // A file left over from when a book carried a trailer or a filmed episode opens no card any more: the two kinds are gone, and a card is only offered for what a page actually prints
+    public function testALeftoverTrailerOrFilmedEpisodeOpensNoCard(): void
+    {
+        $book = new Book();
+        $book->addMedia(new BookMedia()->setName('bande-annonce.mp4')->setKind('trailer'));
+        $book->addMedia(new BookMedia()->setName('episode.mp4')->setKind('podcast'));
+
+        $this->assertSame(['informations'], $this->anchors($book));
+    }
+
     // The first image, not the first file: a catalog storing a recording before its cover would print an mp3 in an <img>
     public function testTheCoverIsTheFirstImageTheBookHolds(): void
     {
