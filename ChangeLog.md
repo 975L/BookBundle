@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.2.1
+
+A planche listing passes its boolean props in their expression form
+
+- `serie/display.html.twig` calls `Strip:Cards` with `:infinite="true"` and `:rating="true"`, the string form reaching Twig as a true string (25/08/2026)
+
 ## v2.2.0
 
 The catalog, the series and the planches grow as they are read

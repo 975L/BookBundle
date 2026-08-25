@@ -42,7 +42,7 @@
                     <twig:c975LBook:Strip:Characters characters="{{ characters|default([]) }}" serie="{{ serie }}" selected="{{ character|default('') }}" language="{{ serie.language }}" heading="h3"/>
                     <div data-controller="infiniteScroll">
                         {# The card above already carries the "strips" id the hero's button points at, so the listing writes none: the same id twice is invalid html #}
-                        <twig:c975LBook:Strip:Cards strips="{{ strips }}" infinite="true" rating="true" :editable="editUrls is not empty" id=""/>
+                        <twig:c975LBook:Strip:Cards strips="{{ strips }}" :infinite="true" :rating="true" :editable="editUrls is not empty" id=""/>
 
                         <div class="strip-list-footer">
                             {% if strips.getTotalItemCount > strips.getItemNumberPerPage %}
