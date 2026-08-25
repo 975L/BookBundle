@@ -23,26 +23,28 @@
             <twig:c975LBook:Strip:Hero strip="{{ strip }}" editUrl="{{ editUrls.hero|default('') }}"/>
 
             <div class="book-page__sections">
-                {# The very card the listing shows, uncut and leading nowhere - it is the page it would lead to. What comes first is what the site reads a planche for (setting "book-strip-card"): the words when it is them, the drawing otherwise #}
+                {# The very card the listing shows, uncut and leading nowhere - it is the page it would lead to. What the site reads a planche for decides the page (setting "book-strip-card"): the card alone when it is the words, the drawing with the words under it otherwise #}
                 {% set textFirst = 'text' == config('book-strip-card')|default('image') and strip.summary is not null %}
 
                 {# The card and the drawing held together, the arrows to the neighbouring planches laid over the pair: whichever of the two comes first, they flank what the page is read for #}
                 <div class="strip-viewer">
                     {% if textFirst %}
+                        {# A planche read for its words says everything it has to say in the card: its medias are the same reply set in an image, kept as the page's share image and no longer printed under the words they repeat - a picture of a text being neither selectable, nor readable to a screen reader, nor translatable #}
+                        {# Its pencil goes with it: the medias stay editable from the planche's own back-office screen #}
                         {% if editUrls.summary|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.summary }}">{% endif %}
                         <twig:c975LBook:Strip:Card card="{{ strip }}" display="text" :linked="false"/>
                         {% if editUrls.summary|default('') %}</div>{% endif %}
-                    {% endif %}
+                    {% else %}
+                        {# The planche itself draws either an image or a slider, neither of which is this bundle's own markup to write an attribute on: the pencil goes on a wrapper, transparent to the layout (see UiBundle's sass/_block-edit-overlay.scss) #}
+                        {% if editUrls.medias|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.medias }}">{% endif %}
+                        <twig:c975LBook:Strip:Medias strip="{{ strip }}"/>
+                        {% if editUrls.medias|default('') %}</div>{% endif %}
 
-                    {# The planche itself draws either an image or a slider, neither of which is this bundle's own markup to write an attribute on: the pencil goes on a wrapper, transparent to the layout (see UiBundle's sass/_block-edit-overlay.scss) #}
-                    {% if editUrls.medias|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.medias }}">{% endif %}
-                    <twig:c975LBook:Strip:Medias strip="{{ strip }}"/>
-                    {% if editUrls.medias|default('') %}</div>{% endif %}
-
-                    {% if not textFirst and strip.summary is not null %}
-                        {% if editUrls.summary|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.summary }}">{% endif %}
-                        <twig:c975LBook:Strip:Card card="{{ strip }}" display="text" :linked="false"/>
-                        {% if editUrls.summary|default('') %}</div>{% endif %}
+                        {% if strip.summary is not null %}
+                            {% if editUrls.summary|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.summary }}">{% endif %}
+                            <twig:c975LBook:Strip:Card card="{{ strip }}" display="text" :linked="false"/>
+                            {% if editUrls.summary|default('') %}</div>{% endif %}
+                        {% endif %}
                     {% endif %}
 
                     <twig:c975LBook:Strip:Previous previousNext="{{ previousNext }}" language="{{ language }}"/>

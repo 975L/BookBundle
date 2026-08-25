@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.3.0
+
+A reply is shared as the very card the page shows
+
+- A planche read for its words (`book-strip-card` on `text`) shows its card alone, its medias no longer printed under the words they repeat (`strip/display.html.twig`) (25/08/2026)
+- Those medias stay the page's `og:image` and its structured data's `image` (25/08/2026)
+- Such a card takes back the square shape it has in a listing, `--book-strip-card-full-size` (25/08/2026)
+- Added the `strip_card` route and `strip/card.html.twig`, the card alone in a square frame for a headless browser to photograph - `noindex`, gated as `strip_display` is (25/08/2026)
+- Added `.strip-capture` and `--book-strip-capture-padding`, the frame's own ground and edge (25/08/2026)
+- Added `strip:card`, which hands each capture to the media its planche already carries, Vich naming the new file and deleting the one it replaces (25/08/2026)
+- Added `StripCardCommandTest` and `StripDisplayCompositionTest` (25/08/2026)
+- `c975l/core-bundle` is required from `^1.17.4` and no longer from `^1.18`, a version that was never released: composer fell back to v2.1.2, whose `BookService` still autowires KnpPaginator, on a site that had already dropped that bundle (25/08/2026)
+
 ## v2.2.2
 
 A book, a serie and a strip serve structured data a parser reads

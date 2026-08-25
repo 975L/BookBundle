@@ -73,6 +73,10 @@
   --book-strip-card-image-width: 150px;
   /* A card showing words rather than a drawing has no shape of its own: it is given one, square, so a listing reads as a grid. A card showing the drawing keeps the shape of what it shows */
   --book-strip-card-min-height: 320px;
+  /* The same square, larger, for the card standing alone on a planche's own page and for the frame it is photographed in (see sass/_book.scss, ".strip-card--full" and ".strip-capture") */
+  --book-strip-card-full-size: 480px;
+  /* What parts the card from the edge of the picture it is photographed in - the image a reply is shared as */
+  --book-strip-capture-padding: 40px;
   --book-strip-card-icon-size: 72px;
   --book-strip-card-title-size: 0.95rem;
   --book-strip-card-lift: -3px;
@@ -613,6 +617,38 @@
 .book-page__sections .strip-card--full {
   width: min(100%, var(--book-strip-media-max-width));
   margin-inline: auto;
+}
+
+.book-page__sections .strip-card--text.strip-card--full {
+  width: min(100%, var(--book-strip-card-full-size));
+  min-height: var(--book-strip-card-full-size);
+}
+
+.strip-capture {
+  margin: 0;
+  /* Larger than on the page, the picture being read at the size a social network shows it rather than at arm's length - retuned by a site through these very tokens */
+  --book-strip-card-icon-size: 120px;
+  --book-strip-card-text-size: 1.35rem;
+}
+
+.strip-capture .strip-capture__frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: var(--book-strip-capture-padding);
+  background: var(--background);
+}
+
+.strip-capture .strip-card {
+  flex: 1;
+  align-self: stretch;
+  margin: 0;
+}
+
+.strip-capture .strip-card .card-body {
+  justify-content: safe center;
 }
 
 .strip-card__mark {

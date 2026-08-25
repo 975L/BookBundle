@@ -77,6 +77,40 @@ class StripController extends AbstractController
         );
     }
 
+    // CAPTURE
+    // The planche's card alone, framed square on the site's own background: what a reply is shared as, photographed from the very markup the page shows rather than drawn a second time by an image editor
+    // A fixed segment and no ConfigBundle prefix: it is a tool page, not one of the site's own addresses - noindex below, and a headless browser is the only thing meant to open it (see the capture script shipped next to this bundle)
+    #[Route(
+        '/strip-card/{slug}',
+        name: 'strip_card',
+        requirements: ['slug' => '^([a-z0-9\-]+)'],
+        methods: ['GET']
+    )]
+    public function card(string $slug): Response
+    {
+        $strip = $this->stripService->findOneBySlug($slug);
+
+        // The same three gates as display(): what is not served there is not photographed here either
+        if (null === $strip) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($strip->isDeleted()) {
+            throw new GoneHttpException();
+        }
+
+        if (null === $strip->getPublished()) {
+            throw $this->createNotFoundException();
+        }
+
+        $response = $this->render('@c975LBook/strip/card.html.twig', ['strip' => $strip]);
+
+        // The same card at a second address would otherwise read as the planche's page duplicated
+        $response->headers->set('X-Robots-Tag', 'noindex');
+
+        return $response;
+    }
+
     // SHORTCUT
     // The short link a planche is shared with, one letter and its number ("/s3"): the letter is the site's own - "r" where the planches are replies - and left empty, no such url is served (see BookRoutePrefix)
     #[Route(

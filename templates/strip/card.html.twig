@@ -1,0 +1,14 @@
+{# The planche's card alone in a square frame, for a headless browser to photograph: the image a reply is shared as is the card itself, so it is never drawn twice and never drifts from what the page shows (see StripController::card()) #}
+{# UiBundle's layout and not the site's: the head, the fonts and the stylesheets are wanted, the navbar, the footer, the cookie banner and the scroll buttons are not - hence the body below, written whole #}
+{% extends '@c975LUi/layout.html.twig' %}
+
+{% set title = strip.title %}
+{% set language = strip.serie ? strip.serie.language : null %}
+
+{% block bodyClass %}strip-capture{% endblock %}
+
+{% block body %}
+    <div class="strip-capture__frame" lang="{{ language }}">
+        <twig:c975LBook:Strip:Card card="{{ strip }}" display="text" :linked="false"/>
+    </div>
+{% endblock %}

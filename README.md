@@ -153,6 +153,7 @@ ships commented out in `scaffold/assets/styles/themes/book.css`, copied into the
 | `strip_display` | `/strip/{slug}` | `book-route-strip` | Strip detail page |
 | `book_shortcut` | `/b{number}` | `book-route-book-shortcut` | Short link to a book, 301 |
 | `strip_shortcut` | `/s{number}` | `book-route-strip-shortcut` | Short link to a strip, 301 |
+| `strip_card` | `/strip-card/{slug}` | — | The planche's card alone in a square frame, for a headless browser to photograph — `noindex` |
 
 The two indexes share no serie: each one lists the series of its own kind, `Serie::kind` saying which
 (`Enum\SerieKind`), and a serie that declares none is filed by what it holds. A planche is listed by the
@@ -231,6 +232,44 @@ picture and a line or two around it. `Strip:Breadcrumb` opens the page with wher
 listing, its serie, itself), and `Strip:Previous`/`Strip:Next` lay the way to its neighbours over the
 planche itself, as GalleryBundle does over a photo: they fade out at rest where there is a pointer to bring
 them back, and stay on where there is none.
+
+What a planche's page shows is what the site reads planches for, setting **`book-strip-card`** in group
+**Catalogue**: `image` for a comic strip, whose page is the drawing with a line or two under it, `text` for a
+site whose planches are replies, whose page is the card and nothing else. A reply set as a drawing *and*
+transcribed would otherwise be read twice on the same page, the second time in a picture no screen reader
+reaches and no visitor can select — so on `text` the planche's medias are no longer printed, and its card
+takes back the square shape it wears in the listing (`--book-strip-card-full-size`). The medias stay: they
+are the page's `og:image` and its structured data's `image`, and they stay editable from the planche's own
+back-office screen.
+
+#### Photographing a planche's card
+
+Which raises the question of what a reply is *shared* as, once the drawing that used to answer it is off the
+page. The answer is the card itself: `strip_card` (`/strip-card/{slug}`) serves it alone, centred in a square
+frame on the site's own background, with no navbar, footer, cookie banner or scroll buttons around it —
+UiBundle's layout with its body written whole, so the head, the fonts and the stylesheets are the page's own.
+It is `noindex`, and gated exactly as `strip_display` is: what is not served there is not photographed here.
+
+A headless browser takes the picture, and `strip:card` hands it over:
+
+```bash
+# One webp per slug, photographed off the running site
+StripsCards.sh /strips/repliques-de-papa-calin /tmp/cards http://127.0.0.1:8000 1200
+
+# Handed to the media each planche already carries
+php bin/console strip:card --dir=/tmp/cards --serie=repliques-de-papa-calin --dry-run
+php bin/console strip:card --dir=/tmp/cards --serie=repliques-de-papa-calin
+```
+
+The command writes nothing itself: it sets the file on the `StripMedia` and lets **Vich** do the naming, the
+storing and the deleting of the file it replaces (mapping `block_media`, `delete_on_update`) — which is what
+keeps the media editable from the back office exactly as an uploaded one. A planche the capture skipped keeps
+what it carries and is named in the report; one carrying no media at all is given one. The role is written as
+`card`, so the stored file says what it holds.
+
+Vich names each new file with a fresh `uniqid`, so **the same run against two databases produces two
+different names**: run the command where the catalog is the source of truth, and bring the result back — not
+the other way round.
 
 No edition opens a section of its own: an edition says what the book comes out under, and the pages a
 reader leafs through belong to the book. `Book:Extracts` shows them all, in UiBundle's slider, and the

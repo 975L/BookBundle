@@ -602,6 +602,45 @@ $book-bp-column: 1200px;
     margin-inline: auto;
 }
 
+// A card of words stands alone there: the drawing it used to be aligned on is no longer printed under it, being the same reply set in an image (see strip/display.html.twig), so the card takes back the square shape it has in the listing rather than the drawing's width
+// A floor and not a fixed height, for the same reason as ".strip-card--text" above: a longer dialogue grows the card instead of overflowing it
+.book-page__sections .strip-card--text.strip-card--full {
+    width: min(100%, var(--book-strip-card-full-size));
+    min-height: var(--book-strip-card-full-size);
+}
+
+// The square a card is photographed in, the picture a reply is shared as (see strip/card.html.twig). The frame is the picture's own edge: the viewport is set square by the capture script, and the card is centred in it on the site's background
+.strip-capture {
+    margin: 0;
+
+    /* Larger than on the page, the picture being read at the size a social network shows it rather than at arm's length - retuned by a site through these very tokens */
+    --book-strip-card-icon-size: 120px;
+    --book-strip-card-text-size: 1.35rem;
+}
+
+.strip-capture .strip-capture__frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    padding: var(--book-strip-capture-padding);
+    background: var(--background);
+}
+
+// The whole of the frame, minus its edge: the card is the picture, not an object sitting in it - so it is stretched to the frame rather than taking the shape a listing gives it
+.strip-capture .strip-card {
+    flex: 1;
+    align-self: stretch;
+    margin: 0;
+}
+
+// Centred here, where a listing opens every card's dialogue on the same line (see ".strip-card .card-body"): a picture has no row to line up with, and its subject sits in the middle of it
+// "safe": a long dialogue fills the card and would otherwise be centred on what no longer fits, its mark climbing over the header - past that point it starts from the top like any other
+.strip-capture .strip-card .card-body {
+    justify-content: safe center;
+}
+
 .strip-card__mark {
     width: var(--book-strip-card-icon-size);
     height: auto;

@@ -76,6 +76,13 @@
 
     /* A card showing words rather than a drawing is given a shape, square, so a listing reads as a grid. The lift is what it rises by under the pointer */
     /* --book-strip-card-min-height: 320px; */
+
+    /* The same square, larger, for the card standing alone on a planche's own page and for the frame it is photographed in - the picture a reply is shared as */
+    /* --book-strip-card-full-size: 480px; */
+
+    /* What parts that card from the edge of the picture */
+    /* --book-strip-capture-padding: 40px; */
+
     /* --book-strip-card-icon-size: 72px; */
     /* --book-strip-card-title-size: 0.95rem; */
     /* --book-strip-card-lift: -3px; */

@@ -1,6 +1,6 @@
 ---
 name: c975l-book-display-pages
-description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie and of a planche, their hero, their sections and the order they come in, the summary of anchors, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Strip:Card, Strip:Cards, Book:Books, Serie:Series, infinite, infiniteScroll, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_alternates, book_versions, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css."
+description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie and of a planche, their hero, their sections and the order they come in, the summary of anchors, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Strip:Card, Strip:Cards, Book:Books, Serie:Series, infinite, infiniteScroll, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_alternates, book_versions, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, strip_card, strip:card, book-confetti, book-rating, sass/_variables.scss, themes/book.css."
 ---
 
 # c975L BookBundle — display pages
@@ -10,7 +10,7 @@ description: "Use this skill when working on the public pages of a catalog built
 **Package:** `c975l/book-bundle` · **Bundle:** `c975L\BookBundle\` · **Twig namespace:** `@c975LBook` · **Translation domain:** `book`
 
 **Key source paths** (relative to the package root):
-`src/Twig/BookSectionsExtension.php`, `src/Twig/BookEditUrlExtension.php`, `src/Twig/BookUrlExtension.php`, `src/Twig/BookTranslationExtension.php`, `src/Twig/BookVersionExtension.php`, `src/Controller/BookController.php`, `src/Controller/SerieController.php`, `src/Controller/StripController.php`, `templates/book/display.html.twig`, `templates/book/_section.html.twig`, `templates/book/index.html.twig`, `templates/serie/display.html.twig`, `templates/serie/index.html.twig`, `templates/strip/display.html.twig`, `templates/strip/index.html.twig`, `templates/components/`, `sass/_variables.scss`, `sass/_book.scss`, `scaffold/assets/styles/themes/book.css`
+`src/Twig/BookSectionsExtension.php`, `src/Twig/BookEditUrlExtension.php`, `src/Twig/BookUrlExtension.php`, `src/Twig/BookTranslationExtension.php`, `src/Twig/BookVersionExtension.php`, `src/Controller/BookController.php`, `src/Controller/SerieController.php`, `src/Controller/StripController.php`, `templates/book/display.html.twig`, `templates/book/_section.html.twig`, `templates/book/index.html.twig`, `templates/serie/display.html.twig`, `templates/serie/index.html.twig`, `templates/strip/display.html.twig`, `templates/strip/card.html.twig`, `templates/strip/index.html.twig`, `templates/components/`, `sass/_variables.scss`, `sass/_book.scss`, `scaffold/assets/styles/themes/book.css`
 
 **Related skills:** `c975l-book-customization` and `c975l-book-lifecycle` in this same bundle, and `c975l-blocks`, `c975l-media`, `c975l-ui-assets` in UiBundle beside it.
 
@@ -25,6 +25,7 @@ description: "Use this skill when working on the public pages of a catalog built
 | `strip_index` | `/strips` | the series telling planches, not the planches, growing on scroll |
 | `strip_display` | `/strip/{slug}` | one planche |
 | `book_shortcut` / `strip_shortcut` | `/b3`, `/s3` | 301 to the slug |
+| `strip_card` | `/strip-card/{slug}` | one planche's card alone, square, `noindex` — photographed as its share image |
 
 Every prefix is a ConfigBundle setting (`book-route-books`, `book-route-book`, `book-route-series`,
 `book-route-strips`, `book-route-strip`, `book-route-book-shortcut`, `book-route-strip-shortcut`) — see
@@ -180,8 +181,17 @@ own ground and ink, read through UiBundle's `--background` / `--text` / `--prima
 `--book-link-tile-*`, a platform's mark being drawn in its brand's colours and needing a light plate.
 
 The pages are mobile first: one column, then two from `1200px`. Four settings change the look without
-touching CSS: `book-strip-card` (words first or drawing first), `book-strip-card-icon`, `book-strip-rating-icon`
+touching CSS: `book-strip-card` (the card alone or the drawing), `book-strip-card-icon`, `book-strip-rating-icon`
 and `book-confetti`; `book-rating` turns the reader score off for all three families.
+
+`book-strip-card` on `text` decides more than an order: the planche shows its card and **not** its medias,
+which are the same reply set in an image — read twice on one page otherwise, the second time in a picture no
+screen reader reaches. The medias stay as the page's `og:image` and its structured data's `image`. The card
+then takes back the square it wears in a listing (`--book-strip-card-full-size`), and `strip_card` serves that
+very card in a square frame for a headless browser to photograph — `StripsCards.sh` takes the pictures,
+`strip:card --dir=` hands each to its planche's media through Vich, which names the new file and deletes the
+one it replaces. Vich names with a fresh `uniqid`, so running it against two databases yields two different
+names: run it where the catalog is the source of truth.
 
 `public/css/styles.css` and `styles.min.css` are **generated from `sass/`** — edit the SCSS and rebuild,
 never the built files.
