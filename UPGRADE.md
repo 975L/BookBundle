@@ -2,7 +2,7 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
-### v2.1.0
+## v2.1.0
 
 **A book no longer holds a trailer or a filmed episode.** The `trailer` and `podcast` file kinds leave
 `BookMediaKind`, their two collections leave the back office (`BookCrudController`), and the "Watch" and "Listen"

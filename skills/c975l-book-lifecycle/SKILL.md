@@ -32,7 +32,7 @@ The **Publier une nouvelle version** action of a book's screen (`site-role-edito
 its slug, its readers' ratings, its blocks, its translations — and a twin is born taking what came out so
 far, its editions among them with `moveEdition()`, and the pages of that text with `moveMedias()`.
 
-```
+```text
 book (kept, same url)  ← newerVersion —  twin (what came out so far)  ← newerVersion —  the one before
 ```
 

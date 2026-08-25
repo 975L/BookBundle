@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.1.2
+
+The bundle's tooling is CoreBundle's
+
+- Added `eslint.config.mjs`, `.stylelintrc.json` and `.markdownlint.json`, the lint configurations CoreBundle carries (25/08/2026)
+- Aligned `.codacy.yaml` on CoreBundle's, `**/tests/**` and `**/*.tpl.php` now excluded (25/08/2026)
+- `UPGRADE.md` opens its version section on `##` (25/08/2026)
+- `skills/c975l-book-lifecycle/SKILL.md` labels its diagram fence `text` (25/08/2026)
+- `.gitattributes` is CoreBundle's, the lint and tool configurations, `/bin`, `/tests` and `/.github` leaving the dist archive (25/08/2026)
+- Rector caches in `.rector.cache`, inside the repository (25/08/2026)
+- `composer rector` drops `--clear-cache` (25/08/2026)
+- `bin/ci.sh` is CoreBundle's, leaving that cache out of the copy (25/08/2026)
+- `rector.php` lists `scaffold/` among its paths (25/08/2026)
+
 ## v2.1.1
 
 A planche of the block showcase shows its drawing
