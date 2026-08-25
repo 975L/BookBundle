@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.2.2
+
+A book, a serie and a strip serve structured data a parser reads
+
+- The `book`, `serie` and `strip` display templates print their JSON-LD with `raw`, a `{% set %}` dropping the function's `is_safe` marking (25/08/2026)
+- Added `StructuredDataMarkupTest`, reading that every JSON-LD block of the templates is printed unescaped (25/08/2026)
+
 ## v2.2.1
 
 A planche listing passes its boolean props in their expression form
