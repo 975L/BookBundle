@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.1.1
+
+A planche of the block showcase shows its drawing
+
+- `GalleryShowcaseProvider` attaches a placeholder image to each sample planche, the three cards being empty until now (25/08/2026)
+- The photos come from `PlaceholderMediaRegistry`, an app declaring none getting the bare cards it got before (25/08/2026)
+
 ## v2.1.0
 
 A book no longer holds a trailer or a filmed episode

@@ -12,7 +12,9 @@ namespace c975L\BookBundle\Service;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
+use c975L\BookBundle\Entity\StripMedia;
 use c975L\UiBundle\Contract\GalleryShowcaseProviderInterface;
+use c975L\UiBundle\Registry\PlaceholderMediaRegistry;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
@@ -22,6 +24,7 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
     public function __construct(
         private readonly Environment $twig,
         private readonly TranslatorInterface $translator,
+        private readonly PlaceholderMediaRegistry $placeholderMediaRegistry,
     ) {
     }
 
@@ -101,15 +104,24 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         ]);
     }
 
-    // Strip/Card.html.twig skips its image entirely when a strip has no media attached
+    // A planche is read for its drawing: Strip/Card.html.twig prints no image when a strip has no media, so each sample carries one the app declares (PlaceholderMediaProviderInterface), an app declaring none keeping the bare cards
     private function serieStripsVariant(): string
     {
+        $images = $this->placeholderMediaRegistry->getImages();
+
         $strips = [];
         for ($i = 1; $i <= 3; ++$i) {
-            $strips[] = new Strip()
+            $strip = new Strip()
                 ->setTitle("Planche {$i}")
                 ->setSlug("planche-{$i}")
                 ->setPublished(new \DateTime("-{$i} week"));
+
+            // Rotated so the three planches don't share one photo, as the placeholder pool is rotated everywhere else
+            if ([] !== $images) {
+                $strip->addMedia(new StripMedia()->setName($images[($i - 1) % \count($images)]));
+            }
+
+            $strips[] = $strip;
         }
 
         return $this->twig->render('@c975LBook/components/Strip/Cards.html.twig', [

@@ -10,23 +10,47 @@
 namespace c975L\BookBundle\Tests\Service;
 
 use c975L\BookBundle\Service\GalleryShowcaseProvider;
+use c975L\UiBundle\Registry\PlaceholderMediaRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 class GalleryShowcaseProviderTest extends TestCase
 {
-    private function createProvider(): GalleryShowcaseProvider
+    /**
+     * @var array<string, array<string, mixed>> template => the context it was rendered with
+     */
+    private array $rendered = [];
+
+    /**
+     * @param list<string> $placeholderImages
+     */
+    private function createProvider(array $placeholderImages = ['showcase/photo-1.webp', 'showcase/photo-2.webp']): GalleryShowcaseProvider
     {
         $twig = $this->createStub(Environment::class);
         $twig->method('render')->willReturnCallback(
-            static fn (string $template, array $context) => "<!-- {$template} -->"
+            function (string $template, array $context): string {
+                $this->rendered[$template] = $context;
+
+                return "<!-- {$template} -->";
+            }
         );
 
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnCallback(static fn (string $id) => $id);
 
-        return new GalleryShowcaseProvider($twig, $translator);
+        $placeholderMediaRegistry = $this->createStub(PlaceholderMediaRegistry::class);
+        $placeholderMediaRegistry->method('getImages')->willReturn($placeholderImages);
+
+        return new GalleryShowcaseProvider($twig, $translator, $placeholderMediaRegistry);
+    }
+
+    /**
+     * @return list<\c975L\BookBundle\Entity\Strip>
+     */
+    private function renderedStrips(): array
+    {
+        return $this->rendered['@c975LBook/components/Strip/Cards.html.twig']['strips'];
     }
 
     public function testGetShowcasesReturnsAllFourBlockKinds(): void
@@ -63,5 +87,24 @@ class GalleryShowcaseProviderTest extends TestCase
         $this->assertSame('book_books', $showcases['label.gallery_showcase_book_books']['kind']);
         $this->assertSame('book_to_be_published', $showcases['label.gallery_showcase_book_to_be_published']['kind']);
         $this->assertSame('book_serie_strips', $showcases['label.gallery_showcase_book_serie_strips']['kind']);
+    }
+
+    // Each sample planche carries its own drawing, the declared pool being rotated so the three don't share one
+    public function testEachSampleStripCarriesItsOwnPlaceholderImage(): void
+    {
+        $this->createProvider()->getShowcases();
+
+        $names = array_map(static fn ($strip) => $strip->getMedias()->first()->getName(), $this->renderedStrips());
+        $this->assertSame(['showcase/photo-1.webp', 'showcase/photo-2.webp', 'showcase/photo-1.webp'], $names);
+    }
+
+    // An app declaring no placeholder image gets the bare cards it got before, rather than three broken frames
+    public function testTheStripsCarryNoMediaWhenTheAppDeclaresNoPlaceholderImage(): void
+    {
+        $this->createProvider(placeholderImages: [])->getShowcases();
+
+        foreach ($this->renderedStrips() as $strip) {
+            $this->assertTrue($strip->getMedias()->isEmpty());
+        }
     }
 }
