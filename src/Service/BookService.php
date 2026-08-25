@@ -4,14 +4,14 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Repository\BookRepository;
-use Knp\Component\Pager\Pagination\PaginationInterface;
-use Knp\Component\Pager\PaginatorInterface;
+use c975L\UiBundle\Model\Pagination;
+use c975L\UiBundle\Service\Paginator;
 use Symfony\Component\HttpFoundation\InputBag;
 
 class BookService implements BookServiceInterface
 {
     public function __construct(
-        private readonly PaginatorInterface $paginator,
+        private readonly Paginator $paginator,
         private readonly BookRepository $bookRepository,
         private readonly BookCatalogRegistry $catalogRegistry,
     ) {
@@ -24,11 +24,11 @@ class BookService implements BookServiceInterface
     }
 
     // The site's own list when it declares one, the bundle's otherwise: a catalog published in editions does not say "out" the way a book with a single date does (see BookCatalogProviderInterface)
-    public function findAllPaginated(InputBag $query): PaginationInterface
+    public function findAllPaginated(InputBag $query): Pagination
     {
         return $this->paginator->paginate(
             $this->catalogRegistry->getBooks() ?? $this->findAllPublished(),
-            (int) $query->get('p') > 0 ? (int) $query->get('p') : 1,
+            $this->paginator->getPage($query),
             10
         );
     }

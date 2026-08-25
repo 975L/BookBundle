@@ -1,5 +1,6 @@
 {% set displayMore = displayMore | default(false) %}
-<div class="cards book-cards">
+{# "infinite" marks the list for UiBundle's infiniteScroll controller, which reads the page it fetches through this very attribute - only the listing that grows carries it, another listing sitting on the same page would otherwise answer in its place #}
+<div class="cards book-cards"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
     {% for serie in series %}
         <twig:c975LBook:Serie:Serie serie="{{ serie }}" :editable="editable|default(false)"/>
     {% endfor %}

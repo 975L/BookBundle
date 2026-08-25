@@ -1,6 +1,6 @@
 # BookBundle
 
-Symfony bundle providing a publisher's catalog of books and series on the c975L core — media, video, press and marketing collections, EasyAdmin CRUD, paginated public routes, multilingual editions and its own sitemap.
+Symfony bundle providing a publisher's catalog of books and series on the c975L core — media, video, press and marketing collections, EasyAdmin CRUD, public listings growing on scroll, multilingual editions and its own sitemap.
 
 [![GitHub](https://img.shields.io/github/license/975L/BookBundle)](https://github.com/975L/BookBundle/blob/master/LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/c975l/book-bundle)](https://packagist.org/packages/c975l/book-bundle)
@@ -15,7 +15,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 
 ---
 
-> **TL;DR** — A publishing catalog of books and series, each book carrying media, video, press and marketing sub-collections, with EasyAdmin CRUD, paginated public routes and a dedicated sitemap. Depends only on the c975L core, so it drops into any c975L site.
+> **TL;DR** — A publishing catalog of books and series, each book carrying media, video, press and marketing sub-collections, with EasyAdmin CRUD, public listings growing on scroll and a dedicated sitemap. Depends only on the c975L core, so it drops into any c975L site.
 
 ## Contents
 
@@ -24,7 +24,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 
 ## Features
 
-- Book and series catalog with paginated list and detail views
+- Book and series catalog with detail views and listings growing as the visitor scrolls
 - Each book supports media, video, press, and marketing sub-collections with drag-and-drop ordering
 - Series group books with sorted ordering
 - Multilingual: books can reference translations across languages
@@ -55,7 +55,6 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - [c975L/CoreBundle](https://github.com/975L/CoreBundle)
 - Doctrine ORM
 - EasyAdmin
-- KNP Paginator Bundle
 - symfony/ux-live-component
 - symfony/ux-twig-component
 - VichUploader Bundle
@@ -145,11 +144,11 @@ ships commented out in `scaffold/assets/styles/themes/book.css`, copied into the
 
 | Route | URL | Setting | Description |
 | --- | --- | --- | --- |
-| `book_index` | `/livres` | `book-route-books` | Paginated book list |
+| `book_index` | `/livres` | `book-route-books` | The book list, growing on scroll |
 | `book_display` | `/livre/{slug}` | `book-route-book` | Book detail page |
-| `serie_index` | `/series` | `book-route-series` | Paginated list of the book series |
+| `serie_index` | `/series` | `book-route-series` | The book series, growing on scroll |
 | `serie_display` | `/series/{slug}` | `book-route-series` | Book series detail page, listing what it holds |
-| `strip_index` | `/strips` | `book-route-strips` | Paginated list of the strip series |
+| `strip_index` | `/strips` | `book-route-strips` | The strip series, growing on scroll |
 | `strip_serie_display` | `/strips/{slug}` | `book-route-strips` | Strip series detail page, listing the planches it tells |
 | `strip_display` | `/strip/{slug}` | `book-route-strip` | Strip detail page |
 | `book_shortcut` | `/b{number}` | `book-route-book-shortcut` | Short link to a book, 301 |
@@ -206,6 +205,13 @@ answers with the books and with the word the site gives them, and null hands the
 published books. It is deliberately not part of `BookCustomizationProviderInterface`, which names a catalog's
 vocabulary — which rows a page lists, and in what order, is a query and not a word. A site reading a story as
 out on a date of its own answers here rather than overriding the controller.
+
+The three listings — the catalog, the series, the planches' series — **grow as the visitor scrolls** rather
+than turning pages: UiBundle's `infiniteScroll` controller fetches the page the listing's own "next" link
+points at and appends the cards found there. That link is an ordinary link to the next page, so a visitor
+without javascript, and a crawler, follow it as they always did. A site rendering its own listing marks the
+grid the cards land in by passing `infinite="true"` to `Book:Books`, `Serie:Series` or `Strip:Cards` — the
+attribute the controller reads the fetched page through, which only the listing that grows may carry.
 
 The summary is not one of those sections: it is the sentence a book opens on, printed by `Book:Resume` under
 the hero and outside the grid, with no title and no anchor — a summary is not a destination anyone jumps to.

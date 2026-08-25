@@ -2,6 +2,21 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.2.0
+
+**KnpPaginatorBundle leaves the bundle's dependencies.** The catalog, the series and the planches grow as the
+visitor scrolls rather than turning pages, and `BookService`, `SerieService` and `StripService` return CoreBundle's
+`c975L\UiBundle\Model\Pagination` where they returned Knp's `PaginationInterface`. The two answer the same
+figures - `getCurrentPageNumber()`, `getPageCount()`, `getTotalItemCount()`, `getItemNumberPerPage()`, `route`,
+`query()` - and are countable and iterable alike, so a template reading one of those reads the other unchanged.
+**An app implementing `BookServiceInterface`, `SerieServiceInterface` or `StripServiceInterface` itself, or
+type-hinting `PaginationInterface` on what they return, has that type to change.** See CoreBundle's UPGRADE.md for
+removing the package from the app.
+
+**A template overriding `book/index.html.twig`, `serie/index.html.twig` or `strip/index.html.twig` keeps its page
+links** and goes on working, `<twig:c975LUi:Pagination:Pagination>` aside, which is removed: those overrides render
+the links themselves or take the bundle's own templates back.
+
 ## v2.1.0
 
 **A book no longer holds a trailer or a filmed episode.** The `trailer` and `podcast` file kinds leave

@@ -4,7 +4,7 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
-use Knp\Component\Pager\Pagination\PaginationInterface;
+use c975L\UiBundle\Model\Pagination;
 use Symfony\Component\HttpFoundation\InputBag;
 
 interface StripServiceInterface
@@ -38,9 +38,9 @@ interface StripServiceInterface
     /**
      * The planches of one serie, 24 per page: a serie's own page lists them whole, in the order it tells them, rather than showing a handful (see serie/display.html.twig, which grows the list as the visitor scrolls).
      *
-     * @return PaginationInterface<int, Strip>
+     * @return Pagination<Strip>
      */
-    public function findAllBySeriePaginated(Serie $serie, InputBag $query, ?string $character = null): PaginationInterface;
+    public function findAllBySeriePaginated(Serie $serie, InputBag $query, ?string $character = null): Pagination;
 
     /**
      * The strips surrounding $strip within its own serie, for the reader's prev/next links.

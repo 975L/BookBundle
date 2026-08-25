@@ -1,6 +1,6 @@
 ---
 name: c975l-book-display-pages
-description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie and of a planche, their hero, their sections and the order they come in, the summary of anchors, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Strip:Card, Strip:Cards, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_alternates, book_versions, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css."
+description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie and of a planche, their hero, their sections and the order they come in, the summary of anchors, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Strip:Card, Strip:Cards, Book:Books, Serie:Series, infinite, infiniteScroll, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_alternates, book_versions, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css."
 ---
 
 # c975L BookBundle — display pages
@@ -10,7 +10,7 @@ description: "Use this skill when working on the public pages of a catalog built
 **Package:** `c975l/book-bundle` · **Bundle:** `c975L\BookBundle\` · **Twig namespace:** `@c975LBook` · **Translation domain:** `book`
 
 **Key source paths** (relative to the package root):
-`src/Twig/BookSectionsExtension.php`, `src/Twig/BookEditUrlExtension.php`, `src/Twig/BookUrlExtension.php`, `src/Twig/BookTranslationExtension.php`, `src/Twig/BookVersionExtension.php`, `src/Controller/BookController.php`, `src/Controller/SerieController.php`, `src/Controller/StripController.php`, `templates/book/display.html.twig`, `templates/book/_section.html.twig`, `templates/serie/display.html.twig`, `templates/strip/display.html.twig`, `templates/components/`, `sass/_variables.scss`, `sass/_book.scss`, `scaffold/assets/styles/themes/book.css`
+`src/Twig/BookSectionsExtension.php`, `src/Twig/BookEditUrlExtension.php`, `src/Twig/BookUrlExtension.php`, `src/Twig/BookTranslationExtension.php`, `src/Twig/BookVersionExtension.php`, `src/Controller/BookController.php`, `src/Controller/SerieController.php`, `src/Controller/StripController.php`, `templates/book/display.html.twig`, `templates/book/_section.html.twig`, `templates/book/index.html.twig`, `templates/serie/display.html.twig`, `templates/serie/index.html.twig`, `templates/strip/display.html.twig`, `templates/strip/index.html.twig`, `templates/components/`, `sass/_variables.scss`, `sass/_book.scss`, `scaffold/assets/styles/themes/book.css`
 
 **Related skills:** `c975l-book-customization` and `c975l-book-lifecycle` in this same bundle, and `c975l-blocks`, `c975l-media`, `c975l-ui-assets` in UiBundle beside it.
 
@@ -20,9 +20,9 @@ description: "Use this skill when working on the public pages of a catalog built
 | --- | --- | --- |
 | `book_index` | `/livres` | the catalog, growing on scroll |
 | `book_display` | `/livre/{slug}` | one book — 410 for a trashed one, 301 from its number |
-| `serie_index` | `/series` | the series telling books |
+| `serie_index` | `/series` | the series telling books, growing on scroll |
 | `serie_display` | `/series/{slug}` or `/strips/{slug}` | one serie, under the index listing it |
-| `strip_index` | `/strips` | the series telling planches, not the planches |
+| `strip_index` | `/strips` | the series telling planches, not the planches, growing on scroll |
 | `strip_display` | `/strip/{slug}` | one planche |
 | `book_shortcut` / `strip_shortcut` | `/b3`, `/s3` | 301 to the slug |
 
@@ -113,6 +113,36 @@ They all live in `templates/components/` and are overridden in
 book's language; `Book:Book` and `Book:Books` take `editable` and hand `editUrl` down to the card, which
 is what keeps the pencil. Dropping either leaves a right page with a wrong language or no pencil at all.
 
+## A listing that grows
+
+The three index pages grow as the visitor scrolls instead of turning pages: UiBundle's `infiniteScroll`
+controller fetches the page the listing's own "next" link points at and appends the cards found there.
+Nothing is written for it alone — that link is an ordinary `rel="next"` link to the next page, which is
+what a crawler follows and what happens without javascript or after a failed fetch.
+
+```twig
+<div id="books" data-controller="infiniteScroll">
+    <twig:c975LBook:Book:Books books="{{ books }}" :infinite="true"/>
+    <p><span data-infiniteScroll-target="count">{{ books|length }}</span> / {{ books.getTotalItemCount }}</p>
+    <a href="{{ path(books.route, books.query({'p': books.getCurrentPageNumber + 1})) }}#books"
+       rel="next" data-infiniteScroll-target="next" data-action="click->infiniteScroll#load">…</a>
+</div>
+```
+
+`infinite` is what marks the grid the cards land in (`data-infiniteScroll-target="list"`), and it is the
+attribute the controller reads the fetched page through: **only the listing that grows may carry it** —
+a search's results sitting on the same page would otherwise answer in its place. `Book:Books`,
+`Serie:Series` and `Strip:Cards` take it; a serie's own page grows its planches the same way
+(`serie/display.html.twig`).
+
+The count is what is **on screen**, `{{ books|length }}`, because the controller writes it back after each
+append from the list it holds — a figure counting the pages behind it would jump backwards.
+
+The page itself comes from `BookService`, `SerieService` and `StripService`, which paginate with UiBundle's
+`Paginator` (`c975L\UiBundle\Model\Pagination`, 10 books or series per page, 24 planches). The route and
+the query the next page's url is rebuilt from ride on it — `pagination.route`, `pagination.query({...})` —
+so a filter or a search the visitor came with survives the jump.
+
 ## Reading a book's files and its family
 
 ```twig
@@ -166,6 +196,7 @@ never the built files.
 - **Do not link to a public route without asking `BookPublicUrlResolver::resolvePath()`** — a prefix may be emptied.
 - **Do not drop a component's props when overriding it** — the language and the pencil ride on them.
 - **Do not pass a boolean prop as a string** — `compact="false"` reaches Twig as a true string; write `:compact="false"`.
+- **Do not mark two listings of one page with `infinite`** — the controller reads the fetched page through that attribute.
 - **Do not edit `public/css/*`** — they are built from `sass/`.
 - **Do not hardcode a colour or a size in `sass/`** — every one goes through a token.
 - **Do not add a section to a page without adding it to `BookEditUrlExtension`'s map.**

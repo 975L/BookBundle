@@ -3,7 +3,8 @@
 {% set rating = rating|default(false) and config('book-rating')|to_bool %}
 {# One query for the whole page rather than one per cover: each card is handed the tally already read for it (see ui_ratings()) #}
 {% set ratings = rating ? ui_ratings('book', books|map(b => b.id)) : [] %}
-<div class="cards book-cards">
+{# "infinite" marks the list for UiBundle's infiniteScroll controller, which reads the page it fetches through this very attribute - only the listing that grows carries it, another listing sitting on the same page would otherwise answer in its place #}
+<div class="cards book-cards"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
     {% for book in books %}
         <twig:c975LBook:Book:Book book="{{ book }}" :rating="rating" :aggregate="rating ? ratings[book.id] : null" :editable="editable|default(false)"/>
     {% endfor %}

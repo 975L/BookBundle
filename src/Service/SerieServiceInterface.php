@@ -3,7 +3,7 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Serie;
-use Knp\Component\Pager\Pagination\PaginationInterface;
+use c975L\UiBundle\Model\Pagination;
 use Symfony\Component\HttpFoundation\InputBag;
 
 interface SerieServiceInterface
@@ -18,9 +18,9 @@ interface SerieServiceInterface
     /**
      * Every serie, 10 per page.
      *
-     * @return PaginationInterface<int, Serie>
+     * @return Pagination<Serie>
      */
-    public function findAllPaginated(InputBag $query): PaginationInterface;
+    public function findAllPaginated(InputBag $query): Pagination;
 
     /**
      * @return Serie[] at most $number, shuffled in PHP rather than by the query
@@ -38,10 +38,10 @@ interface SerieServiceInterface
     public function findWithStrips(): array;
 
     // What the books' index lists, paginated.
-    public function findWithBooksPaginated(InputBag $query): PaginationInterface;
+    public function findWithBooksPaginated(InputBag $query): Pagination;
 
     // What the planches' index lists: the series telling them, paginated.
-    public function findWithStripsPaginated(InputBag $query): PaginationInterface;
+    public function findWithStripsPaginated(InputBag $query): Pagination;
 
     // The serie and its books, ordered by publication date with the undated ones first.
     public function findOneBySlugWithSortedBooks(string $slug): ?Serie;

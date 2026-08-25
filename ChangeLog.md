@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.2.0
+
+The catalog, the series and the planches grow as they are read
+
+- The three index pages grow on scroll instead of turning pages, UiBundle's `infiniteScroll` controller fetching the page their own "next" link points to (25/08/2026)
+- `Book:Books` and `Serie:Series` take an `infinite` prop marking their list for that controller (25/08/2026)
+- A listing's counter reads what is on screen, the controller writing that figure back after each append (25/08/2026)
+- **BC break** — `BookService`, `SerieService` and `StripService` return UiBundle's `Pagination` instead of Knp's `PaginationInterface` (25/08/2026)
+- **BC break** — `knplabs/knp-paginator-bundle` leaves the bundle's dependencies (25/08/2026)
+- Requires `c975l/core-bundle` ^1.18, which is where `Paginator` lives (25/08/2026)
+
 ## v2.1.2
 
 The bundle's tooling is CoreBundle's

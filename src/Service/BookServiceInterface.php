@@ -3,7 +3,7 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
-use Knp\Component\Pager\Pagination\PaginationInterface;
+use c975L\UiBundle\Model\Pagination;
 use Symfony\Component\HttpFoundation\InputBag;
 
 interface BookServiceInterface
@@ -16,9 +16,9 @@ interface BookServiceInterface
     /**
      * The published books, 10 per page.
      *
-     * @return PaginationInterface<int, Book>
+     * @return Pagination<Book>
      */
-    public function findAllPaginated(InputBag $query): PaginationInterface;
+    public function findAllPaginated(InputBag $query): Pagination;
 
     /**
      * @param int|null    $number   caps the result, null returning them all

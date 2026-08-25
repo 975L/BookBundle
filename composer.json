@@ -1,7 +1,7 @@
 {
     "name": "c975l/book-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony bundle providing a publisher's catalog of books and series on the c975L core — media, video, press and marketing collections, EasyAdmin CRUD, paginated public routes, multilingual editions and its own sitemap.",
+    "description": "Symfony bundle providing a publisher's catalog of books and series on the c975L core — media, video, press and marketing collections, EasyAdmin CRUD, public listings growing on scroll, multilingual editions and its own sitemap.",
     "keywords": [
         "symfony",
         "bundle",
@@ -23,10 +23,9 @@
     ],
     "require": {
         "php": ">=8.4",
-        "c975l/core-bundle": "^1.16",
+        "c975l/core-bundle": "^1.18",
         "doctrine/orm": "^3.6",
         "easycorp/easyadmin-bundle": "^5.1",
-        "knplabs/knp-paginator-bundle": "^6.10",
         "symfony/form": "^8.0",
         "symfony/framework-bundle": "^8.0",
         "symfony/ux-live-component": "^3.3",

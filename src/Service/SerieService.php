@@ -4,14 +4,14 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Repository\SerieRepository;
-use Knp\Component\Pager\Pagination\PaginationInterface;
-use Knp\Component\Pager\PaginatorInterface;
+use c975L\UiBundle\Model\Pagination;
+use c975L\UiBundle\Service\Paginator;
 use Symfony\Component\HttpFoundation\InputBag;
 
 class SerieService implements SerieServiceInterface
 {
     public function __construct(
-        private readonly PaginatorInterface $paginator,
+        private readonly Paginator $paginator,
         private readonly SerieRepository $serieRepository,
     ) {
     }
@@ -23,7 +23,7 @@ class SerieService implements SerieServiceInterface
     }
 
     // Gets the series paginated
-    public function findAllPaginated(InputBag $query): PaginationInterface
+    public function findAllPaginated(InputBag $query): Pagination
     {
         return $this->paginate($this->findAll(), $query);
     }
@@ -50,13 +50,13 @@ class SerieService implements SerieServiceInterface
     }
 
     // What the books' index lists, paginated as it was when it listed every serie
-    public function findWithBooksPaginated(InputBag $query): PaginationInterface
+    public function findWithBooksPaginated(InputBag $query): Pagination
     {
         return $this->paginate($this->findWithBooks(), $query);
     }
 
     // What the planches' index lists: the series telling them, and no longer the planches themselves - those are read inside the serie that tells them (see StripController::index())
-    public function findWithStripsPaginated(InputBag $query): PaginationInterface
+    public function findWithStripsPaginated(InputBag $query): Pagination
     {
         return $this->paginate($this->findWithStrips(), $query);
     }
@@ -69,11 +69,11 @@ class SerieService implements SerieServiceInterface
 
     // How a page of series is cut, the three listings above sharing it rather than each spelling the page size again
     /** @param Serie[] $series */
-    private function paginate(array $series, InputBag $query): PaginationInterface
+    private function paginate(array $series, InputBag $query): Pagination
     {
         return $this->paginator->paginate(
             $series,
-            (int) $query->get('p') > 0 ? (int) $query->get('p') : 1,
+            $this->paginator->getPage($query),
             10
         );
     }

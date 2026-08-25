@@ -9,9 +9,24 @@
 
 {# The series telling planches, not the planches themselves: those are read inside their serie, which lists them whole (see SerieController::display()) #}
 {% block content %}
-    <twig:c975LUi:Pagination:Pagination paginate="{{ series }}"/>
-    <div{% if canEdit %} data-controller="blockEditOverlay" data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
-        <twig:c975LBook:Serie:Series series="{{ series }}" :editable="canEdit"/>
+    {# The listing grows instead of turning pages, as the catalog's does (see book/index.html.twig) #}
+    <div id="series" data-controller="infiniteScroll{{ canEdit ? ' blockEditOverlay' : '' }}"{% if canEdit %} data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
+        <twig:c975LBook:Serie:Series series="{{ series }}" :editable="canEdit" :infinite="true"/>
+
+        <div class="text-center">
+            {% if series.getTotalItemCount > series.getItemNumberPerPage %}
+                <p aria-live="polite">{{ 'label.series'|trans({}, 'book') }} <span data-infiniteScroll-target="count">{{ series|length }}</span> / {{ series.getTotalItemCount }}</p>
+            {% endif %}
+            {% if series.getCurrentPageNumber < series.getPageCount %}
+                {# The paginator's own query is reused rather than rebuilt: whatever the visitor came with stays in it #}
+                <a
+                    href="{{ path(series.route, series.query({'p': series.getCurrentPageNumber + 1})) }}#series"
+                    rel="next"
+                    class="btn btn-secondary"
+                    data-infiniteScroll-target="next"
+                    data-action="click->infiniteScroll#load"
+                >{{ 'label.load_more'|trans({}, 'book') }}</a>
+            {% endif %}
+        </div>
     </div>
-    <twig:c975LUi:Pagination:Pagination paginate="{{ series }}"/>
 {% endblock %}

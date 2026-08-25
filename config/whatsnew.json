@@ -1,5 +1,15 @@
 [
     {
+        "date": "2026-08-25",
+        "description": [
+            {
+                "en": "The lists of books, of series and of comic series no longer break into numbered pages: they keep growing as you scroll, and a counter says how many covers are shown out of the whole catalog",
+                "fr": "Les listes de livres, de séries et de séries de planches ne se coupent plus en pages numérotées : elles s'allongent au fil du défilement, et un compteur indique combien de couvertures sont affichées sur l'ensemble du catalogue",
+                "es": "Las listas de libros, de series y de series de láminas ya no se cortan en páginas numeradas: crecen a medida que se desplaza, y un contador indica cuántas portadas se muestran del catálogo completo"
+            }
+        ]
+    },
+    {
         "date": "2026-08-24",
         "description": [
             {

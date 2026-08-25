@@ -11,9 +11,25 @@
 {% block content %}
     <twig:c975LBook:Book:Explanation/>
     <twig:c975LBook:Book:Search/>
-    <twig:c975LUi:Pagination:Pagination paginate="{{ books }}"/>
-    <div{% if canEdit %} data-controller="blockEditOverlay" data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
-        <twig:c975LBook:Book:Books books="{{ books }}" rating="true" :editable="canEdit"/>
+    {# The catalog grows instead of turning pages: UiBundle's controller fetches the page the link below already points to and appends its covers. Nothing here is written for it alone - without javascript, and for a crawler, that link is the ordinary link to the next page it looks like #}
+    <div id="books" data-controller="infiniteScroll{{ canEdit ? ' blockEditOverlay' : '' }}"{% if canEdit %} data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
+        <twig:c975LBook:Book:Books books="{{ books }}" :rating="true" :editable="canEdit" :infinite="true"/>
+
+        <div class="text-center">
+            {% if books.getTotalItemCount > books.getItemNumberPerPage %}
+                {# What is on screen, which is what the controller writes back after each append: the figure would otherwise jump backwards on a page reached by its own link #}
+                <p aria-live="polite">{{ 'label.books'|trans({}, 'book') }} <span data-infiniteScroll-target="count">{{ books|length }}</span> / {{ books.getTotalItemCount }}</p>
+            {% endif %}
+            {% if books.getCurrentPageNumber < books.getPageCount %}
+                {# The paginator's own query is reused rather than rebuilt: whatever the visitor came with stays in it #}
+                <a
+                    href="{{ path(books.route, books.query({'p': books.getCurrentPageNumber + 1})) }}#books"
+                    rel="next"
+                    class="btn btn-secondary"
+                    data-infiniteScroll-target="next"
+                    data-action="click->infiniteScroll#load"
+                >{{ 'label.load_more'|trans({}, 'book') }}</a>
+            {% endif %}
+        </div>
     </div>
-    <twig:c975LUi:Pagination:Pagination paginate="{{ books }}"/>
 {% endblock %}

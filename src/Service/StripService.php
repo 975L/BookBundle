@@ -5,14 +5,14 @@ namespace c975L\BookBundle\Service;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Repository\StripRepository;
-use Knp\Component\Pager\Pagination\PaginationInterface;
-use Knp\Component\Pager\PaginatorInterface;
+use c975L\UiBundle\Model\Pagination;
+use c975L\UiBundle\Service\Paginator;
 use Symfony\Component\HttpFoundation\InputBag;
 
 class StripService implements StripServiceInterface
 {
     public function __construct(
-        private readonly PaginatorInterface $paginator,
+        private readonly Paginator $paginator,
         private readonly StripRepository $stripRepository,
     ) {
     }
@@ -27,11 +27,11 @@ class StripService implements StripServiceInterface
         return $this->stripRepository->findAllPublishedBySerie($serie, $number, $character);
     }
 
-    public function findAllBySeriePaginated(Serie $serie, InputBag $query, ?string $character = null): PaginationInterface
+    public function findAllBySeriePaginated(Serie $serie, InputBag $query, ?string $character = null): Pagination
     {
         return $this->paginator->paginate(
             $this->findAllPublishedBySerie($serie, null, $character),
-            (int) $query->get('p') > 0 ? (int) $query->get('p') : 1,
+            $this->paginator->getPage($query),
             24
         );
     }
