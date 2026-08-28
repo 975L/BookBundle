@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.3.1
+
+Logo modified
+
 ## v2.3.0
 
 A reply is shared as the very card the page shows
