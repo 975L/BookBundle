@@ -443,10 +443,16 @@ $book-bp-column: 1200px;
     min-width: 0;
 }
 
-// A serie's logo on a book's page: the size of a line, not of a banner - the serie is where the book comes from, not what the page is about
+// The serie's emblem, above its title on its own page (see Serie:Hero, the only place it is printed)
 .book-hero__logo {
-    max-height: 48px;
+    // The hero's body is a flex column, whose items stretch by default: a stretched <img> takes the whole width of the
+    // column, and the height below then squashed it to 48px - the logo was painted 216x48 out of an 832x1248 file
+    align-self: start;
+    // A height rather than a max-height: the tag carries a "height" attribute, a presentational hint no max-height overrides
+    height: var(--book-hero-logo-height);
     width: auto;
+    // Belt and braces, a site giving the logo a width of its own having no reason to distort it either
+    object-fit: contain;
 }
 
 // The serie and the number, above the title - set apart by size and letter-spacing rather than by a color the theme would have to provide
@@ -742,6 +748,7 @@ $book-bp-column: 1200px;
 
 // The trail above the planche: where it sits, and the two ways back out
 .book-breadcrumb {
+    margin-block-start: var(--book-breadcrumb-margin-block-start);
     margin-block-end: 1rem;
     font-family: var(--font-family-body);
     font-size: var(--book-breadcrumb-font-size);

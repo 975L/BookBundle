@@ -266,6 +266,10 @@
                 <source>flash.serie_holds_content</source>
                 <target>This serie still holds books or strips: move them elsewhere or delete them first</target>
             </trans-unit>
+            <trans-unit id="2LQn9_H">
+                <source>flash.serie_holds_shown_content</source>
+                <target>This serie still holds books or strips that are shown: set them aside first, or their page would link to a serie that cannot be found</target>
+            </trans-unit>
             <trans-unit id="cBZeBZe">
                 <source>flash.serie_restored</source>
                 <target>The serie has been restored</target>
@@ -381,6 +385,58 @@
             <trans-unit id="Cva7dGG">
                 <source>label.book_cover-help</source>
                 <target>The book front cover, the one its page opens on</target>
+            </trans-unit>
+            <trans-unit id="o_KHEEL">
+                <source>label.book_sample_book_hours_summary</source>
+                <target>Camille Ferrand's next novel, in preparation.</target>
+            </trans-unit>
+            <trans-unit id="eARFLwk">
+                <source>label.book_sample_book_hours_title</source>
+                <target>The Clear Hours</target>
+            </trans-unit>
+            <trans-unit id="lVqHnfz">
+                <source>label.book_sample_book_quay_summary</source>
+                <target>One summer, a house by the water, and three children who decide to tell the grown-ups nothing.</target>
+            </trans-unit>
+            <trans-unit id="OZJrY2w">
+                <source>label.book_sample_book_quay_title</source>
+                <target>The House on the Quay</target>
+            </trans-unit>
+            <trans-unit id="AkT5ebM">
+                <source>label.book_sample_book_thread_one_summary</source>
+                <target>A second-hand dealer inherits a joinery workshop, and half a story nobody ever told her.</target>
+            </trans-unit>
+            <trans-unit id="OaSfxTQ">
+                <source>label.book_sample_book_thread_one_title</source>
+                <target>The Red Thread, Book One</target>
+            </trans-unit>
+            <trans-unit id="UXsWG9O">
+                <source>label.book_sample_book_thread_two_summary</source>
+                <target>The workshop is running again, but the orders come from people who know exactly what they are after.</target>
+            </trans-unit>
+            <trans-unit id="FBNwI7B">
+                <source>label.book_sample_book_thread_two_title</source>
+                <target>The Red Thread, Book Two</target>
+            </trans-unit>
+            <trans-unit id="L4zYmvJ">
+                <source>label.book_sample_language</source>
+                <target>en</target>
+            </trans-unit>
+            <trans-unit id="H0it.SZ">
+                <source>label.book_sample_serie_thread_summary</source>
+                <target>Two volumes set in the same workshop, where what others throw away gets mended.</target>
+            </trans-unit>
+            <trans-unit id="K2gvseK">
+                <source>label.book_sample_serie_thread_title</source>
+                <target>The Red Thread</target>
+            </trans-unit>
+            <trans-unit id="daUoDco">
+                <source>label.book_sample_serie_workshop_summary</source>
+                <target>Short stories, drawn from what gets said while the hands are busy.</target>
+            </trans-unit>
+            <trans-unit id="jGzZzdP">
+                <source>label.book_sample_serie_workshop_title</source>
+                <target>Workshop Notebooks</target>
             </trans-unit>
             <trans-unit id="l.w15Mh">
                 <source>label.book_search</source>
@@ -805,6 +861,14 @@
             <trans-unit id="F3Oy_bs">
                 <source>label.hero</source>
                 <target>Header</target>
+            </trans-unit>
+            <trans-unit id="w3xdU2K">
+                <source>label.hidden</source>
+                <target>Hidden</target>
+            </trans-unit>
+            <trans-unit id="lnkpGAh">
+                <source>label.hidden-help</source>
+                <target>Hidden, it stays here with everything it holds, but no longer shows on the site nor in the sitemap at its next run</target>
             </trans-unit>
             <trans-unit id="n8eShlM">
                 <source>label.illustrator</source>

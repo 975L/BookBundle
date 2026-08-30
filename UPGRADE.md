@@ -2,6 +2,16 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.4.0
+
+**A new column on three tables: `hidden`** (boolean, default `false`), on `book_serie`, `book_book` and
+`book_strip`. It carries a row set aside: kept whole in the back office, off every public listing and every search, its page answering 404,
+and out of `sitemap-book.xml` at the next `c975l:sitemaps:create`. **Generate and run the migration**;
+nothing else to do, every existing row landing shown.
+
+It is not the trash and does not replace it: `isDeleted` still means "deleted, restorable" and still
+answers 410. See the README's [Setting a row aside](README.md#setting-a-row-aside).
+
 ## v2.2.0
 
 **KnpPaginatorBundle leaves the bundle's dependencies.** The catalog, the series and the planches grow as the

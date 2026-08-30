@@ -60,7 +60,9 @@ class SerieImportProvider implements ImportProviderInterface
                 ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
                 ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime())
                 // Optional like the rest, an archive predating the trash importing as a serie that is not in it - which is what such an archive describes
-                ->setIsDeleted($item['isDeleted'] ?? false);
+                ->setIsDeleted($item['isDeleted'] ?? false)
+                // Absent from an archive written before the flag existed, and read there as "shown"
+                ->setHidden($item['hidden'] ?? false);
 
             $this->replaceBlocks($serie, $item['blocks'] ?? [], $filesDir);
 

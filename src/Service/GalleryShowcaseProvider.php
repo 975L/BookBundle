@@ -25,6 +25,7 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         private readonly Environment $twig,
         private readonly TranslatorInterface $translator,
         private readonly PlaceholderMediaRegistry $placeholderMediaRegistry,
+        private readonly BookSampleCatalog $catalog,
     ) {
     }
 
@@ -58,11 +59,12 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
     private function seriesVariant(): string
     {
         $series = [];
-        for ($i = 1; $i <= 2; ++$i) {
+
+        foreach ($this->catalog->getSeries() as $spec) {
             $series[] = new Serie()
-                ->setTitle("Série exemple {$i}")
-                ->setSlug("serie-exemple-{$i}")
-                ->setLanguage('fr');
+                ->setTitle($this->trans($spec['title']))
+                ->setSlug($spec['slug'])
+                ->setLanguage($this->trans(BookSampleCatalog::LANGUAGE_KEY));
         }
 
         return $this->twig->render('@c975LBook/components/Serie/Series.html.twig', [
@@ -75,12 +77,14 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
     private function booksVariant(): string
     {
         $books = [];
-        for ($i = 1; $i <= 2; ++$i) {
+
+        // The released ones: a card of a book still to come prints "à paraître", which the next variant is for
+        foreach ($this->released(true) as $spec) {
             $books[] = new Book()
-                ->setTitle("Livre exemple {$i}")
-                ->setSlug("livre-exemple-{$i}")
-                ->setLanguage('fr')
-                ->setPublished(new \DateTime('-1 month'));
+                ->setTitle($this->trans($spec['title']))
+                ->setSlug($spec['slug'])
+                ->setLanguage($this->trans(BookSampleCatalog::LANGUAGE_KEY))
+                ->setPublished(new \DateTime($spec['published']));
         }
 
         return $this->twig->render('@c975LBook/components/Book/Books.html.twig', [
@@ -89,15 +93,17 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         ]);
     }
 
-    // "published" left null on purpose: Book/Book.html.twig reads it to display the "à paraître" wording
+    // "published" left null on purpose: Book/Book.html.twig reads it to display the "à paraître" wording, and the catalog holds one such book for exactly this
     private function toBePublishedVariant(): string
     {
-        $books = [
-            new Book()
-                ->setTitle('Prochain livre')
-                ->setSlug('prochain-livre')
-                ->setLanguage('fr'),
-        ];
+        $books = [];
+
+        foreach ($this->released(false) as $spec) {
+            $books[] = new Book()
+                ->setTitle($this->trans($spec['title']))
+                ->setSlug($spec['slug'])
+                ->setLanguage($this->trans(BookSampleCatalog::LANGUAGE_KEY));
+        }
 
         return $this->twig->render('@c975LBook/components/Book/ToBePublished.html.twig', [
             'books' => $books,
@@ -127,5 +133,23 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         return $this->twig->render('@c975LBook/components/Strip/Cards.html.twig', [
             'strips' => $strips,
         ]);
+    }
+
+    /**
+     * The catalog's books, out or still to come - the two the "books" and "to be published" variants each stand for.
+     *
+     * @return list<array{slug: string, title: string, summary: string, serie: string, published: ?string, creation: string, number: int, illustrated: bool}>
+     */
+    private function released(bool $out): array
+    {
+        return array_values(array_filter(
+            $this->catalog->getBooks(),
+            static fn (array $spec): bool => $out === (null !== $spec['published']),
+        ));
+    }
+
+    private function trans(string $key): string
+    {
+        return $this->translator->trans($key, [], 'book');
     }
 }

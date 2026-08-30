@@ -3,6 +3,7 @@
 namespace c975L\BookBundle\Entity;
 
 use c975L\BookBundle\Contract\TrashableInterface;
+use c975L\BookBundle\Entity\Trait\HideableTrait;
 use c975L\BookBundle\Entity\Trait\TrashableTrait;
 use c975L\BookBundle\Enum\SerieKind;
 use c975L\BookBundle\Repository\SerieRepository;
@@ -22,6 +23,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
 {
     use HasBlocksTrait;
+    use HideableTrait;
     use TrashableTrait;
 
     #[ORM\Id]
@@ -357,6 +359,24 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
     public function holdsContent(): bool
     {
         return !$this->books->isEmpty() || !$this->strips->isEmpty();
+    }
+
+    // What the site still shows of the serie, which is what setting it aside would leave pointing at a page answering 404 (see SerieCrudController::updateEntity). A book or a planche already hidden, or in the trash, is off the site too and holds nothing back - where holdsContent() above counts them all, the foreign key of the trash caring nothing for whether a row is shown
+    public function holdsVisibleContent(): bool
+    {
+        foreach ($this->books as $book) {
+            if (!$book->isHidden() && !$book->isDeleted()) {
+                return true;
+            }
+        }
+
+        foreach ($this->strips as $strip) {
+            if (!$strip->isHidden() && !$strip->isDeleted()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Also matches the legacy covers, stored with no kind before it was introduced

@@ -26,6 +26,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -101,6 +104,10 @@ class SerieCrudController extends AbstractCrudController
                 ->setFormTypeOption('attr', ['class' => 'ui-sort-position']),
             TextField::new('title')
                 ->setLabel(t('label.title', [], 'book')),
+            // The switch is offered on the index too: setting a row aside and putting it back is one click there, where opening the edit screen for it is four
+            BooleanField::new('hidden')
+                ->setLabel(t('label.hidden', [], 'book'))
+                ->setHelp(t('label.hidden-help', [], 'book')),
             SlugField::new('slug')
                 ->hideOnIndex()
                 ->setLabel(t('label.slug', [], 'book'))
@@ -220,6 +227,9 @@ class SerieCrudController extends AbstractCrudController
     {
         return $crud
             ->showEntityActionsInlined()
+            // Named in the editor's own language: with no label, EasyAdmin falls back on the class name and prints "Product", "Créer Product"
+            ->setEntityLabelInSingular(t('label.serie', [], 'book'))
+            ->setEntityLabelInPlural(t('label.series', [], 'book'))
             // In the order the editor laid, the very one the public pages follow (see SerieRepository)
             ->setDefaultSort(['position' => 'ASC'])
             ->overrideTemplate('crud/index', '@c975LBook/management/serie_crud_index.html.twig')
@@ -259,6 +269,29 @@ class SerieCrudController extends AbstractCrudController
 
         // What was saved, so the screen shows the new numbers without being reloaded
         return new JsonResponse(['positions' => $positions]);
+    }
+
+    // The index switch goes through here and not through the form: the refusal has to answer with an error, which is what puts the switch back and greys it out (see EasyAdmin's assets/js/field-boolean.js), a 200 leaving the row saying the serie was hidden when it was not
+    protected function ajaxEdit(EntityDto $entityDto, ?string $propertyName, bool $newValue): AfterCrudActionEvent
+    {
+        $serie = $entityDto->getInstance();
+
+        if ('hidden' === $propertyName && $newValue && $serie instanceof Serie && $serie->holdsVisibleContent()) {
+            throw new \RuntimeException($this->translator->trans('flash.serie_holds_shown_content', [], 'book'));
+        }
+
+        return parent::ajaxEdit($entityDto, $propertyName, $newValue);
+    }
+
+    // Refused for the very reason the trash is (see deleteEntity below): the books and the planches it holds would stay on the site, each naming a serie whose own page has just started answering 404 - which the "urls-book" health check reports as a broken link. The switch is put back rather than the save refused, so the edit form shows what was actually stored - the index switch is refused earlier, in ajaxEdit() above
+    public function updateEntity(EntityManagerInterface $entityManager, mixed $serie): void
+    {
+        if ($serie instanceof Serie && $serie->isHidden() && $serie->holdsVisibleContent()) {
+            $serie->setHidden(false);
+            $this->addFlash('danger', $this->translator->trans('flash.serie_holds_shown_content', [], 'book'));
+        }
+
+        parent::updateEntity($entityManager, $serie);
     }
 
     public function deleteEntity(EntityManagerInterface $entityManager, mixed $serie): void

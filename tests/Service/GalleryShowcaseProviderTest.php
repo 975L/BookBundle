@@ -9,6 +9,7 @@
 
 namespace c975L\BookBundle\Tests\Service;
 
+use c975L\BookBundle\Service\BookSampleCatalog;
 use c975L\BookBundle\Service\GalleryShowcaseProvider;
 use c975L\UiBundle\Registry\PlaceholderMediaRegistry;
 use PHPUnit\Framework\TestCase;
@@ -42,7 +43,8 @@ class GalleryShowcaseProviderTest extends TestCase
         $placeholderMediaRegistry = $this->createStub(PlaceholderMediaRegistry::class);
         $placeholderMediaRegistry->method('getImages')->willReturn($placeholderImages);
 
-        return new GalleryShowcaseProvider($twig, $translator, $placeholderMediaRegistry);
+        // The catalog is data and nothing else: the real one is handed over rather than a stub, so a made-up book renamed there is caught here
+        return new GalleryShowcaseProvider($twig, $translator, $placeholderMediaRegistry, new BookSampleCatalog());
     }
 
     /**

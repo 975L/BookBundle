@@ -77,6 +77,7 @@ class StripExportProvider implements ExportProviderInterface
             'creation' => $strip->getCreation()?->format(\DateTimeInterface::ATOM),
             'modification' => $strip->getModification()?->format(\DateTimeInterface::ATOM),
             'isDeleted' => $strip->isDeleted(),
+            'hidden' => $strip->isHidden(),
             // The serie named by what it answers at rather than by its id, which never matches between two environments
             'serie' => $strip->getSerie()?->getSlug(),
             'serieTitle' => $strip->getSerie()?->getTitle(),

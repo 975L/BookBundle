@@ -9,6 +9,7 @@
 
 namespace c975L\BookBundle\Tests\Entity;
 
+use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Enum\SerieKind;
@@ -16,6 +17,31 @@ use PHPUnit\Framework\TestCase;
 
 class SerieTest extends TestCase
 {
+    // The guard the "Masqué" switch reads: a serie whose books are still shown would leave each of them naming a page that answers 404 (see SerieCrudController::updateEntity)
+    public function testASerieHoldingAShownBookHoldsVisibleContent(): void
+    {
+        $serie = new Serie();
+        $serie->addBook(new Book());
+
+        $this->assertTrue($serie->holdsVisibleContent());
+    }
+
+    // Set aside or trashed, what it holds is off the site too and holds the serie back from nothing - unlike holdsContent(), which the trash reads and which counts every row
+    public function testWhatIsAlreadyOffTheSiteHoldsTheSerieBackFromNothing(): void
+    {
+        $serie = new Serie();
+        $serie->addBook(new Book()->setHidden(true));
+        $serie->addStrip(new Strip()->setIsDeleted(true));
+
+        $this->assertTrue($serie->holdsContent());
+        $this->assertFalse($serie->holdsVisibleContent());
+    }
+
+    public function testAnEmptySerieHoldsNothingVisible(): void
+    {
+        $this->assertFalse(new Serie()->holdsVisibleContent());
+    }
+
     // Which index a serie answers to, the breadcrumb reading it to send a visitor back where the serie actually is listed
     public function testADeclaredKindDecidesWhichIndexHoldsTheSerie(): void
     {

@@ -21,6 +21,8 @@
   --book-hero-body-gap: clamp(0.9rem, 1.6vw, 1.4rem);
   --book-hero-actions-gap: clamp(0.7rem, 1.4vw, 1rem);
   --book-hero-actions-space: clamp(0.6rem, 1.6vw, 1.2rem);
+  /* The height the serie's emblem is printed at, above its title - its own page being the only place it is shown, where it stands for the serie rather than saying where a book comes from */
+  --book-hero-logo-height: 96px;
   /* The eyebrow above a title - the serie and the number, set apart from the title by size rather than by a color of its own */
   --book-eyebrow-size: 0.8rem;
   --book-eyebrow-spacing: 0.14em;
@@ -93,6 +95,8 @@
   --book-strip-nav-background: rgba(0, 0, 0, 0.55);
   --book-strip-nav-opacity: 0.7;
   /* The trail saying where a page sits - the series, the serie, the planche */
+  /* It is the first thing under the navbar, and reads as part of it without a gap of its own */
+  --book-breadcrumb-margin-block-start: 1.5rem;
   --book-breadcrumb-font-size: 1.1rem;
   --book-breadcrumb-color: color-mix(in srgb, var(--text) 60%, var(--background));
   /* The tile a platform is reached through - a shop, a podcast app, any of the Links card's buttons. All one size whatever the mark inside, so a row reads as a row of buttons rather than as logos of assorted heights */
@@ -487,8 +491,10 @@
 }
 
 .book-hero__logo {
-  max-height: 48px;
+  align-self: start;
+  height: var(--book-hero-logo-height);
   width: auto;
+  object-fit: contain;
 }
 
 .book-hero__eyebrow {
@@ -738,6 +744,7 @@
   }
 }
 .book-breadcrumb {
+  margin-block-start: var(--book-breadcrumb-margin-block-start);
   margin-block-end: 1rem;
   font-family: var(--font-family-body);
   font-size: var(--book-breadcrumb-font-size);
@@ -763,5 +770,3 @@
     display: none;
   }
 }
-
-/*# sourceMappingURL=styles.css.map */

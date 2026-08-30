@@ -78,6 +78,7 @@ class SerieExportProvider implements ExportProviderInterface
             'creation' => $serie->getCreation()?->format(\DateTimeInterface::ATOM),
             'modification' => $serie->getModification()?->format(\DateTimeInterface::ATOM),
             'isDeleted' => $serie->isDeleted(),
+            'hidden' => $serie->isHidden(),
             // The serie's editorial page, carried the same way PageExportProvider carries a Page's, its own medias joining the archive
             'blocks' => $this->blockDataExporter->exportBlocks($serie->getBlocks(), $files),
             'medias' => $medias,

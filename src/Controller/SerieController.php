@@ -80,6 +80,11 @@ class SerieController extends AbstractController
             throw new GoneHttpException();
         }
 
+        // A serie set aside by its editor is off the site for as long as the box is ticked (see BookController::display() for why 404 and not 410)
+        if ($serie->isHidden()) {
+            throw $this->createNotFoundException();
+        }
+
         // A serie has but one address, the one its kind wears: asked under the other index' segment, it points there once and for all rather than answering the same page at two urls competing for the same search result
         $route = BookPublicUrlResolver::serieRoute($serie);
         if ($route !== $request->attributes->get('_route')) {

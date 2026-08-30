@@ -3,6 +3,7 @@
 namespace c975L\BookBundle\Entity;
 
 use c975L\BookBundle\Contract\TrashableInterface;
+use c975L\BookBundle\Entity\Trait\HideableTrait;
 use c975L\BookBundle\Entity\Trait\TrashableTrait;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
@@ -22,6 +23,7 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
 {
     use HasBlocksTrait;
+    use HideableTrait;
     use TrashableTrait;
 
     #[ORM\Id]

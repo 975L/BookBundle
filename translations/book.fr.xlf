@@ -266,6 +266,10 @@
                 <source>flash.serie_holds_content</source>
                 <target>Cette série tient encore des livres ou des planches : rattachez-les ailleurs ou supprimez-les d'abord</target>
             </trans-unit>
+            <trans-unit id="2LQn9_H">
+                <source>flash.serie_holds_shown_content</source>
+                <target>Cette série tient encore des livres ou des planches visibles : masquez-les d'abord, sinon leur page renverrait vers une série introuvable</target>
+            </trans-unit>
             <trans-unit id="cBZeBZe">
                 <source>flash.serie_restored</source>
                 <target>La série a été restaurée</target>
@@ -381,6 +385,58 @@
             <trans-unit id="Cva7dGG">
                 <source>label.book_cover-help</source>
                 <target>Première de couverture du livre, celle que la page affiche en tête</target>
+            </trans-unit>
+            <trans-unit id="o_KHEEL">
+                <source>label.book_sample_book_hours_summary</source>
+                <target>Le prochain roman de Camille Ferrand, en préparation.</target>
+            </trans-unit>
+            <trans-unit id="eARFLwk">
+                <source>label.book_sample_book_hours_title</source>
+                <target>Les heures claires</target>
+            </trans-unit>
+            <trans-unit id="lVqHnfz">
+                <source>label.book_sample_book_quay_summary</source>
+                <target>Un été, une maison au bord de l'eau, et trois enfants qui décident de ne rien dire aux adultes.</target>
+            </trans-unit>
+            <trans-unit id="OZJrY2w">
+                <source>label.book_sample_book_quay_title</source>
+                <target>La maison du quai</target>
+            </trans-unit>
+            <trans-unit id="AkT5ebM">
+                <source>label.book_sample_book_thread_one_summary</source>
+                <target>Une brocanteuse hérite d'un atelier de menuiserie, et de la moitié d'une histoire qu'on ne lui a jamais racontée.</target>
+            </trans-unit>
+            <trans-unit id="OaSfxTQ">
+                <source>label.book_sample_book_thread_one_title</source>
+                <target>Le fil rouge, tome 1</target>
+            </trans-unit>
+            <trans-unit id="UXsWG9O">
+                <source>label.book_sample_book_thread_two_summary</source>
+                <target>L'atelier tourne de nouveau, mais les commandes viennent de gens qui savent trop bien ce qu'ils cherchent.</target>
+            </trans-unit>
+            <trans-unit id="FBNwI7B">
+                <source>label.book_sample_book_thread_two_title</source>
+                <target>Le fil rouge, tome 2</target>
+            </trans-unit>
+            <trans-unit id="L4zYmvJ">
+                <source>label.book_sample_language</source>
+                <target>fr</target>
+            </trans-unit>
+            <trans-unit id="H0it.SZ">
+                <source>label.book_sample_serie_thread_summary</source>
+                <target>Deux tomes autour d'un même atelier, où l'on répare ce que les autres jettent.</target>
+            </trans-unit>
+            <trans-unit id="K2gvseK">
+                <source>label.book_sample_serie_thread_title</source>
+                <target>Le fil rouge</target>
+            </trans-unit>
+            <trans-unit id="daUoDco">
+                <source>label.book_sample_serie_workshop_summary</source>
+                <target>Des récits courts, tirés de ce qu'on entend quand on travaille de ses mains.</target>
+            </trans-unit>
+            <trans-unit id="jGzZzdP">
+                <source>label.book_sample_serie_workshop_title</source>
+                <target>Carnets d'atelier</target>
             </trans-unit>
             <trans-unit id="l.w15Mh">
                 <source>label.book_search</source>
@@ -805,6 +861,14 @@
             <trans-unit id="F3Oy_bs">
                 <source>label.hero</source>
                 <target>En-tête</target>
+            </trans-unit>
+            <trans-unit id="w3xdU2K">
+                <source>label.hidden</source>
+                <target>Masqué</target>
+            </trans-unit>
+            <trans-unit id="lnkpGAh">
+                <source>label.hidden-help</source>
+                <target>Masqué, il reste ici avec tout ce qu'il contient, mais n'apparaît plus sur le site ni dans le plan du site à sa prochaine génération</target>
             </trans-unit>
             <trans-unit id="n8eShlM">
                 <source>label.illustrator</source>

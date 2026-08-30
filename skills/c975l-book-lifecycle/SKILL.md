@@ -1,6 +1,6 @@
 ---
 name: c975l-book-lifecycle
-description: "Use this skill when a row of a c975L BookBundle catalog is created, copied, replaced, hidden or moved between environments — publishing a new version of a book without losing its address, duplicating a book, a serie or a planche, the trash and the 410/301 answers that keep urls in order, what each repository read is allowed to answer, and the zip export/import that carries a whole catalog with its files. Triggers on: BookVersionPublisher, publishVersion, newerVersion, previousVersion, createPreviousVersion, moveEdition, moveMedias, BookDuplicator, duplicateBook, duplicateSerie, duplicateStrip, BookTrashManager, moveToTrash, restore, deletePermanently, redirectSlugChange, TrashableInterface, TrashableTrait, TrashableCrudTrait, isDeleted, GoneHttpException, 410, BookExportProvider, BookImportProvider, SerieExportProvider, SerieImportProvider, StripExportProvider, StripImportProvider, MediaArchiver, SerieResolver, BookBackupPathProvider, BookSitemapProvider, BookLinkHealthCheckProvider, BookMediaMoveController, findAllPublished, findAllOnline, findPublishedByIds, findOneByNumber, publishedQueryBuilder, strip:import, strip:card."
+description: "Use this skill when a row of a c975L BookBundle catalog is created, copied, replaced, hidden or moved between environments — publishing a new version of a book without losing its address, duplicating a book, a serie or a planche, the trash and the 410/301 answers that keep urls in order, what each repository read is allowed to answer, and the zip export/import that carries a whole catalog with its files. Triggers on: BookVersionPublisher, publishVersion, newerVersion, previousVersion, createPreviousVersion, moveEdition, moveMedias, BookDuplicator, duplicateBook, duplicateSerie, duplicateStrip, BookTrashManager, moveToTrash, restore, deletePermanently, redirectSlugChange, TrashableInterface, TrashableTrait, TrashableCrudTrait, isDeleted, HideableTrait, isHidden, setHidden, hidden, GoneHttpException, 410, BookExportProvider, BookImportProvider, SerieExportProvider, SerieImportProvider, StripExportProvider, StripImportProvider, MediaArchiver, SerieResolver, BookBackupPathProvider, BookSitemapProvider, BookLinkHealthCheckProvider, BookMediaMoveController, findAllPublished, findAllOnline, findPublishedByIds, findOneByNumber, publishedQueryBuilder, strip:import, strip:card, BookDemoFixtureProvider, BookSampleCatalog, DemoFixtureProviderInterface, getDemoFixtures, PlaceholderMediaRegistry, getImagesFor, GalleryShowcaseProvider."
 ---
 
 # c975L BookBundle — a row's life
@@ -10,7 +10,7 @@ description: "Use this skill when a row of a c975L BookBundle catalog is created
 **Package:** `c975l/book-bundle` · **Bundle:** `c975L\BookBundle\` · **Translation domain:** `book`
 
 **Key source paths** (relative to the package root):
-`src/Service/BookVersionPublisher.php`, `src/Service/BookDuplicator.php`, `src/Service/BookTrashManager.php`, `src/Contract/TrashableInterface.php`, `src/Entity/Trait/TrashableTrait.php`, `src/Controller/Management/Trait/TrashableCrudTrait.php`, `src/Controller/Management/BookCrudController.php`, `src/Controller/Management/BookMediaMoveController.php`, `src/Repository/BookRepository.php`, `src/Repository/SerieRepository.php`, `src/Repository/StripRepository.php`, `src/Management/BookExportProvider.php`, `src/Management/BookImportProvider.php`, `src/Management/MediaArchiver.php`, `src/Management/BookSitemapProvider.php`, `src/Management/BookLinkHealthCheckProvider.php`, `src/Command/StripImportCommand.php`
+`src/Service/BookVersionPublisher.php`, `src/Service/BookDuplicator.php`, `src/Service/BookTrashManager.php`, `src/Contract/TrashableInterface.php`, `src/Entity/Trait/TrashableTrait.php`, `src/Entity/Trait/HideableTrait.php`, `src/Controller/Management/Trait/TrashableCrudTrait.php`, `src/Controller/Management/BookCrudController.php`, `src/Controller/Management/BookMediaMoveController.php`, `src/Repository/BookRepository.php`, `src/Repository/SerieRepository.php`, `src/Repository/StripRepository.php`, `src/Management/BookExportProvider.php`, `src/Management/BookImportProvider.php`, `src/Management/MediaArchiver.php`, `src/Management/BookSitemapProvider.php`, `src/Management/BookLinkHealthCheckProvider.php`, `src/Command/StripImportCommand.php`, `src/Service/BookSampleCatalog.php`, `src/Service/BookDemoFixtureProvider.php`
 
 **Related skills:** `c975l-book-display-pages` and `c975l-book-customization` in this same bundle, and `c975l-config`, `c975l-media` in the core beside it.
 
@@ -90,10 +90,32 @@ ratings, and a book's reviews.
 | `BookRepository::findAllPublished()`, `countPublished()`, `findPublishedByIds()` | published, not trashed, not replaced by a newer version |
 | `BookRepository::findOneByNumber()`, `StripRepository::findOneByNumber()` | what the catalog reads today — never a draft, never the trash |
 | `BookRepository::findAllOnline()` | every page that still answers, replaced versions included — the sitemap |
-| `BookRepository::findAll()` | trash excluded — the health check |
+| `BookRepository::findAll()` | trash excluded, rows set aside included — the health check, which walks the links of a row nobody is shown |
 | `BookRepository::search()` | replaced versions included: a reader looking for an old text finds it |
 
+Every read above also drops what is set aside, `findAll()` excepted; `SerieRepository::findAll()` is the
+public listing of series and does drop it, the back-office index building its own query.
+
 A trashed row also leaves the search components, the sitemap and the serie autocomplete of the forms.
+
+## Set aside, which is not the trash
+
+`Serie`, `Book` and `Strip` carry a second boolean, through `HideableTrait` — **`hidden`**, the switch each
+of the three CRUD screens offers on its index as well as on its form. A row set aside is off the site for
+exactly as long as the box is ticked: no listing shows it, its page answers **404**, and the sitemap stops
+declaring it at its next run (`c975l:sitemaps:create`). Nothing of it is touched, so it comes back whole
+with one click.
+
+| | Means | Answers | Set from |
+| --- | --- | --- | --- |
+| `isDeleted` | on its way out, restorable | **410**, a crawler drops the page | the index' delete action |
+| `hidden` | simply not shown, nothing taken away | **404** | the switch on the row |
+
+**A serie is refused the switch while it still holds a book or a planche that is shown** (`holdsVisibleContent()`),
+the same guard `deleteEntity()` carries for the trash — what it holds would name a serie answering 404.
+
+The archive carries it: `hidden` travels through the three export/import providers, and an archive written
+before the flag existed reads as shown.
 
 ## Moving files and moving catalogs
 
@@ -115,6 +137,23 @@ names the new file and deletes the one it replaces. Vich names with a fresh `uni
 two databases yields two different names: run it where the catalog is the source of truth, and bring the
 result back.
 
+## A catalog to browse before there is one
+
+`BookDemoFixtureProvider` (UiBundle's `DemoFixtureProviderInterface`) seeds a demo site with the made-up
+catalog `BookSampleCatalog` holds — two series of two books, three out and one still to come. Every title
+and summary is a key of the `book` domain, so a site seeded in Spanish reads as a Spanish catalog; only the
+two credited names are literal.
+
+The series are yielded first and the books after: `Serie::$books` is the inverse side and nothing cascades
+off it, so each book is recorded on its own. Pictures come from `PlaceholderMediaRegistry`, keyed
+**`book/<slug>`** and **`serie/<slug>`** — a book reads its cover, its fourth cover and its backdrop off
+them, a serie its cover, its emblem and its backdrop, in that order. Failing a declared key, one of the
+generic pool is read off the slug. A site declaring none still gets a catalog: the card falls back on the
+bundle's `no-cover.webp`.
+
+`GalleryShowcaseProvider` reads the very same `BookSampleCatalog` for the block showcase, where it builds
+entities it never writes. **One dataset, two readings** — enrich it in the catalog, not in either consumer.
+
 ## Do not
 
 - **Do not add an edition to mean a new version of the text** — an edition is a format.
@@ -125,7 +164,10 @@ result back.
 - **Do not chain a version onto a book that already carries a `newerVersion`** — chain onto that one.
 - **Do not change a book's slug when its text is replaced** — the address must lead to the current version.
 - **Do not answer 404 for a trashed row** — 410 is what tells a crawler to drop it.
+- **Do not answer 410 for a row set aside** — nothing was taken away, 404 is what it is worth.
+- **Do not hide a serie that still holds something shown** — set what it holds aside first.
 - **Do not write a public query without the trash and draft filters** — pick a repository read.
 - **Do not share an uploaded file between an original and its copy.**
 - **Do not match an import by id** — slugs are what survive an environment change.
+- **Do not write a made-up book into a consumer** — `BookSampleCatalog` holds the dataset both of them read.
 - **Do not move a catalog with the SQL/CSV/JSON dumps** — they carry one table at a time; the zip carries a row whole with its files.

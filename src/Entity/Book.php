@@ -3,6 +3,7 @@
 namespace c975L\BookBundle\Entity;
 
 use c975L\BookBundle\Contract\TrashableInterface;
+use c975L\BookBundle\Entity\Trait\HideableTrait;
 use c975L\BookBundle\Entity\Trait\TrashableTrait;
 use c975L\BookBundle\Enum\BookLinkGroup;
 use c975L\BookBundle\Enum\BookLinkKind;
@@ -23,6 +24,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Book implements HasBlocksInterface, TrashableInterface, \Stringable
 {
     use HasBlocksTrait;
+    use HideableTrait;
     use TrashableTrait;
 
     #[ORM\Id]

@@ -80,6 +80,7 @@ class BookExportProvider implements ExportProviderInterface
             // What this site adds to a book on top of what the bundle holds (see BookCustomizationProviderInterface) - a free-form payload, carried as it is
             'data' => $book->getData(),
             'isDeleted' => $book->isDeleted(),
+            'hidden' => $book->isHidden(),
             'serie' => $book->getSerie()?->getSlug(),
             'serieTitle' => $book->getSerie()?->getTitle(),
             // The book this one translates, named by what it answers at - resolved in a second pass on the way back in, the two rows being imported in whichever order the archive lists them

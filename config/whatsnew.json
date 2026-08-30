@@ -1,5 +1,25 @@
 [
     {
+        "date": "2026-08-30",
+        "description": [
+            {
+                "en": "A book, a serie or a comic serie can now be set aside instead of deleted. Tick \"Masqué\" on its row and it leaves the site at once - the listings, the search, its own page - while staying here with everything it holds; the sitemap drops it at its next run. Untick the box and it is back exactly as it was. The trash is still there for what really has to go.",
+                "fr": "Un livre, une série ou une série de planches peut désormais être mis de côté au lieu d'être supprimé. Cochez « Masqué » sur sa ligne et il quitte le site aussitôt - les listes, la recherche, sa propre page - tout en restant ici avec tout ce qu'il contient ; le plan du site le retire à sa prochaine génération. Décochez la case et il revient exactement comme il était. La corbeille reste là pour ce qui doit vraiment partir.",
+                "es": "Un libro, una serie o una serie de láminas puede ahora apartarse en lugar de eliminarse. Marque «Oculto» en su fila y sale del sitio de inmediato - las listas, la búsqueda, su propia página - conservándose aquí con todo lo que contiene; el mapa del sitio lo retira en su próxima generación. Desmarque la casilla y vuelve exactamente como estaba. La papelera sigue ahí para lo que realmente debe irse."
+            },
+            {
+                "en": "The emblem of a comic serie is no longer stretched out of shape at the top of its page: it is drawn at its true proportions.",
+                "fr": "L'emblème d'une série de planches n'est plus déformé en haut de sa page : il s'affiche à ses vraies proportions.",
+                "es": "El emblema de una serie de láminas ya no se deforma en la parte superior de su página: se muestra con sus proporciones reales."
+            },
+            {
+                "en": "The Books, Series and Comic series screens are named in your own language again, instead of showing the English name of the data behind them.",
+                "fr": "Les écrans Livres, Séries et Séries de planches portent de nouveau leur nom dans votre langue, au lieu d'afficher le nom anglais de la donnée qu'ils gèrent.",
+                "es": "Las pantallas Libros, Series y Series de láminas vuelven a llevar su nombre en su idioma, en lugar de mostrar el nombre inglés del dato que gestionan."
+            }
+        ]
+    },
+    {
         "date": "2026-08-25",
         "description": [
             {

@@ -119,9 +119,12 @@ class BookRepository extends ServiceEntityRepository
     public function findOneByNumber(int $number): ?Book
     {
         return $this->createQueryBuilder('b')
+            ->leftJoin('b.serie', 'serie')
             ->andWhere('b.number = :number')
             ->andWhere('b.newerVersion IS NULL')
             ->andWhere('b.isDeleted = false')
+            ->andWhere('b.hidden = false')
+            ->andWhere('serie IS NULL OR serie.hidden = false')
             ->setParameter('number', $number)
             // Two books left sharing a number - a site numbering each language apart - answer in a fixed order rather than in the one the database happens to return
             ->orderBy('b.id', 'ASC')
@@ -136,7 +139,12 @@ class BookRepository extends ServiceEntityRepository
     private function publishedQueryBuilder(?string $language = null, bool $includeReplaced = false): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('b')
+            ->leftJoin('b.serie', 'serie')
             ->andWhere('b.isDeleted = false')
+            // A book set aside by its editor leaves every one of these lists, the sitemap included, until the box is unticked (see Entity\Trait\HideableTrait)
+            ->andWhere('b.hidden = false')
+            // A book of a serie set aside is no more shown than the serie telling it: reading it here covers every way a row is written - the form, the index switch, the import and the fixtures - where a guard on each of them would not
+            ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.published IS NOT NULL AND b.published <= :now')
             ->orderBy('b.published', 'DESC')
             ->setParameter('now', new \DateTime())
@@ -164,8 +172,12 @@ class BookRepository extends ServiceEntityRepository
     public function findAllToBePublished(): array
     {
         return $this->createQueryBuilder('b')
+            ->leftJoin('b.serie', 'serie')
             ->andWhere('b.isDeleted = false')
             ->andWhere('b.newerVersion IS NULL')
+            // The block announcing what is coming is a public one: a book set aside, or one of a serie set aside, is no more announced than it is listed
+            ->andWhere('b.hidden = false')
+            ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.published > :now OR b.published IS NULL')
             ->orderBy('b.published', 'DESC')
             ->addOrderBy('b.id', 'DESC')
@@ -181,7 +193,11 @@ class BookRepository extends ServiceEntityRepository
     {
         $rows = $this->createQueryBuilder('b')
             ->select('DISTINCT b.language')
+            ->leftJoin('b.serie', 'serie')
             ->andWhere('b.isDeleted = false')
+            // A language whose every book is set aside is no language the catalog is written in any more, and would offer a list with nothing in it
+            ->andWhere('b.hidden = false')
+            ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.language IS NOT NULL')
             ->orderBy('b.language', 'ASC')
             ->getQuery()
@@ -200,7 +216,9 @@ class BookRepository extends ServiceEntityRepository
             return [];
         }
 
-        $builder = $this->createQueryBuilder('b');
+        $builder = $this->createQueryBuilder('b')
+            ->leftJoin('b.serie', 'serie')
+        ;
 
         if (null !== $serieId) {
             $builder
@@ -212,6 +230,8 @@ class BookRepository extends ServiceEntityRepository
         return $builder
             ->andWhere('b.title LIKE :query')
             ->andWhere('b.isDeleted = false')
+            ->andWhere('b.hidden = false')
+            ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.published IS NOT NULL')
             ->andWhere('b.published <= :now')
             ->setParameter('now', new \DateTime())

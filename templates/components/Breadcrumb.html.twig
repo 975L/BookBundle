@@ -13,8 +13,9 @@
             <a href="{{ path(indexRoute) }}">{{ indexLabel|trans({}, 'book', language) }}</a>
             <span class="book-breadcrumb__separator" aria-hidden="true">&rsaquo;</span>
         {% endif %}
-        {% if current is empty %}
-            <span class="book-breadcrumb__current" aria-current="page">{{ serie.title }}</span>
+        {# A serie set aside is named but not linked: its own page answers 404, and the trail is where a book or a planche still holding on to it would offer that broken link (see Entity\Trait\HideableTrait) #}
+        {% if current is empty or serie.hidden %}
+            <span class="book-breadcrumb__current"{% if current is empty %} aria-current="page"{% endif %}>{{ serie.title }}</span>
         {% else %}
             <a href="{{ serie_path(serie) }}">{{ serie.title }}</a>
         {% endif %}

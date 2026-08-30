@@ -63,6 +63,11 @@ class StripController extends AbstractController
             throw new GoneHttpException();
         }
 
+        // A planche set aside by its editor is off the site for as long as the box is ticked (see BookController::display() for why 404 and not 410)
+        if ($strip->isHidden()) {
+            throw $this->createNotFoundException();
+        }
+
         // A strip that has never been published is not publicly reachable
         if (null === $strip->getPublished()) {
             throw $this->createNotFoundException();
@@ -97,6 +102,10 @@ class StripController extends AbstractController
 
         if ($strip->isDeleted()) {
             throw new GoneHttpException();
+        }
+
+        if ($strip->isHidden()) {
+            throw $this->createNotFoundException();
         }
 
         if (null === $strip->getPublished()) {

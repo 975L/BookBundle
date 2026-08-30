@@ -46,6 +46,8 @@ class SerieRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('s')
             ->andWhere('s.isDeleted = false')
+            // The public listing, read by the front, by the sitemap and by the link picker alike - a serie set aside belongs to none of the three (see Entity\Trait\HideableTrait). The back-office lists them all, EasyAdmin building its own query
+            ->andWhere('s.hidden = false')
             ->orderBy('s.position', 'ASC')
             ->addOrderBy('s.title', 'ASC')
         ;
@@ -64,10 +66,12 @@ class SerieRepository extends ServiceEntityRepository
     public function findWithBooks(): array
     {
         return $this->createQueryBuilder('s')
-            ->innerJoin('s.books', 'b', 'WITH', 'b.isDeleted = false AND b.newerVersion IS NULL')
+            // On the join too: a serie whose every book is set aside holds none the index could list, and would head a section with nothing under it
+            ->innerJoin('s.books', 'b', 'WITH', 'b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL')
             ->leftJoin('s.medias', 'm')
             ->addSelect('m')
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
             ->andWhere('s.kind IS NULL OR s.kind = :kind')
             ->setParameter('kind', SerieKind::Book->value)
             ->orderBy('s.position', 'ASC')
@@ -83,10 +87,11 @@ class SerieRepository extends ServiceEntityRepository
     public function findWithStrips(): array
     {
         return $this->createQueryBuilder('s')
-            ->innerJoin('s.strips', 'st', 'WITH', 'st.isDeleted = false')
+            ->innerJoin('s.strips', 'st', 'WITH', 'st.isDeleted = false AND st.hidden = false')
             ->leftJoin('s.medias', 'm')
             ->addSelect('m')
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
             ->andWhere('s.kind IS NULL OR s.kind = :kind')
             ->setParameter('kind', SerieKind::Strip->value)
             ->orderBy('s.position', 'ASC')
@@ -102,7 +107,7 @@ class SerieRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('s')
             ->select('s', 'b', 'bm')
-            ->leftJoin('s.books', 'b', 'WITH', 'b.isDeleted = false AND b.newerVersion IS NULL')
+            ->leftJoin('s.books', 'b', 'WITH', 'b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL')
             ->leftJoin('b.medias', 'bm')
             ->where('s.slug = :slug')
             ->setParameter('slug', $slug)

@@ -28,7 +28,7 @@ class SerieRepositoryTest extends TestCase
     {
         $this->createRepository()->findOneBySlugWithSortedBooks('histoires-de-papa-calin');
 
-        $this->assertStringContainsString('b.isDeleted = false AND b.newerVersion IS NULL', $this->dql);
+        $this->assertStringContainsString('b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL', $this->dql);
     }
 
     // The list of series holds those a reader can open a book from: one whose books are all replaced offers nothing to browse
@@ -36,7 +36,7 @@ class SerieRepositoryTest extends TestCase
     {
         $this->createRepository()->findWithBooks();
 
-        $this->assertStringContainsString('b.isDeleted = false AND b.newerVersion IS NULL', $this->dql);
+        $this->assertStringContainsString('b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL', $this->dql);
     }
 
     // The two indexes split the series rather than each listing them all: what a serie declares decides which one holds it
@@ -60,6 +60,40 @@ class SerieRepositoryTest extends TestCase
         $this->createRepository()->findWithStrips();
 
         $this->assertStringContainsString('INNER JOIN s.strips st WITH st.isDeleted = false', $this->dql);
+    }
+
+    // A serie set aside leaves every public list at once - the front's, the sitemap's and the link picker's, all three reading this very method (see Entity\Trait\HideableTrait)
+    public function testTheListingLeavesOutTheSeriesSetAside(): void
+    {
+        $this->createRepository()->findAll();
+
+        $this->assertStringContainsString('s.hidden = false', $this->dql);
+    }
+
+    // On the join as well as on the serie: one whose every book is set aside heads a section with nothing under it
+    public function testASerieHoldingOnlyBooksSetAsideIsNotListed(): void
+    {
+        $this->createRepository()->findWithBooks();
+
+        $this->assertStringContainsString('s.hidden = false', $this->dql);
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+    }
+
+    public function testASerieHoldingOnlyPlanchesSetAsideIsNotListed(): void
+    {
+        $this->createRepository()->findWithStrips();
+
+        $this->assertStringContainsString('s.hidden = false', $this->dql);
+        $this->assertStringContainsString('st.hidden = false', $this->dql);
+    }
+
+    // The serie itself is looked up whatever its state - its page answers 410 out of the trash and 404 set aside, which both need the row - where the books it lists leave it
+    public function testASeriePageLeavesOutTheBooksSetAside(): void
+    {
+        $this->createRepository()->findOneBySlugWithSortedBooks('histoires-de-papa-calin');
+
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+        $this->assertStringNotContainsString('s.hidden', $this->dql);
     }
 
     // The query the repository builds is read back through the DQL the entity manager is handed, the rest of it being Doctrine's own

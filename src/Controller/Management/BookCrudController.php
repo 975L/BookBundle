@@ -40,6 +40,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
@@ -135,6 +136,10 @@ class BookCrudController extends AbstractCrudController
                 ->setFormType(TrixEditorType::class),
             DateField::new('published')
                 ->setLabel(t('label.published', [], 'book')),
+            // The switch is offered on the index too: setting a row aside and putting it back is one click there, where opening the edit screen for it is four
+            BooleanField::new('hidden')
+                ->setLabel(t('label.hidden', [], 'book'))
+                ->setHelp(t('label.hidden-help', [], 'book')),
             AssociationField::new('serie')
                 ->setLabel(t('label.serie', [], 'book'))
                 ->setFormTypeOptions([
@@ -419,6 +424,9 @@ class BookCrudController extends AbstractCrudController
     {
         return $crud
             ->showEntityActionsInlined()
+            // Named in the editor's own language: with no label, EasyAdmin falls back on the class name and prints "Product", "Créer Product"
+            ->setEntityLabelInSingular(t('label.book', [], 'book'))
+            ->setEntityLabelInPlural(t('label.books', [], 'book'))
             // The volume number is what a catalog is read by, the latest published first - a book carrying none (a standalone title) sorts last
             ->setDefaultSort(['number' => 'DESC'])
             ->addFormTheme('@c975LBook/management/book_crud_form_theme.html.twig')

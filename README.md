@@ -20,7 +20,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 ## Contents
 
 - **Setup** — [requirements](#requirements) · [installation](#installation) · [configuration](#load-the-configuration) · [routes](#enable-routes) · [assets](#install-assets)
-- **Using it** — [public routes](#routes) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [backup](#backup)
+- **Using it** — [public routes](#routes) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
 
 ## Features
 
@@ -36,6 +36,8 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - A new version of a book published in one click: the book keeps its address and its readers, a twin carries what came out so far
 - Reader reviews on a book's page, behind UiBundle's `ui-enable-reviews` setting
 - Deletion goes through a trash, and the urls that leave the site answer 410 rather than 404 — a renamed one 301s to its new address
+- A book, a serie or a strip set aside in one click: kept whole in the back office, off every listing and out of the sitemap, back with the same click
+- A demo site seeded with a made-up catalog of its own, in the site's own language
 - Live component search for books
 - Books, series and strips are composable in blocks, with the kinds of UiBundle
 - schema.org `Book`, `BookSeries` and `ComicStory` data published as JSON-LD
@@ -484,6 +486,43 @@ forth can't build a loop. A site serving a family elsewhere — an empty url pre
 The 410 itself is rendered by the app's own error template (`templates/bundles/TwigBundle/Exception/error410.html.twig`);
 SiteBundle ships one, and a site without it gets Symfony's default error page.
 
+### Setting a row aside
+
+**A row can be taken off the site without being deleted.** Each of the three index screens carries a
+**Masqué** switch (`hidden`, one boolean column shared by `Serie`, `Book` and `Strip` through
+`Entity\Trait\HideableTrait`), toggled straight from the row or from its edit screen. Ticked, the row is
+off the site for exactly as long as it stays ticked: it leaves every public listing and every search, its
+page answers **404**, and the sitemap stops declaring it at its next run (`c975l:sitemaps:create` — the
+file is written when the command runs, not on the click). Nothing of it is touched — its files, its blocks,
+its editions and its place in its serie are all still there — so a book set aside mid-rewrite comes back
+whole by unticking the box.
+
+**It is not the trash, and the two answer differently.** A trashed row is on its way out and says so with a
+410, which is what makes a search engine drop the page; a row set aside was never taken away, so its page
+answers a plain 404. Use the trash to remove something, the switch to see the site without it.
+
+| | Means | Answer | Where |
+| --- | --- | --- | --- |
+| `isDeleted` | deleted, restorable | 410 Gone | the index' **Supprimer** action, the **Corbeille** toggle |
+| `hidden` | not shown, nothing lost | 404 | the **Masqué** switch on the row |
+
+The filtering lives in the repositories, so a site reading its catalog through `BookService`,
+`SerieService` or `StripService` gets it for free — the listings, the search, the previous/next bar of a
+planche, the character chips, the numbered urls and the short links,
+the linkable routes offered to a menu, and the sitemap. A serie whose every book is set aside stops heading
+a section with nothing under it, and a book or a planche of a serie set aside leaves those listings with it —
+its trail still names the serie, without linking to a page that answers 404. What still lists a hidden row on
+purpose is the back office: its index shows it, its switch on, and `BookRepository::findAll()` — the link
+health check — still walks it.
+
+**A serie is refused the switch while it still holds a book or a planche that is shown**, the same guard the trash
+carries: each of them would go on naming a serie whose own page has just started answering 404, which the
+`urls-book` health check reports as a broken link. Set them aside first - what is already hidden, or in the trash,
+holds the serie back from nothing. The switch is put back and a message says why, on the index as on the form.
+
+`hidden` travels with the [export/import archives](#export--import-the-catalog): a catalog moved to another
+environment arrives in the state it left. An archive written before the column existed reads as shown.
+
 ### Customizing the catalog
 
 What one site adds to its books is declared through `BookCustomizationProviderInterface`, not by overriding
@@ -667,6 +706,8 @@ Price and availability are deliberately absent: they are an `offers` node, and t
 
 The urls are declared by `BookSitemapProvider` (ConfigBundle's `SitemapProviderInterface`): index pages plus individual entries for all published books, all series, and all published strips. Nothing to register — the provider is picked up automatically.
 
+A row [set aside](#setting-a-row-aside) is declared by none of them: the provider reads the same repository methods the front does, so the switch takes the url out of the file at the command's next run.
+
 Each one is built by `BookPublicUrlResolver`, which generates the path through the router and prefixes it with the configured `site-url`, so the sitemap declares the exact urls the routes answer to: it follows the prefixes of `BookRoutePrefix`, and leaves out a family whose prefix is empty — those pages are not served here at all. Nothing is declared before `site-url` is set, a sitemap accepting no relative url.
 
 The bundle supplies urls and nothing else: `public/sitemap-book.xml` and the site's `public/sitemap-index.xml` are written by ConfigBundle, which collects every installed bundle's provider:
@@ -728,6 +769,23 @@ re-importing an archive over the catalog it came from rewrites nothing that is a
 out of an archive is only honoured under `public/medias/book/`, as a plain relative name — anything climbing
 out of it is refused. A media whose file has left the disk is dropped from the export rather than travelling
 as a broken reference; one standing for a YouTube url holds no file and travels all the same.
+
+### Seeding a demo catalog
+
+`BookDemoFixtureProvider` implements UiBundle's `DemoFixtureProviderInterface`, so a demo site loading its
+fixtures gets a catalog to browse straight away: **two series of two books**, three of them out and one still
+to come, held once in `BookSampleCatalog`. Nothing to register — implementing the interface is what tags it.
+
+Titles and summaries are translation keys of the `book` domain, so a site seeded in Spanish reads as a
+Spanish catalog. The same `BookSampleCatalog` feeds `GalleryShowcaseProvider`, which renders the block
+showcase off entities it never writes: one dataset, two readings.
+
+Pictures come from CoreBundle's `PlaceholderMediaRegistry`. A site declaring `keyed_images` under
+**`book/<slug>`** or **`serie/<slug>`** has them read in the order the kinds come in — a book's cover, its
+fourth cover and the backdrop its page opens on; a serie's cover, the emblem printed above its title and its
+own backdrop. Failing a declared key, one of the generic pool is used, picked off the slug so a book keeps
+the same picture whatever else is loaded beside it. A site declaring no image at all still gets a catalog:
+a card falls back on the bundle's own `no-cover.webp`.
 
 ### Backup
 

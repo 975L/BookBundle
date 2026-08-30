@@ -47,7 +47,12 @@ class StripRepository extends ServiceEntityRepository
     public function findAllPublished(?int $number = null): array
     {
         $query = $this->createQueryBuilder('s')
+            ->leftJoin('s.serie', 'serie')
             ->andWhere('s.isDeleted = false')
+            // Every listing below carries the same pair: a planche set aside by its editor is off the site exactly as long as the box is ticked - out of the lists, out of the navigation from one planche to the next, out of the sitemap at its next run (see Entity\Trait\HideableTrait)
+            ->andWhere('s.hidden = false')
+            // A planche of a serie set aside is no more shown than the serie telling it: reading it here covers every way a row is written - the form, the index switch, the import and the fixtures - where a guard on each of them would not. The listings narrowed to one serie below are already reached through that serie's own page, which answers 404 when it is set aside
+            ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->orderBy('s.published', 'DESC')
@@ -69,6 +74,7 @@ class StripRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('s')
             ->andWhere('s.serie = :serie')
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             // The latest published first, as in the listing of all planches: a serie holding hundreds of them opens on what has just come out
@@ -96,8 +102,11 @@ class StripRepository extends ServiceEntityRepository
     public function findAllByCharacter(string $character): array
     {
         return $this->createQueryBuilder('s')
+            ->leftJoin('s.serie', 'serie')
             ->andWhere("CONCAT(',', s.charactersSlug, ',') LIKE :character")
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
+            ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->orderBy('s.published', 'DESC')
@@ -114,8 +123,11 @@ class StripRepository extends ServiceEntityRepository
     public function findOneByNumber(int $number): ?Strip
     {
         return $this->createQueryBuilder('s')
+            ->leftJoin('s.serie', 'serie')
             ->andWhere('s.number = :number')
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
+            ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->setParameter('number', $number)
@@ -132,6 +144,7 @@ class StripRepository extends ServiceEntityRepository
         $previous = $this->createQueryBuilder('s')
             ->andWhere('s.serie = :serie')
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->andWhere('s.published < :current OR (s.published = :current AND s.id < :id)')
@@ -149,6 +162,7 @@ class StripRepository extends ServiceEntityRepository
         $next = $this->createQueryBuilder('s')
             ->andWhere('s.serie = :serie')
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->andWhere('s.published > :current OR (s.published = :current AND s.id > :id)')
@@ -176,6 +190,7 @@ class StripRepository extends ServiceEntityRepository
         $end = $this->createQueryBuilder('s')
             ->andWhere('s.serie = :serie')
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->orderBy('s.published', $direction)
@@ -201,6 +216,7 @@ class StripRepository extends ServiceEntityRepository
             ->select('DISTINCT s.characters')
             ->andWhere('s.serie = :serie')
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->setParameter('serie', $serie)
@@ -230,7 +246,9 @@ class StripRepository extends ServiceEntityRepository
             return [];
         }
 
-        $builder = $this->createQueryBuilder('s');
+        $builder = $this->createQueryBuilder('s')
+            ->leftJoin('s.serie', 'serie')
+        ;
 
         if (null !== $serieId) {
             $builder
@@ -243,6 +261,8 @@ class StripRepository extends ServiceEntityRepository
             // The summary too: a planche is looked for by what is said in it as much as by its title or by who says it - and a title numbering the plate ("Réplique 042") answers nothing a visitor would type
             ->andWhere('s.title LIKE :query OR s.characters LIKE :query OR s.summary LIKE :query')
             ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
+            ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->setParameter('now', new \DateTime())

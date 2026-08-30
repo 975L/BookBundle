@@ -104,6 +104,8 @@ class BookImportProvider implements ImportProviderInterface
             ->setData($item['data'] ?? null)
             // Optional like the rest, an archive predating the trash importing as a book that is not in it - which is what such an archive describes
             ->setIsDeleted($item['isDeleted'] ?? false)
+            // Absent from every archive written before the flag existed, and read there as "shown" - the same thing the column's own default says
+            ->setHidden($item['hidden'] ?? false)
             ->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
     }
 

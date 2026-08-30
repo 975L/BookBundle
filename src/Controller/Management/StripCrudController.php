@@ -23,6 +23,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -106,6 +107,10 @@ class StripCrudController extends AbstractCrudController
                 ->setFormTypeOptions(['by_reference' => true])
                 ->setCrudController(SerieCrudController::class)
                 ->autocomplete(),
+            // The switch is offered on the index too: setting a row aside and putting it back is one click there, where opening the edit screen for it is four
+            BooleanField::new('hidden')
+                ->setLabel(t('label.hidden', [], 'book'))
+                ->setHelp(t('label.hidden-help', [], 'book')),
             DateField::new('published')
                 ->setLabel(t('label.published', [], 'book')),
             TextField::new('characters')
@@ -161,6 +166,9 @@ class StripCrudController extends AbstractCrudController
     {
         return $crud
             ->showEntityActionsInlined()
+            // Named in the editor's own language: with no label, EasyAdmin falls back on the class name and prints "Product", "Créer Product"
+            ->setEntityLabelInSingular(t('label.strip', [], 'book'))
+            ->setEntityLabelInPlural(t('label.strips', [], 'book'))
             ->overrideTemplate('crud/index', '@c975LBook/management/strip_crud_index.html.twig')
             ->overrideTemplate('crud/edit', '@c975LBook/management/strip_crud_edit.html.twig')
             ->overrideTemplate('crud/new', '@c975LBook/management/strip_crud_new.html.twig')

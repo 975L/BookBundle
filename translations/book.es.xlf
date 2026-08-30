@@ -266,6 +266,10 @@
                 <source>flash.serie_holds_content</source>
                 <target>Esta serie todavía contiene libros o páginas: reasígnelos o elimínelos primero</target>
             </trans-unit>
+            <trans-unit id="2LQn9_H">
+                <source>flash.serie_holds_shown_content</source>
+                <target>Esta serie todavía contiene libros o páginas visibles: ocúltelos primero, o su página enlazaría a una serie que no se encuentra</target>
+            </trans-unit>
             <trans-unit id="cBZeBZe">
                 <source>flash.serie_restored</source>
                 <target>La serie ha sido restaurada</target>
@@ -381,6 +385,58 @@
             <trans-unit id="Cva7dGG">
                 <source>label.book_cover-help</source>
                 <target>Portada del libro, la que muestra su página en cabecera</target>
+            </trans-unit>
+            <trans-unit id="o_KHEEL">
+                <source>label.book_sample_book_hours_summary</source>
+                <target>La próxima novela de Camille Ferrand, en preparación.</target>
+            </trans-unit>
+            <trans-unit id="eARFLwk">
+                <source>label.book_sample_book_hours_title</source>
+                <target>Las horas claras</target>
+            </trans-unit>
+            <trans-unit id="lVqHnfz">
+                <source>label.book_sample_book_quay_summary</source>
+                <target>Un verano, una casa junto al agua y tres niños que deciden no decir nada a los adultos.</target>
+            </trans-unit>
+            <trans-unit id="OZJrY2w">
+                <source>label.book_sample_book_quay_title</source>
+                <target>La casa del muelle</target>
+            </trans-unit>
+            <trans-unit id="AkT5ebM">
+                <source>label.book_sample_book_thread_one_summary</source>
+                <target>Una anticuaria hereda un taller de carpintería y la mitad de una historia que nadie le contó nunca.</target>
+            </trans-unit>
+            <trans-unit id="OaSfxTQ">
+                <source>label.book_sample_book_thread_one_title</source>
+                <target>El hilo rojo, tomo 1</target>
+            </trans-unit>
+            <trans-unit id="UXsWG9O">
+                <source>label.book_sample_book_thread_two_summary</source>
+                <target>El taller vuelve a funcionar, pero los encargos vienen de gente que sabe demasiado bien lo que busca.</target>
+            </trans-unit>
+            <trans-unit id="FBNwI7B">
+                <source>label.book_sample_book_thread_two_title</source>
+                <target>El hilo rojo, tomo 2</target>
+            </trans-unit>
+            <trans-unit id="L4zYmvJ">
+                <source>label.book_sample_language</source>
+                <target>es</target>
+            </trans-unit>
+            <trans-unit id="H0it.SZ">
+                <source>label.book_sample_serie_thread_summary</source>
+                <target>Dos tomos en torno a un mismo taller, donde se repara lo que los demás tiran.</target>
+            </trans-unit>
+            <trans-unit id="K2gvseK">
+                <source>label.book_sample_serie_thread_title</source>
+                <target>El hilo rojo</target>
+            </trans-unit>
+            <trans-unit id="daUoDco">
+                <source>label.book_sample_serie_workshop_summary</source>
+                <target>Relatos breves, sacados de lo que se oye cuando se trabaja con las manos.</target>
+            </trans-unit>
+            <trans-unit id="jGzZzdP">
+                <source>label.book_sample_serie_workshop_title</source>
+                <target>Cuadernos de taller</target>
             </trans-unit>
             <trans-unit id="l.w15Mh">
                 <source>label.book_search</source>
@@ -805,6 +861,14 @@
             <trans-unit id="F3Oy_bs">
                 <source>label.hero</source>
                 <target>Cabecera</target>
+            </trans-unit>
+            <trans-unit id="w3xdU2K">
+                <source>label.hidden</source>
+                <target>Oculto</target>
+            </trans-unit>
+            <trans-unit id="lnkpGAh">
+                <source>label.hidden-help</source>
+                <target>Oculto, permanece aquí con todo lo que contiene, pero ya no aparece en el sitio ni en el mapa del sitio en su próxima generación</target>
             </trans-unit>
             <trans-unit id="n8eShlM">
                 <source>label.illustrator</source>

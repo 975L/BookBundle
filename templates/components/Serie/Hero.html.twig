@@ -16,7 +16,8 @@
 
     <div class="book-hero__body">
         {% if serie.logos is not empty %}
-            <img class="book-hero__logo" src="{{ asset(serie.logos|first) }}" alt="{{ serie.title }}" height="48">
+            {# "height" matches --book-hero-logo-height so the box is reserved before the file lands; the stylesheet is what a site overrides #}
+            <img class="book-hero__logo" src="{{ asset(serie.logos|first) }}" alt="{{ serie.title }}" height="96">
         {% endif %}
 
         <h1 class="book-hero__title">{{ serie.title }}</h1>

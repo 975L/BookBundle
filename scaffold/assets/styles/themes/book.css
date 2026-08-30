@@ -23,6 +23,9 @@
     /* --book-hero-actions-gap: clamp(0.7rem, 1.4vw, 1rem); */
     /* --book-hero-actions-space: clamp(0.6rem, 1.6vw, 1.2rem); */
 
+    /* The height the serie's emblem is printed at, above its title - its own page being the only place it is shown */
+    /* --book-hero-logo-height: 96px; */
+
     /* The serie and the number above a title, set apart by size rather than by a color of their own */
     /* --book-eyebrow-size: 0.8rem; */
     /* --book-eyebrow-spacing: 0.14em; */
@@ -102,7 +105,8 @@
     /* --book-strip-nav-background: rgba(0, 0, 0, 0.55); */
     /* --book-strip-nav-opacity: 0.7; */
 
-    /* The trail saying where a page sits - the series, the serie, the planche */
+    /* The trail saying where a page sits - the series, the serie, the planche. It is the first thing under the navbar, and reads as part of it without a gap of its own */
+    /* --book-breadcrumb-margin-block-start: 1.5rem; */
     /* --book-breadcrumb-font-size: 1.1rem; */
     /* --book-breadcrumb-color: color-mix(in srgb, var(--text) 60%, var(--background)); */
 

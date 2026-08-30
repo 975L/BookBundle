@@ -1,5 +1,44 @@
 # Changelog
 
+## v2.4.0
+
+A book, a serie or a planche is set aside without being deleted
+
+- New `Entity\Trait\HideableTrait`: `Serie`, `Book` and `Strip` carry a `hidden` column, the switch that takes a row off the site without deleting it (30/08/2026)
+- A row set aside leaves every public read at once - listings, search, numbered urls and short links, the previous/next bar of a planche, the character chips, the linkable routes and the sitemap at its next run (30/08/2026)
+- A serie whose every book or planche is set aside stops heading a section with nothing under it: the join filters too (30/08/2026)
+- The public page of a row set aside answers 404, not the 410 of the trash: nothing was taken away (30/08/2026)
+- The `Masqué` switch is offered on the three index screens as well as on their forms (30/08/2026)
+- Masking a serie is refused while it still holds a book or a planche that is shown, the same guard the trash carries (30/08/2026)
+- Masking a serie from its index switch answers an error, which is what puts the switch back (30/08/2026)
+- A book or a planche of a serie set aside leaves the public reads with it (30/08/2026)
+- Its trail names the serie without linking to a page answering 404 (30/08/2026)
+- The block announcing the books to come filters `hidden` like every other public read (30/08/2026)
+- New `Serie::holdsVisibleContent()`, which counts neither what is already set aside nor what is in the trash (30/08/2026)
+- `hidden` travels through the three export/import providers; an archive written before the column existed reads as shown (30/08/2026)
+- `label.hidden` and `label.hidden-help` are added to the three locales (30/08/2026)
+- The README documents setting a row aside, and the `c975l-book-lifecycle` skill tells it apart from the trash (30/08/2026)
+- `BookRepositoryTest`, `SerieRepositoryTest` and `StripRepositoryTest` cover the filtering, the joins included (30/08/2026)
+- A serie takes the pictures the site declares for it, keyed `serie/<slug>` (30/08/2026)
+- The three are read in order as its cover, the emblem printed above its title and the picture its page opens on (30/08/2026)
+- **Fixed** - the serie's logo was drawn distorted, the hero's flex column stretching the `<img>` to its full width: `align-self: start` and `object-fit: contain` (30/08/2026)
+- The logo takes a `--book-hero-logo-height`, 96px by default - a `height`, which the tag's `height` attribute obeys where a `max-height` did not (30/08/2026)
+- The breadcrumb takes a `--book-breadcrumb-margin-block-start`, 1.5rem by default (30/08/2026)
+- The scaffolded `book.css` offers both, which only the compiled stylesheet named (30/08/2026)
+- The Books, Series and Strips screens carry their own labels, EasyAdmin falling back on the class name without them (30/08/2026)
+- New `BookSampleCatalog`, the made-up catalog held once: two series of two books, three out and one still to come (28/08/2026)
+- New `BookDemoFixtureProvider` (`c975L\UiBundle\Contract\DemoFixtureProviderInterface`): the series first, then the books that name them (28/08/2026)
+- A book takes the covers the site declares for it, keyed `book/<slug>` (see CoreBundle's `keyed_images`) (28/08/2026)
+- Failing that, one of the generic pool, read off the slug so a book keeps the same picture whatever is loaded beside it (28/08/2026)
+- A catalog with no picture to show is still a catalog: the card falls back on the bundle's own `no-cover.webp` (28/08/2026)
+- The book still to come carries no date at all, a written-down future one turning into a released book the year it came round (28/08/2026)
+- `GalleryShowcaseProvider` reads the same catalog rather than its own "Livre exemple 1": one dataset, two readings (28/08/2026)
+- The `label.book_sample_*` keys are added to the three locales, so a demo seeded in Spanish reads as a Spanish catalog (28/08/2026)
+- Requires `c975l/core-bundle` `^1.19` for `DemoFixtureProviderInterface` and `PlaceholderMediaRegistry::getImagesFor()` (28/08/2026)
+- Added `tests/Service/BookDemoFixtureProviderTest.php` (28/08/2026)
+- The README documents seeding a demo catalog and the `book/<slug>` / `serie/<slug>` keys it reads (30/08/2026)
+- The `c975l-book-lifecycle` skill covers the demo seed, the two consumers of `BookSampleCatalog` included (30/08/2026)
+
 ## v2.3.1
 
 Logo modified

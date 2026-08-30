@@ -31,6 +31,54 @@ class BookRepositoryTest extends TestCase
         $this->assertStringContainsString('b.newerVersion IS NULL', $this->dql);
     }
 
+    // A book set aside leaves the catalog, the search and the sitemap alike, and comes back to all three the moment the box is unticked (see Entity\Trait\HideableTrait)
+    public function testTheCatalogLeavesOutABookSetAside(): void
+    {
+        $this->createRepository()->findAllPublished();
+
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+    }
+
+    public function testTheSitemapLeavesOutABookSetAside(): void
+    {
+        $this->createRepository()->findAllOnline();
+
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+    }
+
+    // A book of a serie set aside is no more shown than the serie telling it, and the filtering is read here rather than guarded on each of the ways a row is written
+    public function testTheCatalogLeavesOutABookOfASerieSetAside(): void
+    {
+        $this->createRepository()->findAllPublished();
+
+        $this->assertStringContainsString('serie IS NULL OR serie.hidden = false', $this->dql);
+    }
+
+    // The block announcing what is coming is a public read like any other: it was the only one left without the pair
+    public function testTheBooksToComeLeaveOutWhatIsSetAside(): void
+    {
+        $this->createRepository()->findAllToBePublished();
+
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+        $this->assertStringContainsString('serie IS NULL OR serie.hidden = false', $this->dql);
+    }
+
+    // Unlike a replaced book, which the search still answers: a book set aside is reachable nowhere at all as long as it is
+    public function testTheSearchLeavesOutABookSetAside(): void
+    {
+        $this->createRepository()->search('câlin');
+
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+    }
+
+    // The numbered url and the short link both land here, and neither may lead to a book that is off the site
+    public function testANumberNeverLeadsToABookSetAside(): void
+    {
+        $this->createRepository()->findOneByNumber(3);
+
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+    }
+
     // The search is one of the two ways left to reach a replaced book, the page of the book replacing it being the other: it answers what no list shows any more
     public function testTheSearchAnswersABookAlreadyReplaced(): void
     {

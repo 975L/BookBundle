@@ -64,6 +64,11 @@ class BookController extends AbstractController
             throw new GoneHttpException();
         }
 
+        // A book set aside by its editor is off the site for as long as the box is ticked: 404 and not the 410 of the trash, nothing having been taken away - it is simply not shown (see Entity\Trait\HideableTrait)
+        if ($book->isHidden()) {
+            throw $this->createNotFoundException();
+        }
+
         return $this->render(
             '@c975LBook/book/display.html.twig',
             [

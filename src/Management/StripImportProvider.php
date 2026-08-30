@@ -61,6 +61,8 @@ class StripImportProvider implements ImportProviderInterface
                 ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
                 ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime())
                 ->setIsDeleted($item['isDeleted'] ?? false)
+                // Absent from an archive written before the flag existed, and read there as "shown"
+                ->setHidden($item['hidden'] ?? false)
                 ->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
 
             $this->replaceBlocks($strip, $item['blocks'] ?? [], $filesDir);

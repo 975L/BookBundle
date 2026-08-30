@@ -56,6 +56,36 @@ class StripRepositoryTest extends TestCase
         $this->assertStringContainsString('s.published <= :now', $this->dql);
     }
 
+    // A planche set aside leaves every listing at once - the index, the serie's own page, the character chips, the previous/next bar and the sitemap (see Entity\Trait\HideableTrait)
+    public function testTheListingLeavesOutThePlanchesSetAside(): void
+    {
+        $this->createRepository()->findAllPublished();
+
+        $this->assertStringContainsString('s.hidden = false', $this->dql);
+    }
+
+    // A planche of a serie set aside is no more shown than the serie telling it, and the filtering is read here rather than guarded on each of the ways a row is written
+    public function testTheListingLeavesOutAPlancheOfASerieSetAside(): void
+    {
+        $this->createRepository()->findAllPublished();
+
+        $this->assertStringContainsString('serie IS NULL OR serie.hidden = false', $this->dql);
+    }
+
+    public function testTheSearchLeavesOutThePlanchesSetAside(): void
+    {
+        $this->createRepository()->search('tracteur');
+
+        $this->assertStringContainsString('s.hidden = false', $this->dql);
+    }
+
+    public function testANumberNeverLeadsToAPlancheSetAside(): void
+    {
+        $this->createRepository()->findOneByNumber(42);
+
+        $this->assertStringContainsString('s.hidden = false', $this->dql);
+    }
+
     // The newest first, as everywhere else the planches are listed - and two of the same day on their id, the very tie the navigation from one planche to the next is settled on
     public function testSearchOrdersByPublicationDateDescendingThenById(): void
     {
@@ -127,10 +157,12 @@ class StripRepositoryTest extends TestCase
         $this->assertStringContainsString('s.serie = :serie', $this->dql);
     }
 
+    // The join reading the serie's own switch is there either way: what a search without a serie drops is the narrowing to one of them
     public function testSearchWithoutASerieLooksEverywhere(): void
     {
         $this->createRepository()->search('poulet');
 
-        $this->assertStringNotContainsString('s.serie', $this->dql);
+        $this->assertStringNotContainsString('s.serie = :serie', $this->dql);
+        $this->assertStringContainsString('serie IS NULL OR serie.hidden = false', $this->dql);
     }
 }
