@@ -21,6 +21,7 @@ services:
     c975L\BookBundle\Service\StylesheetProvider:
         tags:
             - { name: 'ui.stylesheet', priority: 100 }
+            - { name: 'ui.management_stylesheet' }
 
     # The reader's Stimulus controller, loaded on the front pages only - the back-office has no reader
     c975L\BookBundle\Service\ScriptProvider:

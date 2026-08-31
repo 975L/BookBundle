@@ -24,9 +24,10 @@ class GalleryShowcaseProviderTest extends TestCase
     private array $rendered = [];
 
     /**
-     * @param list<string> $placeholderImages
+     * @param list<string>                $placeholderImages
+     * @param array<string, list<string>> $declaredImages    the pictures the app declares for a given row, keyed "book/<slug>" or "serie/<slug>"
      */
-    private function createProvider(array $placeholderImages = ['showcase/photo-1.webp', 'showcase/photo-2.webp']): GalleryShowcaseProvider
+    private function createProvider(array $placeholderImages = ['showcase/photo-1.webp', 'showcase/photo-2.webp'], array $declaredImages = []): GalleryShowcaseProvider
     {
         $twig = $this->createStub(Environment::class);
         $twig->method('render')->willReturnCallback(
@@ -42,9 +43,26 @@ class GalleryShowcaseProviderTest extends TestCase
 
         $placeholderMediaRegistry = $this->createStub(PlaceholderMediaRegistry::class);
         $placeholderMediaRegistry->method('getImages')->willReturn($placeholderImages);
+        $placeholderMediaRegistry->method('getImagesFor')->willReturnCallback(static fn (string $key): array => $declaredImages[$key] ?? []);
 
         // The catalog is data and nothing else: the real one is handed over rather than a stub, so a made-up book renamed there is caught here
         return new GalleryShowcaseProvider($twig, $translator, $placeholderMediaRegistry, new BookSampleCatalog());
+    }
+
+    /**
+     * @return list<\c975L\BookBundle\Entity\Serie>
+     */
+    private function renderedSeries(): array
+    {
+        return $this->rendered['@c975LBook/components/Serie/Series.html.twig']['series'];
+    }
+
+    /**
+     * @return list<\c975L\BookBundle\Entity\Book>
+     */
+    private function renderedBooks(string $template): array
+    {
+        return $this->rendered[$template]['books'];
     }
 
     /**
@@ -107,6 +125,56 @@ class GalleryShowcaseProviderTest extends TestCase
 
         foreach ($this->renderedStrips() as $strip) {
             $this->assertTrue($strip->getMedias()->isEmpty());
+        }
+    }
+
+    // A card of a serie is read for its cover: the pool is dealt by rank so a rail never repeats a photograph
+    public function testEachSampleSerieCarriesItsOwnCover(): void
+    {
+        $this->createProvider()->getShowcases();
+
+        $names = array_map(static fn ($serie) => $serie->getCovers()->first()->getName(), $this->renderedSeries());
+        $this->assertSame(['showcase/photo-1.webp', 'showcase/photo-2.webp'], $names);
+    }
+
+    // The cover is filed as one - book_cover() reads the kind before falling back on the first image, and a rail asks it for every card
+    public function testEachSampleBookCarriesACoverFiledAsSuch(): void
+    {
+        $this->createProvider()->getShowcases();
+
+        foreach (['@c975LBook/components/Book/Books.html.twig', '@c975LBook/components/Book/ToBePublished.html.twig'] as $template) {
+            foreach ($this->renderedBooks($template) as $book) {
+                $this->assertCount(1, $book->getCovers());
+                $this->assertSame('cover', $book->getCovers()->first()->getKind());
+            }
+        }
+    }
+
+    // A site declaring the real cover of a made-up book is served that one, and the pool is left to the rows it declares nothing for - the very keys BookDemoFixtureProvider reads, so a demo site and the showcase show the same book
+    public function testADeclaredCoverWinsOverThePool(): void
+    {
+        $this->createProvider(declaredImages: ['book/le-fil-rouge-1' => ['showcase/book/le-fil-rouge-1.webp']])->getShowcases();
+
+        $names = array_map(
+            static fn ($book) => $book->getCovers()->first()->getName(),
+            $this->renderedBooks('@c975LBook/components/Book/Books.html.twig')
+        );
+
+        $this->assertSame('showcase/book/le-fil-rouge-1.webp', $names[0]);
+        $this->assertSame('showcase/photo-2.webp', $names[1]);
+    }
+
+    // The bundled "no-cover.webp" the templates fall back on stays the answer for an app declaring nothing: a catalog with no picture to show is still a catalog
+    public function testTheCardsCarryNoCoverWhenTheAppDeclaresNoPlaceholderImage(): void
+    {
+        $this->createProvider(placeholderImages: [])->getShowcases();
+
+        foreach ($this->renderedSeries() as $serie) {
+            $this->assertTrue($serie->getMedias()->isEmpty());
+        }
+
+        foreach ($this->renderedBooks('@c975LBook/components/Book/Books.html.twig') as $book) {
+            $this->assertTrue($book->getMedias()->isEmpty());
         }
     }
 }

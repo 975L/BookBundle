@@ -32,12 +32,12 @@ export default class extends Controller {
         if (this.autoAdvanceValue && this.cues.length > 0) {
             this.audio.addEventListener("timeupdate", this.onTimeUpdate);
         }
-        this.dots.forEach((dot) => dot.addEventListener("click", this.onDotClick));
+        this.dots.forEach((dot) => { dot.addEventListener("click", this.onDotClick); });
     }
 
     disconnect() {
         this.audio?.removeEventListener("timeupdate", this.onTimeUpdate);
-        this.dots?.forEach((dot) => dot.removeEventListener("click", this.onDotClick));
+        this.dots?.forEach((dot) => { dot.removeEventListener("click", this.onDotClick); });
     }
 
     // The page the recording has reached - the last cue it has passed

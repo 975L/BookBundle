@@ -1,5 +1,32 @@
 # Changelog
 
+## v2.4.1
+
+A block kind is recognised by its silhouette in the picker
+
+- New `sass/block-thumbs.scss`, one silhouette per block kind of this bundle, built into `public/css/block-thumbs.min.css` (31/08/2026)
+- `StylesheetProvider` implements `BundleStylesheetManagementProviderInterface`, contributing that sheet to the back-office alone (31/08/2026)
+- A site printing the silhouettes on a public page contributes the same file through its own provider (31/08/2026)
+- The showcase cards carry a cover, read off the site's `book/<slug>` and `serie/<slug>` keys like the demo fixtures (31/08/2026)
+- Failing a declared key, the generic pool is dealt by rank, so a rail never repeats a photograph (31/08/2026)
+- New guided project `book-hidden`, which takes a book off the site without deleting it (31/08/2026)
+- The trash parcours is renamed after the trash, the wording it shared with the switch that only sets a row aside (31/08/2026)
+- The Vich upload is declared once on `Media::$file`, the six subclasses keeping only their `#[Vich\Uploadable]` (31/08/2026)
+- New `phpmd.xml.dist`, kept to what the code chooses rather than what the framework imposes (31/08/2026)
+- PHPStan ignores PHPMD's `@SuppressWarnings` marker, which it reads as a typed tag (31/08/2026)
+- `.codacy.yaml` excludes the repository root's own `public/` and `tests/`, which the `**/` forms never covered (31/08/2026)
+- `StripImportCommand` splits its import loop, its strip building, its source url and its media recognition (31/08/2026)
+- The three import providers split their filling into what a row is, who made it and where it stands (31/08/2026)
+- `StripImportCommand::execute()` reads its options through an `importContext()` that reports what it refuses (31/08/2026)
+- New `BookCatalogExporter`, the connection and the two exporters the three catalog screens no longer each carry (31/08/2026)
+- `BookCrudController::configureFields()` splits into one method per tab (31/08/2026)
+- New `MediaUploadMappingTest`: the six subclasses upload through the field declared on `Media` (31/08/2026)
+- `StylesheetProviderTest` checks every pickable kind has its silhouette, the kinds read off `services.yaml` (31/08/2026)
+- `GalleryShowcaseProviderTest` covers the cards' covers, the declared key winning over the pool (31/08/2026)
+- `BookBlockEditUrlProviderTest` checks the three families still name a CRUD controller (31/08/2026)
+- The README documents the silhouettes sheet and the showcase covers (31/08/2026)
+- The `c975l-book-display-pages` and `c975l-book-lifecycle` skills follow (31/08/2026)
+
 ## v2.4.0
 
 A book, a serie or a planche is set aside without being deleted

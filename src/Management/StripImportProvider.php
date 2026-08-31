@@ -48,22 +48,7 @@ class StripImportProvider implements ImportProviderInterface
             $isNew = null === $strip;
             $strip ??= new Strip();
 
-            $strip
-                ->setSlug($item['slug'])
-                ->setTitle($item['title'])
-                ->setNumber($item['number'] ?? null)
-                // charactersSlug follows from it, so nothing to import beside it (see Strip::setCharacters)
-                ->setCharacters($item['characters'] ?? null)
-                ->setSummary($item['summary'] ?? null)
-                ->setSourceUrl($item['sourceUrl'] ?? null)
-                ->setPublished(isset($item['published']) ? new \DateTime($item['published']) : null)
-                // Both columns are required, so an archive predating them dates the strip from the import rather than leaving it unwritten
-                ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
-                ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime())
-                ->setIsDeleted($item['isDeleted'] ?? false)
-                // Absent from an archive written before the flag existed, and read there as "shown"
-                ->setHidden($item['hidden'] ?? false)
-                ->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
+            $this->fillStrip($strip, $item, $series);
 
             $this->replaceBlocks($strip, $item['blocks'] ?? [], $filesDir);
 
@@ -84,6 +69,37 @@ class StripImportProvider implements ImportProviderInterface
         $this->mediaArchiver->restoreFiles($written, $filesDir);
 
         return ['created' => $created, 'updated' => $updated];
+    }
+
+    // The strip's own fields, what it holds written apart from where it stands
+    // @param array<string, \c975L\BookBundle\Entity\Serie> $series
+    private function fillStrip(Strip $strip, array $item, array &$series): void
+    {
+        $strip
+            ->setSlug($item['slug'])
+            ->setTitle($item['title'])
+            ->setNumber($item['number'] ?? null)
+            // charactersSlug follows from it, so nothing to import beside it (see Strip::setCharacters)
+            ->setCharacters($item['characters'] ?? null)
+            ->setSummary($item['summary'] ?? null)
+            ->setSourceUrl($item['sourceUrl'] ?? null);
+
+        $this->fillStripPublication($strip, $item);
+
+        $strip->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
+    }
+
+    // The dates and the two flags, read back for the reason they are exported: a round-trip must not put back on the site what an admin had taken off it
+    private function fillStripPublication(Strip $strip, array $item): void
+    {
+        $strip
+            ->setPublished(isset($item['published']) ? new \DateTime($item['published']) : null)
+            // Both columns are required, so an archive predating them dates the strip from the import rather than leaving it unwritten
+            ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
+            ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime())
+            ->setIsDeleted($item['isDeleted'] ?? false)
+            // Absent from an archive written before the flag existed, and read there as "shown"
+            ->setHidden($item['hidden'] ?? false);
     }
 
     // Existing Blocks have no natural key to match the imported ones against, so the whole collection is replaced - BlockRemovalListener removes the orphaned rows (and their Medias) on flush, same as PageImportProvider

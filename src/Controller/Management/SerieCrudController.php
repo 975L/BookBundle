@@ -9,17 +9,15 @@ use c975L\BookBundle\Form\SerieMediaType;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
 use c975L\BookBundle\Management\SerieExportProvider;
 use c975L\BookBundle\Management\SerieImportProvider;
+use c975L\BookBundle\Service\BookCatalogExporter;
 use c975L\BookBundle\Service\BookDuplicator;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookTrashManager;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use c975L\ConfigBundle\Service\Export\ContentExporter;
-use c975L\ConfigBundle\Service\Export\TableExporter;
 use c975L\UiBundle\Form\BlockType;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -70,16 +68,14 @@ class SerieCrudController extends AbstractCrudController
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly BlockMoveRowAttrBuilder $blockMoveRowAttrBuilder,
+        private readonly BookCatalogExporter $catalogExporter,
         private readonly BookDuplicator $duplicator,
         private readonly SerieExportProvider $serieExportProvider,
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly BookTrashManager $trashManager,
         private readonly ConfigServiceInterface $configService,
-        private readonly Connection $connection,
-        private readonly ContentExporter $contentExporter,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly RequestStack $requestStack,
-        private readonly TableExporter $tableExporter,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -89,6 +85,8 @@ class SerieCrudController extends AbstractCrudController
         return Serie::class;
     }
 
+    // A declaration of fields, one line per field: its length says how much the screen shows, not how much the method decides
+    /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
     public function configureFields(string $pageName): iterable
     {
         $entity = $this->adminContextProvider->getContext()?->getEntity()?->getInstance();
@@ -316,6 +314,7 @@ class SerieCrudController extends AbstractCrudController
     }
 
     // A serie is read below the index listing its kind, so this family wears two routes where the others wear one (see BookPublicUrlResolver::serieRoute())
+    /** @SuppressWarnings(PHPMD.UnusedPrivateMethod) Overrides the trait's own, which calls it - PHPMD reads the class alone */
     private function displayRoute(mixed $entity): string
     {
         return $entity instanceof Serie ? BookPublicUrlResolver::serieRoute($entity) : self::DISPLAY_ROUTE;

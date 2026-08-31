@@ -68,11 +68,7 @@ class BookImportProvider implements ImportProviderInterface
             $isNew ? $created++ : $updated++;
         }
 
-        // A second pass, the translated book being a book like any other: the archive lists the two in whichever order, and the one named may not have been read yet when the row naming it was
-        foreach ($items as $item) {
-            $this->linkTranslation($books[$item['slug']], $item['translationBook'] ?? null, $books);
-            $this->linkNewerVersion($books[$item['slug']], $item['newerVersion'] ?? null, $books);
-        }
+        $this->linkBooks($items, $books);
 
         $this->em->flush();
 
@@ -81,32 +77,78 @@ class BookImportProvider implements ImportProviderInterface
         return ['created' => $created, 'updated' => $updated];
     }
 
+    // A second pass, the translated book being a book like any other: the archive lists the two in whichever order, and the one named may not have been read yet when the row naming it was
+    // @param array<string, Book> $books
+    private function linkBooks(array $items, array $books): void
+    {
+        foreach ($items as $item) {
+            $this->linkTranslation($books[$item['slug']], $item['translationBook'] ?? null, $books);
+            $this->linkNewerVersion($books[$item['slug']], $item['newerVersion'] ?? null, $books);
+        }
+    }
+
     // @param array<string, \c975L\BookBundle\Entity\Serie> $series
     private function fillBook(Book $book, array $item, array &$series): void
+    {
+        $this->fillBookIdentity($book, $item);
+        $this->fillBookContributors($book, $item);
+        $this->fillBookDates($book, $item);
+        $this->fillBookCrowdfunding($book, $item);
+        $this->fillBookPublication($book, $item);
+
+        $book->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
+    }
+
+    // What the book is, everything but the two keys optional: an archive predating one of them imports a book that simply doesn't say
+    private function fillBookIdentity(Book $book, array $item): void
     {
         $book
             ->setSlug($item['slug'])
             ->setTitle($item['title'])
+            ->setSummary($item['summary'] ?? '')
+            ->setAge($item['age'] ?? null)
+            ->setNumber($item['number'] ?? null)
+            ->setLanguage($item['language'] ?? null);
+    }
+
+    // The two people a book credits, each with the site they are read on
+    private function fillBookContributors(Book $book, array $item): void
+    {
+        $book
             ->setAuthor($item['author'] ?? '')
             ->setAuthorWebsite($item['authorWebsite'] ?? null)
             ->setIllustrator($item['illustrator'] ?? null)
-            ->setIllustratorWebsite($item['illustratorWebsite'] ?? null)
-            ->setSummary($item['summary'] ?? '')
+            ->setIllustratorWebsite($item['illustratorWebsite'] ?? null);
+    }
+
+    // The three dates the book carries, each read from the archive when it holds one
+    private function fillBookDates(Book $book, array $item): void
+    {
+        $book
             ->setPublished(isset($item['published']) ? new \DateTime($item['published']) : null)
             // Both columns are required, so an archive predating them dates the book from the import rather than leaving it unwritten
             ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
-            ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime())
-            ->setAge($item['age'] ?? null)
-            ->setNumber($item['number'] ?? null)
-            ->setLanguage($item['language'] ?? null)
+            ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime());
+    }
+
+    // The campaign, if the book ever ran one: the deadline means nothing without it, hence the pair kept together
+    private function fillBookCrowdfunding(Book $book, array $item): void
+    {
+        $book
             ->setCrowdfunding($item['crowdfunding'] ?? null)
-            ->setCrowdfundingEndDate(isset($item['crowdfundingEndDate']) ? new \DateTime($item['crowdfundingEndDate']) : null)
+            ->setCrowdfundingEndDate(isset($item['crowdfundingEndDate']) ? new \DateTime($item['crowdfundingEndDate']) : null);
+    }
+
+    // Where the book stands rather than what it says: a round-trip must not put back on the site what an admin had taken off it
+    private function fillBookPublication(Book $book, array $item): void
+    {
+        $book
+            // What the site added to this book of its own, put back whole
             ->setData($item['data'] ?? null)
             // Optional like the rest, an archive predating the trash importing as a book that is not in it - which is what such an archive describes
             ->setIsDeleted($item['isDeleted'] ?? false)
             // Absent from every archive written before the flag existed, and read there as "shown" - the same thing the column's own default says
-            ->setHidden($item['hidden'] ?? false)
-            ->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
+            ->setHidden($item['hidden'] ?? false);
     }
 
     // Existing Blocks have no natural key to match the imported ones against, so the whole collection is replaced - BlockRemovalListener removes the orphaned rows (and their Medias) on flush, same as PageImportProvider
@@ -121,6 +163,18 @@ class BookImportProvider implements ImportProviderInterface
         }
     }
 
+    // One link written over, whether it was already on the book or is joining it now
+    private function writeLink(Book $book, BookLink $link, array $linkData): void
+    {
+        $link
+            ->setKind($linkData['kind'] ?? null)
+            ->setUrl($linkData['url'] ?? null)
+            ->setPosition($linkData['position'] ?? 0);
+
+        $this->em->persist($link);
+        $book->addLink($link);
+    }
+
     // The versions written over on their kind, which is what names one within its book. A version the archive no longer holds is dropped last, after the files have been re-bound: dropping it takes whatever still hangs off it (see BookEdition::$medias)
     // @return array<string, BookEdition> keyed by kind, for the files and the platforms to name theirs
     private function syncEditions(Book $book, array $editionsData): array
@@ -133,16 +187,7 @@ class BookImportProvider implements ImportProviderInterface
         $editions = [];
         foreach ($editionsData as $editionData) {
             $kind = (string) ($editionData['kind'] ?? '');
-            $edition = $existing[$kind] ?? new BookEdition();
-            $edition
-                ->setKind($kind)
-                ->setIsbn($editionData['isbn'] ?? null)
-                ->setPages($editionData['pages'] ?? null)
-                ->setFormat($editionData['format'] ?? null)
-                ->setPosition($editionData['position'] ?? 0);
-            $this->em->persist($edition);
-            $book->addEdition($edition);
-            $editions[$kind] = $edition;
+            $editions[$kind] = $this->writeEdition($book, $existing[$kind] ?? new BookEdition(), $kind, $editionData);
         }
 
         foreach ($existing as $kind => $edition) {
@@ -152,6 +197,22 @@ class BookImportProvider implements ImportProviderInterface
         }
 
         return $editions;
+    }
+
+    // One version written over, whether it was already on the book or is joining it now
+    private function writeEdition(Book $book, BookEdition $edition, string $kind, array $editionData): BookEdition
+    {
+        $edition
+            ->setKind($kind)
+            ->setIsbn($editionData['isbn'] ?? null)
+            ->setPages($editionData['pages'] ?? null)
+            ->setFormat($editionData['format'] ?? null)
+            ->setPosition($editionData['position'] ?? 0);
+
+        $this->em->persist($edition);
+        $book->addEdition($edition);
+
+        return $edition;
     }
 
     // The book's five families of files, each written over on the name it is served under (see MediaArchiver::sync()) - a version's own files then bound back to it by its kind
@@ -186,13 +247,7 @@ class BookImportProvider implements ImportProviderInterface
         $kept = [];
         foreach ($linksData as $linkData) {
             $key = (string) ($linkData['kind'] ?? '');
-            $link = $existing[$key] ?? new BookLink();
-            $link
-                ->setKind($linkData['kind'] ?? null)
-                ->setUrl($linkData['url'] ?? null)
-                ->setPosition($linkData['position'] ?? 0);
-            $this->em->persist($link);
-            $book->addLink($link);
+            $this->writeLink($book, $existing[$key] ?? new BookLink(), $linkData);
             $kept[$key] = true;
         }
 

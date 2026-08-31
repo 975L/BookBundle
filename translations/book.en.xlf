@@ -58,6 +58,10 @@
                 <source>description.guided_project_book_creation</source>
                 <target>A book, its serie, its publication date and its cover: what it takes for its page to exist.</target>
             </trans-unit>
+            <trans-unit id="d0sG8Yc">
+                <source>description.guided_project_book_hidden</source>
+                <target>A book set aside stays in the catalog with its files, but no public read shows it any more.</target>
+            </trans-unit>
             <trans-unit id="vfRiQY8">
                 <source>description.guided_project_book_serie_creation</source>
                 <target>A serie gathers the books or the strips of one collection. Creating it first saves going back over each book to attach it.</target>
@@ -129,6 +133,26 @@
             <trans-unit id="x5k_Kqu">
                 <source>description.guided_step_book_creation_title</source>
                 <target>The title fills the slug just below, which is the address of the book's page.</target>
+            </trans-unit>
+            <trans-unit id="xivBkbL">
+                <source>description.guided_step_book_hidden_done</source>
+                <target>Its page answers 404 and nothing was taken away: this is not the trash.</target>
+            </trans-unit>
+            <trans-unit id="CRFYTFB">
+                <source>description.guided_step_book_hidden_edit</source>
+                <target>The same switch sits in the form, where what it changes is written under it.</target>
+            </trans-unit>
+            <trans-unit id="vY1T86z">
+                <source>description.guided_step_book_hidden_field</source>
+                <target>First tab, next to “Published”: the help line under it says what a book set aside stops answering.</target>
+            </trans-unit>
+            <trans-unit id="pK3uZII">
+                <source>description.guided_step_book_hidden_open</source>
+                <target>The list of books, where the switch is offered on every row.</target>
+            </trans-unit>
+            <trans-unit id="nlryHN4">
+                <source>description.guided_step_book_hidden_switch</source>
+                <target>One click takes the book off the site, a second puts it back, with nothing else to save.</target>
             </trans-unit>
             <trans-unit id="nhaVq7U">
                 <source>description.guided_step_book_serie_creation_covers</source>
@@ -208,7 +232,7 @@
             </trans-unit>
             <trans-unit id="Qzxgk28">
                 <source>description.guided_step_book_trash_switch</source>
-                <target>The same screen switches to what has been set aside, and comes back on a second click.</target>
+                <target>The same screen switches to what is in the trash, and comes back on a second click.</target>
             </trans-unit>
             <trans-unit id="W_pjSq.">
                 <source>description.guided_step_book_version_publication_done</source>
@@ -642,6 +666,10 @@
                 <source>label.guided_project_book_creation</source>
                 <target>Publish a book</target>
             </trans-unit>
+            <trans-unit id="oyXCY_1">
+                <source>label.guided_project_book_hidden</source>
+                <target>Take a book off the site</target>
+            </trans-unit>
             <trans-unit id="fp0G5g8">
                 <source>label.guided_project_book_serie_creation</source>
                 <target>Create a serie</target>
@@ -652,7 +680,7 @@
             </trans-unit>
             <trans-unit id="dMs_Dy.">
                 <source>label.guided_project_book_trash</source>
-                <target>Set a book aside</target>
+                <target>Move a book to the trash</target>
             </trans-unit>
             <trans-unit id="a0rsniN">
                 <source>label.guided_project_book_version_publication</source>
@@ -721,6 +749,30 @@
             <trans-unit id="r8dIS66">
                 <source>label.guided_step_book_creation_title</source>
                 <target>Give it a title</target>
+            </trans-unit>
+            <trans-unit id="DPrkE93">
+                <source>label.guided_step_book_hidden_done</source>
+                <target>The book is off the site</target>
+            </trans-unit>
+            <trans-unit id="oSG6SO3">
+                <source>label.guided_step_book_hidden_edit</source>
+                <target>Open the book</target>
+            </trans-unit>
+            <trans-unit id="bGUB4rq">
+                <source>label.guided_step_book_hidden_field</source>
+                <target>Find the Hidden switch</target>
+            </trans-unit>
+            <trans-unit id="FcFWNoI">
+                <source>label.guided_step_book_hidden_open</source>
+                <target>Open the catalog</target>
+            </trans-unit>
+            <trans-unit id="BWLwocj">
+                <source>label.guided_step_book_hidden_save</source>
+                <target>Save the book</target>
+            </trans-unit>
+            <trans-unit id="gVP4uae">
+                <source>label.guided_step_book_hidden_switch</source>
+                <target>Switch the row to Hidden</target>
             </trans-unit>
             <trans-unit id="rA2nQBx">
                 <source>label.guided_step_book_serie_creation_covers</source>
@@ -800,7 +852,7 @@
             </trans-unit>
             <trans-unit id="pA9ispE">
                 <source>label.guided_step_book_trash_done</source>
-                <target>The book is set aside</target>
+                <target>The book is in the trash</target>
             </trans-unit>
             <trans-unit id="tw899tf">
                 <source>label.guided_step_book_trash_open</source>

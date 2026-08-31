@@ -58,6 +58,10 @@
                 <source>description.guided_project_book_creation</source>
                 <target>Un livre, sa série, sa date de parution et sa couverture : ce qu'il faut pour que sa page existe.</target>
             </trans-unit>
+            <trans-unit id="d0sG8Yc">
+                <source>description.guided_project_book_hidden</source>
+                <target>Un livre masqué reste au catalogue avec ses fichiers, mais aucune lecture publique ne le montre plus.</target>
+            </trans-unit>
             <trans-unit id="vfRiQY8">
                 <source>description.guided_project_book_serie_creation</source>
                 <target>Une série regroupe les livres ou les planches d'une même collection. La créer d'abord évite de revenir sur chaque livre pour l'y rattacher.</target>
@@ -129,6 +133,26 @@
             <trans-unit id="x5k_Kqu">
                 <source>description.guided_step_book_creation_title</source>
                 <target>Le titre remplit l'identifiant d'url juste en dessous, qui est l'adresse de la page du livre.</target>
+            </trans-unit>
+            <trans-unit id="xivBkbL">
+                <source>description.guided_step_book_hidden_done</source>
+                <target>Sa page répond 404 et rien n'a été retiré : ce n'est pas la corbeille.</target>
+            </trans-unit>
+            <trans-unit id="CRFYTFB">
+                <source>description.guided_step_book_hidden_edit</source>
+                <target>Le même interrupteur se trouve dans la fiche, où ce qu'il change est écrit dessous.</target>
+            </trans-unit>
+            <trans-unit id="vY1T86z">
+                <source>description.guided_step_book_hidden_field</source>
+                <target>Premier onglet, à côté de « Publié » : la ligne d'aide dit ce qu'un livre masqué ne répond plus.</target>
+            </trans-unit>
+            <trans-unit id="pK3uZII">
+                <source>description.guided_step_book_hidden_open</source>
+                <target>La liste des livres, où l'interrupteur est offert sur chaque ligne.</target>
+            </trans-unit>
+            <trans-unit id="nlryHN4">
+                <source>description.guided_step_book_hidden_switch</source>
+                <target>Un clic retire le livre du site, un second l'y remet, sans rien d'autre à enregistrer.</target>
             </trans-unit>
             <trans-unit id="nhaVq7U">
                 <source>description.guided_step_book_serie_creation_covers</source>
@@ -208,7 +232,7 @@
             </trans-unit>
             <trans-unit id="Qzxgk28">
                 <source>description.guided_step_book_trash_switch</source>
-                <target>Le même écran bascule sur ce qui a été mis de côté, et revient d'un second clic.</target>
+                <target>Le même écran bascule sur ce qui est à la corbeille, et revient d'un second clic.</target>
             </trans-unit>
             <trans-unit id="W_pjSq.">
                 <source>description.guided_step_book_version_publication_done</source>
@@ -642,6 +666,10 @@
                 <source>label.guided_project_book_creation</source>
                 <target>Publier un livre</target>
             </trans-unit>
+            <trans-unit id="oyXCY_1">
+                <source>label.guided_project_book_hidden</source>
+                <target>Retirer un livre du site</target>
+            </trans-unit>
             <trans-unit id="fp0G5g8">
                 <source>label.guided_project_book_serie_creation</source>
                 <target>Créer une série</target>
@@ -652,7 +680,7 @@
             </trans-unit>
             <trans-unit id="dMs_Dy.">
                 <source>label.guided_project_book_trash</source>
-                <target>Mettre un livre de côté</target>
+                <target>Mettre un livre à la corbeille</target>
             </trans-unit>
             <trans-unit id="a0rsniN">
                 <source>label.guided_project_book_version_publication</source>
@@ -721,6 +749,30 @@
             <trans-unit id="r8dIS66">
                 <source>label.guided_step_book_creation_title</source>
                 <target>Donner un titre</target>
+            </trans-unit>
+            <trans-unit id="DPrkE93">
+                <source>label.guided_step_book_hidden_done</source>
+                <target>Le livre est retiré du site</target>
+            </trans-unit>
+            <trans-unit id="oSG6SO3">
+                <source>label.guided_step_book_hidden_edit</source>
+                <target>Ouvrez le livre</target>
+            </trans-unit>
+            <trans-unit id="bGUB4rq">
+                <source>label.guided_step_book_hidden_field</source>
+                <target>Repérez l'interrupteur Masqué</target>
+            </trans-unit>
+            <trans-unit id="FcFWNoI">
+                <source>label.guided_step_book_hidden_open</source>
+                <target>Ouvrez le catalogue</target>
+            </trans-unit>
+            <trans-unit id="BWLwocj">
+                <source>label.guided_step_book_hidden_save</source>
+                <target>Enregistrer le livre</target>
+            </trans-unit>
+            <trans-unit id="gVP4uae">
+                <source>label.guided_step_book_hidden_switch</source>
+                <target>Basculez la ligne sur Masqué</target>
             </trans-unit>
             <trans-unit id="rA2nQBx">
                 <source>label.guided_step_book_serie_creation_covers</source>
@@ -800,7 +852,7 @@
             </trans-unit>
             <trans-unit id="pA9ispE">
                 <source>label.guided_step_book_trash_done</source>
-                <target>Le livre est de côté</target>
+                <target>Le livre est à la corbeille</target>
             </trans-unit>
             <trans-unit id="tw899tf">
                 <source>label.guided_step_book_trash_open</source>

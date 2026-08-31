@@ -6,6 +6,7 @@ use c975L\BookBundle\Repository\MediaRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 #[ORM\Table(name: 'book_media')]
@@ -21,6 +22,8 @@ use Symfony\Component\HttpFoundation\File\File;
 ])]
 abstract class Media implements \Stringable
 {
+    // What each subclass still repeats - its $book/$serie/$strip and its getVichMediaPath() - stays there on purpose: the inversedBy differs on each, and Doctrine's AssociationOverride, which would redeclare them per subclass, is not supported under SINGLE_TABLE, only under a MappedSuperclass. Raising the relation here would mean dropping the inversedBy and checking at doctrine:schema:validate what the owning collections make of it
+
     // The root every subclass writes under (see their getVichMediaPath), and what BookBackupPathProvider declares to ConfigBundle
     public const string MEDIA_DIRECTORY = 'medias/book';
 
@@ -71,6 +74,8 @@ abstract class Media implements \Stringable
     #[ORM\Column(options: ['default' => true])]
     private bool $noCookie = true;
 
+    // The upload declared once for the whole hierarchy: Vich reads a property off the parent classes too, so each subclass only carries the #[Vich\Uploadable] that marks it uploadable, an attribute that is not inherited
+    #[Vich\UploadableField(mapping: 'block_media', fileNameProperty: 'name', size: 'size')]
     protected ?File $file = null;
 
     #[ORM\Column]

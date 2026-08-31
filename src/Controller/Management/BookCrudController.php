@@ -16,6 +16,7 @@ use c975L\BookBundle\Form\BookVideoType;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
 use c975L\BookBundle\Management\BookExportProvider;
 use c975L\BookBundle\Management\BookImportProvider;
+use c975L\BookBundle\Service\BookCatalogExporter;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use c975L\BookBundle\Service\BookDuplicator;
 use c975L\BookBundle\Service\BookMediaMoveRowAttrBuilder;
@@ -24,13 +25,10 @@ use c975L\BookBundle\Service\BookTrashManager;
 use c975L\BookBundle\Service\BookVersionPublisher;
 use c975L\ConfigBundle\Management\EasyAdminActionHelper;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use c975L\ConfigBundle\Service\Export\ContentExporter;
-use c975L\ConfigBundle\Service\Export\TableExporter;
 use c975L\UiBundle\Form\BlockType;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -87,6 +85,7 @@ class BookCrudController extends AbstractCrudController
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly BlockMoveRowAttrBuilder $blockMoveRowAttrBuilder,
+        private readonly BookCatalogExporter $catalogExporter,
         private readonly BookCustomizationRegistry $customizationRegistry,
         private readonly BookDuplicator $duplicator,
         private readonly BookExportProvider $bookExportProvider,
@@ -95,11 +94,8 @@ class BookCrudController extends AbstractCrudController
         private readonly BookTrashManager $trashManager,
         private readonly BookVersionPublisher $versionPublisher,
         private readonly ConfigServiceInterface $configService,
-        private readonly Connection $connection,
-        private readonly ContentExporter $contentExporter,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly RequestStack $requestStack,
-        private readonly TableExporter $tableExporter,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -116,6 +112,16 @@ class BookCrudController extends AbstractCrudController
         $book = $entity instanceof Book ? $entity : null;
         $bookId = $book?->getId();
 
+        return [
+            ...$this->informationFields(),
+            ...$this->pageFields($book, $bookId),
+            ...$this->blockFields($entity),
+        ];
+    }
+
+    // The "informations" tab: what the book is, who made it, and the series it belongs to
+    private function informationFields(): array
+    {
         return [
             // Informations
             FormField::addTab(t('label.informations', [], 'book'))
@@ -204,8 +210,16 @@ class BookCrudController extends AbstractCrudController
                 ->setLabel(t('label.modification', [], 'book'))
                 ->hideOnIndex()
                 ->setFormTypeOption('disabled', 'disabled'),
+        ];
+    }
 
-            // Page - the very sections a book's page lays out, in the order it prints them (see BookSectionsExtension): the header it opens on, its videos, its versions, then what comes under them. Where a file or a platform is written is where it is read
+    // The "page" tab: the very sections a book's page lays out, in the order it prints them (see BookSectionsExtension) - the header it opens on, its videos, its versions, then what comes under them
+    // The images and files the public page is built from, each collection carrying the book's id so its rows can be swapped by drag-and-drop: where a file or a platform is written is where it is read
+    // A declaration of fields, one line per field: its length says how much the screen shows, not how much the method decides
+    /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
+    private function pageFields(?Book $book, ?int $bookId): array
+    {
+        return [
             FormField::addTab(t('label.page', [], 'book'))
                 ->hideOnIndex(),
             // Header - three fields rather than one collection asking which of the three a file is: the field it is dropped on is what says so (see Book::addCover() and its two siblings)
@@ -360,6 +374,13 @@ class BookCrudController extends AbstractCrudController
             DateField::new('crowdfundingEndDate')
                 ->setLabel(t('label.crowdfunding_end_date', [], 'book'))
                 ->hideOnIndex(),
+        ];
+    }
+
+    // The "blocks" tab: what an admin composes the rest of the page with
+    private function blockFields(mixed $entity): array
+    {
+        return [
             FormField::addTab(t('label.blocks', [], 'book'))
                 ->hideOnIndex(),
             CollectionField::new('blocks')

@@ -58,6 +58,10 @@
                 <source>description.guided_project_book_creation</source>
                 <target>Un libro, su serie, su fecha de publicación y su portada: lo necesario para que su página exista.</target>
             </trans-unit>
+            <trans-unit id="d0sG8Yc">
+                <source>description.guided_project_book_hidden</source>
+                <target>Un libro oculto permanece en el catálogo con sus archivos, pero ninguna lectura pública lo muestra ya.</target>
+            </trans-unit>
             <trans-unit id="vfRiQY8">
                 <source>description.guided_project_book_serie_creation</source>
                 <target>Una serie agrupa los libros o las láminas de una misma colección. Crearla primero evita volver a cada libro para vincularlo.</target>
@@ -129,6 +133,26 @@
             <trans-unit id="x5k_Kqu">
                 <source>description.guided_step_book_creation_title</source>
                 <target>El título rellena el identificador de url justo debajo, que es la dirección de la página del libro.</target>
+            </trans-unit>
+            <trans-unit id="xivBkbL">
+                <source>description.guided_step_book_hidden_done</source>
+                <target>Su página responde 404 y no se ha retirado nada: no es la papelera.</target>
+            </trans-unit>
+            <trans-unit id="CRFYTFB">
+                <source>description.guided_step_book_hidden_edit</source>
+                <target>El mismo interruptor está en el formulario, donde lo que cambia se escribe debajo.</target>
+            </trans-unit>
+            <trans-unit id="vY1T86z">
+                <source>description.guided_step_book_hidden_field</source>
+                <target>Primera pestaña, junto a «Publicado»: la línea de ayuda dice a qué deja de responder un libro oculto.</target>
+            </trans-unit>
+            <trans-unit id="pK3uZII">
+                <source>description.guided_step_book_hidden_open</source>
+                <target>La lista de libros, donde el interruptor se ofrece en cada fila.</target>
+            </trans-unit>
+            <trans-unit id="nlryHN4">
+                <source>description.guided_step_book_hidden_switch</source>
+                <target>Un clic retira el libro del sitio, un segundo lo devuelve, sin nada más que guardar.</target>
             </trans-unit>
             <trans-unit id="nhaVq7U">
                 <source>description.guided_step_book_serie_creation_covers</source>
@@ -208,7 +232,7 @@
             </trans-unit>
             <trans-unit id="Qzxgk28">
                 <source>description.guided_step_book_trash_switch</source>
-                <target>La misma pantalla cambia a lo que se ha apartado, y vuelve con un segundo clic.</target>
+                <target>La misma pantalla cambia a lo que está en la papelera, y vuelve con un segundo clic.</target>
             </trans-unit>
             <trans-unit id="W_pjSq.">
                 <source>description.guided_step_book_version_publication_done</source>
@@ -642,6 +666,10 @@
                 <source>label.guided_project_book_creation</source>
                 <target>Publicar un libro</target>
             </trans-unit>
+            <trans-unit id="oyXCY_1">
+                <source>label.guided_project_book_hidden</source>
+                <target>Retirar un libro del sitio</target>
+            </trans-unit>
             <trans-unit id="fp0G5g8">
                 <source>label.guided_project_book_serie_creation</source>
                 <target>Crear una serie</target>
@@ -652,7 +680,7 @@
             </trans-unit>
             <trans-unit id="dMs_Dy.">
                 <source>label.guided_project_book_trash</source>
-                <target>Apartar un libro</target>
+                <target>Mover un libro a la papelera</target>
             </trans-unit>
             <trans-unit id="a0rsniN">
                 <source>label.guided_project_book_version_publication</source>
@@ -721,6 +749,30 @@
             <trans-unit id="r8dIS66">
                 <source>label.guided_step_book_creation_title</source>
                 <target>Poner un título</target>
+            </trans-unit>
+            <trans-unit id="DPrkE93">
+                <source>label.guided_step_book_hidden_done</source>
+                <target>El libro está retirado del sitio</target>
+            </trans-unit>
+            <trans-unit id="oSG6SO3">
+                <source>label.guided_step_book_hidden_edit</source>
+                <target>Abra el libro</target>
+            </trans-unit>
+            <trans-unit id="bGUB4rq">
+                <source>label.guided_step_book_hidden_field</source>
+                <target>Localice el interruptor Oculto</target>
+            </trans-unit>
+            <trans-unit id="FcFWNoI">
+                <source>label.guided_step_book_hidden_open</source>
+                <target>Abra el catálogo</target>
+            </trans-unit>
+            <trans-unit id="BWLwocj">
+                <source>label.guided_step_book_hidden_save</source>
+                <target>Guardar el libro</target>
+            </trans-unit>
+            <trans-unit id="gVP4uae">
+                <source>label.guided_step_book_hidden_switch</source>
+                <target>Cambie la fila a Oculto</target>
             </trans-unit>
             <trans-unit id="rA2nQBx">
                 <source>label.guided_step_book_serie_creation_covers</source>
@@ -800,7 +852,7 @@
             </trans-unit>
             <trans-unit id="pA9ispE">
                 <source>label.guided_step_book_trash_done</source>
-                <target>El libro está apartado</target>
+                <target>El libro está en la papelera</target>
             </trans-unit>
             <trans-unit id="tw899tf">
                 <source>label.guided_step_book_trash_open</source>

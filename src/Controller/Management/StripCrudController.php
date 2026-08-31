@@ -8,16 +8,14 @@ use c975L\BookBundle\Form\StripMediaType;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
 use c975L\BookBundle\Management\StripExportProvider;
 use c975L\BookBundle\Management\StripImportProvider;
+use c975L\BookBundle\Service\BookCatalogExporter;
 use c975L\BookBundle\Service\BookDuplicator;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookTrashManager;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use c975L\ConfigBundle\Service\Export\ContentExporter;
-use c975L\ConfigBundle\Service\Export\TableExporter;
 use c975L\UiBundle\Form\BlockType;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
-use Doctrine\DBAL\Connection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
@@ -64,16 +62,14 @@ class StripCrudController extends AbstractCrudController
         private readonly AdminContextProviderInterface $adminContextProvider,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly BlockMoveRowAttrBuilder $blockMoveRowAttrBuilder,
+        private readonly BookCatalogExporter $catalogExporter,
         private readonly BookDuplicator $duplicator,
         private readonly StripExportProvider $stripExportProvider,
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly BookTrashManager $trashManager,
         private readonly ConfigServiceInterface $configService,
-        private readonly Connection $connection,
-        private readonly ContentExporter $contentExporter,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly RequestStack $requestStack,
-        private readonly TableExporter $tableExporter,
         private readonly TranslatorInterface $translator,
     ) {
     }

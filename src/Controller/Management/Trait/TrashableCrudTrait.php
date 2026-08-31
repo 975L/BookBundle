@@ -58,6 +58,8 @@ trait TrashableCrudTrait
         parent::updateEntity($entityManager, $entity);
     }
 
+    // A declaration of actions, one block per action: its length says how many buttons the screen wears, not how much the method decides
+    /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
     public function configureActions(Actions $actions): Actions
     {
         $role = $this->configService->get('site-role-editor');
@@ -259,7 +261,7 @@ trait TrashableCrudTrait
     {
         $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
 
-        return $this->tableExporter->export(ExportFormat::Sql, self::EXPORT_TABLE, $this->fetchExportRows());
+        return $this->catalogExporter->exportTable(ExportFormat::Sql, self::EXPORT_TABLE);
     }
 
     #[AdminRoute]
@@ -267,7 +269,7 @@ trait TrashableCrudTrait
     {
         $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
 
-        return $this->tableExporter->export(ExportFormat::Csv, self::EXPORT_TABLE, $this->fetchExportRows());
+        return $this->catalogExporter->exportTable(ExportFormat::Csv, self::EXPORT_TABLE);
     }
 
     #[AdminRoute]
@@ -275,7 +277,7 @@ trait TrashableCrudTrait
     {
         $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
 
-        return $this->tableExporter->export(ExportFormat::Json, self::EXPORT_TABLE, $this->fetchExportRows());
+        return $this->catalogExporter->exportTable(ExportFormat::Json, self::EXPORT_TABLE);
     }
 
     // Exports the checked rows - with their versions, their platforms, their blocks and their files bundled in the archive - as a zip meant to be re-uploaded on another site through ConfigBundle's "Import content" screen (see eg. Management\BookImportProvider). Stricter than the row actions like the three dumps above, and checked again here
@@ -294,7 +296,7 @@ trait TrashableCrudTrait
 
         $data = $this->serializeSelection($batchActionDto->getEntityIds());
 
-        return $this->contentExporter->export(self::EXPORT_KIND, $data['items'], $data['files']);
+        return $this->catalogExporter->exportSelection(self::EXPORT_KIND, $data['items'], $data['files']);
     }
 
     // The copy the duplicate action saves, made by the very method of BookDuplicator that knows what this row holds
@@ -390,11 +392,5 @@ trait TrashableCrudTrait
     private function displayRoute(mixed $entity): string
     {
         return self::DISPLAY_ROUTE;
-    }
-
-    /** @return array<int, array<string, mixed>> */
-    private function fetchExportRows(): array
-    {
-        return $this->connection->fetchAllAssociative(sprintf('SELECT * FROM `%s` ORDER BY `id`', self::EXPORT_TABLE));
     }
 }

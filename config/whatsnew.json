@@ -1,5 +1,25 @@
 [
     {
+        "date": "2026-08-31",
+        "description": [
+            {
+                "en": "When you add a block to a page, each kind of block now shows a small drawing of what it looks like, so you can recognise the one you want at a glance instead of reading its name.",
+                "fr": "Quand vous ajoutez un bloc à une page, chaque type de bloc affiche désormais un petit dessin de ce à quoi il ressemble : vous reconnaissez celui que vous cherchez d'un coup d'œil, au lieu d'en lire le nom.",
+                "es": "Cuando añade un bloque a una página, cada tipo de bloque muestra ahora un pequeño dibujo de su aspecto: reconoce el que busca de un vistazo, en lugar de leer su nombre."
+            },
+            {
+                "en": "A new guided tour, \"Take a book off the site\", walks you through hiding a book and shows how it differs from putting it in the trash. The trash tour is now named after the trash, so the two are no longer confused.",
+                "fr": "Un nouveau parcours guidé, « Retirer un livre du site », vous accompagne pour masquer un livre et montre en quoi cela diffère de la corbeille. Le parcours de la corbeille porte désormais son nom, pour que les deux ne se confondent plus.",
+                "es": "Un nuevo recorrido guiado, «Retirar un libro del sitio», le acompaña para ocultar un libro y muestra en qué se diferencia de la papelera. El recorrido de la papelera lleva ahora su nombre, para que ya no se confundan."
+            },
+            {
+                "en": "The sample books and series shown as examples now come with a cover, and two cards side by side never repeat the same picture.",
+                "fr": "Les livres et les séries d'exemple s'affichent désormais avec une couverture, et deux fiches côte à côte ne reprennent jamais la même image.",
+                "es": "Los libros y las series de ejemplo se muestran ahora con una portada, y dos fichas contiguas nunca repiten la misma imagen."
+            }
+        ]
+    },
+    {
         "date": "2026-08-30",
         "description": [
             {

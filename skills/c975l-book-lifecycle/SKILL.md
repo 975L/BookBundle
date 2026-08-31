@@ -10,7 +10,7 @@ description: "Use this skill when a row of a c975L BookBundle catalog is created
 **Package:** `c975l/book-bundle` · **Bundle:** `c975L\BookBundle\` · **Translation domain:** `book`
 
 **Key source paths** (relative to the package root):
-`src/Service/BookVersionPublisher.php`, `src/Service/BookDuplicator.php`, `src/Service/BookTrashManager.php`, `src/Contract/TrashableInterface.php`, `src/Entity/Trait/TrashableTrait.php`, `src/Entity/Trait/HideableTrait.php`, `src/Controller/Management/Trait/TrashableCrudTrait.php`, `src/Controller/Management/BookCrudController.php`, `src/Controller/Management/BookMediaMoveController.php`, `src/Repository/BookRepository.php`, `src/Repository/SerieRepository.php`, `src/Repository/StripRepository.php`, `src/Management/BookExportProvider.php`, `src/Management/BookImportProvider.php`, `src/Management/MediaArchiver.php`, `src/Management/BookSitemapProvider.php`, `src/Management/BookLinkHealthCheckProvider.php`, `src/Command/StripImportCommand.php`, `src/Service/BookSampleCatalog.php`, `src/Service/BookDemoFixtureProvider.php`
+`src/Service/BookVersionPublisher.php`, `src/Service/BookDuplicator.php`, `src/Service/BookTrashManager.php`, `src/Contract/TrashableInterface.php`, `src/Entity/Trait/TrashableTrait.php`, `src/Entity/Trait/HideableTrait.php`, `src/Controller/Management/Trait/TrashableCrudTrait.php`, `src/Controller/Management/BookCrudController.php`, `src/Controller/Management/BookMediaMoveController.php`, `src/Repository/BookRepository.php`, `src/Repository/SerieRepository.php`, `src/Repository/StripRepository.php`, `src/Management/BookExportProvider.php`, `src/Management/BookImportProvider.php`, `src/Management/MediaArchiver.php`, `src/Management/BookSitemapProvider.php`, `src/Management/BookLinkHealthCheckProvider.php`, `src/Command/StripImportCommand.php`, `src/Service/BookSampleCatalog.php`, `src/Service/BookDemoFixtureProvider.php`, `src/Service/GalleryShowcaseProvider.php`
 
 **Related skills:** `c975l-book-display-pages` and `c975l-book-customization` in this same bundle, and `c975l-config`, `c975l-media` in the core beside it.
 
@@ -153,6 +153,10 @@ bundle's `no-cover.webp`.
 
 `GalleryShowcaseProvider` reads the very same `BookSampleCatalog` for the block showcase, where it builds
 entities it never writes. **One dataset, two readings** — enrich it in the catalog, not in either consumer.
+Its cards carry a cover too, read off the same declared keys, so a demo site and the showcase show the same
+book. Failing one, it deals the generic pool **by rank** where the fixtures read it off the slug: a rail is
+seen side by side, and two cards sharing a photograph read as a bug. A cover is posed with `addCover()`, not
+`setName()` alone — `book_cover()` reads the kind before falling back on the first image.
 
 ## Do not
 
@@ -167,6 +171,7 @@ entities it never writes. **One dataset, two readings** — enrich it in the cat
 - **Do not answer 410 for a row set aside** — nothing was taken away, 404 is what it is worth.
 - **Do not hide a serie that still holds something shown** — set what it holds aside first.
 - **Do not write a public query without the trash and draft filters** — pick a repository read.
+- **Do not pose a showcase cover with `setName()` alone** — `addCover()` is what files it as a cover.
 - **Do not share an uploaded file between an original and its copy.**
 - **Do not match an import by id** — slugs are what survive an environment change.
 - **Do not write a made-up book into a consumer** — `BookSampleCatalog` holds the dataset both of them read.

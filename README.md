@@ -138,6 +138,11 @@ shapes only — a book page is laid on the site's own ground and ink, read throu
 ships commented out in `scaffold/assets/styles/themes/book.css`, copied into the app once by
 `c975l:scaffold:install` and owned by the app from then on.
 
+The same provider contributes a second sheet to the back-office alone (`public/css/block-thumbs.min.css`,
+`ui.management_stylesheet`): the silhouettes of this bundle's block kinds, so the visual picker shows each of
+them at a glance rather than a bare frame. A site printing those silhouettes on a public page — a block
+showcase — contributes the same file through its own stylesheet provider.
+
 ---
 
 ## Usage
@@ -786,6 +791,10 @@ fourth cover and the backdrop its page opens on; a serie's cover, the emblem pri
 own backdrop. Failing a declared key, one of the generic pool is used, picked off the slug so a book keeps
 the same picture whatever else is loaded beside it. A site declaring no image at all still gets a catalog:
 a card falls back on the bundle's own `no-cover.webp`.
+
+The block showcase reads the same declared keys, so a demo site and the showcase show the same cover. Failing
+one, it deals the generic pool by rank rather than by slug: its cards stand side by side in a rail, where two
+of them sharing a photograph would read as a bug.
 
 ### Backup
 

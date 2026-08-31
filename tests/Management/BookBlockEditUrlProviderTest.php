@@ -10,6 +10,9 @@
 
 namespace c975L\BookBundle\Tests\Management;
 
+use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\SerieCrudController;
+use c975L\BookBundle\Controller\Management\StripCrudController;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
@@ -18,6 +21,7 @@ use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\UiBundle\Entity\Block;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -57,6 +61,17 @@ class BookBlockEditUrlProviderTest extends TestCase
             11 => 'SerieCrudController/5/11',
             12 => 'StripCrudController/6/12',
         ], $urls);
+    }
+
+    // The three classes the provider hands BlockFocusUrl - ManagementTargetsTest cannot reach them, its test case walking a provider only by the five management interfaces this one implements none of, and EasyAdmin throws on the public page rather than in the back office when handed a class that is no longer a CRUD controller
+    public function testEveryFamilyNamesACrudController(): void
+    {
+        foreach ([BookCrudController::class, SerieCrudController::class, StripCrudController::class] as $controller) {
+            $this->assertTrue(
+                is_subclass_of($controller, AbstractCrudController::class),
+                sprintf('"%s" is no longer a CRUD controller, and EasyAdmin cannot generate an edit url for it', $controller)
+            );
+        }
     }
 
     // A block this bundle owns nothing of is left to whichever provider does own it

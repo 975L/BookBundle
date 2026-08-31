@@ -2,6 +2,7 @@
 
 namespace c975L\BookBundle\Command;
 
+use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
 use c975L\BookBundle\Repository\SerieRepository;
@@ -87,19 +88,53 @@ class StripImportCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
+        $context = $this->importContext($io, $input);
+        if (null === $context) {
+            return Command::FAILURE;
+        }
+
+        $rows = $this->connection->fetchAllAssociative(
+            "SELECT * FROM `{$context['tableName']}` ORDER BY id ASC"
+        );
+
+        if (empty($rows)) {
+            $io->warning("Table '{$context['tableName']}' returned no rows.");
+
+            return Command::SUCCESS;
+        }
+
+        $io->info(sprintf('Found %d rows.', count($rows)));
+
+        [$created, $skipped] = $this->importRows($io, $rows, $context['serie'], $context);
+
+        if (!$context['dryRun']) {
+            $this->em->flush();
+        }
+
+        $io->newLine();
+        $io->success(sprintf(
+            '%d strips %s. %d skipped.',
+            $created,
+            $context['dryRun'] ? 'would be created' : 'created and flushed',
+            $skipped
+        ));
+
+        return Command::SUCCESS;
+    }
+
+    // What the options describe, once they are known to name a serie and a directory that exists - null, the error already written, for anything the import cannot run on
+    // @return array{serie: Serie, tableName: string, numberColumn: string, mediaRootFs: string, publicPrefix: string, urlTemplate: ?string, urlMax: int, dryRun: bool}|null
+    private function importContext(SymfonyStyle $io, InputInterface $input): ?array
+    {
         $serieSlug = $input->getOption('serie');
         $tableName = $input->getOption('table');
         $mediaDir = $input->getOption('media-dir');
-        $numberColumn = $input->getOption('number-column');
-        $urlTemplate = $input->getOption('source-url-template');
-        $urlMax = (int) $input->getOption('source-url-max');
-        $dryRun = $input->getOption('dry-run');
 
         // Checked before anything is done with them: an option left out is null, which no string function is to be handed
         if (!$serieSlug || !$tableName || !$mediaDir) {
             $io->error('Options --serie, --table and --media-dir are all required.');
 
-            return Command::FAILURE;
+            return null;
         }
 
         $mediaDir = rtrim($mediaDir, '/');
@@ -108,41 +143,51 @@ class StripImportCommand extends Command
         if (!$serie) {
             $io->error("No Serie found with slug '{$serieSlug}'.");
 
-            return Command::FAILURE;
+            return null;
         }
 
         $mediaRootFs = $this->projectDir . '/' . $mediaDir;
         if (!is_dir($mediaRootFs)) {
             $io->error("Directory not found: {$mediaRootFs}");
 
-            return Command::FAILURE;
+            return null;
         }
 
-        // Public URL prefix: strip leading "assets/" so asset() resolves correctly via AssetMapper
-        $publicPrefix = preg_replace('#^assets/#', '', $mediaDir);
+        $context = [
+            'serie' => $serie,
+            'tableName' => $tableName,
+            'numberColumn' => $input->getOption('number-column'),
+            'mediaRootFs' => $mediaRootFs,
+            // Public URL prefix: strip leading "assets/" so asset() resolves correctly via AssetMapper
+            'publicPrefix' => preg_replace('#^assets/#', '', $mediaDir),
+            'urlTemplate' => $input->getOption('source-url-template'),
+            'urlMax' => (int) $input->getOption('source-url-max'),
+            'dryRun' => (bool) $input->getOption('dry-run'),
+        ];
 
-        $io->title(sprintf("Importing into serie '%s' (slug: %s)", $serie->getTitle(), $serieSlug));
+        $this->reportContext($io, $serieSlug, $context);
+
+        return $context;
+    }
+
+    // The header printed before a single row is read: how the options were understood, and whether anything will be persisted
+    private function reportContext(SymfonyStyle $io, string $serieSlug, array $context): void
+    {
+        $io->title(sprintf("Importing into serie '%s' (slug: %s)", $context['serie']->getTitle(), $serieSlug));
         $io->text([
-            "Source table    : {$tableName}",
-            "Media dir (fs)  : {$mediaRootFs}",
-            "Public prefix   : {$publicPrefix}",
-            "Number column   : {$numberColumn}",
-            $dryRun ? '<comment>DRY-RUN — nothing will be persisted</comment>' : '<info>LIVE — changes will be flushed</info>',
+            "Source table    : {$context['tableName']}",
+            "Media dir (fs)  : {$context['mediaRootFs']}",
+            "Public prefix   : {$context['publicPrefix']}",
+            "Number column   : {$context['numberColumn']}",
+            $context['dryRun'] ? '<comment>DRY-RUN — nothing will be persisted</comment>' : '<info>LIVE — changes will be flushed</info>',
         ]);
         $io->newLine();
+    }
 
-        $rows = $this->connection->fetchAllAssociative(
-            "SELECT * FROM `{$tableName}` ORDER BY id ASC"
-        );
-
-        if (empty($rows)) {
-            $io->warning("Table '{$tableName}' returned no rows.");
-
-            return Command::SUCCESS;
-        }
-
-        $io->info(sprintf('Found %d rows.', count($rows)));
-
+    // One strip per row of the source table, answering how many were written and how many the table could not name
+    // @return array{0: int, 1: int}
+    private function importRows(SymfonyStyle $io, array $rows, Serie $serie, array $options): array
+    {
         $now = new \DateTime();
         $updatedAt = new \DateTimeImmutable();
         $created = 0;
@@ -150,47 +195,23 @@ class StripImportCommand extends Command
 
         foreach ($rows as $row) {
             $slug = $row['slug'] ?? null;
-            $number = isset($row[$numberColumn]) ? (int) $row[$numberColumn] : (int) $row['id'];
-
             if (!$slug) {
                 $io->warning("  Row id={$row['id']} has no slug — skipped.");
                 ++$skipped;
                 continue;
             }
 
+            $number = isset($row[$options['numberColumn']]) ? (int) $row[$options['numberColumn']] : (int) $row['id'];
             $numFormatted = sprintf('%03d', $number);
-            $stripDir = $mediaRootFs . '/' . $numFormatted;
+            $stripDir = $options['mediaRootFs'] . '/' . $numFormatted;
 
-            // Transcription from .txt file → summary
-            $summary = null;
-            $txtFile = $stripDir . '/' . $numFormatted . '.txt';
-            if (file_exists($txtFile)) {
-                $summary = trim(file_get_contents($txtFile));
-            }
-
-            // sourceUrl
-            $sourceUrl = null;
-            if ($urlTemplate && $number <= $urlMax) {
-                $sourceUrl = str_replace('{number}', (string) $number, $urlTemplate);
-            }
-
-            $strip = new Strip();
-            $strip->setSerie($serie);
-            $strip->setTitle($row['title']);
-            $strip->setSlug($slug);
-            $strip->setNumber($number);
-            $strip->setCharacters($row['characters'] ?? null);
-            $strip->setSummary($summary);
-            $strip->setSourceUrl($sourceUrl);
-            $strip->setCreation($now);
-            $strip->setModification($now);
-
-            if (!empty($row['published'])) {
-                $strip->setPublished(new \DateTime($row['published']));
-            }
+            $strip = $this->buildStrip($row, $serie, $number, $now);
+            $strip
+                ->setSummary($this->transcription($stripDir, $numFormatted))
+                ->setSourceUrl($this->sourceUrl($options['urlTemplate'], $number, $options['urlMax']));
 
             // Build media entries from directory scan
-            $medias = $this->scanMediaDir($stripDir, $numFormatted, $publicPrefix, $strip, $updatedAt);
+            $medias = $this->scanMediaDir($stripDir, $numFormatted, $options['publicPrefix'], $strip, $updatedAt);
 
             $io->writeln(sprintf(
                 '  <info>[%s]</info> %s  published=%s  medias=%d%s',
@@ -198,10 +219,10 @@ class StripImportCommand extends Command
                 $strip->getTitle(),
                 $strip->getPublished()?->format('d/m/Y') ?? 'null',
                 count($medias),
-                $dryRun ? ' <comment>(dry-run)</comment>' : ''
+                $options['dryRun'] ? ' <comment>(dry-run)</comment>' : ''
             ));
 
-            if (!$dryRun) {
+            if (!$options['dryRun']) {
                 $this->em->persist($strip);
                 foreach ($medias as $media) {
                     $this->em->persist($media);
@@ -211,19 +232,74 @@ class StripImportCommand extends Command
             ++$created;
         }
 
-        if (!$dryRun) {
-            $this->em->flush();
+        return [$created, $skipped];
+    }
+
+    // The strip a source row describes, its summary and its source url written by the caller from the files beside it
+    private function buildStrip(array $row, Serie $serie, int $number, \DateTime $now): Strip
+    {
+        $strip = new Strip();
+        $strip->setSerie($serie);
+        $strip->setTitle($row['title']);
+        $strip->setSlug($row['slug']);
+        $strip->setNumber($number);
+        $strip->setCharacters($row['characters'] ?? null);
+        $strip->setCreation($now);
+        $strip->setModification($now);
+
+        if (!empty($row['published'])) {
+            $strip->setPublished(new \DateTime($row['published']));
         }
 
-        $io->newLine();
-        $io->success(sprintf(
-            '%d strips %s. %d skipped.',
-            $created,
-            $dryRun ? 'would be created' : 'created and flushed',
-            $skipped
-        ));
+        return $strip;
+    }
 
-        return Command::SUCCESS;
+    // Transcription from .txt file → summary
+    private function transcription(string $stripDir, string $numFormatted): ?string
+    {
+        $txtFile = $stripDir . '/' . $numFormatted . '.txt';
+
+        return file_exists($txtFile) ? trim(file_get_contents($txtFile)) : null;
+    }
+
+    // Only the strips the site published up to a point carry one, the template naming each by its number
+    private function sourceUrl(?string $urlTemplate, int $number, int $urlMax): ?string
+    {
+        if (!$urlTemplate || $number > $urlMax) {
+            return null;
+        }
+
+        return str_replace('{number}', (string) $number, $urlTemplate);
+    }
+
+    // What a file's own name says it is, or null for anything the strip directory holds beside its pages
+    // @return array{0: string, 1: int}|null the kind and the rank it is shown at
+    private function recogniseMedia(string $file, string $numFormatted): ?array
+    {
+        $number = preg_quote($numFormatted, '/');
+
+        // Full A4 page: NNN-page001.jpg
+        if (preg_match('/^' . $number . '-page(\d+)\.jpg$/i', $file, $matches)) {
+            return ['page', (int) $matches[1]];
+        }
+
+        // Individual panel: NNN-Cases-page001.jpg
+        if (preg_match('/^' . $number . '-Cases-page(\d+)\.jpg$/i', $file, $matches)) {
+            return ['case', (int) $matches[1]];
+        }
+
+        // PDF thumbnail
+        return preg_match('/^' . $number . '\.pdf\.webp$/i', $file) ? ['thumbnail', 0] : null;
+    }
+
+    // Thumbnail first, then the full page, then the panels in their own order
+    private function mediaOrder(StripMedia $a, StripMedia $b): int
+    {
+        $order = ['thumbnail' => 0, 'page' => 1, 'case' => 2];
+        $first = $order[$a->getKind()] ?? 9;
+        $second = $order[$b->getKind()] ?? 9;
+
+        return $first !== $second ? $first - $second : $a->getPosition() <=> $b->getPosition();
     }
 
     private function scanMediaDir(
@@ -244,26 +320,12 @@ class StripImportCommand extends Command
                 continue;
             }
 
-            $kind = null;
-            $position = 0;
-
-            if (preg_match('/^' . preg_quote($numFormatted, '/') . '-page(\d+)\.jpg$/i', $file, $m)) {
-                // Full A4 page: NNN-page001.jpg
-                $kind = 'page';
-                $position = (int) $m[1];
-            } elseif (preg_match('/^' . preg_quote($numFormatted, '/') . '-Cases-page(\d+)\.jpg$/i', $file, $m)) {
-                // Individual panel: NNN-Cases-page001.jpg
-                $kind = 'case';
-                $position = (int) $m[1];
-            } elseif (preg_match('/^' . preg_quote($numFormatted, '/') . '\.pdf\.webp$/i', $file)) {
-                // PDF thumbnail
-                $kind = 'thumbnail';
-                $position = 0;
-            }
-
-            if (null === $kind) {
+            $recognised = $this->recogniseMedia($file, $numFormatted);
+            if (null === $recognised) {
                 continue;
             }
+
+            [$kind, $position] = $recognised;
 
             $name = $publicPrefix . '/' . $numFormatted . '/' . $file;
             $fsize = filesize($stripDir . '/' . $file) ?: null;
@@ -280,13 +342,7 @@ class StripImportCommand extends Command
         }
 
         // Sort: thumbnail first, then full page, then panels in order
-        usort($medias, static function (StripMedia $a, StripMedia $b): int {
-            $order = ['thumbnail' => 0, 'page' => 1, 'case' => 2];
-            $ak = $order[$a->getKind()] ?? 9;
-            $bk = $order[$b->getKind()] ?? 9;
-
-            return $ak !== $bk ? $ak - $bk : $a->getPosition() <=> $b->getPosition();
-        });
+        usort($medias, $this->mediaOrder(...));
 
         // Renumbers positions sequentially so the sorted order is the stored one
         foreach ($medias as $index => $media) {

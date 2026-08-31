@@ -52,10 +52,10 @@ class BookGuidedProjectProviderTest extends TestCase
         $projects = $this->projects();
 
         $this->assertSame(
-            ['book-serie-creation', 'book-creation', 'book-composition', 'book-strip-creation', 'book-version-publication', 'book-trash'],
+            ['book-serie-creation', 'book-creation', 'book-composition', 'book-strip-creation', 'book-version-publication', 'book-hidden', 'book-trash'],
             array_column($projects, 'slug')
         );
-        $this->assertSame([6010, 6020, 6030, 6040, 6050, 6060], array_column($projects, 'order'));
+        $this->assertSame([6010, 6020, 6030, 6040, 6050, 6055, 6060], array_column($projects, 'order'));
     }
 
     public function testEverySlugIsPrefixedWithTheBundleName(): void
@@ -114,7 +114,7 @@ class BookGuidedProjectProviderTest extends TestCase
         $this->createProvider($controllers)->getGuidedProjects();
 
         $this->assertSame(
-            ['SerieCrudController', 'BookCrudController', 'BookCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController'],
+            ['SerieCrudController', 'BookCrudController', 'BookCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController'],
             array_map(static fn (string $fqcn): string => basename(str_replace('\\', '/', $fqcn)), $controllers)
         );
     }
@@ -132,7 +132,7 @@ class BookGuidedProjectProviderTest extends TestCase
             }
         }
 
-        $this->assertCount(5, $saveSteps, 'Only the trash parcours saves nothing, its gestures being buttons of the index');
+        $this->assertCount(6, $saveSteps, 'Only the trash parcours saves nothing, its gestures being buttons of the index');
 
         foreach ($saveSteps as $step) {
             $this->assertSame('.action-saveAndReturn', $step['highlight']);
@@ -185,10 +185,12 @@ class BookGuidedProjectProviderTest extends TestCase
             $sources .= file_get_contents($controller);
         }
         $sources .= file_get_contents(\dirname(__DIR__, 2) . '/vendor/c975l/core-bundle/UiBundle/src/Service/BlockMoveRowAttrBuilder.php');
+        // "data-column" is EasyAdmin's own, the index cell of a boolean carrying no field id to point at instead
+        $sources .= file_get_contents(\dirname(__DIR__, 2) . '/vendor/easycorp/easyadmin-bundle/templates/crud/index.html.twig');
 
         $attributes = [];
         foreach ($this->highlights() as $highlight) {
-            if (preg_match('/^\[(data-[a-z-]+)/', $highlight, $matches)) {
+            if (preg_match('/\[(data-[a-z-]+)/', $highlight, $matches)) {
                 $attributes[] = $matches[1];
             }
         }

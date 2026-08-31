@@ -10,7 +10,9 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Entity\SerieMedia;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
 use c975L\UiBundle\Contract\GalleryShowcaseProviderInterface;
@@ -55,16 +57,24 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         ];
     }
 
-    // Series/Serie.html.twig falls back to a bundled "no-cover.webp" placeholder whenever a Serie has no cover media, so the sample entities below don't need one attached
+    // A rail of series is read for its covers: each sample carries one, Serie/Serie.html.twig otherwise falling back on the bundle's "no-cover.webp" - which is what an app declaring no picture at all still gets
     private function seriesVariant(): string
     {
         $series = [];
 
-        foreach ($this->catalog->getSeries() as $spec) {
-            $series[] = new Serie()
+        foreach ($this->catalog->getSeries() as $rank => $spec) {
+            $serie = new Serie()
                 ->setTitle($this->trans($spec['title']))
                 ->setSlug($spec['slug'])
                 ->setLanguage($this->trans(BookSampleCatalog::LANGUAGE_KEY));
+
+            $picture = $this->picture('serie', $spec['slug'], $rank);
+
+            if (null !== $picture) {
+                $serie->addCover(new SerieMedia()->setName($picture));
+            }
+
+            $series[] = $serie;
         }
 
         return $this->twig->render('@c975LBook/components/Serie/Series.html.twig', [
@@ -73,18 +83,20 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         ]);
     }
 
-    // Book/Book.html.twig falls back to the same placeholder cover as Serie's - no media needed either
+    // A cover is what a catalog shows of a book, so each sample carries one, on the same terms as a serie's
     private function booksVariant(): string
     {
         $books = [];
 
         // The released ones: a card of a book still to come prints "à paraître", which the next variant is for
-        foreach ($this->released(true) as $spec) {
-            $books[] = new Book()
+        foreach ($this->released(true) as $rank => $spec) {
+            $book = new Book()
                 ->setTitle($this->trans($spec['title']))
                 ->setSlug($spec['slug'])
                 ->setLanguage($this->trans(BookSampleCatalog::LANGUAGE_KEY))
                 ->setPublished(new \DateTime($spec['published']));
+
+            $books[] = $this->covered($book, $spec['slug'], $rank);
         }
 
         return $this->twig->render('@c975LBook/components/Book/Books.html.twig', [
@@ -98,11 +110,13 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
     {
         $books = [];
 
-        foreach ($this->released(false) as $spec) {
-            $books[] = new Book()
+        foreach ($this->released(false) as $rank => $spec) {
+            $book = new Book()
                 ->setTitle($this->trans($spec['title']))
                 ->setSlug($spec['slug'])
                 ->setLanguage($this->trans(BookSampleCatalog::LANGUAGE_KEY));
+
+            $books[] = $this->covered($book, $spec['slug'], $rank);
         }
 
         return $this->twig->render('@c975LBook/components/Book/ToBePublished.html.twig', [
@@ -133,6 +147,39 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         return $this->twig->render('@c975LBook/components/Strip/Cards.html.twig', [
             'strips' => $strips,
         ]);
+    }
+
+    // book_cover() reads the kind before anything else, which addCover() is what sets - a picture posed by setName() alone would only be found by its fallback on the first image
+    private function covered(Book $book, string $slug, int $rank): Book
+    {
+        $picture = $this->picture('book', $slug, $rank);
+
+        if (null !== $picture) {
+            $book->addCover(new BookMedia()->setName($picture));
+        }
+
+        return $book;
+    }
+
+    /**
+     * The picture a sample card shows: the one the site declares for that very row, keyed "book/<slug>" or
+     * "serie/<slug>" - the very keys the seeded demo reads, so the showcase and a demo site show the same cover.
+     *
+     * Failing that, one of the generic pool, dealt by rank: a rail is read side by side, and two cards sharing one
+     * photograph read as a bug. That is where this parts from BookDemoFixtureProvider, which reads its own off the
+     * slug - a row of the base has no rail to stand in, and keeps its picture whatever is loaded beside it.
+     */
+    private function picture(string $owner, string $slug, int $rank): ?string
+    {
+        $declared = $this->placeholderMediaRegistry->getImagesFor($owner . '/' . $slug);
+
+        if ([] !== $declared) {
+            return $declared[0];
+        }
+
+        $pool = $this->placeholderMediaRegistry->getImages();
+
+        return [] === $pool ? null : $pool[$rank % \count($pool)];
     }
 
     /**

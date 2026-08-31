@@ -1,0 +1,88 @@
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+/* The silhouettes of this bundle's block kinds, shown wherever a kind has to be recognised at a glance: the visual picker an editor chooses a block from (UiBundle's assets/js/block-picker.js) and the public block showcase of a site. Drawn here rather than in UiBundle for the same reason as the kinds' templates and fixtures: a block belongs to the bundle shipping it. The frame, the five parts and the default silhouette come from UiBundle's sass/_block-thumbs.scss - what follows only says how this bundle's kinds arrange them. */
+/* A row of covers, upright as a book is - what tells these three kinds apart from any other grid */
+.ui-block-thumb--book_series .ui-block-thumb__media,
+.ui-block-thumb--book_books .ui-block-thumb__media {
+  display: block;
+  background-image: linear-gradient(to right, currentcolor 0 68%, transparent 68%);
+  background-size: 26% 100%;
+  background-color: transparent;
+}
+.ui-block-thumb--book_series .ui-block-thumb__title,
+.ui-block-thumb--book_books .ui-block-thumb__title {
+  display: none;
+}
+.ui-block-thumb--book_series .ui-block-thumb__line + .ui-block-thumb__line,
+.ui-block-thumb--book_books .ui-block-thumb__line + .ui-block-thumb__line {
+  display: none;
+}
+
+/* A series is a shelf of covers and nothing else; a published book carries its title under it */
+.ui-block-thumb--book_series .ui-block-thumb__line {
+  display: none;
+}
+
+.ui-block-thumb--book_books .ui-block-thumb__line {
+  height: 0.1875rem;
+  background-image: linear-gradient(to right, currentcolor 0 68%, transparent 68%);
+  background-size: 26% 100%;
+  background-color: transparent;
+}
+
+/* What is not out yet is a list of titles and dates, not a shelf */
+.ui-block-thumb--book_to_be_published {
+  justify-content: center;
+  gap: 0.25rem;
+}
+.ui-block-thumb--book_to_be_published .ui-block-thumb__title,
+.ui-block-thumb--book_to_be_published .ui-block-thumb__line {
+  width: 100%;
+  height: 0.1875rem;
+  background-image: linear-gradient(to right, currentcolor 0 60%, transparent 60% 80%, currentcolor 80%);
+  background-color: transparent;
+}
+
+/* One page at a time, turned by the soundtrack running under it */
+.ui-block-thumb--book_reader .ui-block-thumb__media {
+  display: block;
+}
+.ui-block-thumb--book_reader .ui-block-thumb__title {
+  display: none;
+}
+.ui-block-thumb--book_reader .ui-block-thumb__line {
+  height: 0.3125rem;
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(to right, currentcolor 0 2px, transparent 2px 5px);
+  background-color: transparent;
+}
+.ui-block-thumb--book_reader .ui-block-thumb__line + .ui-block-thumb__line {
+  display: none;
+}
+
+/* The plates of a comic, stacked wide one under the other */
+.ui-block-thumb--book_serie_strips {
+  justify-content: center;
+  gap: 0.25rem;
+}
+.ui-block-thumb--book_serie_strips .ui-block-thumb__media {
+  display: block;
+  flex: 0 0 auto;
+  height: 25%;
+}
+.ui-block-thumb--book_serie_strips .ui-block-thumb__title,
+.ui-block-thumb--book_serie_strips .ui-block-thumb__line {
+  width: 100%;
+  height: 25%;
+  opacity: 0.22;
+}
+.ui-block-thumb--book_serie_strips .ui-block-thumb__line + .ui-block-thumb__line {
+  display: none;
+}
+
+/*# sourceMappingURL=block-thumbs.css.map */

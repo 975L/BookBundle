@@ -36,6 +36,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->bookCompositionProject(),
             $this->stripCreationProject(),
             $this->versionPublicationProject(),
+            $this->hiddenProject(),
             $this->trashProject(),
         ];
     }
@@ -315,6 +316,51 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                 [
                     'label' => 'label.guided_step_book_version_publication_done',
                     'description' => 'description.guided_step_book_version_publication_done',
+                ],
+            ],
+        ];
+    }
+
+    // The switch that takes a book off the site without touching it: it stays in the catalog with its files and its blocks, and its page simply answers 404 - a different gesture from the trash, which the parcours ends by saying (see HideableTrait)
+    private function hiddenProject(): array
+    {
+        return [
+            'slug' => 'book-hidden',
+            'label' => 'label.guided_project_book_hidden',
+            'description' => 'description.guided_project_book_hidden',
+            'translation_domain' => 'book',
+            'order' => 6055,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_hidden_open',
+                    'description' => 'description.guided_step_book_hidden_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    // The cell of the "hidden" column on the first row, EasyAdmin keying every index cell by the property it prints (see its crud/index.html.twig) - a boolean printed on the index carries no field id
+                    'label' => 'label.guided_step_book_hidden_switch',
+                    'description' => 'description.guided_step_book_hidden_switch',
+                    'highlight' => 'td[data-column="hidden"]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_hidden_edit',
+                    'description' => 'description.guided_step_book_hidden_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    // The checkbox itself, which the form prints with its id, unlike the index cell above
+                    'label' => 'label.guided_step_book_hidden_field',
+                    'description' => 'description.guided_step_book_hidden_field',
+                    'highlight' => '#Book_hidden',
+                ],
+                [
+                    'label' => 'label.guided_step_book_hidden_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_hidden_done',
+                    'description' => 'description.guided_step_book_hidden_done',
                 ],
             ],
         ];
