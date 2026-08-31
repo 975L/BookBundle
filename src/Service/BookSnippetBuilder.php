@@ -17,7 +17,7 @@ use c975L\BookBundle\Entity\Strip;
 
 // Builds the schema.org graph a book's, a serie's or a strip's page publishes as JSON-LD, out of the fields those pages already show.
 // Assembled here rather than as microdata on the rendered elements, for the same reason as UiBundle's ContactSnippetBuilder: an itemprop pinned to an element leaves an empty node behind when the field is empty, where a graph simply drops what wasn't filled in - and it can carry what no template displays (the two ISBNs as two editions, the rank of a volume in its serie).
-// Price and availability are deliberately absent: they are an "offers" node, which belongs to whoever sells the book (see TODO-ShopBundle.md) - emitted twice, they would diverge.
+// Price and availability are deliberately absent: they are an "offers" node, which belongs to whoever sells the book - emitted twice, they would diverge.
 class BookSnippetBuilder
 {
     // What schema.org calls the edition a kind names. A kind is the site's own word (see c975L\BookBundle\Contract\BookCustomizationProviderInterface), so it is matched on rather than mapped: any kind holding "paper" is a paperback, one holding "audio" an audiobook, and anything else - an epub, a pdf, a web edition - an ebook

@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.4.3
+
+The offers node is explained without naming another bundle
+
+- `BookSnippetBuilder`'s note on the absent offers node drops its cross-repository reference (31/08/2026)
+
 ## v2.4.2
 
 The README shows the block kinds as a strip of tiles
