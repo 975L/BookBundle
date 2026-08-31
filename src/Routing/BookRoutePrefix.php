@@ -25,6 +25,8 @@ class BookRoutePrefix
         'book-route-books' => 'books_prefix',
         'book-route-book' => 'book_prefix',
         'book-route-series' => 'series_prefix',
+        'book-route-contributors' => 'contributors_prefix',
+        'book-route-contributor' => 'contributor_prefix',
         'book-route-strips' => 'strips_prefix',
         'book-route-strip' => 'strip_prefix',
         'book-route-book-shortcut' => 'book_shortcut',

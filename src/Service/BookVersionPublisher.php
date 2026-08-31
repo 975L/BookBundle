@@ -43,10 +43,8 @@ class BookVersionPublisher
             ->setSlug($slug ?? $this->previousSlug($book))
             // The column is nullable, its setter is not
             ->setSummary((string) $book->getSummary())
-            ->setAuthor((string) $book->getAuthor())
-            ->setAuthorWebsite($book->getAuthorWebsite())
+            ->setAuthor($book->getAuthor())
             ->setIllustrator($book->getIllustrator())
-            ->setIllustratorWebsite($book->getIllustratorWebsite())
             ->setPublished($book->getPublished())
             ->setSerie($book->getSerie())
             ->setNumber($book->getNumber())

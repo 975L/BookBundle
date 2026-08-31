@@ -1,6 +1,6 @@
 ---
 name: c975l-book-display-pages
-description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie and of a planche, their hero, their sections and the order they come in, the summary of anchors, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Strip:Card, Strip:Cards, Book:Books, Serie:Series, infinite, infiniteScroll, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_alternates, book_versions, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, strip_card, strip:card, book-confetti, book-rating, sass/_variables.scss, themes/book.css, block-thumbs, ui-block-thumb, ui.management_stylesheet, getManagementStylesheets, BundleStylesheetManagementProviderInterface, StylesheetProvider."
+description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie, of a planche and of a person the catalog credits, their hero, their sections and the order they come in, the summary of anchors, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, contributor_display, contributor_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Contributor:Hero, Contributor:Resume, Contributor:Contributor, Contributor:Contributors, Strip:Card, Strip:Cards, Book:Books, Serie:Series, infinite, infiniteScroll, displayMore, label.books_more, label.series_more, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_alternates, book_versions, contributor_path, contributor_url, contributor_edit_url, contributor_edit_urls, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, strip_card, strip:card, book-confetti, book-rating, sass/_variables.scss, themes/book.css, block-thumbs, ui-block-thumb, ui.management_stylesheet, getManagementStylesheets, BundleStylesheetManagementProviderInterface, StylesheetProvider."
 ---
 
 # c975L BookBundle — display pages
@@ -10,11 +10,11 @@ description: "Use this skill when working on the public pages of a catalog built
 **Package:** `c975l/book-bundle` · **Bundle:** `c975L\BookBundle\` · **Twig namespace:** `@c975LBook` · **Translation domain:** `book`
 
 **Key source paths** (relative to the package root):
-`src/Twig/BookSectionsExtension.php`, `src/Twig/BookEditUrlExtension.php`, `src/Twig/BookUrlExtension.php`, `src/Twig/BookTranslationExtension.php`, `src/Twig/BookVersionExtension.php`, `src/Controller/BookController.php`, `src/Controller/SerieController.php`, `src/Controller/StripController.php`, `templates/book/display.html.twig`, `templates/book/_section.html.twig`, `templates/book/index.html.twig`, `templates/serie/display.html.twig`, `templates/serie/index.html.twig`, `templates/strip/display.html.twig`, `templates/strip/card.html.twig`, `templates/strip/index.html.twig`, `templates/components/`, `sass/_variables.scss`, `sass/_book.scss`, `sass/block-thumbs.scss`, `src/Service/StylesheetProvider.php`, `scaffold/assets/styles/themes/book.css`
+`src/Twig/BookSectionsExtension.php`, `src/Twig/BookEditUrlExtension.php`, `src/Twig/BookUrlExtension.php`, `src/Twig/BookTranslationExtension.php`, `src/Twig/BookVersionExtension.php`, `src/Controller/BookController.php`, `src/Controller/SerieController.php`, `src/Controller/StripController.php`, `src/Controller/ContributorController.php`, `templates/book/display.html.twig`, `templates/book/_section.html.twig`, `templates/book/index.html.twig`, `templates/serie/display.html.twig`, `templates/serie/index.html.twig`, `templates/strip/display.html.twig`, `templates/strip/card.html.twig`, `templates/strip/index.html.twig`, `templates/contributor/display.html.twig`, `templates/contributor/index.html.twig`, `templates/components/`, `sass/_variables.scss`, `sass/_book.scss`, `sass/block-thumbs.scss`, `src/Service/StylesheetProvider.php`, `scaffold/assets/styles/themes/book.css`
 
 **Related skills:** `c975l-book-customization` and `c975l-book-lifecycle` in this same bundle, and `c975l-blocks`, `c975l-media`, `c975l-ui-assets` in UiBundle beside it.
 
-## The six pages
+## The pages
 
 | Route | URL | Answers |
 | --- | --- | --- |
@@ -22,16 +22,20 @@ description: "Use this skill when working on the public pages of a catalog built
 | `book_display` | `/livre/{slug}` | one book — 410 for a trashed one, 301 from its number |
 | `serie_index` | `/series` | the series telling books, growing on scroll |
 | `serie_display` | `/series/{slug}` or `/strips/{slug}` | one serie, under the index listing it |
+| `contributor_index` | `/auteurs` | the people the catalog credits, growing on scroll |
+| `contributor_display` | `/auteur/{slug}` | one person — what they signed, books then series |
 | `strip_index` | `/strips` | the series telling planches, not the planches, growing on scroll |
 | `strip_display` | `/strip/{slug}` | one planche |
 | `book_shortcut` / `strip_shortcut` | `/b3`, `/s3` | 301 to the slug |
 | `strip_card` | `/strip-card/{slug}` | one planche's card alone, square, `noindex` — photographed as its share image |
 
 Every prefix is a ConfigBundle setting (`book-route-books`, `book-route-book`, `book-route-series`,
-`book-route-strips`, `book-route-strip`, `book-route-book-shortcut`, `book-route-strip-shortcut`) — see
+`book-route-contributors`, `book-route-contributor`, `book-route-strips`, `book-route-strip`,
+`book-route-book-shortcut`, `book-route-strip-shortcut`) — see
 `c975l-book-customization`. **A prefix emptied means the site serves that page itself**, and the route
 answers nothing: anything linking to it must ask `BookPublicUrlResolver::resolvePath()` first, which
-returns null rather than throwing. `book_path()`, `serie_path()` and `serie_url()` already do.
+returns null rather than throwing. `book_path()`, `serie_path()`, `serie_url()`, `contributor_path()` and
+`contributor_url()` already do.
 
 `serie_display` is one route for both families: a serie's own `SerieKind` decides which index a serie
 sits under, and one asked under the other segment answers a 301 to its own.
@@ -104,6 +108,9 @@ They all live in `templates/components/` and are overridden in
 | `<twig:c975LBook:Book:Shops>` | the bookshops, the site's own shop first and in the site colour |
 | `<twig:c975LBook:Book:Informations>` | the framed civil status — serie, editions, languages, versions |
 | `<twig:c975LBook:Book:Card>` | a book in a listing: cover in portrait, summary, language — `:compact="true"` prints it at a thumbnail's width, without its summary |
+| `<twig:c975LBook:Contributor:Hero>` | a person's opening — portrait, backdrop, name, what they signed in figures |
+| `<twig:c975LBook:Contributor:Resume>` | the sentences they are introduced with |
+| `<twig:c975LBook:Contributor:Contributor>` | a person in a listing: portrait squared, name, the whole card leading to their page |
 | `<twig:c975LBook:Strip:Card>` | a planche, the whole card being the link |
 | `<twig:c975LBook:Strip:Characters>` | who speaks, as chips narrowing the serie's listing |
 | `<twig:c975LBook:Strip:Previous>` / `<twig:c975LBook:Strip:Next>` | the arrows laid over the planche |
@@ -133,14 +140,22 @@ what a crawler follows and what happens without javascript or after a failed fet
 `infinite` is what marks the grid the cards land in (`data-infiniteScroll-target="list"`), and it is the
 attribute the controller reads the fetched page through: **only the listing that grows may carry it** —
 a search's results sitting on the same page would otherwise answer in its place. `Book:Books`,
-`Serie:Series` and `Strip:Cards` take it; a serie's own page grows its planches the same way
-(`serie/display.html.twig`).
+`Serie:Series`, `Contributor:Contributors` and `Strip:Cards` take it; a serie's own page grows its planches
+the same way (`serie/display.html.twig`).
+
+`displayMore` is the other prop those three take: it prints a last tile leading to the whole listing. Pass it
+as `:displayMore="true"` — a block interpolates its checkbox as `"1"`/`""` where a page writes `true`/`false`
+spelled out, so the component brings the value down with `|to_bool` rather than comparing it to a string. The
+tile's two words come from the `book` domain, **`label.books_more`/`label.series_more`** for the title and the
+short `label.books`/`label.series` for the button: a site whose catalog is not called "books" overrides those
+keys in its own `translations/book.*.xlf` instead of overriding the component.
 
 The count is what is **on screen**, `{{ books|length }}`, because the controller writes it back after each
 append from the list it holds — a figure counting the pages behind it would jump backwards.
 
-The page itself comes from `BookService`, `SerieService` and `StripService`, which paginate with UiBundle's
-`Paginator` (`c975L\UiBundle\Model\Pagination`, 10 books or series per page, 24 planches). The route and
+The page itself comes from `BookService`, `SerieService`, `ContributorService` and `StripService`, which
+paginate with UiBundle's `Paginator` (`c975L\UiBundle\Model\Pagination`, 10 books or series per page,
+24 planches). The route and
 the query the next page's url is rebuilt from ride on it — `pagination.route`, `pagination.query({...})` —
 so a filter or a search the visitor came with survives the jump.
 
@@ -155,6 +170,7 @@ so a filter or a search the visitor came with survives the jump.
 {{ book_language_label(book.language) }}  {# the endonym, never translated #}
 {{ book_versions(book) }}                 {# the other versions, both ends of the chain #}
 {{ book_alternates(book) }}               {# the hreflang group, absolute urls #}
+{{ contributor_path(person) }}            {# a person's page, null where the site serves that family itself #}
 ```
 
 `book_cover()` falls back on the first **image** and not the first file — a catalog storing a recording
@@ -163,10 +179,11 @@ version of the same text.
 
 ## The editor's pencil
 
-`book_edit_urls(book)`, `serie_edit_urls(serie)` and `strip_edit_urls(strip)` (`BookEditUrlExtension`) map
-a section's **anchor** to the property it is written in; `book_edit_url()`, `serie_edit_url()` and
-`strip_edit_url()` answer one. The overlay itself is UiBundle's (`data-block-edit-url`, `focusField`) —
-nothing of it is written here beyond that map. A section written on another screen than the entity's own —
+`book_edit_urls(book)`, `serie_edit_urls(serie)`, `contributor_edit_urls(contributor)` and
+`strip_edit_urls(strip)` (`BookEditUrlExtension`) map a section's **anchor** to the property it is written
+in; `book_edit_url()`, `serie_edit_url()`, `contributor_edit_url()` and `strip_edit_url()` answer one. The
+overlay itself is UiBundle's (`data-block-edit-url`, `focusField`) — nothing of it is written here beyond
+that map. A section written on another screen than the entity's own —
 a serie's list of books, which each book carries itself — is deliberately left **without** a pencil rather
 than given one leading nowhere.
 

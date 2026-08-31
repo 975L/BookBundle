@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
 use c975L\ConfigBundle\Management\GuidedProjectProviderInterface;
@@ -18,8 +19,8 @@ use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 
-// This bundle's guided projects, running the 6000 block GuidedProjectProviderInterface reserves them - the same docblock stating every other bundle's, so a range is read there rather than recopied here. They follow the order a catalog is actually built in - the serie holds the books, so it comes first. Only the opening step of each carries an url: from there the parcours walks the screen the user has been sent to, highlighting the button or the field they are meant to use next (see ConfigBundle's assets/js/guided-project.js)
-// A field is pointed at through the widget the user actually sees: EasyAdmin turns a choice or an association into a TomSelect (the original <select> being clipped away by "ts-hidden-accessible") and TrixEditorType hides its textarea behind "d-none", so an "#Entity_property" step on those would outline something nobody can see. A collection prints no field id at all, and is marked on its own row instead (see the "data-*" markers of the CRUD controllers)
+// This bundle's guided projects, running the 6000 block GuidedProjectProviderInterface reserves them - the same docblock stating every other bundle's, so a range is read there rather than recopied here. They follow the order a catalog is actually built in - the people are credited by the series and the books, the serie holds the books, so each comes before what names it. Only the opening step of each carries an url: from there the parcours walks the screen the user has been sent to, highlighting the button or the field they are meant to use next (see ConfigBundle's assets/js/guided-project.js)
+// A field is pointed at through the widget the user actually sees: EasyAdmin turns a choice or an association into a TomSelect (the original <select> being clipped away by "ts-hidden-accessible"), and an association calling autocomplete() is rendered by CrudAutocompleteType, which prints its select under an inner field named "autocomplete" - hence the "_autocomplete" suffix those steps carry, an "#Entity_property" on one of them matching nothing at all and TrixEditorType hides its textarea behind "d-none", so an "#Entity_property" step on those would outline something nobody can see. A collection prints no field id at all, and is marked on its own row instead (see the "data-*" markers of the CRUD controllers)
 class BookGuidedProjectProvider implements GuidedProjectProviderInterface
 {
     public function __construct(
@@ -31,13 +32,73 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
     public function getGuidedProjects(): array
     {
         return [
+            $this->contributorCreationProject(),
             $this->serieCreationProject(),
             $this->bookCreationProject(),
+            $this->mediaMoveProject(),
             $this->bookCompositionProject(),
+            $this->sortingProject(),
             $this->stripCreationProject(),
+            $this->duplicationProject(),
             $this->versionPublicationProject(),
             $this->hiddenProject(),
             $this->trashProject(),
+            $this->exportProject(),
+        ];
+    }
+
+    // The people come before everything else: a serie as much as a book credits one by picking them from this list, and creating them the other way round means going back to edit what already names them
+    private function contributorCreationProject(): array
+    {
+        return [
+            'slug' => 'book-contributor-creation',
+            'label' => 'label.guided_project_book_contributor_creation',
+            'description' => 'description.guided_project_book_contributor_creation',
+            'translation_domain' => 'book',
+            'order' => 6005,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_contributor_creation_open',
+                    'description' => 'description.guided_step_book_contributor_creation_open',
+                    'url' => $this->contributorIndexUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_contributor_creation_new',
+                    'description' => 'description.guided_step_book_contributor_creation_new',
+                    'highlight' => '.action-new',
+                ],
+                [
+                    'label' => 'label.guided_step_book_contributor_creation_name',
+                    'description' => 'description.guided_step_book_contributor_creation_name',
+                    'highlight' => '#Contributor_name',
+                ],
+                [
+                    // The Trix editor, the textarea carrying the id being hidden behind it
+                    'label' => 'label.guided_step_book_contributor_creation_summary',
+                    'description' => 'description.guided_step_book_contributor_creation_summary',
+                    'highlight' => 'trix-editor[input="Contributor_summary"]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_contributor_creation_website',
+                    'description' => 'description.guided_step_book_contributor_creation_website',
+                    'highlight' => '#Contributor_website',
+                ],
+                [
+                    // The marker laid on the row by ContributorCrudController, a collection printing no field id
+                    'label' => 'label.guided_step_book_contributor_creation_portrait',
+                    'description' => 'description.guided_step_book_contributor_creation_portrait',
+                    'highlight' => '[data-contributor-portraits]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_contributor_creation_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_contributor_creation_done',
+                    'description' => 'description.guided_step_book_contributor_creation_done',
+                ],
+            ],
         ];
     }
 
@@ -78,6 +139,12 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_serie_creation_summary',
                     'description' => 'description.guided_step_book_serie_creation_summary',
                     'highlight' => 'trix-editor[input="Serie_summary"]',
+                ],
+                [
+                    // The TomSelect widget of the autocompleted association, whose select CrudAutocompleteType names after its own inner field (see the "_autocomplete" suffix)
+                    'label' => 'label.guided_step_book_serie_creation_author',
+                    'description' => 'description.guided_step_book_serie_creation_author',
+                    'highlight' => '#Serie_author_autocomplete + .ts-wrapper',
                 ],
                 [
                     'label' => 'label.guided_step_book_serie_creation_covers',
@@ -125,12 +192,18 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                 [
                     'label' => 'label.guided_step_book_creation_serie',
                     'description' => 'description.guided_step_book_creation_serie',
-                    'highlight' => '#Book_serie + .ts-wrapper',
+                    'highlight' => '#Book_serie_autocomplete + .ts-wrapper',
                 ],
                 [
                     'label' => 'label.guided_step_book_creation_published',
                     'description' => 'description.guided_step_book_creation_published',
                     'highlight' => '#Book_published',
+                ],
+                [
+                    // Same autocompleted association as the serie's, left empty for a book crediting whoever its serie does (see Book::getEffectiveAuthor())
+                    'label' => 'label.guided_step_book_creation_author',
+                    'description' => 'description.guided_step_book_creation_author',
+                    'highlight' => '#Book_author_autocomplete + .ts-wrapper',
                 ],
                 [
                     // The second tab of the form, an ISBN belonging to an edition and no longer to the book itself (see BookCrudController)
@@ -157,6 +230,52 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                 [
                     'label' => 'label.guided_step_book_creation_done',
                     'description' => 'description.guided_step_book_creation_done',
+                ],
+            ],
+        ];
+    }
+
+    // A file lands where it was dropped, and moving it afterwards is a drag from one collection to the other rather than a delete and a new upload - the markers carrying that gesture are laid by BookMediaMoveRowAttrBuilder, which lays nothing on a book with no id yet, so the parcours edits an existing book rather than creating one
+    private function mediaMoveProject(): array
+    {
+        return [
+            'slug' => 'book-media-move',
+            'label' => 'label.guided_project_book_media_move',
+            'description' => 'description.guided_project_book_media_move',
+            'translation_domain' => 'book',
+            'order' => 6025,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_media_move_open',
+                    'description' => 'description.guided_step_book_media_move_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    // An existing book, the markers of the gesture being laid on its files only once it has an id (see BookMediaMoveRowAttrBuilder::build())
+                    'label' => 'label.guided_step_book_media_move_edit',
+                    'description' => 'description.guided_step_book_media_move_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    'label' => 'label.guided_step_book_media_move_tab',
+                    'description' => 'description.guided_step_book_media_move_tab',
+                    'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
+                ],
+                [
+                    'label' => 'label.guided_step_book_media_move_extracts',
+                    'description' => 'description.guided_step_book_media_move_extracts',
+                    'highlight' => '[data-ui-move-target="extract"]',
+                ],
+                [
+                    // The grip UiBundle's ea-sortable.js lays on the header bar of each row
+                    'label' => 'label.guided_step_book_media_move_handle',
+                    'description' => 'description.guided_step_book_media_move_handle',
+                    'highlight' => '[data-ui-move-target="extract"] .ui-sort-handle',
+                ],
+                [
+                    'label' => 'label.guided_step_book_media_move_done',
+                    'description' => 'description.guided_step_book_media_move_done',
                 ],
             ],
         ];
@@ -207,6 +326,42 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
         ];
     }
 
+    // The order the public pages follow is laid by dragging the rows here, and nothing on the screen says so - only the series and the people are sorted this way, their indexes being the two declaring the reorder markers (see serie_crud_index.html.twig and contributor_crud_index.html.twig)
+    private function sortingProject(): array
+    {
+        return [
+            'slug' => 'book-sorting',
+            'label' => 'label.guided_project_book_sorting',
+            'description' => 'description.guided_project_book_sorting',
+            'translation_domain' => 'book',
+            'order' => 6035,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_sorting_open',
+                    'description' => 'description.guided_step_book_sorting_open',
+                    'url' => $this->serieIndexUrl(),
+                ],
+                [
+                    // EasyAdmin keys every index cell by the property it prints (see its crud/index.html.twig)
+                    'label' => 'label.guided_step_book_sorting_column',
+                    'description' => 'description.guided_step_book_sorting_column',
+                    'highlight' => 'td[data-column="position"]',
+                ],
+                [
+                    // The grip UiBundle's ea-index-sort.js lays in that cell at mount time
+                    'label' => 'label.guided_step_book_sorting_handle',
+                    'description' => 'description.guided_step_book_sorting_handle',
+                    'highlight' => 'td[data-column="position"] .ui-sort-handle',
+                ],
+                [
+                    'label' => 'label.guided_step_book_sorting_done',
+                    'description' => 'description.guided_step_book_sorting_done',
+                ],
+            ],
+        ];
+    }
+
     // A strip is read inside the serie that tells it, and numbered within it: the parcours walks what places it there, then the drawing itself
     private function stripCreationProject(): array
     {
@@ -236,7 +391,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                 [
                     'label' => 'label.guided_step_book_strip_creation_serie',
                     'description' => 'description.guided_step_book_strip_creation_serie',
-                    'highlight' => '#Strip_serie + .ts-wrapper',
+                    'highlight' => '#Strip_serie_autocomplete + .ts-wrapper',
                 ],
                 [
                     'label' => 'label.guided_step_book_strip_creation_number',
@@ -266,6 +421,45 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                 [
                     'label' => 'label.guided_step_book_strip_creation_done',
                     'description' => 'description.guided_step_book_strip_creation_done',
+                ],
+            ],
+        ];
+    }
+
+    // A book close to another is copied rather than retyped: the copy carries everything that belongs to it, is saved at once and opens on its own edit screen, where it is waiting to be renamed (see BookDuplicator)
+    private function duplicationProject(): array
+    {
+        return [
+            'slug' => 'book-duplication',
+            'label' => 'label.guided_project_book_duplication',
+            'description' => 'description.guided_project_book_duplication',
+            'translation_domain' => 'book',
+            'order' => 6045,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_duplication_open',
+                    'description' => 'description.guided_step_book_duplication_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    // The button asks for a confirmation, and lands the user on the edit screen of the copy
+                    'label' => 'label.guided_step_book_duplication_duplicate',
+                    'description' => 'description.guided_step_book_duplication_duplicate',
+                    'highlight' => '.action-duplicate',
+                ],
+                [
+                    'label' => 'label.guided_step_book_duplication_title',
+                    'description' => 'description.guided_step_book_duplication_title',
+                    'highlight' => '#Book_title',
+                ],
+                [
+                    'label' => 'label.guided_step_book_duplication_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_duplication_done',
+                    'description' => 'description.guided_step_book_duplication_done',
                 ],
             ],
         ];
@@ -400,10 +594,69 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
         ];
     }
 
+    // The catalog leaves the site as a file, which is the admin's business and not the editor's: a raw dump of the whole table is not what composing a catalog needs, and the three exports sit a role above everything else here (see TrashableCrudTrait::configureActions)
+    private function exportProject(): array
+    {
+        return [
+            'slug' => 'book-export',
+            'label' => 'label.guided_project_book_export',
+            'description' => 'description.guided_project_book_export',
+            'translation_domain' => 'book',
+            'order' => 6070,
+            'role' => $this->adminRoleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_export_open',
+                    'description' => 'description.guided_step_book_export_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    // The button of the group, its three formats living in the menu it unfolds
+                    'label' => 'label.guided_step_book_export_group',
+                    'description' => 'description.guided_step_book_export_group',
+                    'highlight' => '.action-group .dropdown-toggle',
+                ],
+                [
+                    // Inside the menu the step before has just unfolded
+                    'label' => 'label.guided_step_book_export_format',
+                    'description' => 'description.guided_step_book_export_format',
+                    'highlight' => '.action-exportCsv',
+                ],
+                [
+                    // The header box, the row ones being numbered by their rank on the page and no stable target for a step
+                    'label' => 'label.guided_step_book_export_select',
+                    'description' => 'description.guided_step_book_export_select',
+                    'highlight' => '#form-batch-checkbox-all',
+                ],
+                [
+                    // The batch bar leaves its "d-none" only once a row is ticked, which the step before is what does
+                    'label' => 'label.guided_step_book_export_selection',
+                    'description' => 'description.guided_step_book_export_selection',
+                    'highlight' => '.action-exportSelection',
+                ],
+                [
+                    'label' => 'label.guided_step_book_export_done',
+                    'description' => 'description.guided_step_book_export_done',
+                ],
+            ],
+        ];
+    }
+
     // The role every catalog screen sits behind, the same ConfigBundle entry its controllers read (see BookCrudController) - a parcours walking screens the user can't open reads as a broken one
     private function roleNeeded(): string
     {
         return (string) $this->configService->get('site-role-editor');
+    }
+
+    private function contributorIndexUrl(): string
+    {
+        return $this->indexUrl(ContributorCrudController::class);
+    }
+
+    // The bar the exports sit behind, a role above everything else on these screens (see TrashableCrudTrait::configureActions)
+    private function adminRoleNeeded(): string
+    {
+        return (string) $this->configService->get('site-role-admin');
     }
 
     private function serieIndexUrl(): string

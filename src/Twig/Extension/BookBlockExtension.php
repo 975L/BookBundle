@@ -10,6 +10,7 @@
 namespace c975L\BookBundle\Twig\Extension;
 
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\BookBundle\Service\SerieServiceInterface;
 use c975L\BookBundle\Service\StripServiceInterface;
 use Twig\Attribute\AsTwigFunction;
@@ -18,6 +19,7 @@ class BookBlockExtension
 {
     public function __construct(
         private readonly BookServiceInterface $bookService,
+        private readonly ContributorServiceInterface $contributorService,
         private readonly SerieServiceInterface $serieService,
         private readonly StripServiceInterface $stripService,
     ) {
@@ -33,6 +35,12 @@ class BookBlockExtension
     public function getBooks(?int $max = null): array
     {
         return $this->bookService->findAllPublished($max);
+    }
+
+    #[AsTwigFunction('book_block_contributors')]
+    public function getContributors(?int $max = null): array
+    {
+        return array_slice($this->contributorService->findCredited(), 0, $max ?? PHP_INT_MAX);
     }
 
     #[AsTwigFunction('book_block_to_be_published')]

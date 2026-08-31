@@ -35,8 +35,9 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\Column(length: 100)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $author = null;
+    // Nullable where the column was not: a book is often recorded before the person signing it has a page of their own, and the back office would refuse the save
+    #[ORM\ManyToOne(targetEntity: Contributor::class, inversedBy: 'authoredBooks')]
+    private ?Contributor $author = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $published = null;
@@ -47,20 +48,14 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $summary = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $illustrator = null;
+    #[ORM\ManyToOne(targetEntity: Contributor::class, inversedBy: 'illustratedBooks')]
+    private ?Contributor $illustrator = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $creation = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $modification = null;
-
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $authorWebsite = null;
-
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $illustratorWebsite = null;
 
     #[ORM\ManyToOne(targetEntity: Serie::class, inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: true)]
@@ -169,12 +164,12 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getAuthor(): ?string
+    public function getAuthor(): ?Contributor
     {
         return $this->author;
     }
 
-    public function setAuthor(string $author): static
+    public function setAuthor(?Contributor $author): static
     {
         $this->author = $author;
 
@@ -217,12 +212,12 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getIllustrator(): ?string
+    public function getIllustrator(): ?Contributor
     {
         return $this->illustrator;
     }
 
-    public function setIllustrator(?string $illustrator): static
+    public function setIllustrator(?Contributor $illustrator): static
     {
         $this->illustrator = $illustrator;
 
@@ -249,30 +244,6 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     public function setModification(\DateTimeInterface $modification): static
     {
         $this->modification = $modification;
-
-        return $this;
-    }
-
-    public function getAuthorWebsite(): ?string
-    {
-        return $this->authorWebsite;
-    }
-
-    public function setAuthorWebsite(?string $authorWebsite): static
-    {
-        $this->authorWebsite = $authorWebsite;
-
-        return $this;
-    }
-
-    public function getIllustratorWebsite(): ?string
-    {
-        return $this->illustratorWebsite;
-    }
-
-    public function setIllustratorWebsite(?string $illustratorWebsite): static
-    {
-        $this->illustratorWebsite = $illustratorWebsite;
 
         return $this;
     }
@@ -866,23 +837,24 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getEffectiveAuthor(): ?string
+    public function getEffectiveAuthor(): ?Contributor
     {
         return $this->author ?? $this->serie?->getAuthor();
     }
 
-    public function getEffectiveIllustrator(): ?string
+    public function getEffectiveIllustrator(): ?Contributor
     {
         return $this->illustrator ?? $this->serie?->getIllustrator();
     }
 
+    // Kept though the column is gone: the address now belongs to the person, and a template printing it stays the one it was
     public function getEffectiveAuthorWebsite(): ?string
     {
-        return $this->authorWebsite ?? $this->serie?->getAuthorWebsite();
+        return $this->getEffectiveAuthor()?->getWebsite();
     }
 
     public function getEffectiveIllustratorWebsite(): ?string
     {
-        return $this->illustratorWebsite ?? $this->serie?->getIllustratorWebsite();
+        return $this->getEffectiveIllustrator()?->getWebsite();
     }
 }

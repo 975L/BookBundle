@@ -23,7 +23,7 @@
         <h1 class="book-hero__title">{{ serie.title }}</h1>
 
         <p class="book-hero__meta">
-            {{ serie.author }}{% if serie.illustrator %} - {{ serie.illustrator }}{% endif %}
+            {{ serie.author }}{% if serie.illustrator and (serie.author is null or serie.illustrator.id != serie.author.id) %} - {{ serie.illustrator }}{% endif %}
             {% if serie.books|length %} - {{ serie.books|length }} {{ 'label.books'|trans({}, 'book', serie.language)|lower }}{% endif %}
         </p>
 

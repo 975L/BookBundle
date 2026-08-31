@@ -50,17 +50,12 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $language = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $author = null;
+    // The two people a serie credits, which every book it holds inherits unless it names its own (see Book::getEffectiveAuthor())
+    #[ORM\ManyToOne(targetEntity: Contributor::class, inversedBy: 'authoredSeries')]
+    private ?Contributor $author = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $authorWebsite = null;
-
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $illustrator = null;
-
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $illustratorWebsite = null;
+    #[ORM\ManyToOne(targetEntity: Contributor::class, inversedBy: 'illustratedSeries')]
+    private ?Contributor $illustrator = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $creation = null;
@@ -178,50 +173,26 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getAuthor(): ?string
+    public function getAuthor(): ?Contributor
     {
         return $this->author;
     }
 
-    public function setAuthor(?string $author): static
+    public function setAuthor(?Contributor $author): static
     {
         $this->author = $author;
 
         return $this;
     }
 
-    public function getAuthorWebsite(): ?string
-    {
-        return $this->authorWebsite;
-    }
-
-    public function setAuthorWebsite(?string $authorWebsite): static
-    {
-        $this->authorWebsite = $authorWebsite;
-
-        return $this;
-    }
-
-    public function getIllustrator(): ?string
+    public function getIllustrator(): ?Contributor
     {
         return $this->illustrator;
     }
 
-    public function setIllustrator(?string $illustrator): static
+    public function setIllustrator(?Contributor $illustrator): static
     {
         $this->illustrator = $illustrator;
-
-        return $this;
-    }
-
-    public function getIllustratorWebsite(): ?string
-    {
-        return $this->illustratorWebsite;
-    }
-
-    public function setIllustratorWebsite(?string $illustratorWebsite): static
-    {
-        $this->illustratorWebsite = $illustratorWebsite;
 
         return $this;
     }

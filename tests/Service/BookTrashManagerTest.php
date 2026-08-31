@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
@@ -48,6 +49,7 @@ class BookTrashManagerTest extends TestCase
         'book_display' => '/livre/',
         'serie_display' => '/serie/',
         'strip_display' => '/planche/',
+        'contributor_display' => '/auteur/',
     ];
 
     public function testMovingToTheTrashKeepsTheRowAndOnlyTakesItOffTheSite(): void
@@ -153,6 +155,18 @@ class BookTrashManagerTest extends TestCase
         $this->manager()->moveToTrash($this->bookWithId(42));
 
         $this->assertSame([], $this->ratingsDeletedFor);
+    }
+
+    // A person is the fourth owner type the manager knows, and their key is theirs alone - the votes of a book they signed are the book's
+    public function testRemovingAPersonForGoodDropsTheirOwnRatingsAndReviews(): void
+    {
+        $contributor = new Contributor()->setName('Tim Loval')->setSlug('tim-loval');
+        new \ReflectionProperty(Contributor::class, 'id')->setValue($contributor, 8);
+
+        $this->manager()->deletePermanently($contributor, 'contributor_display');
+
+        $this->assertSame(['contributor#8'], $this->ratingsDeletedFor);
+        $this->assertSame(['contributor#8'], $this->reviewsDeletedFor);
     }
 
     // The three families this bundle serves are rated the same way, so a row gone for good takes its votes with it whichever one it belongs to - a serie's own key, never another family's

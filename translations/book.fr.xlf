@@ -54,17 +54,37 @@
                 <source>description.guided_project_book_composition</source>
                 <target>Au-delà de ses propres champs, une page de livre se compose en blocks : bandeau, texte, galerie, appel à l'action.</target>
             </trans-unit>
+            <trans-unit id="CP6tvUt">
+                <source>description.guided_project_book_contributor_creation</source>
+                <target>Une personne est une ligne du catalogue, avec sa propre page qui liste ce qu'elle a signé. Créez-la d'abord : une série et un livre la créditent ensuite en la choisissant dans cette liste.</target>
+            </trans-unit>
             <trans-unit id="5r9vpv2">
                 <source>description.guided_project_book_creation</source>
                 <target>Un livre, sa série, sa date de parution et sa couverture : ce qu'il faut pour que sa page existe.</target>
+            </trans-unit>
+            <trans-unit id="IVy93Pr">
+                <source>description.guided_project_book_duplication</source>
+                <target>Un livre proche d'un autre — même série, même forme, mêmes liens — se copie en un clic, puis se renomme. Le même bouton est sur les séries, les planches et les personnes.</target>
+            </trans-unit>
+            <trans-unit id="jlCH.8q">
+                <source>description.guided_project_book_export</source>
+                <target>Le catalogue sort du site en SQL, CSV ou JSON — une sauvegarde, un déménagement vers un autre site, une lecture dans un tableur. Réservé à l'administrateur : c'est toute la table qui sort.</target>
             </trans-unit>
             <trans-unit id="d0sG8Yc">
                 <source>description.guided_project_book_hidden</source>
                 <target>Un livre masqué reste au catalogue avec ses fichiers, mais aucune lecture publique ne le montre plus.</target>
             </trans-unit>
+            <trans-unit id="FJkrFzq">
+                <source>description.guided_project_book_media_move</source>
+                <target>Un fichier déposé dans la mauvaise liste se glisse dans la bonne, en gardant le fichier lui-même — inutile de le supprimer et de le redéposer.</target>
+            </trans-unit>
             <trans-unit id="vfRiQY8">
                 <source>description.guided_project_book_serie_creation</source>
                 <target>Une série regroupe les livres ou les planches d'une même collection. La créer d'abord évite de revenir sur chaque livre pour l'y rattacher.</target>
+            </trans-unit>
+            <trans-unit id="MDctu1g">
+                <source>description.guided_project_book_sorting</source>
+                <target>Les séries et les personnes s'affichent sur le site dans l'ordre fixé ici en glissant leurs lignes — rien à l'écran ne le dit, et trier une colonne ne trie que ce que vous regardez.</target>
             </trans-unit>
             <trans-unit id="0ebzwCX">
                 <source>description.guided_project_book_strip_creation</source>
@@ -97,6 +117,38 @@
             <trans-unit id=".GfS8Qj">
                 <source>description.guided_step_book_composition_tab</source>
                 <target>Le dernier onglet du formulaire porte la composition de la page.</target>
+            </trans-unit>
+            <trans-unit id="YJAmTzg">
+                <source>description.guided_step_book_contributor_creation_done</source>
+                <target>Sa page est en ligne, encore vide de crédits. Une série ou un livre la choisit désormais dans ses champs « Auteur » et « Illustrateur », et s'y affiche de lui-même.</target>
+            </trans-unit>
+            <trans-unit id="ZZSrxfd">
+                <source>description.guided_step_book_contributor_creation_name</source>
+                <target>Le nom affiché sur sa page et sous chaque livre qu'elle a signé — l'adresse de cette page en découle.</target>
+            </trans-unit>
+            <trans-unit id="QWKuofP">
+                <source>description.guided_step_book_contributor_creation_new</source>
+                <target>Le bouton ouvre le formulaire d'une nouvelle personne.</target>
+            </trans-unit>
+            <trans-unit id="lHJ5XhH">
+                <source>description.guided_step_book_contributor_creation_open</source>
+                <target>L'écran qui liste toutes les personnes créditées par le catalogue.</target>
+            </trans-unit>
+            <trans-unit id="TabWxmg">
+                <source>description.guided_step_book_contributor_creation_portrait</source>
+                <target>Une seule image, affichée en tête de sa page — déposer un autre fichier sur la ligne déjà posée la remplace.</target>
+            </trans-unit>
+            <trans-unit id="Tot.bTt">
+                <source>description.guided_step_book_contributor_creation_summary</source>
+                <target>Les quelques lignes qui ouvrent sa page, au-dessus de ce qu'elle a signé.</target>
+            </trans-unit>
+            <trans-unit id="3W3CD9A">
+                <source>description.guided_step_book_contributor_creation_website</source>
+                <target>Sa propre adresse, vers laquelle sa page renvoie — un livre qui la crédite ne la porte plus.</target>
+            </trans-unit>
+            <trans-unit id="jpNzYRk">
+                <source>description.guided_step_book_creation_author</source>
+                <target>La même liste que celle de la série. Laissé vide, un livre d'une série crédite qui la série crédite — ne le renseignez que pour un livre signé par quelqu'un d'autre.</target>
             </trans-unit>
             <trans-unit id="rlVv156">
                 <source>description.guided_step_book_creation_done</source>
@@ -134,6 +186,46 @@
                 <source>description.guided_step_book_creation_title</source>
                 <target>Le titre remplit l'identifiant d'url juste en dessous, qui est l'adresse de la page du livre.</target>
             </trans-unit>
+            <trans-unit id="MsQoDAS">
+                <source>description.guided_step_book_duplication_done</source>
+                <target>Plus rien ne la lie à l'original : modifier l'un laisse l'autre intact.</target>
+            </trans-unit>
+            <trans-unit id="Pu.1HXm">
+                <source>description.guided_step_book_duplication_duplicate</source>
+                <target>Confirmez, et la copie est enregistrée aussitôt avec ses fichiers, ses liens et ses blocs, puis s'ouvre sur son propre écran d'édition. Les livres d'une série ne sont jamais copiés avec elle : dupliquer l'un est une décision à part.</target>
+            </trans-unit>
+            <trans-unit id="NmG1rVc">
+                <source>description.guided_step_book_duplication_open</source>
+                <target>Le catalogue, où se choisit le livre à copier.</target>
+            </trans-unit>
+            <trans-unit id="5z2N2SP">
+                <source>description.guided_step_book_duplication_title</source>
+                <target>Le titre et l'adresse arrivent marqués comme copie, pour ne pas heurter l'original — les deux sont à vous de réécrire.</target>
+            </trans-unit>
+            <trans-unit id="_tWJalT">
+                <source>description.guided_step_book_export_done</source>
+                <target>Un JSON se réinjecte par l'import d'un autre site, qui lit les mêmes clés que celui-ci a écrites.</target>
+            </trans-unit>
+            <trans-unit id="bpp2yWI">
+                <source>description.guided_step_book_export_format</source>
+                <target>Le CSV s'ouvre dans un tableur, le JSON se relit par un import, le SQL rejoue la table telle quelle. Le fichier se télécharge aussitôt.</target>
+            </trans-unit>
+            <trans-unit id="5u7hs_M">
+                <source>description.guided_step_book_export_group</source>
+                <target>Le bouton réunit les trois formats dans un menu.</target>
+            </trans-unit>
+            <trans-unit id="H48OCeo">
+                <source>description.guided_step_book_export_open</source>
+                <target>Les mêmes boutons sont sur les séries, les planches et les personnes, chacun exportant sa propre table.</target>
+            </trans-unit>
+            <trans-unit id="73hHOCy">
+                <source>description.guided_step_book_export_select</source>
+                <target>Pour n'emporter que quelques livres plutôt que toute la table, cochez-les — la case de l'en-tête prend la page d'un coup.</target>
+            </trans-unit>
+            <trans-unit id="EYOLNre">
+                <source>description.guided_step_book_export_selection</source>
+                <target>La barre apparaît dès qu'une ligne est cochée, et n'emporte que ce qui est coché.</target>
+            </trans-unit>
             <trans-unit id="xivBkbL">
                 <source>description.guided_step_book_hidden_done</source>
                 <target>Sa page répond 404 et rien n'a été retiré : ce n'est pas la corbeille.</target>
@@ -153,6 +245,34 @@
             <trans-unit id="nlryHN4">
                 <source>description.guided_step_book_hidden_switch</source>
                 <target>Un clic retire le livre du site, un second l'y remet, sans rien d'autre à enregistrer.</target>
+            </trans-unit>
+            <trans-unit id="xJJ7KLd">
+                <source>description.guided_step_book_media_move_done</source>
+                <target>Il reste dans son propre livre : une liste appartenant à un autre livre n'est pas une cible, quoi que dise le glissement.</target>
+            </trans-unit>
+            <trans-unit id="gn8tH8A">
+                <source>description.guided_step_book_media_move_edit</source>
+                <target>Le geste n'est proposé que sur un livre déjà enregistré : un livre en cours de création ne porte encore aucun fichier à déplacer.</target>
+            </trans-unit>
+            <trans-unit id="4nuUM0R">
+                <source>description.guided_step_book_media_move_extracts</source>
+                <target>La liste qu'un fichier quitte ou rejoint — le feuilletage juste au-dessus accepte les mêmes fichiers, ce qui rend l'échange possible.</target>
+            </trans-unit>
+            <trans-unit id="MDyaxOd">
+                <source>description.guided_step_book_media_move_handle</source>
+                <target>Glissez-la sur l'autre liste et lâchez : la page se recharge, le fichier ayant changé de liste sans quitter le livre.</target>
+            </trans-unit>
+            <trans-unit id="Dg0w7Ly">
+                <source>description.guided_step_book_media_move_open</source>
+                <target>Le catalogue, où se choisit le livre qui porte le fichier.</target>
+            </trans-unit>
+            <trans-unit id="WK1Sl_R">
+                <source>description.guided_step_book_media_move_tab</source>
+                <target>L'onglet qui porte les fichiers du livre : le feuilletage, les extraits, les audios et les vidéos.</target>
+            </trans-unit>
+            <trans-unit id="7HxJV3F">
+                <source>description.guided_step_book_serie_creation_author</source>
+                <target>Saisissez quelques lettres et choisissez-le parmi les personnes du catalogue — chaque livre de la série en hérite, sauf s'il nomme le sien. L'illustrateur se crédite juste en dessous, de la même façon.</target>
             </trans-unit>
             <trans-unit id="nhaVq7U">
                 <source>description.guided_step_book_serie_creation_covers</source>
@@ -181,6 +301,22 @@
             <trans-unit id="5iS67WA">
                 <source>description.guided_step_book_serie_creation_title</source>
                 <target>Le titre est repris sur la page publique de la série et dans les menus qui la visent.</target>
+            </trans-unit>
+            <trans-unit id="2.9gtX9">
+                <source>description.guided_step_book_sorting_column</source>
+                <target>Le numéro qu'elle affiche est celui que suivent les pages publiques — il s'écrit par le glissement ci-dessous, jamais en le saisissant ici.</target>
+            </trans-unit>
+            <trans-unit id="CbkLAuu">
+                <source>description.guided_step_book_sorting_done</source>
+                <target>Rechargez une page publique qui liste les séries pour le voir. Une série ajoutée ensuite arrive à la fin, en attendant d'être glissée à sa place.</target>
+            </trans-unit>
+            <trans-unit id="4fZEPut">
+                <source>description.guided_step_book_sorting_handle</source>
+                <target>Déposez-la où vous la voulez : le nouvel ordre est enregistré aussitôt, sans bouton à valider.</target>
+            </trans-unit>
+            <trans-unit id="tmNeMsJ">
+                <source>description.guided_step_book_sorting_open</source>
+                <target>La liste des séries. Celle des auteurs et illustrateurs se trie exactement de la même façon.</target>
             </trans-unit>
             <trans-unit id="hualbfA">
                 <source>description.guided_step_book_strip_creation_characters</source>
@@ -270,6 +406,26 @@
                 <source>flash.book_restored</source>
                 <target>Le livre a été restauré</target>
             </trans-unit>
+            <trans-unit id="conGOGB">
+                <source>flash.contributor_deleted_permanently</source>
+                <target>L'auteur/illustrateur a été supprimé définitivement.</target>
+            </trans-unit>
+            <trans-unit id="DSEdkBV">
+                <source>flash.contributor_duplicated</source>
+                <target>L'auteur/illustrateur a été dupliqué.</target>
+            </trans-unit>
+            <trans-unit id="5bnN6NN">
+                <source>flash.contributor_holds_content</source>
+                <target>Impossible : des livres ou des séries le créditent encore.</target>
+            </trans-unit>
+            <trans-unit id="LZHMnfn">
+                <source>flash.contributor_holds_shown_content</source>
+                <target>Impossible de le masquer : des livres ou des séries affichés le créditent encore.</target>
+            </trans-unit>
+            <trans-unit id="zlKuted">
+                <source>flash.contributor_restored</source>
+                <target>L'auteur/illustrateur a été restauré.</target>
+            </trans-unit>
             <trans-unit id="eNUVmpk">
                 <source>flash.media_move_failed</source>
                 <target>Le fichier n'a pas pu être déplacé</target>
@@ -330,6 +486,10 @@
                 <source>label.author</source>
                 <target>Auteur</target>
             </trans-unit>
+            <trans-unit id="XlAvQVJ">
+                <source>label.author-help</source>
+                <target>Laissé vide, le livre crédite l'auteur de sa série.</target>
+            </trans-unit>
             <trans-unit id="qoFIukP">
                 <source>label.author_website</source>
                 <target>Site web de l'auteur</target>
@@ -357,6 +517,14 @@
             <trans-unit id="UcMKySL">
                 <source>label.block_books_description</source>
                 <target>Met en avant une sélection de livres</target>
+            </trans-unit>
+            <trans-unit id="cC4x2kn">
+                <source>label.block_contributors</source>
+                <target>Auteurs/illustrateurs</target>
+            </trans-unit>
+            <trans-unit id="4j9p1.J">
+                <source>label.block_contributors_description</source>
+                <target>La grille des auteurs et illustrateurs du catalogue, chacun menant à sa page.</target>
             </trans-unit>
             <trans-unit id="w8_6t_3">
                 <source>label.block_reader</source>
@@ -470,6 +638,10 @@
                 <source>label.books</source>
                 <target>Livres</target>
             </trans-unit>
+            <trans-unit id="sZVAwlI">
+                <source>label.books_more</source>
+                <target>Découvrez tous nos livres</target>
+            </trans-unit>
             <trans-unit id="eCcX0_G">
                 <source>label.breadcrumb</source>
                 <target>Fil d'Ariane</target>
@@ -497,6 +669,38 @@
             <trans-unit id="J2ePCOx">
                 <source>label.characters</source>
                 <target>Personnages</target>
+            </trans-unit>
+            <trans-unit id="fBgQMYT">
+                <source>label.contributor</source>
+                <target>Auteur/illustrateur</target>
+            </trans-unit>
+            <trans-unit id="sQ8j0Zw">
+                <source>label.contributor_books</source>
+                <target>Ses livres</target>
+            </trans-unit>
+            <trans-unit id="NpZVHh8">
+                <source>label.contributor_series</source>
+                <target>Ses séries</target>
+            </trans-unit>
+            <trans-unit id="fHT3Bmp">
+                <source>label.contributor_summary-help</source>
+                <target>Qui est cette personne, en quelques phrases : ce texte ouvre sa page et sert de description aux réseaux sociaux.</target>
+            </trans-unit>
+            <trans-unit id="C5TwOKs">
+                <source>label.contributors</source>
+                <target>Auteurs/illustrateurs</target>
+            </trans-unit>
+            <trans-unit id="qv.kxFP">
+                <source>label.contributors_all</source>
+                <target>Tous nos auteurs et illustrateurs</target>
+            </trans-unit>
+            <trans-unit id="s7LRnf0">
+                <source>label.contributors_more</source>
+                <target>Découvrez tous nos auteurs</target>
+            </trans-unit>
+            <trans-unit id="yOnfBxK">
+                <source>label.contributors_summary</source>
+                <target>Liste des auteurs et des illustrateurs</target>
             </trans-unit>
             <trans-unit id="eyjXZ2b">
                 <source>label.copy_suffix</source>
@@ -662,17 +866,37 @@
                 <source>label.guided_project_book_composition</source>
                 <target>Enrichir la page d'un livre</target>
             </trans-unit>
+            <trans-unit id="ys9Iyq_">
+                <source>label.guided_project_book_contributor_creation</source>
+                <target>Ajouter un auteur ou un illustrateur</target>
+            </trans-unit>
             <trans-unit id="MTgV_FZ">
                 <source>label.guided_project_book_creation</source>
                 <target>Publier un livre</target>
+            </trans-unit>
+            <trans-unit id="2Cx7Ddy">
+                <source>label.guided_project_book_duplication</source>
+                <target>Copier un livre plutôt que le ressaisir</target>
+            </trans-unit>
+            <trans-unit id="TUyJ6vi">
+                <source>label.guided_project_book_export</source>
+                <target>Emporter le catalogue dans un fichier</target>
             </trans-unit>
             <trans-unit id="oyXCY_1">
                 <source>label.guided_project_book_hidden</source>
                 <target>Retirer un livre du site</target>
             </trans-unit>
+            <trans-unit id="TJaUAmd">
+                <source>label.guided_project_book_media_move</source>
+                <target>Déplacer un fichier d'une liste à l'autre</target>
+            </trans-unit>
             <trans-unit id="fp0G5g8">
                 <source>label.guided_project_book_serie_creation</source>
                 <target>Créer une série</target>
+            </trans-unit>
+            <trans-unit id="i17PpOE">
+                <source>label.guided_project_book_sorting</source>
+                <target>Fixer l'ordre des listes</target>
             </trans-unit>
             <trans-unit id="9Q84XCP">
                 <source>label.guided_project_book_strip_creation</source>
@@ -709,6 +933,42 @@
             <trans-unit id="llAwvx2">
                 <source>label.guided_step_book_composition_tab</source>
                 <target>Ouvrir l'onglet Blocks</target>
+            </trans-unit>
+            <trans-unit id="ezePHfM">
+                <source>label.guided_step_book_contributor_creation_done</source>
+                <target>La personne est au catalogue</target>
+            </trans-unit>
+            <trans-unit id="W2.gBd2">
+                <source>label.guided_step_book_contributor_creation_name</source>
+                <target>Saisissez son nom</target>
+            </trans-unit>
+            <trans-unit id="dK1LnYl">
+                <source>label.guided_step_book_contributor_creation_new</source>
+                <target>Cliquez sur « Ajouter »</target>
+            </trans-unit>
+            <trans-unit id="Nj3zdsg">
+                <source>label.guided_step_book_contributor_creation_open</source>
+                <target>Ouvrez « Auteurs/illustrateurs »</target>
+            </trans-unit>
+            <trans-unit id="L9u2_8t">
+                <source>label.guided_step_book_contributor_creation_portrait</source>
+                <target>Déposez son portrait</target>
+            </trans-unit>
+            <trans-unit id="y0guhNO">
+                <source>label.guided_step_book_contributor_creation_save</source>
+                <target>Enregistrez</target>
+            </trans-unit>
+            <trans-unit id="GcLYalj">
+                <source>label.guided_step_book_contributor_creation_summary</source>
+                <target>Rédigez sa biographie</target>
+            </trans-unit>
+            <trans-unit id="Fs4JtHA">
+                <source>label.guided_step_book_contributor_creation_website</source>
+                <target>Indiquez son site web</target>
+            </trans-unit>
+            <trans-unit id="kBrZaFD">
+                <source>label.guided_step_book_creation_author</source>
+                <target>Créditez son auteur</target>
             </trans-unit>
             <trans-unit id="AHQWS0V">
                 <source>label.guided_step_book_creation_done</source>
@@ -750,6 +1010,50 @@
                 <source>label.guided_step_book_creation_title</source>
                 <target>Donner un titre</target>
             </trans-unit>
+            <trans-unit id="uaCOur8">
+                <source>label.guided_step_book_duplication_done</source>
+                <target>La copie est un livre à part entière</target>
+            </trans-unit>
+            <trans-unit id="iEuaVgv">
+                <source>label.guided_step_book_duplication_duplicate</source>
+                <target>Cliquez sur « Dupliquer »</target>
+            </trans-unit>
+            <trans-unit id="MZ4szrN">
+                <source>label.guided_step_book_duplication_open</source>
+                <target>Ouvrez « Livres »</target>
+            </trans-unit>
+            <trans-unit id="u2VTaV1">
+                <source>label.guided_step_book_duplication_save</source>
+                <target>Enregistrez</target>
+            </trans-unit>
+            <trans-unit id="t8L9Ndy">
+                <source>label.guided_step_book_duplication_title</source>
+                <target>Renommez la copie</target>
+            </trans-unit>
+            <trans-unit id="._biBpn">
+                <source>label.guided_step_book_export_done</source>
+                <target>Le fichier est sur votre ordinateur</target>
+            </trans-unit>
+            <trans-unit id="ULdRQkW">
+                <source>label.guided_step_book_export_format</source>
+                <target>Choisissez un format</target>
+            </trans-unit>
+            <trans-unit id="dUz.hdf">
+                <source>label.guided_step_book_export_group</source>
+                <target>Dépliez « Export »</target>
+            </trans-unit>
+            <trans-unit id="l8fxUAK">
+                <source>label.guided_step_book_export_open</source>
+                <target>Ouvrez « Livres »</target>
+            </trans-unit>
+            <trans-unit id="iNRwswL">
+                <source>label.guided_step_book_export_select</source>
+                <target>Cochez des lignes</target>
+            </trans-unit>
+            <trans-unit id="Gzulau8">
+                <source>label.guided_step_book_export_selection</source>
+                <target>Exportez la sélection</target>
+            </trans-unit>
             <trans-unit id="DPrkE93">
                 <source>label.guided_step_book_hidden_done</source>
                 <target>Le livre est retiré du site</target>
@@ -773,6 +1077,34 @@
             <trans-unit id="gVP4uae">
                 <source>label.guided_step_book_hidden_switch</source>
                 <target>Basculez la ligne sur Masqué</target>
+            </trans-unit>
+            <trans-unit id="gyflFGQ">
+                <source>label.guided_step_book_media_move_done</source>
+                <target>Le fichier a changé de liste</target>
+            </trans-unit>
+            <trans-unit id="q8b9XiV">
+                <source>label.guided_step_book_media_move_edit</source>
+                <target>Modifiez un livre existant</target>
+            </trans-unit>
+            <trans-unit id="sW71L.Q">
+                <source>label.guided_step_book_media_move_extracts</source>
+                <target>Repérez les extraits</target>
+            </trans-unit>
+            <trans-unit id="cbJARJb">
+                <source>label.guided_step_book_media_move_handle</source>
+                <target>Saisissez une ligne par sa poignée</target>
+            </trans-unit>
+            <trans-unit id="YJB04Qd">
+                <source>label.guided_step_book_media_move_open</source>
+                <target>Ouvrez « Livres »</target>
+            </trans-unit>
+            <trans-unit id="tpdpeQW">
+                <source>label.guided_step_book_media_move_tab</source>
+                <target>Ouvrez l'onglet « Page »</target>
+            </trans-unit>
+            <trans-unit id="vxlTXH9">
+                <source>label.guided_step_book_serie_creation_author</source>
+                <target>Créditez son auteur</target>
             </trans-unit>
             <trans-unit id="rA2nQBx">
                 <source>label.guided_step_book_serie_creation_covers</source>
@@ -805,6 +1137,22 @@
             <trans-unit id="2IxEFDa">
                 <source>label.guided_step_book_serie_creation_title</source>
                 <target>Donner un titre</target>
+            </trans-unit>
+            <trans-unit id="6oYJgSV">
+                <source>label.guided_step_book_sorting_column</source>
+                <target>Regardez la colonne « Position »</target>
+            </trans-unit>
+            <trans-unit id="E6Vuuwp">
+                <source>label.guided_step_book_sorting_done</source>
+                <target>Le site suit cet ordre</target>
+            </trans-unit>
+            <trans-unit id="SMsJMZH">
+                <source>label.guided_step_book_sorting_handle</source>
+                <target>Glissez une ligne par sa poignée</target>
+            </trans-unit>
+            <trans-unit id="Yb79XfM">
+                <source>label.guided_step_book_sorting_open</source>
+                <target>Ouvrez « Séries »</target>
             </trans-unit>
             <trans-unit id="0LQKKD8">
                 <source>label.guided_step_book_strip_creation_characters</source>
@@ -926,6 +1274,10 @@
                 <source>label.illustrator</source>
                 <target>Illustrateur</target>
             </trans-unit>
+            <trans-unit id="96Owpzg">
+                <source>label.illustrator-help</source>
+                <target>Laissé vide, le livre crédite l'illustrateur de sa série.</target>
+            </trans-unit>
             <trans-unit id="ak4Wfta">
                 <source>label.illustrator_website</source>
                 <target>Site web de l'illustrateur</target>
@@ -933,6 +1285,10 @@
             <trans-unit id="vdNqq8K">
                 <source>label.info_book</source>
                 <target>Liste de tous les livres publiés. Créez, modifiez ou supprimez un livre : informations, auteur, illustrateur, liens de vente, marketing, presse et blocs de contenu.</target>
+            </trans-unit>
+            <trans-unit id="nD1o3ug">
+                <source>label.info_contributor</source>
+                <target>Les auteurs et illustrateurs du catalogue. Chacun a sa page, qui liste ce qu'il a signé. Un livre ou une série les choisit dans cette liste plutôt que de retaper leur nom.</target>
             </trans-unit>
             <trans-unit id="GnG1EEx">
                 <source>label.info_serie</source>
@@ -1046,6 +1402,10 @@
                 <source>label.modification</source>
                 <target>Modifié le</target>
             </trans-unit>
+            <trans-unit id="aSiMEIt">
+                <source>label.name</source>
+                <target>Nom</target>
+            </trans-unit>
             <trans-unit id="h4VMNLj">
                 <source>label.newer_version</source>
                 <target>Remplacé par</target>
@@ -1101,6 +1461,14 @@
             <trans-unit id="G6x7ccq">
                 <source>label.podcasts-intro</source>
                 <target>Écoutez ce livre lu à voix haute, emportez l'enregistrement ou suivez-le sur votre application de podcast.</target>
+            </trans-unit>
+            <trans-unit id="LFTVZ7g">
+                <source>label.portrait</source>
+                <target>Portrait</target>
+            </trans-unit>
+            <trans-unit id="ZfZHbC.">
+                <source>label.portrait-help</source>
+                <target>La photo qui illustre sa fiche et ouvre sa page. Une seule : déposer un autre fichier remplace celui-ci.</target>
             </trans-unit>
             <trans-unit id="Rfi.GLm">
                 <source>label.position</source>
@@ -1165,6 +1533,10 @@
             <trans-unit id="_9bIEnd">
                 <source>label.series</source>
                 <target>Séries</target>
+            </trans-unit>
+            <trans-unit id="5zU4NCz">
+                <source>label.series_more</source>
+                <target>Découvrez toutes nos séries</target>
             </trans-unit>
             <trans-unit id="0kGqgMZ">
                 <source>label.slug</source>
@@ -1245,6 +1617,10 @@
             <trans-unit id="yNfDnqa">
                 <source>label.watch_on_youtube</source>
                 <target>Regarder sur YouTube</target>
+            </trans-unit>
+            <trans-unit id="rJFIqnF">
+                <source>label.website</source>
+                <target>Site web</target>
             </trans-unit>
             <trans-unit id="7TID4un">
                 <source>text.series</source>

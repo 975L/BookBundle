@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Management;
 
+use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
@@ -23,8 +24,12 @@ class LinkableRouteProvider implements LinkableRouteProviderInterface
     // What a serie entry is keyed on, its id following - the menu item stores it as "route:book_serie.12"
     public const SERIE_PREFIX = 'book_serie.';
 
+    // The same, for a person - the menu item stores it as "route:book_contributor.3"
+    public const CONTRIBUTOR_PREFIX = 'book_contributor.';
+
     public function __construct(
         private readonly BookRoutePrefix $routePrefix,
+        private readonly ContributorRepository $contributorRepository,
         private readonly SerieRepository $serieRepository,
         private readonly TranslatorInterface $translator,
     ) {
@@ -56,6 +61,15 @@ class LinkableRouteProvider implements LinkableRouteProviderInterface
             ];
         }
 
+        if ($this->routePrefix->isEnabled('book-route-contributors')) {
+            $routes['contributor_index'] = [
+                'label' => 'label.contributors',
+                'translation_domain' => 'book',
+            ];
+        }
+
+        $routes = [...$routes, ...$this->contributorRoutes()];
+
         $serie = $this->translator->trans('label.serie', [], 'book');
 
         // Every serie the two indexes list, alphabetically as the repository returns them - each below the index listing its kind, and left out when that index is not served here (see BookPublicUrlResolver::serieRoute())
@@ -72,6 +86,33 @@ class LinkableRouteProvider implements LinkableRouteProviderInterface
                 // The picker holds it among every page of the site, so it says what it is there, and the series sit together once the list is sorted
                 'picker_label' => $serie . ' - ' . $entity->getTitle(),
                 'route' => BookPublicUrlResolver::serieRoute($entity),
+                'params' => ['slug' => (string) $entity->getSlug()],
+            ];
+        }
+
+        return $routes;
+    }
+
+    // Every person the index lists, each below their own segment and left out when that segment is not served here (see BookRoutePrefix)
+    // Keyed by id rather than by slug: a renamed person keeps the menu item pointing at them, their slug and their name both being read here again at each render
+    /** @return array<string, array<string, mixed>> */
+    private function contributorRoutes(): array
+    {
+        if (!$this->routePrefix->isEnabled('book-route-contributor')) {
+            return [];
+        }
+
+        $routes = [];
+        $contributor = $this->translator->trans('label.contributor', [], 'book');
+
+        foreach ($this->contributorRepository->findAll() as $entity) {
+            $routes[self::CONTRIBUTOR_PREFIX . $entity->getId()] = [
+                // Their own name, not a key to translate - shown as it is in the rendered menu
+                'label' => (string) $entity->getName(),
+                'translation_domain' => false,
+                // The picker holds it among every page of the site, so it says what it is there, and the people sit together once the list is sorted
+                'picker_label' => $contributor . ' - ' . $entity->getName(),
+                'route' => 'contributor_display',
                 'params' => ['slug' => (string) $entity->getSlug()],
             ];
         }

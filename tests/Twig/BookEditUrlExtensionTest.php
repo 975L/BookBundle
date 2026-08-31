@@ -18,6 +18,7 @@ use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
 use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
@@ -61,6 +62,24 @@ class BookEditUrlExtensionTest extends TestCase
             'characters' => '/admin/3/characters',
             'sourceUrl' => '/admin/3/sourceUrl',
         ], $urls);
+    }
+
+    // A person's page opens on their name and carries the sentences they are introduced with, and nothing else of it is written on their own screen
+    public function testEachSectionOfAPersonLeadsToTheFieldItIsWrittenIn(): void
+    {
+        $urls = $this->extension()->contributor($this->withId(new Contributor(), 5));
+
+        $this->assertSame([
+            'hero' => '/admin/5/name',
+            'resume' => '/admin/5/summary',
+        ], $urls);
+    }
+
+    // The card a person is reached by stands for the row entire, so it opens their screen rather than one of its fields
+    public function testTheCardOfAPersonOpensTheirWholeScreen(): void
+    {
+        $this->assertSame('/admin/5', $this->extension()->contributorEditUrl($this->withId(new Contributor(), 5)));
+        $this->assertNull($this->extension()->contributorEditUrl(new Contributor()));
     }
 
     // A serie's list of books is written on each book's own screen, so that section is deliberately left without a pencil rather than given one leading nowhere
@@ -175,7 +194,8 @@ class BookEditUrlExtensionTest extends TestCase
         });
         // The two names the pencil is made of, so what each section points at is what is asserted
         $generator->method('generateUrl')->willReturnCallback(static function () use (&$entityId, &$focusField): string {
-            return sprintf('/admin/%s/%s', $entityId, $focusField);
+            // No field asked for is the whole screen, which the real generator spells without a "focusField" query at all
+            return null === $focusField ? sprintf('/admin/%s', $entityId) : sprintf('/admin/%s/%s', $entityId, $focusField);
         });
 
         $provider = $this->createStub(BookCustomizationProviderInterface::class);

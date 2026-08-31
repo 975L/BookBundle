@@ -31,7 +31,8 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - Each published form of a book — paperback, ebook, audiobook, illustrated edition — as a row carrying its own ISBN, its size and its page count
 - Where a book is read, listened to or watched, as rows rather than columns — adding a platform is an enum case, not a migration
 - What a single site adds to a book — its own fields, its own media and edition vocabulary — declared rather than coded into an overridden CRUD
-- Admin CRUD via EasyAdmin for books and series
+- The people the catalog credits recorded once, with a page of their own listing everything they signed — a book picks its author and its illustrator from that list rather than retyping a name
+- Admin CRUD via EasyAdmin for books, series and the people crediting them
 - A book, a serie or a strip duplicated in one click, with its files, its editions, its platforms and its blocks
 - A new version of a book published in one click: the book keeps its address and its readers, a twin carries what came out so far
 - Reader reviews on a book's page, behind UiBundle's `ui-enable-reviews` setting
@@ -155,6 +156,8 @@ showcase — contributes the same file through its own stylesheet provider.
 | `book_display` | `/livre/{slug}` | `book-route-book` | Book detail page |
 | `serie_index` | `/series` | `book-route-series` | The book series, growing on scroll |
 | `serie_display` | `/series/{slug}` | `book-route-series` | Book series detail page, listing what it holds |
+| `contributor_index` | `/auteurs` | `book-route-contributors` | The people the catalog credits, growing on scroll |
+| `contributor_display` | `/auteur/{slug}` | `book-route-contributor` | An author's or illustrator's page, listing what they signed |
 | `strip_index` | `/strips` | `book-route-strips` | The strip series, growing on scroll |
 | `strip_serie_display` | `/strips/{slug}` | `book-route-strips` | Strip series detail page, listing the planches it tells |
 | `strip_display` | `/strip/{slug}` | `book-route-strip` | Strip detail page |
@@ -171,7 +174,8 @@ A serie is read *below* the index listing it, sharing its very segment: `/series
 telling books, `/strips/my-serie` for the ones telling planches. Both are the same controller action
 under two route names, `BookPublicUrlResolver::serieRoute()` saying which one a serie wears — and asked
 under the other segment, a serie answers `301` towards its own. In Twig, `serie_path(serie)` and
-`serie_url(serie)` generate them, so a template never has to tell the two apart.
+`serie_url(serie)` generate them, so a template never has to tell the two apart. `contributor_path(person)`
+and `contributor_url(person)` do the same for the page of an author or of an illustrator.
 
 A book and a strip also answer to their **number**, wherever their slug is expected: `/livre/3` and
 `/livre/003-le-tracteur` both 301 to `/livre/le-tracteur`. The slug is tried first, so a book actually
@@ -355,9 +359,9 @@ extracts, the editions, the shops and the podcasts on the `editions` collection,
 UiBundle's own overlay (`assets/js/block-edit-overlay.js`, the button it floats over anything carrying
 `data-block-edit-url`) and its own `focusField` query param (`assets/js/field-focus.js`, which opens the
 right tab, scrolls to the field and focuses it) — nothing of it is written here beyond the map of
-anchor to property, `book_edit_urls(book)`, `serie_edit_urls(serie)` and `strip_edit_urls(strip)`
-(`Twig\BookEditUrlExtension`). A section written on another screen than the entity's own — a serie's list
-of books, which each book carries itself — is deliberately left without a pencil rather than given one
+anchor to property, `book_edit_urls(book)`, `serie_edit_urls(serie)`, `strip_edit_urls(strip)` and
+`contributor_edit_urls(person)` (`Twig\BookEditUrlExtension`). A section written on another screen than the
+entity's own — a serie's list of books, which each book carries itself — is deliberately left without a pencil rather than given one
 leading nowhere. A site overriding a display component keeps its pencil by passing the `editUrl` it
 receives down to the card it prints. The blocks composed at the foot of a page hover the same pencil,
 through `Management\BookBlockEditUrlProvider` — UiBundle's own `focusBlock`, which opens that block's
@@ -457,8 +461,8 @@ builds that graph, so a site splitting an already published catalog can call it 
 
 ### Trash, redirects and 410
 
-**Deleting takes a row off the site, it does not lose it.** A serie, a book or a strip deleted from its
-index goes to the **trash** (`isDeleted`): the row, its files, its versions and its blocks stay exactly as
+**Deleting takes a row off the site, it does not lose it.** A serie, a book, a strip or a person deleted
+from its index goes to the **trash** (`isDeleted`): the row, its files, its versions and its blocks stay exactly as
 they were, and its public page answers **410 Gone** rather than the 404 an url that never existed gets —
 which is what a search engine drops an indexed page on. Each index carries a **Corbeille** toggle listing
 what left the site, where every row offers **Restaurer** and **Supprimer définitivement** (both
@@ -473,7 +477,9 @@ should look in the trash for what still holds it.
 
 **A serie is refused the trash while it still holds a book or a strip**, trashed ones included: what it
 holds would otherwise stay on the site naming a serie that is not on it any more. Move them to another
-serie — or remove them — and the serie follows.
+serie — or remove them — and the serie follows. **A person is refused the trash while a book or a serie
+still credits them**, for the same reason and with the same remedy: credit somebody else, or take down what
+names them.
 
 **Removing for good leaves the url answering.** The 410 the trash serves only lasts as long as the row can
 be restored, so `deletePermanently()` writes a `Redirect` row with `gone: true` on the path the row used to
@@ -493,9 +499,9 @@ SiteBundle ships one, and a site without it gets Symfony's default error page.
 
 ### Setting a row aside
 
-**A row can be taken off the site without being deleted.** Each of the three index screens carries a
-**Masqué** switch (`hidden`, one boolean column shared by `Serie`, `Book` and `Strip` through
-`Entity\Trait\HideableTrait`), toggled straight from the row or from its edit screen. Ticked, the row is
+**A row can be taken off the site without being deleted.** Each of the four index screens carries a
+**Masqué** switch (`hidden`, one boolean column shared by `Serie`, `Book`, `Strip` and `Contributor`
+through `Entity\Trait\HideableTrait`), toggled straight from the row or from its edit screen. Ticked, the row is
 off the site for exactly as long as it stays ticked: it leaves every public listing and every search, its
 page answers **404**, and the sitemap stops declaring it at its next run (`c975l:sitemaps:create` — the
 file is written when the command runs, not on the click). Nothing of it is touched — its files, its blocks,
@@ -514,7 +520,8 @@ answers a plain 404. Use the trash to remove something, the switch to see the si
 The filtering lives in the repositories, so a site reading its catalog through `BookService`,
 `SerieService` or `StripService` gets it for free — the listings, the search, the previous/next bar of a
 planche, the character chips, the numbered urls and the short links,
-the linkable routes offered to a menu, and the sitemap. A serie whose every book is set aside stops heading
+the linkable routes offered to a menu, and the sitemap. A person set aside leaves the index of people, their own page and the author and illustrator
+autocompletion of a book alike. A serie whose every book is set aside stops heading
 a section with nothing under it, and a book or a planche of a serie set aside leaves those listings with it —
 its trail still names the serie, without linking to a page that answers 404. What still lists a hidden row on
 purpose is the back office: its index shows it, its switch on, and `BookRepository::findAll()` — the link
@@ -681,9 +688,9 @@ A block hovers the same editing pencil as the sections above it (see *Display pa
 
 One tile per kind, captured on the showcase at [bundles.975l.com](https://bundles.975l.com/pages/blocks/Book) - a kind with several variants shows only its first one, and a kind with no example there has no tile. Colors are the showcase's own theme, not what a site with its own theme renders.
 
-The bundle also ships five block kinds of its own. Four put a selection of the catalog on any page of the site — `book_series`, `book_books`, `book_to_be_published` and `book_serie_strips`. Set to UiBundle's `compact` variant, they print a book at a thumbnail's width, with its cover, its title and its language and without its summary.
+The bundle also ships six block kinds of its own. Five put a selection of the catalog on any page of the site — `book_series`, `book_books`, `book_to_be_published`, `book_serie_strips` and `book_contributors`, which prints the people the catalog credits, each leading to their own page. Set to UiBundle's `compact` variant, they print a book at a thumbnail's width, with its cover, its title and its language and without its summary.
 
-The fifth, `book_reader`, reads an illustrated album page by page along its recording. Its medias are the album's pages in order, then the audio file; its `cues` say at which second of the recording each page is turned. The voice is the clock: it turns the pages, and a page turned by hand moves the playhead to that page's cue. Left without cues, the pages are turned by hand alone. It drives UiBundle's `slider` through the slider's own dots, so the two stay independent.
+The sixth, `book_reader`, reads an illustrated album page by page along its recording. Its medias are the album's pages in order, then the audio file; its `cues` say at which second of the recording each page is turned. The voice is the clock: it turns the pages, and a page turned by hand moves the playhead to that page's cue. Left without cues, the pages are turned by hand alone. It drives UiBundle's `slider` through the slider's own dots, so the two stay independent.
 
 ```twig
 {# Outside a composed page - a story rendered from an entity, say - the component is called directly #}
@@ -709,11 +716,14 @@ Overriding a display template keeps the markup, which is a Twig function rather 
 
 `serie_json_ld(serie, ogImage, url)` and `strip_json_ld(strip, imageUrl, url)` are called the same way.
 
+The `Person` node of an author and of an illustrator carries the url of their own page here, the site they
+hold off ours being read on that page rather than in the graph of every book they signed.
+
 Price and availability are deliberately absent: they are an `offers` node, and they belong to whoever sells the book.
 
 ### Sitemap
 
-The urls are declared by `BookSitemapProvider` (ConfigBundle's `SitemapProviderInterface`): index pages plus individual entries for all published books, all series, and all published strips. Nothing to register — the provider is picked up automatically.
+The urls are declared by `BookSitemapProvider` (ConfigBundle's `SitemapProviderInterface`): index pages plus individual entries for all published books, all series, all published strips and every person the catalog credits. Nothing to register — the provider is picked up automatically.
 
 A row [set aside](#setting-a-row-aside) is declared by none of them: the provider reads the same repository methods the front does, so the switch takes the url out of the file at the command's next run.
 
@@ -733,7 +743,7 @@ Those same urls are also **health-checked** for free, with `c975l/site-bundle` i
 php bin/console c975l:health-check:run --kind=urls-book
 ```
 
-The same provider carries the `title` and `description` ConfigBundle's `SeoFilesWriter` builds `public/llms.txt` from — a `## Book` section listing the indexes, the published books and the series. A strip's page carries no title there on purpose, an index of plates being what the sitemap already is.
+The same provider carries the `title` and `description` ConfigBundle's `SeoFilesWriter` builds `public/llms.txt` from — a `## Book` section listing the indexes, the published books, the series and the people credited. A strip's page carries no title there on purpose, an index of plates being what the sitemap already is.
 
 ### Health check
 
@@ -751,21 +761,23 @@ A platform answering `401`, `403`, `405` or `429` is reported **skipped**, not b
 
 ### Export / import the catalog
 
-`SerieExportProvider`, `BookExportProvider` and `StripExportProvider` plug the three families of this bundle
-into ConfigBundle's **Export sync (everything)** dashboard shortcut — one zip carrying the whole catalog,
-files bundled in, re-uploaded on another site or environment through its **Import content** screen (see
-`SerieImportProvider`, `BookImportProvider`, `StripImportProvider`). Nothing to register: implementing the
-interfaces is what tags them.
+`SerieExportProvider`, `BookExportProvider`, `StripExportProvider` and `ContributorExportProvider` plug the
+four families of this bundle into ConfigBundle's **Export sync (everything)** dashboard shortcut — one zip
+carrying the whole catalog, files bundled in, re-uploaded on another site or environment through its
+**Import content** screen (see `SerieImportProvider`, `BookImportProvider`, `StripImportProvider`,
+`ContributorImportProvider`). Nothing to register: implementing the interfaces is what tags them.
 
-A subset travels the same way: the **"Export selection"** batch action of each of the three index screens
+A subset travels the same way: the **"Export selection"** batch action of each of the four index screens
 zips the checked rows only, through the very same providers (`serializeIds()`), and the archive is re-uploaded
 on the same screen. Both are restricted to `site-role-admin`, like the raw table dumps beside them.
 
 Ids never need to match between the two sites. Every row is matched on what it actually answers at — a serie,
-a book and a strip by their slug, a version by its kind within its book, a platform by the version and the
-kind together, a file by the name it is served under. A book naming a serie this environment doesn't hold yet
-has it created on the fly, so the three kinds import in whichever order the archive lists them, and a book
-translating another is bound once the whole archive has been read.
+a book, a strip and a person by their slug, a version by its kind within its book, a platform by the version
+and the kind together, a file by the name it is served under. A book naming a serie or an author this
+environment doesn't hold yet has them created on the fly, so the four kinds import in whichever order the
+archive lists them, and a book translating another is bound once the whole archive has been read. A person
+created that way holds nothing but a name and a slug, and is the only row an archive naming a namesake fills
+in rather than doubling — somebody the site has actually written up keeps their page.
 
 **The trash flag travels too**: a row exported out of the trash comes back to the trash, not onto the site,
 and a sync mirrors its source rather than republishing what an admin had taken down (see

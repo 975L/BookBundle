@@ -1,6 +1,6 @@
 ---
 name: c975l-book-customization
-description: "Use this skill when a single site has to bend the c975L BookBundle to its own catalog without overriding a controller — the words it gives its file kinds, its editions and its platforms, the sections its book pages hold and in what order, the fields it adds to a book, which rows its catalog page lists and under what name, and the url prefixes of its public pages. Triggers on: BookCustomizationProviderInterface, BookCustomizationRegistry, book.customization_provider, BookCatalogProviderInterface, BookCatalogRegistry, book.catalog_provider, getMediaKinds, getEditionKinds, getLinkKinds, getSections, getDataFormType, getBooks, getTitle, book_catalog_title, BookCatalogExtension, BookLinkKind, BookLinkGroup, BookMediaKind, BookEditionKind, SerieKind, book_link_label, book_link_icon, book_link_url, book_links_of, book_edition_label, BookLinkExtension, BookRoutePrefix, book-route-books, book-route-book, book-route-series, book-route-strips, book-route-strip, book-route-book-shortcut, book-route-strip-shortcut, book-catalog-title, book-gplay-affiliate, book-rating, book-confetti, book-strip-card, Book::data, BookDataField."
+description: "Use this skill when a single site has to bend the c975L BookBundle to its own catalog without overriding a controller — the words it gives its file kinds, its editions and its platforms, the sections its book pages hold and in what order, the fields it adds to a book, which rows its catalog page lists and under what name, and the url prefixes of its public pages. Triggers on: BookCustomizationProviderInterface, BookCustomizationRegistry, book.customization_provider, BookCatalogProviderInterface, BookCatalogRegistry, book.catalog_provider, getMediaKinds, getEditionKinds, getLinkKinds, getSections, getDataFormType, getBooks, getTitle, book_catalog_title, BookCatalogExtension, BookLinkKind, BookLinkGroup, BookMediaKind, BookEditionKind, SerieKind, book_link_label, book_link_icon, book_link_url, book_links_of, book_edition_label, BookLinkExtension, BookRoutePrefix, book-route-books, book-route-book, book-route-series, book-route-contributors, book-route-contributor, book-route-strips, book-route-strip, book-route-book-shortcut, book-route-strip-shortcut, book-catalog-title, book-gplay-affiliate, book-rating, book-confetti, book-strip-card, Book::data, BookDataField."
 ---
 
 # c975L BookBundle — customizing a catalog
@@ -108,11 +108,11 @@ later needs nothing anywhere else.
 
 ## Settings
 
-All fourteen live in `config/configs.json`, group **book**, and are read through ConfigBundle:
+All sixteen live in `config/configs.json`, group **book**, and are read through ConfigBundle:
 
 | Slug | Does |
 | --- | --- |
-| `book-route-books`, `book-route-book`, `book-route-series`, `book-route-strips`, `book-route-strip` | the url prefixes |
+| `book-route-books`, `book-route-book`, `book-route-series`, `book-route-contributors`, `book-route-contributor`, `book-route-strips`, `book-route-strip` | the url prefixes |
 | `book-route-book-shortcut`, `book-route-strip-shortcut` | the one-letter short links |
 | `book-catalog-title` | the word the catalog page carries |
 | `book-gplay-affiliate` | the identifier added to a Google Play address |

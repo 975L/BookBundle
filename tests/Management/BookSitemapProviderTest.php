@@ -11,11 +11,13 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Management\BookSitemapProvider;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\BookBundle\Service\SerieServiceInterface;
 use c975L\BookBundle\Service\StripServiceInterface;
 use c975L\BookBundle\Tests\BookPublicUrlGeneratorTestTrait;
@@ -33,6 +35,7 @@ class BookSitemapProviderTest extends TestCase
         array $books = [],
         array $series = [],
         array $strips = [],
+        array $contributors = [],
         string $siteUrl = 'https://example.com',
         array $prefixes = [],
     ): BookSitemapProvider {
@@ -46,6 +49,9 @@ class BookSitemapProviderTest extends TestCase
         $serieService->method('findAll')->willReturn($series);
         $stripService = $this->createStub(StripServiceInterface::class);
         $stripService->method('findAllPublished')->willReturn($strips);
+        // Only the people a shown book or serie still credits, which is what the index lists too (see ContributorRepository::findCredited())
+        $contributorService = $this->createStub(ContributorServiceInterface::class);
+        $contributorService->method('findCredited')->willReturn($contributors);
 
         // The key itself as its own translation, so what an url carries can be told from what a catalog says
         $translator = $this->createStub(TranslatorInterface::class);
@@ -54,6 +60,7 @@ class BookSitemapProviderTest extends TestCase
         return new BookSitemapProvider(
             new BookPublicUrlResolver($configService, $this->createRoutePrefix($prefixes), $this->createUrlGenerator()),
             $bookService,
+            $contributorService,
             $serieService,
             $stripService,
             $translator
@@ -86,22 +93,31 @@ class BookSitemapProviderTest extends TestCase
             ->setModification(new \DateTime('2026-03-25'));
     }
 
+    private function contributor(): Contributor
+    {
+        return new Contributor()
+            ->setName('Tim Loval')
+            ->setSlug('tim-loval')
+            ->setSummary('Auteur des Triados')
+            ->setModification(new \DateTime('2026-04-30'));
+    }
+
     // The name is what the written file is called, public/sitemap-book.xml, and what the index declares
     public function testSitemapNameIsBook(): void
     {
         $this->assertSame('book', $this->createProvider()->getSitemapName());
     }
 
-    // The three listing pages open the sitemap, even with nothing published yet - each is a real page of the site
-    public function testGetUrlsAlwaysDeclaresTheThreeIndexes(): void
+    // The four listing pages open the sitemap, even with nothing published yet - each is a real page of the site
+    public function testGetUrlsAlwaysDeclaresTheFourIndexes(): void
     {
         $urls = $this->createProvider()->getUrls();
 
         $this->assertSame(
-            ['https://example.com/livres', 'https://example.com/series', 'https://example.com/strips'],
+            ['https://example.com/livres', 'https://example.com/series', 'https://example.com/strips', 'https://example.com/auteurs'],
             array_column($urls, 'loc')
         );
-        $this->assertSame(['label.books', 'label.series', 'label.strips_series'], array_column($urls, 'title'));
+        $this->assertSame(['label.books', 'label.series', 'label.strips_series', 'label.contributors'], array_column($urls, 'title'));
     }
 
     // A published book is declared under its own route, with its modification date as lastmod
@@ -146,10 +162,25 @@ class BookSitemapProviderTest extends TestCase
         ], $urls[3]);
     }
 
+    // A person the catalog credits carries a title and a description, so their page is one of the lines llms.txt is built from
+    public function testGetUrlsDeclaresACreditedPerson(): void
+    {
+        $urls = $this->createProvider([], [], [], [$this->contributor()])->getUrls();
+
+        $this->assertSame([
+            'loc' => 'https://example.com/auteur/tim-loval',
+            'lastmod' => '2026-04-30',
+            'changefreq' => 'monthly',
+            'priority' => 7,
+            'title' => 'Tim Loval',
+            'description' => 'Auteur des Triados',
+        ], $urls[4]);
+    }
+
     // Without "site-url", BookPublicUrlResolver can't build absolute urls, and a sitemap accepts nothing else
     public function testGetUrlsReturnsEmptyArrayWhenSiteUrlIsNotConfigured(): void
     {
-        $this->assertSame([], $this->createProvider([$this->book()], [$this->serie()], [$this->strip()], '')->getUrls());
+        $this->assertSame([], $this->createProvider([$this->book()], [$this->serie()], [$this->strip()], [$this->contributor()], '')->getUrls());
     }
 
     // A family read elsewhere has no page on this site, index included - declaring one would advertise an url the router answers nothing for
@@ -159,8 +190,9 @@ class BookSitemapProviderTest extends TestCase
             [$this->book()],
             [],
             [$this->strip()],
+            [$this->contributor()],
             'https://example.com',
-            ['book-route-strips' => '', 'book-route-strip' => '']
+            ['book-route-strips' => '', 'book-route-strip' => '', 'book-route-contributors' => '', 'book-route-contributor' => '']
         );
 
         $this->assertSame(

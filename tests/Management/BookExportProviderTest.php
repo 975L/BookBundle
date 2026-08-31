@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Management\BookExportProvider;
 use c975L\BookBundle\Management\BookImportProvider;
@@ -39,7 +40,7 @@ class BookExportProviderTest extends TestCase
         $book = new Book()
             ->setSlug('papa-calin')
             ->setTitle('Papa Câlin')
-            ->setAuthor('Laurent Marquet')
+            ->setAuthor(self::contributor())
             ->setSummary('Une histoire')
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'));
@@ -71,7 +72,7 @@ class BookExportProviderTest extends TestCase
     public function testSerializeNamesTheSerieAndTheTranslatedBookBySlug(): void
     {
         $serie = new Serie()->setSlug('papa-calin')->setTitle('Papa Câlin');
-        $translated = new Book()->setSlug('daddy-hug')->setTitle('Daddy Hug')->setAuthor('LM')->setSummary('');
+        $translated = new Book()->setSlug('daddy-hug')->setTitle('Daddy Hug')->setAuthor(self::contributor('LM', 'lm'))->setSummary('');
         $book = $this->createBook()->setSerie($serie)->setTranslationBook($translated);
 
         $item = $this->createProvider(sys_get_temp_dir())->serialize([$book])['items'][0];
@@ -127,7 +128,7 @@ class BookExportProviderTest extends TestCase
         return new Book()
             ->setSlug('tome-1')
             ->setTitle('Tome 1')
-            ->setAuthor('Laurent Marquet')
+            ->setAuthor(self::contributor())
             ->setSummary('Résumé')
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'));
@@ -140,5 +141,11 @@ class BookExportProviderTest extends TestCase
             new BlockDataExporter($projectDir),
             new MediaArchiver($this->createStub(EntityManagerInterface::class), $projectDir),
         );
+    }
+
+    // The person the fixtures credit, a row of their own now that a name is no longer a column (see Entity\Contributor)
+    private static function contributor(string $name = 'Laurent Marquet', string $slug = 'laurent-marquet'): Contributor
+    {
+        return new Contributor()->setName($name)->setSlug($slug);
     }
 }

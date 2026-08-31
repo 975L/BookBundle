@@ -1,4 +1,5 @@
-{% set displayMore = displayMore | default(false) %}
+{# The block interpolates "1"/"" where the pages pass "true"/"false" spelled out, and any non-empty string is true in Twig: the value is brought down to a boolean once here rather than tested at each call #}
+{% set displayMore = displayMore|default(false)|to_bool %}
 {# "rating": the score under each cover, and the icons to set it - only a listing rendered outside the block cache asks for it, the html of a cached block being shared by every visitor and its averages frozen with it, and only where the site rates its catalog at all (the setting the book's own page reads, see Book:Hero) #}
 {% set rating = rating|default(false) and config('book-rating')|to_bool %}
 {# One query for the whole page rather than one per cover: each card is handed the tally already read for it (see ui_ratings()) #}
@@ -8,10 +9,10 @@
     {% for book in books %}
         <twig:c975LBook:Book:Book book="{{ book }}" :rating="rating" :aggregate="rating ? ratings[book.id] : null" :editable="editable|default(false)"/>
     {% endfor %}
-    {% if displayMore == "true" %}
+    {% if displayMore %}
         <article class="text-center width-150">
-            <h3 class="card-title">Découvrez tous nos livres</h3>
-            <twig:c975LUi:Button:Button label="Tous nos livres" url="{{ path('book_index') }}" />
+            <h3 class="card-title">{{ 'label.books_more'|trans({}, 'book') }}</h3>
+            <twig:c975LUi:Button:Button label="{{ 'label.books'|trans({}, 'book') }}" url="{{ path('book_index') }}" />
         </article>
     {% endif %}
 </div>

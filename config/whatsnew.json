@@ -16,6 +16,26 @@
                 "en": "The sample books and series shown as examples now come with a cover, and two cards side by side never repeat the same picture.",
                 "fr": "Les livres et les séries d'exemple s'affichent désormais avec une couverture, et deux fiches côte à côte ne reprennent jamais la même image.",
                 "es": "Los libros y las series de ejemplo se muestran ahora con una portada, y dos fichas contiguas nunca repiten la misma imagen."
+            },
+            {
+                "en": "The authors and illustrators of your catalog are now recorded once, in an \"Authors/illustrators\" screen of their own: a book or a serie picks its author from that list instead of you retyping the name, and each person gets a page listing everything they signed, with their portrait and a word about them.",
+                "fr": "Les auteurs et les illustrateurs de votre catalogue sont désormais enregistrés une seule fois, dans un écran « Auteurs/illustrateurs » qui leur est propre : un livre ou une série choisit son auteur dans cette liste au lieu que vous en retapiez le nom, et chaque personne dispose d'une page qui réunit tout ce qu'elle a signé, avec son portrait et quelques mots sur elle.",
+                "es": "Los autores y los ilustradores de su catálogo se registran ahora una sola vez, en una pantalla «Autores/ilustradores» propia: un libro o una serie elige su autor de esa lista en lugar de que usted vuelva a escribir el nombre, y cada persona dispone de una página que reúne todo lo que ha firmado, con su retrato y unas palabras sobre ella."
+            },
+            {
+                "en": "A new block, \"Authors/illustrators\", puts those portraits on any page of the site, each one leading to its person's page.",
+                "fr": "Un nouveau bloc, « Auteurs/illustrateurs », place ces portraits sur n'importe quelle page du site, chacun menant à la page de la personne.",
+                "es": "Un nuevo bloque, «Autores/ilustradores», coloca esos retratos en cualquier página del sitio, cada uno llevando a la página de la persona."
+            },
+            {
+                "en": "Five more guided tours walk you through the back office: recording an author, moving a file from one part of a book to another, laying the order the series and the authors are shown in, copying a book and exporting your catalog.",
+                "fr": "Cinq parcours guidés supplémentaires vous accompagnent dans le back-office : enregistrer un auteur, déplacer un fichier d'une partie d'un livre à une autre, ordonner l'affichage des séries et des auteurs, copier un livre et exporter votre catalogue.",
+                "es": "Cinco recorridos guiados más le acompañan en el back-office: registrar un autor, mover un archivo de una parte de un libro a otra, ordenar la presentación de las series y de los autores, copiar un libro y exportar su catálogo."
+            },
+            {
+                "en": "The tile that closes a shortened list of books or series now speaks the visitor's language instead of being French for everyone, and you can name it as your catalog is named.",
+                "fr": "La tuile qui referme une liste raccourcie de livres ou de séries parle désormais la langue du visiteur au lieu d'être en français pour tout le monde, et vous pouvez la nommer comme votre catalogue l'est.",
+                "es": "La tarjeta que cierra una lista abreviada de libros o de series habla ahora el idioma del visitante en lugar de estar en francés para todos, y puede nombrarla como se llama su catálogo."
             }
         ]
     },

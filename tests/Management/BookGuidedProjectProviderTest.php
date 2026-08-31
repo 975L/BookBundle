@@ -36,7 +36,10 @@ class BookGuidedProjectProviderTest extends TestCase
     private function createProvider(array &$controllers = []): BookGuidedProjectProvider
     {
         $configService = $this->createStub(ConfigServiceInterface::class);
-        $configService->method('get')->willReturn('ROLE_EDITOR');
+        // One bar per key rather than one for all: a project scoped to the admin is only told apart from the others if the two entries answer differently
+        $configService->method('get')->willReturnCallback(
+            static fn (string $key): string => 'site-role-admin' === $key ? 'ROLE_ADMIN' : 'ROLE_EDITOR'
+        );
 
         return new BookGuidedProjectProvider($this->createAdminUrlGenerator($controllers), $configService);
     }
@@ -52,10 +55,10 @@ class BookGuidedProjectProviderTest extends TestCase
         $projects = $this->projects();
 
         $this->assertSame(
-            ['book-serie-creation', 'book-creation', 'book-composition', 'book-strip-creation', 'book-version-publication', 'book-hidden', 'book-trash'],
+            ['book-contributor-creation', 'book-serie-creation', 'book-creation', 'book-media-move', 'book-composition', 'book-sorting', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash', 'book-export'],
             array_column($projects, 'slug')
         );
-        $this->assertSame([6010, 6020, 6030, 6040, 6050, 6055, 6060], array_column($projects, 'order'));
+        $this->assertSame([6005, 6010, 6020, 6025, 6030, 6035, 6040, 6045, 6050, 6055, 6060, 6070], array_column($projects, 'order'));
     }
 
     public function testEverySlugIsPrefixedWithTheBundleName(): void
@@ -73,12 +76,17 @@ class BookGuidedProjectProviderTest extends TestCase
         }
     }
 
-    // Every catalog screen sits behind the site's editor role, so a parcours walking them is dropped for anybody else
-    public function testEveryProjectCarriesTheEditorRole(): void
+    // Every catalog screen sits behind the site's editor role, so a parcours walking them is dropped for anybody else - the exports alone sit a role above, and a parcours highlighting buttons the user never sees is a broken one (see TrashableCrudTrait::configureActions)
+    public function testEveryProjectCarriesTheRoleItsOwnScreensState(): void
     {
-        foreach ($this->projects() as $project) {
-            $this->assertSame('ROLE_EDITOR', $project['role']);
-        }
+        $expected = array_fill_keys([
+            'book-contributor-creation', 'book-serie-creation', 'book-creation', 'book-media-move', 'book-composition',
+            'book-sorting', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash',
+        ], 'ROLE_EDITOR') + ['book-export' => 'ROLE_ADMIN'];
+
+        $roles = array_column($this->projects(), 'role', 'slug');
+
+        $this->assertSame($expected, $roles);
     }
 
     public function testNoStepSetsBothUrlAndHighlight(): void
@@ -107,14 +115,14 @@ class BookGuidedProjectProviderTest extends TestCase
         }
     }
 
-    // The three sidebar entries of the catalog, each parcours opening on the one its task belongs to
+    // The catalog's own screens, each parcours opening on the one its task belongs to
     public function testEveryProjectOpensOnACatalogCrudIndex(): void
     {
         $controllers = [];
         $this->createProvider($controllers)->getGuidedProjects();
 
         $this->assertSame(
-            ['SerieCrudController', 'BookCrudController', 'BookCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController'],
+            ['ContributorCrudController', 'SerieCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'SerieCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController'],
             array_map(static fn (string $fqcn): string => basename(str_replace('\\', '/', $fqcn)), $controllers)
         );
     }
@@ -132,7 +140,7 @@ class BookGuidedProjectProviderTest extends TestCase
             }
         }
 
-        $this->assertCount(6, $saveSteps, 'Only the trash parcours saves nothing, its gestures being buttons of the index');
+        $this->assertCount(8, $saveSteps, 'The parcours saving nothing are those whose gestures are recorded on the spot: the trash, the sorting, the file move and the export');
 
         foreach ($saveSteps as $step) {
             $this->assertSame('.action-saveAndReturn', $step['highlight']);
@@ -142,8 +150,8 @@ class BookGuidedProjectProviderTest extends TestCase
     // A built-in action named by a step has to be one EasyAdmin still knows, the CRUD controllers' own ones being spelled out here
     public function testEveryBuiltInActionHighlightedIsAnEasyAdminOne(): void
     {
-        // The two this bundle declares itself, next to EasyAdmin's (see BookCrudController and TrashableCrudTrait)
-        $known = [...new \ReflectionClass(Action::class)->getConstants(), 'publishVersion', 'trash'];
+        // The ones this bundle declares itself, next to EasyAdmin's (see BookCrudController and TrashableCrudTrait)
+        $known = [...new \ReflectionClass(Action::class)->getConstants(), 'publishVersion', 'trash', 'duplicate', 'exportSql', 'exportCsv', 'exportJson', 'exportSelection'];
 
         foreach ($this->highlights() as $highlight) {
             if (!preg_match('/^\.action-([A-Za-z]+)$/', $highlight, $matches)) {
@@ -158,7 +166,7 @@ class BookGuidedProjectProviderTest extends TestCase
         }
     }
 
-    // Restoring a row and deleting it for good sit at the admin's role, so a step highlighting them would show nothing to the editors the parcours is offered to (see TrashableCrudTrait::configureActions)
+    // Restoring a row and deleting it for good sit at the admin's role, so a step highlighting them would show nothing to the editors the trash parcours is offered to - and the one parcours running at the admin's role exports the catalog rather than emptying its trash (see TrashableCrudTrait::configureActions)
     public function testNoStepHighlightsAnActionHeldAboveTheEditorRole(): void
     {
         $highlights = $this->highlights();
@@ -170,10 +178,33 @@ class BookGuidedProjectProviderTest extends TestCase
     // A field is pointed at through the widget the user sees: EasyAdmin clips the select of a choice or an association out of sight, and TrixEditorType hides its textarea, so a bare "#Entity_property" on those outlines nothing
     public function testNoStepHighlightsAWidgetEasyAdminHidesFromSight(): void
     {
-        $hidden = ['#Serie_kind', '#Serie_summary', '#Serie_covers', '#Book_serie', '#Book_previousVersion', '#Strip_serie', '#Strip_summary'];
+        $hidden = ['#Serie_kind', '#Serie_summary', '#Serie_covers', '#Book_serie', '#Book_previousVersion', '#Strip_serie', '#Strip_summary', '#Contributor_summary'];
 
         foreach ($this->highlights() as $highlight) {
             $this->assertNotContains($highlight, $hidden, sprintf('"%s" points at an element EasyAdmin renders out of sight', $highlight));
+        }
+    }
+
+    // An association calling autocomplete() is rendered by CrudAutocompleteType, which prints its select under an inner field named "autocomplete": the id gains that suffix, and a step naming the property alone outlines nothing (see AssociationConfigurator and CrudAutocompleteSubscriber)
+    public function testEveryAutocompletedAssociationIsHighlightedUnderItsInnerFieldId(): void
+    {
+        $autocompleted = $this->autocompletedProperties();
+
+        $this->assertNotEmpty($autocompleted, 'No controller declares an autocompleted association anymore');
+
+        foreach ($this->highlights() as $highlight) {
+            if (!preg_match('/^#([A-Za-z]+)_([A-Za-z]+)(_autocomplete)?(?: |$)/', $highlight, $matches)) {
+                continue;
+            }
+
+            $property = $matches[1] . '::' . $matches[2];
+            $isSuffixed = isset($matches[3]);
+
+            if (\in_array($property, $autocompleted, true)) {
+                $this->assertTrue($isSuffixed, sprintf('"%s" names an autocompleted association, whose select is printed as "%s_autocomplete"', $highlight, $matches[2]));
+            } else {
+                $this->assertFalse($isSuffixed, sprintf('"%s" is not autocompleted, and its select carries no such inner field', $highlight));
+            }
         }
     }
 
@@ -185,6 +216,8 @@ class BookGuidedProjectProviderTest extends TestCase
             $sources .= file_get_contents($controller);
         }
         $sources .= file_get_contents(\dirname(__DIR__, 2) . '/vendor/c975l/core-bundle/UiBundle/src/Service/BlockMoveRowAttrBuilder.php');
+        // The markers of the file move are laid by a service of this bundle, not by a controller
+        $sources .= file_get_contents(\dirname(__DIR__, 2) . '/src/Service/BookMediaMoveRowAttrBuilder.php');
         // "data-column" is EasyAdmin's own, the index cell of a boolean carrying no field id to point at instead
         $sources .= file_get_contents(\dirname(__DIR__, 2) . '/vendor/easycorp/easyadmin-bundle/templates/crud/index.html.twig');
 
@@ -217,6 +250,25 @@ class BookGuidedProjectProviderTest extends TestCase
                 }
             }
         }
+    }
+
+    // "Entity::property" for every field a management controller declares with autocomplete() - one segment per field, cut at the next one, so an "->autocomplete()" inside belongs to the field opening it
+    /** @return list<string> */
+    private function autocompletedProperties(): array
+    {
+        $found = [];
+
+        foreach (glob(\dirname(__DIR__, 2) . '/src/Controller/Management/*CrudController.php') as $path) {
+            $entity = str_replace('CrudController.php', '', basename($path));
+
+            foreach (preg_split('/(?=\w+Field::new\()/', file_get_contents($path)) as $segment) {
+                if (preg_match("/^\w+Field::new\('(\w+)'/", $segment, $matches) && str_contains($segment, '->autocomplete(')) {
+                    $found[] = $entity . '::' . $matches[1];
+                }
+            }
+        }
+
+        return $found;
     }
 
     /** @return list<string> */

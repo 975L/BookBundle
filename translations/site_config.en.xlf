@@ -30,6 +30,14 @@
                 <source>description.book_route_books</source>
                 <target>First segment of the url listing the books, e.g. "books" for /books. The change applies straight away, but the former urls return a not-found page: set up a redirect if they are indexed. Left empty, the page is not served at all — which is what a site whose books are read under its own addresses sets here.</target>
             </trans-unit>
+            <trans-unit id="TzhcPoc">
+                <source>description.book_route_contributor</source>
+                <target>First segment of each author's or illustrator's own page, e.g. "author" (/author/their-name). Left empty, the pages are not served at all.</target>
+            </trans-unit>
+            <trans-unit id="jPP.wp2">
+                <source>description.book_route_contributors</source>
+                <target>First segment of the url listing the authors and illustrators, e.g. "authors". Left empty, the list is not served at all.</target>
+            </trans-unit>
             <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
                 <target>First segment of the url listing the book series, e.g. "series", and of each serie's own page below it (/series/my-serie). Left empty, the pages are not served at all.</target>
@@ -85,6 +93,14 @@
             <trans-unit id="MGsjb2q">
                 <source>label.book_route_books</source>
                 <target>Books list url prefix</target>
+            </trans-unit>
+            <trans-unit id="77RpenE">
+                <source>label.book_route_contributor</source>
+                <target>Author page url prefix</target>
+            </trans-unit>
+            <trans-unit id="Q28nR8K">
+                <source>label.book_route_contributors</source>
+                <target>Authors list url prefix</target>
             </trans-unit>
             <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>

@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\BookBundle\Service\SerieServiceInterface;
 use c975L\BookBundle\Service\StripServiceInterface;
 use c975L\ConfigBundle\Management\SitemapProviderInterface;
@@ -24,6 +25,7 @@ class BookSitemapProvider implements SitemapProviderInterface
     public function __construct(
         private readonly BookPublicUrlResolver $bookPublicUrlResolver,
         private readonly BookServiceInterface $bookService,
+        private readonly ContributorServiceInterface $contributorService,
         private readonly SerieServiceInterface $serieService,
         private readonly StripServiceInterface $stripService,
         private readonly TranslatorInterface $translator,
@@ -43,6 +45,7 @@ class BookSitemapProvider implements SitemapProviderInterface
             $this->getBookUrls(),
             $this->getSerieUrls(),
             $this->getStripUrls(),
+            $this->getContributorUrls(),
         );
     }
 
@@ -88,6 +91,30 @@ class BookSitemapProvider implements SitemapProviderInterface
                 'priority' => 8,
                 'title' => (string) $serie->getTitle(),
                 'description' => $serie->getSummary(),
+            ];
+        }
+
+        return $urls;
+    }
+
+    // The people a shown book or serie credits, their index above them: someone credited nowhere is off the index and off the sitemap alike (see ContributorRepository::findCredited())
+    private function getContributorUrls(): array
+    {
+        $urls = $this->getIndexUrls('contributor_index', 'label.contributors');
+
+        foreach ($this->contributorService->findCredited() as $contributor) {
+            $url = $this->bookPublicUrlResolver->resolve('contributor_display', ['slug' => $contributor->getSlug()]);
+            if (null === $url) {
+                continue;
+            }
+
+            $urls[] = [
+                'loc' => $url,
+                'lastmod' => date('Y-m-d', $contributor->getModification()->getTimestamp()),
+                'changefreq' => 'monthly',
+                'priority' => 7,
+                'title' => (string) $contributor->getName(),
+                'description' => $contributor->getSummary(),
             ];
         }
 

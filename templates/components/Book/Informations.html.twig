@@ -16,23 +16,26 @@
             </strong>
         </p>
         {# The serie's author and illustrator stand for a book naming none of its own - the same reading BookSnippetBuilder gives the structured data, so the page and the snippet never name two different people #}
+        {# Their name leads to their own page now that they have one, not to their site off ours: that address is printed there, beside everything else they signed. Null when this site doesn't serve the family, the name then reading as plain text (see BookRoutePrefix) #}
         {% if book.effectiveAuthor %}
             <p>
                 {{ 'label.author'|trans({}, 'book', book.language) }} :
-                {% if book.effectiveAuthorWebsite %}
-                    <a href="{{ book.effectiveAuthorWebsite }}" title="{{ 'label.author_website'|trans({}, 'book', book.language) }}" target="_blank" rel="noopener">{{ book.effectiveAuthor }}</a>
+                {% set authorPath = contributor_path(book.effectiveAuthor) %}
+                {% if authorPath %}
+                    <a href="{{ authorPath }}">{{ book.effectiveAuthor.name }}</a>
                 {% else %}
-                    <strong>{{ book.effectiveAuthor }}</strong>
+                    <strong>{{ book.effectiveAuthor.name }}</strong>
                 {% endif %}
             </p>
         {% endif %}
         {% if book.effectiveIllustrator %}
             <p>
                 {{ 'label.illustrator'|trans({}, 'book', book.language) }} :
-                {% if book.effectiveIllustratorWebsite %}
-                    <a href="{{ book.effectiveIllustratorWebsite }}" title="{{ 'label.illustrator_website'|trans({}, 'book', book.language) }}" target="_blank" rel="noopener">{{ book.effectiveIllustrator }}</a>
+                {% set illustratorPath = contributor_path(book.effectiveIllustrator) %}
+                {% if illustratorPath %}
+                    <a href="{{ illustratorPath }}">{{ book.effectiveIllustrator.name }}</a>
                 {% else %}
-                    <strong>{{ book.effectiveIllustrator }}</strong>
+                    <strong>{{ book.effectiveIllustrator.name }}</strong>
                 {% endif %}
             </p>
         {% endif %}

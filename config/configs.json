@@ -33,6 +33,28 @@
         "description": "description.book_route_series"
     },
     {
+        "label": "label.book_route_contributors",
+        "slug": "book-route-contributors",
+        "sensitive": false,
+        "restricted": false,
+        "value": "auteurs",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_contributors"
+    },
+    {
+        "label": "label.book_route_contributor",
+        "slug": "book-route-contributor",
+        "sensitive": false,
+        "restricted": false,
+        "value": "auteur",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_contributor"
+    },
+    {
         "label": "label.book_route_strips",
         "slug": "book-route-strips",
         "sensitive": false,

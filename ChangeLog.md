@@ -1,5 +1,54 @@
 # Changelog
 
+## v2.5.0
+
+An author is a row of the catalog, not a name retyped on each book
+
+- **BC break** — `Book::$author`, `$illustrator`, `$authorWebsite`, `$illustratorWebsite` and the same four on `Serie` are replaced by two relations to the new `Contributor` (table `book_contributor`), one entity for both roles, the role being carried by the relation (31/08/2026) **Needs db migration** see [UPGRADE.md](UPGRADE.md)
+- `Book::getAuthor()`/`getIllustrator()` and their `Effective` siblings return a `Contributor` where they returned a string (31/08/2026)
+- `getEffectiveAuthorWebsite()`/`getEffectiveIllustratorWebsite()` stay, reading the address off the person (31/08/2026)
+- `Contributor::__toString()` returns the name, so a template printing `{{ book.author }}` prints what it printed before (31/08/2026)
+- New `ContributorMedia` (discriminator `contributor`), its portrait and its backdrop written under `medias/book/contributors/` (31/08/2026)
+- New public pages `contributor_index` and `contributor_display`, behind the `book-route-contributors`/`book-route-contributor` entries — a site leaving them empty serves neither (31/08/2026)
+- New `ContributorCrudController`, with the trash, the copy, the exports, the drag-and-drop ordering and the "Masqué" switch the three other screens carry (31/08/2026)
+- A person is refused the trash while a book or a serie still credits them (31/08/2026)
+- New `book_contributors` block kind, its silhouette added to `sass/block-thumbs.scss` (31/08/2026)
+- `BookSitemapProvider` declares the index and each credited person (31/08/2026)
+- `LinkableRouteProvider` offers the index and each person as menu targets (31/08/2026)
+- New `ContributorExportProvider`/`ContributorImportProvider` (kind `book_contributor`) and `ContributorResolver` (31/08/2026)
+- The book and serie archives keep the `author`/`authorWebsite`/`illustrator`/`illustratorWebsite` keys they always wrote, each name resolved back into its row (31/08/2026)
+- `Book:Informations` links each name to their own page rather than to their site off ours, which their page carries instead (31/08/2026)
+- `BookSnippetBuilder::person()` takes the entity, the `url` of the `Person` node now following whoever is credited rather than the row crediting them (31/08/2026)
+- `BookDemoFixtureProvider` seeds the two people it credits before anything naming them (31/08/2026)
+- The `book` and `site_config` catalogs gain their keys in the three locales (31/08/2026)
+- New `contributor_path()`, `contributor_url()`, `contributor_edit_urls()` and `contributor_edit_url()` Twig functions (31/08/2026)
+- `BookBlockEditUrlProvider` and `BookBlockOwnerResolver` take the person as a fourth block owner (31/08/2026)
+- New `book-contributor-creation` guided project, opening the parcours the catalog is built in (31/08/2026)
+- New `book-media-move`, `book-sorting`, `book-duplication` and `book-export` guided projects (31/08/2026)
+- The `book-sorting` project names the two indexes the drag-and-drop order is laid on (31/08/2026)
+- The README follows: the routes, the blocks, the trash, the switch, the sitemap, the graph and the archives (31/08/2026)
+- The three shipped skills follow: the pages, the prefixes, the components and the eight export/import providers (31/08/2026)
+- New `ContributorExportProviderTest` (31/08/2026)
+- `MediaUploadMappingTest`, `MenuProviderTest` and `BookDemoFixtureProviderTest` take in the seventh media subclass, the fourth screen and the two people (31/08/2026)
+- The showcase has no `book_contributors` tile until it is recaptured, the README's strip showing one per kind photographed there (31/08/2026)
+- A renamed person or serie leaves a 301 behind again, `updateEntity()` chaining to the trait rather than taking its place (31/08/2026)
+- A person's page leaves out the series trashed or set aside, their covers joined along the way (31/08/2026)
+- The index of people leaves out someone whose only credits are books a newer version replaced (31/08/2026)
+- The author and illustrator autocompletion of a book no longer offers someone set aside (31/08/2026)
+- The "see them all" tile of the books and series listings reads its two labels from `book.*.xlf` rather than from the French written into the templates (31/08/2026)
+- Its title is the new `label.books_more`/`label.series_more`, its button the existing short `label.books`/`label.series` (31/08/2026)
+- **The button therefore reads "Livres"/"Séries" where it read "Tous nos livres"/"Toutes nos séries"** - a site keeping the sentence overrides those keys in its own `book.*.xlf` (31/08/2026)
+- `Contributor::$slug` carries a unique index, the migration checking for two names slugified alike before it is laid (31/08/2026) **Needs db migration** see [UPGRADE.md](UPGRADE.md)
+- An import falls back on a name only where the row found is a shell, a namesake keeping their own page (31/08/2026)
+- `ContributorRepository::findOneByName()` leaves out someone in the trash, whom an import would otherwise credit on a book (31/08/2026)
+- The "see them all" tile of the books, series and people listings answers its checkbox again, the value being brought down to a boolean (31/08/2026)
+- A book crediting nobody no longer opens its hero line on a stray dash (31/08/2026)
+- New `DisplayMoreCoercionTest` (31/08/2026)
+- New `ContributorImportProviderTest`, taking in the namesake left alone (31/08/2026)
+- New `ContributorTest`, `ContributorResolverTest` and `ContributorRepositoryTest` (31/08/2026)
+- `BookPublicUrlGeneratorTestTrait` declares the two contributor routes and their prefixes, which left the tests reading them as a family served elsewhere (31/08/2026)
+- `BookSitemapProviderTest`, `BookUrlExtensionTest`, `BookEditUrlExtensionTest` and `BookTrashManagerTest` take in the person (31/08/2026)
+
 ## v2.4.3
 
 The offers node is explained without naming another bundle

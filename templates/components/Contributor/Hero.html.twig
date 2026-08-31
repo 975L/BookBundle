@@ -1,0 +1,27 @@
+{# <twig:c975LBook:Contributor:Hero contributor="{{ contributor }}" [editUrl=""] /> #}
+{# Same opening as a serie's, the portrait standing where a serie shows its cover. Carries the page's only h1 - contributor/display.html.twig leaves the layout's title block empty #}
+{# The page opens on a background image when one is uploaded: a real <img> and a veil above it, never a background-image - a nonce style-src covers no style attribute (see Book:Hero) #}
+{% props contributor, editUrl = "" %}
+{% set background = contributor.backgrounds|first != false ? contributor.backgrounds|first : '' %}
+<header class="book-hero book-page__hero{{ background ? ' book-hero--has-bg' : '' }}"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+    {% if background %}
+        <img class="book-hero__bg" src="{{ asset(background) }}" alt="" aria-hidden="true" fetchpriority="high">
+        <div class="book-hero__veil" aria-hidden="true"></div>
+    {% endif %}
+
+    {% set portraitSrc = contributor.portraits|first != false ? contributor.portraits|first : "bundles/c975lbook/images/no-cover.webp" %}
+    <img class="book-hero__cover" src="{{ asset(portraitSrc) }}" alt="{{ contributor.name }}" width="240" fetchpriority="high">
+
+    <div class="book-hero__body">
+        <h1 class="book-hero__title">{{ contributor.name }}</h1>
+
+        {% set books = contributor.books %}
+        {% if books|length or contributor.website %}
+            <p class="book-hero__meta">
+                {% if books|length %}{{ books|length }} {{ 'label.books'|trans({}, 'book')|lower }}{% endif %}
+                {% if books|length and contributor.website %} - {% endif %}
+                {% if contributor.website %}<a href="{{ contributor.website }}" target="_blank" rel="noopener">{{ 'label.website'|trans({}, 'book') }}</a>{% endif %}
+            </p>
+        {% endif %}
+    </div>
+</header>

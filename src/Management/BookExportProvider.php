@@ -64,10 +64,11 @@ class BookExportProvider implements ExportProviderInterface
         return [
             'slug' => $book->getSlug(),
             'title' => $book->getTitle(),
-            'author' => $book->getAuthor(),
-            'authorWebsite' => $book->getAuthorWebsite(),
-            'illustrator' => $book->getIllustrator(),
-            'illustratorWebsite' => $book->getIllustratorWebsite(),
+            // The name and the site, the very keys the four string columns wrote before the person became a row of their own: an archive keeps the shape both versions of this bundle read (see ContributorResolver)
+            'author' => $book->getAuthor()?->getName(),
+            'authorWebsite' => $book->getAuthor()?->getWebsite(),
+            'illustrator' => $book->getIllustrator()?->getName(),
+            'illustratorWebsite' => $book->getIllustrator()?->getWebsite(),
             'summary' => $book->getSummary(),
             'published' => $book->getPublished()?->format(\DateTimeInterface::ATOM),
             'creation' => $book->getCreation()?->format(\DateTimeInterface::ATOM),

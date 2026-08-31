@@ -15,11 +15,13 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\BookBundle\Service\BookDuplicator;
@@ -52,6 +54,7 @@ class BookDuplicatorTest extends TestCase
         // No project directory holding the uploaded files, so no file is copied here - what the copy carries of a media is checked on its columns
         $this->duplicator = new BookDuplicator(
             $bookRepository,
+            $this->createStub(ContributorRepository::class),
             $security,
             $serieRepository,
             new AsciiSlugger(),
@@ -68,7 +71,7 @@ class BookDuplicatorTest extends TestCase
             ->setSlug('la-guilde-des-seigneurs')
             ->setKind('strip')
             ->setLanguage('fr')
-            ->setAuthor('Tim Loval');
+            ->setAuthor(new Contributor()->setName('Tim Loval')->setSlug('tim-loval'));
         $serie->addCover(new SerieMedia()->setName('medias/book/series/cover-guilde.webp'));
         $serie->addLogo(new SerieMedia()->setName('medias/book/series/logo-guilde.webp'));
         $serie->addBlock(new Block()->setKind('article')->setData(['text' => 'Un texte']));
@@ -79,7 +82,7 @@ class BookDuplicatorTest extends TestCase
         $this->assertSame('La Guilde des Seigneurs (copie)', $copy->getTitle());
         $this->assertSame('la-guilde-des-seigneurs-copie', $copy->getSlug());
         $this->assertSame('strip', $copy->getKind());
-        $this->assertSame('Tim Loval', $copy->getAuthor());
+        $this->assertSame('Tim Loval', $copy->getAuthor()?->getName());
         $this->assertCount(2, $copy->getMedias());
         $this->assertCount(1, $copy->getCovers());
         $this->assertCount(1, $copy->getLogos());
@@ -174,7 +177,7 @@ class BookDuplicatorTest extends TestCase
         $book = new Book()
             ->setTitle('Tome 1')
             ->setSlug('tome-1')
-            ->setAuthor('Tim Loval')
+            ->setAuthor(new Contributor()->setName('Tim Loval')->setSlug('tim-loval'))
             ->setNumber(1)
             ->setData(['showcase' => true]);
 

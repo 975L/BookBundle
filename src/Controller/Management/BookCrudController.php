@@ -186,21 +186,21 @@ class BookCrudController extends AbstractCrudController
                 ->setFormTypeOption('query_builder', $this->versionQueryBuilder())
                 ->formatValue(fn ($value) => $value instanceof Book ? $value->getTitle() : null),
             ...$this->dataFields(),
-            // Author
+            // Author and illustrator, picked among the people the site records rather than retyped on each book: the site each is read on travels with them, and a spelling apart no longer makes a second author (see Entity\Contributor)
+            // Left empty, a book in a serie credits whoever the serie does (see Book::getEffectiveAuthor())
             FormField::addFieldset(t('label.author', [], 'book'))
                 ->hideOnIndex(),
-            TextField::new('author')
-                ->setLabel(t('label.author', [], 'book')),
-            UrlField::new('authorWebsite')
-                ->setLabel(t('label.author_website', [], 'book')),
+            AssociationField::new('author')
+                ->setLabel(t('label.author', [], 'book'))
+                ->setHelp(t('label.author-help', [], 'book'))
+                ->autocomplete(),
 
-            // Illustrator
             FormField::addFieldset(t('label.illustrator', [], 'book'))
                 ->hideOnIndex(),
-            TextField::new('illustrator')
-                ->setLabel(t('label.illustrator', [], 'book')),
-            UrlField::new('illustratorWebsite')
-                    ->setLabel(t('label.illustrator_website', [], 'book')),
+            AssociationField::new('illustrator')
+                ->setLabel(t('label.illustrator', [], 'book'))
+                ->setHelp(t('label.illustrator-help', [], 'book'))
+                ->autocomplete(),
             // Dates
             DateTimeField::new('creation')
                 ->setLabel(t('label.creation', [], 'book'))

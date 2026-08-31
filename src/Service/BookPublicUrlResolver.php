@@ -23,6 +23,8 @@ class BookPublicUrlResolver
     private const array ROUTE_PREFIXES = [
         'book_index' => 'book-route-books',
         'book_display' => 'book-route-book',
+        'contributor_index' => 'book-route-contributors',
+        'contributor_display' => 'book-route-contributor',
         'serie_index' => 'book-route-series',
         'serie_display' => 'book-route-series',
         'strip_index' => 'book-route-strips',

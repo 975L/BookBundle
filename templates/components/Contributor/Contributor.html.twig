@@ -1,0 +1,7 @@
+{# "editable": the pencil leading to the person's screen, drawn by UiBundle's overlay above what carries the url - the same condition as a serie's card, a listing rendered outside the blocks cache #}
+{% set editUrl = editable|default(false) and is_granted(config('site-role-editor')) ? contributor_edit_url(contributor) : null %}
+<article class="width-200"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+    {% set imageSrc = contributor.portraits|first != false ? contributor.portraits|first : "bundles/c975lbook/images/no-cover.webp" %}
+    <twig:c975LUi:Image:Link label="{{ contributor.name }}" src="{{ asset(imageSrc) }}" url="{{ contributor_path(contributor) }}" class="img-thumbnail box-shadow" width="200" height="200"/>
+    <h3>{{ contributor.name }}</h3>
+</article>

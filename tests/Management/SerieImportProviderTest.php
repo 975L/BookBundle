@@ -10,11 +10,14 @@
 
 namespace c975L\BookBundle\Tests\Management;
 
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
+use c975L\BookBundle\Management\ContributorResolver;
 use c975L\BookBundle\Management\MediaArchiver;
 use c975L\BookBundle\Management\SerieExportProvider;
 use c975L\BookBundle\Management\SerieImportProvider;
+use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Tests\ArchiveTestTrait;
 use c975L\UiBundle\Management\BlockDataExporter;
@@ -22,6 +25,7 @@ use c975L\UiBundle\Management\BlockDataImporter;
 use c975L\UiBundle\Registry\FormBlockDependencyRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class SerieImportProviderTest extends TestCase
 {
@@ -44,7 +48,7 @@ class SerieImportProviderTest extends TestCase
             ->setSummary('Un univers')
             ->setKind('bd')
             ->setLanguage('fr')
-            ->setAuthor('Laurent Marquet')
+            ->setAuthor(new Contributor()->setName('Laurent Marquet')->setSlug('laurent-marquet'))
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'));
         $serie->addCover(new SerieMedia()->setName('medias/book/series/cover-la-guilde/c.webp')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable('2026-02-01 09:00:00')));
@@ -63,7 +67,7 @@ class SerieImportProviderTest extends TestCase
         $imported = array_values(array_filter($persisted, static fn (object $e) => $e instanceof Serie))[0];
         $this->assertSame('la-guilde', $imported->getSlug());
         $this->assertSame('bd', $imported->getKind());
-        $this->assertSame('Laurent Marquet', $imported->getAuthor());
+        $this->assertSame('Laurent Marquet', $imported->getAuthor()?->getName());
         $this->assertCount(1, $imported->getCovers());
         $this->assertSame('cover-bytes', file_get_contents($targetDir . '/public/medias/book/series/cover-la-guilde/c.webp'));
 
@@ -111,6 +115,7 @@ class SerieImportProviderTest extends TestCase
 
         return new SerieImportProvider(
             $em,
+            new ContributorResolver($em, $this->createStub(ContributorRepository::class), new AsciiSlugger()),
             $serieRepository,
             new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class)),
             new MediaArchiver($em, $projectDir),

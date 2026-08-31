@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
 use c975L\BookBundle\Management\MenuProvider;
@@ -28,12 +29,13 @@ class MenuProviderTest extends TestCase
         );
     }
 
-    public function testItContributesTheThreeScreensOfTheCatalog(): void
+    public function testItContributesTheFourScreensOfTheCatalog(): void
     {
         $menus = $this->createProvider()->getMenus();
 
         $this->assertSame(SerieCrudController::class, $menus['serie']['controller']);
         $this->assertSame(BookCrudController::class, $menus['book']['controller']);
+        $this->assertSame(ContributorCrudController::class, $menus['contributor']['controller']);
         $this->assertSame(StripCrudController::class, $menus['strip']['controller']);
     }
 
@@ -42,7 +44,7 @@ class MenuProviderTest extends TestCase
     {
         $menus = $this->createProvider()->getMenus();
 
-        foreach (['serie', 'book', 'strip'] as $slug) {
+        foreach (['serie', 'book', 'contributor', 'strip'] as $slug) {
             $this->assertSame('ROLE_EDITOR', $menus[$slug]['role'], sprintf('The "%s" entry does not name the bar its own crud states', $slug));
         }
     }

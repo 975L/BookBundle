@@ -18,6 +18,7 @@ use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Management\BookBlockEditUrlProvider;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\UiBundle\Entity\Block;
@@ -80,7 +81,7 @@ class BookBlockEditUrlProviderTest extends TestCase
         $this->assertSame([], $this->provider()->getEditUrls([$this->blockWithId(10)]));
     }
 
-    // Nothing to look up: a page rendering only blocks it never saved would otherwise query the three families for an empty list
+    // Nothing to look up: a page rendering only blocks it never saved would otherwise query the four families for an empty list
     public function testABlockWithNoIdQueriesNothing(): void
     {
         $repository = $this->createMock(BookRepository::class);
@@ -89,6 +90,7 @@ class BookBlockEditUrlProviderTest extends TestCase
         $provider = new BookBlockEditUrlProvider(
             $this->adminUrlGenerator(),
             $repository,
+            $this->createStub(ContributorRepository::class),
             $this->createStub(SerieRepository::class),
             $this->createStub(StripRepository::class),
         );
@@ -96,11 +98,12 @@ class BookBlockEditUrlProviderTest extends TestCase
         $this->assertSame([], $provider->getEditUrls([new Block()]));
     }
 
-    private function provider(array $books = [], array $series = [], array $strips = []): BookBlockEditUrlProvider
+    private function provider(array $books = [], array $series = [], array $strips = [], array $contributors = []): BookBlockEditUrlProvider
     {
         return new BookBlockEditUrlProvider(
             $this->adminUrlGenerator(),
             $this->repository(BookRepository::class, $books),
+            $this->repository(ContributorRepository::class, $contributors),
             $this->repository(SerieRepository::class, $series),
             $this->repository(StripRepository::class, $strips),
         );

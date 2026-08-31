@@ -10,6 +10,7 @@
 namespace c975L\BookBundle\Tests\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookDemoFixtureProvider;
 use c975L\BookBundle\Service\BookSampleCatalog;
@@ -92,6 +93,38 @@ class BookDemoFixtureProviderTest extends TestCase
         }
 
         $this->assertCount(2, $seen);
+    }
+
+    // The relation is the owning side and nothing cascades off it, so a book or a serie yielded before the person it credits would name a row nothing has persisted yet
+    public function testThePeopleComeBeforeAnythingCreditingThem(): void
+    {
+        $seen = [];
+
+        foreach ($this->fixtures($this->createProvider()) as $entity) {
+            if ($entity instanceof Contributor) {
+                $seen[] = $entity->getSlug();
+
+                continue;
+            }
+
+            if ($entity instanceof Book || $entity instanceof Serie) {
+                $this->assertContains($entity->getAuthor()?->getSlug(), $seen, (string) $entity->getSlug());
+            }
+        }
+
+        $this->assertSame(['camille-ferrand', 'noe-berthier'], $seen);
+    }
+
+    // The one illustrated book credits the second person, so the line a book's page prints for an illustrator has something to print
+    public function testTheIllustratedBookCreditsTheOtherPerson(): void
+    {
+        $illustrated = array_filter(
+            $this->fixtures($this->createProvider()),
+            static fn (object $e): bool => $e instanceof Book && null !== $e->getIllustrator(),
+        );
+
+        $this->assertCount(1, $illustrated);
+        $this->assertSame('noe-berthier', reset($illustrated)->getIllustrator()?->getSlug());
     }
 
     // The "to be published" rail reads a book with no date: without one, the block has nothing to list

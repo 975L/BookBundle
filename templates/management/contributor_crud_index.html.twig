@@ -1,0 +1,13 @@
+{% extends '@EasyAdmin/crud/index.html.twig' %}
+
+{% block main %}
+    <p>{{ ('label.info_contributor'|trans({}, 'book')) }}</p>
+
+    {{ parent() }}
+{% endblock main %}
+
+{# Opens every row to UiBundle's drag and drop (see assets/js/ea-index-sort.js): a site's people fit on one page, hence no group - the whole index is what is sorted #}
+{% block entity_row_attributes %}
+    data-reorder-url="{{ ea_url().setAction('reorder') }}"
+    data-reorder-token="{{ csrf_token('contributor_reorder') }}"
+{% endblock %}

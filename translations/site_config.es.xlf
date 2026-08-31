@@ -30,6 +30,14 @@
                 <source>description.book_route_books</source>
                 <target>Primer segmento de la URL que lista los libros, p. ej. "libros" para /libros. El cambio es inmediato, pero las URL anteriores devuelven una página no encontrada: prevea una redirección si están indexadas. Vacío, la página deja de servirse.</target>
             </trans-unit>
+            <trans-unit id="TzhcPoc">
+                <source>description.book_route_contributor</source>
+                <target>Primer segmento de la URL de la página de cada autor o ilustrador, p. ej. "autor" (/autor/su-nombre). Vacío, las páginas ya no se sirven.</target>
+            </trans-unit>
+            <trans-unit id="jPP.wp2">
+                <source>description.book_route_contributors</source>
+                <target>Primer segmento de la URL que enumera los autores e ilustradores, p. ej. "autores". Vacío, la lista ya no se sirve.</target>
+            </trans-unit>
             <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
                 <target>Primer segmento de la URL que lista las series de libros, p. ej. "series", y de la página de cada serie bajo ella (/series/mi-serie). Vacío, las páginas dejan de servirse.</target>
@@ -85,6 +93,14 @@
             <trans-unit id="MGsjb2q">
                 <source>label.book_route_books</source>
                 <target>Prefijo URL de la lista de libros</target>
+            </trans-unit>
+            <trans-unit id="77RpenE">
+                <source>label.book_route_contributor</source>
+                <target>Prefijo URL de la página de un autor</target>
+            </trans-unit>
+            <trans-unit id="Q28nR8K">
+                <source>label.book_route_contributors</source>
+                <target>Prefijo URL de la lista de autores</target>
             </trans-unit>
             <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>

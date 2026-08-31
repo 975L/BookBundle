@@ -24,6 +24,7 @@ class SerieImportProvider implements ImportProviderInterface
 
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly ContributorResolver $contributorResolver,
         private readonly SerieRepository $serieRepository,
         private readonly BlockDataImporter $blockDataImporter,
         private readonly MediaArchiver $mediaArchiver,
@@ -40,13 +41,15 @@ class SerieImportProvider implements ImportProviderInterface
         $created = 0;
         $updated = 0;
         $written = [];
+        // The people written by this very run, keyed by name (see ContributorResolver)
+        $contributors = [];
 
         foreach ($items as $item) {
             $serie = $this->serieRepository->findOneBy(['slug' => $item['slug']]);
             $isNew = null === $serie;
             $serie ??= new Serie();
 
-            $this->fillSerie($serie, $item);
+            $this->fillSerie($serie, $item, $contributors);
 
             $this->replaceBlocks($serie, $item['blocks'] ?? [], $filesDir);
 
@@ -70,7 +73,8 @@ class SerieImportProvider implements ImportProviderInterface
     }
 
     // The serie's own fields, written in three groups: what it is, who made it, and where it stands
-    private function fillSerie(Serie $serie, array $item): void
+    // @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors
+    private function fillSerie(Serie $serie, array $item, array &$contributors): void
     {
         $serie
             ->setSlug($item['slug'])
@@ -79,18 +83,17 @@ class SerieImportProvider implements ImportProviderInterface
             ->setKind($item['kind'] ?? null)
             ->setLanguage($item['language'] ?? null);
 
-        $this->fillSerieContributors($serie, $item);
+        $this->fillSerieContributors($serie, $item, $contributors);
         $this->fillSeriePublication($serie, $item);
     }
 
-    // The two people a serie credits, each with the site they are read on
-    private function fillSerieContributors(Serie $serie, array $item): void
+    // The two people a serie credits, named as they were when they were two strings (see BookImportProvider::fillBookContributors())
+    // @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors
+    private function fillSerieContributors(Serie $serie, array $item, array &$contributors): void
     {
         $serie
-            ->setAuthor($item['author'] ?? null)
-            ->setAuthorWebsite($item['authorWebsite'] ?? null)
-            ->setIllustrator($item['illustrator'] ?? null)
-            ->setIllustratorWebsite($item['illustratorWebsite'] ?? null);
+            ->setAuthor($this->contributorResolver->resolve($item['author'] ?? null, $item['authorWebsite'] ?? null, $contributors))
+            ->setIllustrator($this->contributorResolver->resolve($item['illustrator'] ?? null, $item['illustratorWebsite'] ?? null, $contributors));
     }
 
     // Where the serie stands rather than what it says: a round-trip must not put back on the site what an admin had taken off it

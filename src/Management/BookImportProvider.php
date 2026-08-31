@@ -33,6 +33,7 @@ class BookImportProvider implements ImportProviderInterface
         private readonly BookRepository $bookRepository,
         private readonly BlockDataImporter $blockDataImporter,
         private readonly MediaArchiver $mediaArchiver,
+        private readonly ContributorResolver $contributorResolver,
         private readonly SerieResolver $serieResolver,
     ) {
     }
@@ -48,6 +49,8 @@ class BookImportProvider implements ImportProviderInterface
         $updated = 0;
         $written = [];
         $series = [];
+        // The people written by this very run, keyed by name, for the same reason the series are (see ContributorResolver)
+        $contributors = [];
         // The books written by this very run, keyed by slug: what the translations are resolved against below, findOneBy() not seeing a book persisted but not yet flushed
         $books = [];
 
@@ -56,7 +59,7 @@ class BookImportProvider implements ImportProviderInterface
             $isNew = null === $book;
             $book ??= new Book();
 
-            $this->fillBook($book, $item, $series);
+            $this->fillBook($book, $item, $series, $contributors);
             $this->replaceBlocks($book, $item['blocks'] ?? [], $filesDir);
 
             $this->syncEditions($book, $item['editions'] ?? []);
@@ -88,10 +91,11 @@ class BookImportProvider implements ImportProviderInterface
     }
 
     // @param array<string, \c975L\BookBundle\Entity\Serie> $series
-    private function fillBook(Book $book, array $item, array &$series): void
+    // @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors
+    private function fillBook(Book $book, array $item, array &$series, array &$contributors): void
     {
         $this->fillBookIdentity($book, $item);
-        $this->fillBookContributors($book, $item);
+        $this->fillBookContributors($book, $item, $contributors);
         $this->fillBookDates($book, $item);
         $this->fillBookCrowdfunding($book, $item);
         $this->fillBookPublication($book, $item);
@@ -111,14 +115,13 @@ class BookImportProvider implements ImportProviderInterface
             ->setLanguage($item['language'] ?? null);
     }
 
-    // The two people a book credits, each with the site they are read on
-    private function fillBookContributors(Book $book, array $item): void
+    // The two people a book credits, named as they were when they were two strings: the resolver turns each name into the row it stands for, creating it when this environment doesn't hold it yet
+    // @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors
+    private function fillBookContributors(Book $book, array $item, array &$contributors): void
     {
         $book
-            ->setAuthor($item['author'] ?? '')
-            ->setAuthorWebsite($item['authorWebsite'] ?? null)
-            ->setIllustrator($item['illustrator'] ?? null)
-            ->setIllustratorWebsite($item['illustratorWebsite'] ?? null);
+            ->setAuthor($this->contributorResolver->resolve($item['author'] ?? null, $item['authorWebsite'] ?? null, $contributors))
+            ->setIllustrator($this->contributorResolver->resolve($item['illustrator'] ?? null, $item['illustratorWebsite'] ?? null, $contributors));
     }
 
     // The three dates the book carries, each read from the archive when it holds one

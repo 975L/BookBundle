@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Contract\TrashableInterface;
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\ConfigBundle\Entity\Redirect;
@@ -83,6 +84,7 @@ class BookTrashManager
             $entity instanceof Book => 'book',
             $entity instanceof Strip => 'strip',
             $entity instanceof Serie => 'serie',
+            $entity instanceof Contributor => 'contributor',
             default => null,
         };
 

@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 
@@ -48,8 +49,8 @@ class BookSnippetBuilder
             'url' => trim((string) $url),
             'description' => $this->plainText($book->getSummary()),
             'image' => trim((string) $imageUrl),
-            'author' => $this->person($book->getEffectiveAuthor(), $book->getEffectiveAuthorWebsite()),
-            'illustrator' => $this->person($book->getEffectiveIllustrator(), $book->getEffectiveIllustratorWebsite()),
+            'author' => $this->person($book->getEffectiveAuthor()),
+            'illustrator' => $this->person($book->getEffectiveIllustrator()),
             'inLanguage' => trim((string) $book->getLanguage()),
             'datePublished' => $book->getPublished()?->format('Y-m-d') ?? '',
             'bookFormat' => $this->bookFormat($book),
@@ -81,8 +82,8 @@ class BookSnippetBuilder
             'url' => trim((string) $url),
             'description' => $this->plainText($serie->getSummary()),
             'image' => trim((string) $imageUrl),
-            'author' => $this->person($serie->getAuthor(), $serie->getAuthorWebsite()),
-            'illustrator' => $this->person($serie->getIllustrator(), $serie->getIllustratorWebsite()),
+            'author' => $this->person($serie->getAuthor()),
+            'illustrator' => $this->person($serie->getIllustrator()),
             'inLanguage' => trim((string) $serie->getLanguage()),
             // The volumes in the order they came out, which is what says "tome 1 of 12" to a machine - a serie page otherwise only lines thumbnails up
             'hasPart' => $this->volumes($serie),
@@ -110,8 +111,8 @@ class BookSnippetBuilder
             'description' => $this->plainText($strip->getSummary()),
             'image' => trim((string) $imageUrl),
             // A strip carries no author of its own, the serie it belongs to naming the one who draws them all
-            'author' => $this->person($serie?->getAuthor(), $serie?->getAuthorWebsite()),
-            'illustrator' => $this->person($serie?->getIllustrator(), $serie?->getIllustratorWebsite()),
+            'author' => $this->person($serie?->getAuthor()),
+            'illustrator' => $this->person($serie?->getIllustrator()),
             'inLanguage' => trim((string) $serie?->getLanguage()),
             'datePublished' => $published->format('Y-m-d'),
             'position' => $strip->getNumber() ?? 0,
@@ -148,10 +149,10 @@ class BookSnippetBuilder
         return $characters;
     }
 
-    // A named person, with their site as their identity when they have one - a bare string would leave two authors of the same name indistinguishable
-    private function person(?string $name, ?string $website): array
+    // A named person, with their site as their identity when they have one - a bare name would leave two authors called the same indistinguishable
+    private function person(?Contributor $contributor): array
     {
-        $name = trim((string) $name);
+        $name = trim((string) $contributor?->getName());
         if ('' === $name) {
             return [];
         }
@@ -159,7 +160,7 @@ class BookSnippetBuilder
         return $this->clean([
             '@type' => 'Person',
             'name' => $name,
-            'url' => trim((string) $website),
+            'url' => trim((string) $contributor?->getWebsite()),
         ]);
     }
 

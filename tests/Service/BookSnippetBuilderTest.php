@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Tests\Service;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
@@ -206,8 +207,8 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertSame('https://example.org/source', $snippet['sameAs']);
         // The serie is the very node its own page publishes, a serie holding strips being the one holding the books
         $this->assertSame(['@type' => 'BookSeries', 'name' => 'La Guilde des Seigneurs'], $snippet['isPartOf']);
-        // A strip names no author of its own, the serie naming the one who draws them all
-        $this->assertSame(['@type' => 'Person', 'name' => 'Tim Loval'], $snippet['author']);
+        // A strip names no author of its own, the serie naming the one who draws them all - with their site, which now travels with the person rather than being retyped on each row that credits them
+        $this->assertSame(['@type' => 'Person', 'name' => 'Tim Loval', 'url' => 'https://example.org/auteur'], $snippet['author']);
     }
 
     public function testAStripCarriesTheCharactersItPutsOnStage(): void
@@ -248,8 +249,7 @@ class BookSnippetBuilderTest extends TestCase
         return new Book()
             ->setTitle('Tome 1')
             ->setSummary('Une histoire de pirates')
-            ->setAuthor('Tim Loval')
-            ->setAuthorWebsite('https://example.org/auteur')
+            ->setAuthor(self::contributor())
             ->setLanguage('fr')
             ->setPublished(new \DateTime('2026-01-15'))
             ->setAge('7-10')
@@ -270,9 +270,15 @@ class BookSnippetBuilderTest extends TestCase
         ;
 
         // The serie names the author of the strips it holds, a strip carrying none of its own
-        $this->serie()->setAuthor('Tim Loval')->addStrip($strip);
+        $this->serie()->setAuthor(self::contributor())->addStrip($strip);
 
         return $strip;
+    }
+
+    // The person the fixtures credit, with the site that stands for their identity in the graph (see BookSnippetBuilder::person())
+    private static function contributor(): Contributor
+    {
+        return new Contributor()->setName('Tim Loval')->setSlug('tim-loval')->setWebsite('https://example.org/auteur');
     }
 
     // An edition, which says only what the book comes out under: the date is the book's, the only one there is

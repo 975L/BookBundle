@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Twig;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Tests\BookPublicUrlGeneratorTestTrait;
 use c975L\BookBundle\Twig\BookUrlExtension;
@@ -63,6 +64,25 @@ class BookUrlExtensionTest extends TestCase
         [$original] = self::family();
 
         $this->assertSame([], $this->createExtension('https://example.com', ['book-route-book' => ''])->alternates($original));
+    }
+
+    // The templates hand the person over rather than spelling their slug, the path for a link on the site and the absolute url for what is read off it
+    public function testAPersonsPageIsGeneratedFromThePersonThemselves(): void
+    {
+        $contributor = new Contributor()->setName('Tim Loval')->setSlug('tim-loval');
+
+        $this->assertSame('/auteur/tim-loval', $this->createExtension()->contributorPath($contributor));
+        $this->assertSame('https://example.com/auteur/tim-loval', $this->createExtension()->contributorUrl($contributor));
+    }
+
+    // A site reading its people elsewhere serves that page from nowhere here: null rather than a throw, so a template asking for it prints no link instead of 500ing
+    public function testAPersonsPageIsNotGeneratedWithoutAContributorPrefix(): void
+    {
+        $contributor = new Contributor()->setName('Tim Loval')->setSlug('tim-loval');
+        $extension = $this->createExtension('https://example.com', ['book-route-contributor' => '']);
+
+        $this->assertNull($extension->contributorPath($contributor));
+        $this->assertNull($extension->contributorUrl($contributor));
     }
 
     private function createExtension(string $siteUrl = 'https://example.com', array $prefixes = []): BookUrlExtension

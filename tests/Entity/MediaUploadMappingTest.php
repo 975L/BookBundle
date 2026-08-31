@@ -13,6 +13,7 @@ use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
 use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Entity\ContributorMedia;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\SerieMedia;
 use c975L\BookBundle\Entity\StripMedia;
@@ -22,7 +23,7 @@ use Vich\UploaderBundle\Metadata\Driver\AttributeDriver;
 use Vich\UploaderBundle\Metadata\Driver\AttributeReader;
 use Vich\UploaderBundle\Metadata\MetadataReader;
 
-// The upload is declared once, on Media::$file, where Vich reads it off the parent class - what each subclass keeps is the #[Vich\Uploadable] marking it uploadable, an attribute PHP does not inherit. Both halves are checked here: an upgrade of the bundle dropping the parent walk would otherwise take the six uploads down without a single test turning red
+// The upload is declared once, on Media::$file, where Vich reads it off the parent class - what each subclass keeps is the #[Vich\Uploadable] marking it uploadable, an attribute PHP does not inherit. Both halves are checked here: an upgrade of the bundle dropping the parent walk would otherwise take the seven uploads down without a single test turning red
 class MediaUploadMappingTest extends TestCase
 {
     /** @return list<array{class-string<Media>}> */
@@ -33,6 +34,7 @@ class MediaUploadMappingTest extends TestCase
             [BookMedia::class],
             [BookPresse::class],
             [BookVideo::class],
+            [ContributorMedia::class],
             [SerieMedia::class],
             [StripMedia::class],
         ];

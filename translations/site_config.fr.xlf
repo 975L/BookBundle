@@ -30,6 +30,14 @@
                 <source>description.book_route_books</source>
                 <target>Premier segment de l'URL listant les livres, ex. "livres" pour /livres. La modification est immédiate, mais les anciennes URL renvoient une page introuvable : prévoyez une redirection si elles sont indexées. Vide, la page n'est plus servie du tout - c'est ce que règle un site dont les livres se lisent sous ses propres adresses.</target>
             </trans-unit>
+            <trans-unit id="TzhcPoc">
+                <source>description.book_route_contributor</source>
+                <target>Premier segment de l'URL de la page de chaque auteur ou illustrateur, ex. "auteur" (/auteur/son-nom). Vide, les pages ne sont plus servies du tout.</target>
+            </trans-unit>
+            <trans-unit id="jPP.wp2">
+                <source>description.book_route_contributors</source>
+                <target>Premier segment de l'URL listant les auteurs et illustrateurs, ex. "auteurs". Vide, la liste n'est plus servie du tout.</target>
+            </trans-unit>
             <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
                 <target>Premier segment de l'URL listant les séries de livres, ex. "series", et de la page de chaque série en dessous (/series/ma-serie). Vide, les pages ne sont plus servies du tout.</target>
@@ -85,6 +93,14 @@
             <trans-unit id="MGsjb2q">
                 <source>label.book_route_books</source>
                 <target>Préfixe URL de la liste des livres</target>
+            </trans-unit>
+            <trans-unit id="77RpenE">
+                <source>label.book_route_contributor</source>
+                <target>Préfixe URL de la page d'un auteur</target>
+            </trans-unit>
+            <trans-unit id="Q28nR8K">
+                <source>label.book_route_contributors</source>
+                <target>Préfixe URL de la liste des auteurs</target>
             </trans-unit>
             <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>

@@ -11,9 +11,11 @@
 namespace c975L\BookBundle\Twig;
 
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
@@ -42,6 +44,12 @@ class BookEditUrlExtension
 
     private const array SERIE_FIELDS = [
         'hero' => 'title',
+        'resume' => 'summary',
+    ];
+
+    // A person's page is their portrait, what they are introduced with, and what they signed - the last being written on each book's own screen, it gets no pencil
+    private const array CONTRIBUTOR_FIELDS = [
+        'hero' => 'name',
         'resume' => 'summary',
     ];
 
@@ -89,6 +97,13 @@ class BookEditUrlExtension
     }
 
     /** @return array<string, string> */
+    #[AsTwigFunction('contributor_edit_urls')]
+    public function contributor(Contributor $contributor): array
+    {
+        return $this->urls(ContributorCrudController::class, $contributor->getId(), self::CONTRIBUTOR_FIELDS);
+    }
+
+    /** @return array<string, string> */
     #[AsTwigFunction('strip_edit_urls')]
     public function strip(Strip $strip): array
     {
@@ -114,6 +129,13 @@ class BookEditUrlExtension
     public function serieEditUrl(Serie $serie): ?string
     {
         return $this->editUrl(SerieCrudController::class, $serie->getId());
+    }
+
+    // And for the card a person is reached by, which their own screen edits whole
+    #[AsTwigFunction('contributor_edit_url')]
+    public function contributorEditUrl(Contributor $contributor): ?string
+    {
+        return $this->editUrl(ContributorCrudController::class, $contributor->getId());
     }
 
     private function editUrl(string $crudControllerFqcn, ?int $entityId): ?string

@@ -10,10 +10,12 @@
 
 namespace c975L\BookBundle\Tests\Management;
 
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Management\BookGuidedProjectProvider;
 use c975L\BookBundle\Management\LinkableRouteProvider;
 use c975L\BookBundle\Management\MenuProvider;
+use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Tests\BookPublicUrlGeneratorTestTrait;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
@@ -29,7 +31,7 @@ class ManagementTargetsTest extends ManagementTargetsTestCase
     {
         return [
             new MenuProvider($this->createStub(ConfigServiceInterface::class)),
-            new LinkableRouteProvider($this->createRoutePrefix(), $this->serieRepository(), $this->createStub(TranslatorInterface::class)),
+            new LinkableRouteProvider($this->createRoutePrefix(), $this->contributorRepository(), $this->serieRepository(), $this->createStub(TranslatorInterface::class)),
             // The recording generator, so the CRUD controllers each project opens on are captured on their way through
             new BookGuidedProjectProvider($this->adminUrlGenerator(), $this->createStub(ConfigServiceInterface::class)),
         ];
@@ -40,6 +42,15 @@ class ManagementTargetsTest extends ManagementTargetsTestCase
     {
         $repository = $this->createStub(SerieRepository::class);
         $repository->method('findAll')->willReturn([new Serie()->setSlug('la-guilde-des-seigneurs')->setTitle('La Guilde des Seigneurs')]);
+
+        return $repository;
+    }
+
+    // One person, for the same reason: an empty repository would leave the indexes as the only linkable targets, and the route their entries name unchecked
+    private function contributorRepository(): ContributorRepository
+    {
+        $repository = $this->createStub(ContributorRepository::class);
+        $repository->method('findAll')->willReturn([new Contributor()->setSlug('tim-loval')->setName('Tim Loval')]);
 
         return $repository;
     }

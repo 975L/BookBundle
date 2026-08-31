@@ -1,0 +1,44 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set title = contributor.name %}
+{% set summarySocialNetwork = contributor.summary %}
+{% set ogImage = absolute_url(asset(contributor.portraits|first != false ? contributor.portraits|first : "bundles/c975lbook/images/no-cover.webp")) %}
+
+{# The hero carries the page's only h1, inside the container where the portrait can stand beside it #}
+{% block heading %}{% endblock %}
+
+{% block content %}
+    {# Editor-only: the pencil UiBundle floats over anything carrying "data-block-edit-url" (see its assets/js/block-edit-overlay.js), leading to the very field the section is written in. Gated on the very role the edit screen asks for (see configureCrud()) #}
+    {% set editUrls = is_granted(config('site-role-editor')) ? contributor_edit_urls(contributor) : {} %}
+
+    {% set books = contributor.books %}
+    {% set series = contributor.series %}
+
+    <div class="book-page"{% if editUrls %} data-controller="blockEditOverlay" data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
+        <twig:c975LBook:Contributor:Hero contributor="{{ contributor }}" editUrl="{{ editUrls.hero|default('') }}"/>
+
+        <div class="book-page__sections">
+            {# First of the column: who they are is what the page opens on, and it reads under the hero before anything they signed #}
+            <twig:c975LBook:Contributor:Resume contributor="{{ contributor }}" editUrl="{{ editUrls.resume|default('') }}"/>
+
+            {# No card around the items: what they signed is no section to be announced, it is what the page is read for #}
+            {% if books|length %}
+                <section id="books" class="toc-target">
+                    <h2>{{ 'label.contributor_books'|trans({}, 'book') }}</h2>
+                    <twig:c975LBook:Book:Books books="{{ books }}" displayMore="false" :editable="editUrls is not empty"/>
+                </section>
+            {% endif %}
+
+            {% if series|length %}
+                <section id="series" class="toc-target">
+                    <h2>{{ 'label.contributor_series'|trans({}, 'book') }}</h2>
+                    <twig:c975LBook:Serie:Series series="{{ series }}" :editable="editUrls is not empty"/>
+                </section>
+            {% endif %}
+
+            {# Where the site says the rest in its own words: the stores they are read on, a quote, a video - composed in the back office rather than written into this template #}
+            <twig:c975LUi:Blocks:Blocks blocks="{{ contributor.blocks }}"/>
+        </div>
+    </div>
+{% endblock %}

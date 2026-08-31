@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Service\BookVersionPublisher;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +31,7 @@ class BookVersionPublisherTest extends TestCase
             ->setSlug('chat-et-chocolat')
             ->setNumber(12)
             ->setLanguage('fr')
-            ->setAuthor('Papa Câlin')
+            ->setAuthor(new Contributor()->setName('Papa Câlin')->setSlug('papa-calin'))
             ->setData(['idea' => 'Melvin, 5 ans']);
 
         $previous = $this->publisher()->createPreviousVersion($book, 'Chat et Chocolat — Édition originale');
@@ -39,7 +40,7 @@ class BookVersionPublisherTest extends TestCase
         $this->assertSame('chat-et-chocolat-previous', $previous->getSlug());
         $this->assertSame(12, $previous->getNumber());
         $this->assertSame('fr', $previous->getLanguage());
-        $this->assertSame('Papa Câlin', $previous->getAuthor());
+        $this->assertSame('Papa Câlin', $previous->getAuthor()?->getName());
         $this->assertSame(['idea' => 'Melvin, 5 ans'], $previous->getData());
         $this->assertSame($book, $previous->getNewerVersion());
         // The book itself did not move address: it is the one outside links carry

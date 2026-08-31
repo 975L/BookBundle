@@ -26,6 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInter
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -35,7 +36,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,7 +47,10 @@ use function Symfony\Component\Translation\t;
 
 class SerieCrudController extends AbstractCrudController
 {
-    use TrashableCrudTrait;
+    // updateEntity() is widened below: a method written in the class body would take the trait's place instead of chaining to it
+    use TrashableCrudTrait {
+        updateEntity as private trashableUpdateEntity;
+    }
 
     // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
     public const string RESTORE_CSRF_TOKEN = 'book_serie_restore';
@@ -130,25 +133,20 @@ class SerieCrudController extends AbstractCrudController
                     'es' => t('label.spanish', [], 'book'),
                 ]),
 
-            // Author
+            // Author and illustrator, picked among the people the site records - what every book of the serie inherits unless it names its own (see Entity\Contributor)
             FormField::addFieldset(t('label.author', [], 'book'))
                 ->hideOnIndex(),
-            TextField::new('author')
+            AssociationField::new('author')
                 ->setLabel(t('label.author', [], 'book'))
-                ->hideOnIndex(),
-            UrlField::new('authorWebsite')
-                ->setLabel(t('label.author_website', [], 'book'))
-                ->hideOnIndex(),
+                ->hideOnIndex()
+                ->autocomplete(),
 
-            // Illustrator
             FormField::addFieldset(t('label.illustrator', [], 'book'))
                 ->hideOnIndex(),
-            TextField::new('illustrator')
+            AssociationField::new('illustrator')
                 ->setLabel(t('label.illustrator', [], 'book'))
-                ->hideOnIndex(),
-            UrlField::new('illustratorWebsite')
-                ->setLabel(t('label.illustrator_website', [], 'book'))
-                ->hideOnIndex(),
+                ->hideOnIndex()
+                ->autocomplete(),
 
             // Media management
             FormField::addFieldset(t('label.cover', [], 'book'))
@@ -289,7 +287,7 @@ class SerieCrudController extends AbstractCrudController
             $this->addFlash('danger', $this->translator->trans('flash.serie_holds_shown_content', [], 'book'));
         }
 
-        parent::updateEntity($entityManager, $serie);
+        $this->trashableUpdateEntity($entityManager, $serie);
     }
 
     public function deleteEntity(EntityManagerInterface $entityManager, mixed $serie): void

@@ -15,6 +15,7 @@ use Vich\UploaderBundle\Mapping\Attribute as Vich;
 #[ORM\DiscriminatorMap([
     'serie' => SerieMedia::class,
     'book' => BookMedia::class,
+    'contributor' => ContributorMedia::class,
     'book_marketing' => BookMarketing::class,
     'book_presse' => BookPresse::class,
     'book_video' => BookVideo::class,

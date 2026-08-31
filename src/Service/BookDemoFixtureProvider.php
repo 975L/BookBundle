@@ -11,6 +11,7 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
 use c975L\BookBundle\Enum\SerieKind;
@@ -62,6 +63,13 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
      */
     public function getDemoFixtures(): iterable
     {
+        // The two people the demo credits, yielded before anything naming them: a book pointing at a row not yet recorded has nothing to point at
+        $author = $this->contributor(BookSampleCatalog::AUTHOR, 'camille-ferrand', 1);
+        $illustrator = $this->contributor(BookSampleCatalog::ILLUSTRATOR, 'noe-berthier', 2);
+
+        yield $author;
+        yield $illustrator;
+
         $series = [];
 
         foreach ($this->catalog->getSeries() as $position => $spec) {
@@ -71,7 +79,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
                 ->setSummary($this->trans($spec['summary']))
                 ->setKind(SerieKind::Book->value)
                 ->setLanguage($this->language())
-                ->setAuthor(BookSampleCatalog::AUTHOR)
+                ->setAuthor($author)
                 ->setPosition($position + 1)
                 ->setCreation(new \DateTime(self::CREATION))
                 ->setModification(new \DateTime(self::CREATION));
@@ -96,14 +104,25 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
         }
 
         foreach ($this->catalog->getBooks() as $spec) {
-            yield $this->book($spec, $series[$spec['serie']]);
+            yield $this->book($spec, $series[$spec['serie']], $author, $illustrator);
         }
+    }
+
+    // A made-up person, dated like the rest of the dataset rather than from the clock. No portrait: a demo catalog reads whole without one, and the card falls back on the bundle's "no-cover.webp" as a book's does
+    private function contributor(string $name, string $slug, int $position): Contributor
+    {
+        return new Contributor()
+            ->setName($name)
+            ->setSlug($slug)
+            ->setPosition($position)
+            ->setCreation(new \DateTime(self::CREATION))
+            ->setModification(new \DateTime(self::CREATION));
     }
 
     /**
      * @param array{slug: string, title: string, summary: string, serie: string, published: ?string, creation: string, number: int, illustrated: bool} $spec
      */
-    private function book(array $spec, Serie $serie): Book
+    private function book(array $spec, Serie $serie, Contributor $author, Contributor $illustrator): Book
     {
         $date = new \DateTime($spec['creation']);
 
@@ -111,7 +130,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
             ->setSlug($spec['slug'])
             ->setTitle($this->trans($spec['title']))
             ->setSummary($this->trans($spec['summary']))
-            ->setAuthor(BookSampleCatalog::AUTHOR)
+            ->setAuthor($author)
             ->setLanguage($this->language())
             ->setSerie($serie)
             ->setNumber($spec['number'])
@@ -121,7 +140,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
 
         // The one book credited to an illustrator, so the line a book's page prints for it has something to print
         if ($spec['illustrated']) {
-            $book->setIllustrator(BookSampleCatalog::ILLUSTRATOR);
+            $book->setIllustrator($illustrator);
         }
 
         foreach ($this->pictures('book', $spec['slug']) as $position => $image) {

@@ -13,10 +13,12 @@ namespace c975L\BookBundle\Service;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
@@ -29,11 +31,12 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 
-// Builds the copy of a serie, a book or a strip with everything that belongs to it - its files, its platform links, its blocks - as an unsaved graph the caller persists in one go (see the duplicate() action of each CRUD controller). A serie's books and strips are deliberately left out: they belong to the serie they were published in, and duplicating one is its own decision, taken book by book
+// Builds the copy of a serie, a book, a strip or a person with everything that belongs to it - its files, its platform links, its blocks - as an unsaved graph the caller persists in one go (see the duplicate() action of each CRUD controller). A serie's books and strips are deliberately left out: they belong to the serie they were published in, and duplicating one is its own decision, taken book by book
 class BookDuplicator
 {
     public function __construct(
         private readonly BookRepository $bookRepository,
+        private readonly ContributorRepository $contributorRepository,
         private readonly Security $security,
         private readonly SerieRepository $serieRepository,
         private readonly SluggerInterface $slugger,
@@ -42,6 +45,32 @@ class BookDuplicator
         #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
     ) {
+    }
+
+    // Copies the person, their portrait, their background and their blocks - not what they signed, which stays credited to the original: a copy is a new person the editor then names, never a second author of the same books
+    public function duplicateContributor(Contributor $source): Contributor
+    {
+        $now = new \DateTime();
+        $copy = new Contributor()
+            ->setName($this->copyTitle($source->getName(), 50))
+            ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->contributorRepository->findOneBy(['slug' => $candidate])))
+            ->setSummary($source->getSummary())
+            ->setWebsite($source->getWebsite())
+            ->setPosition($source->getPosition())
+            ->setCreation($now)
+            ->setModification($now)
+            ->setUser($this->currentUser());
+
+        // Portrait and background alike, the kind carried by each row being what tells them apart (see Contributor::getPortraits())
+        foreach ($source->getMedias() as $media) {
+            $copy->addMedia($this->cloneMedia($media));
+        }
+
+        foreach ($source->getBlocks() as $block) {
+            $copy->addBlock($this->cloneBlock($block));
+        }
+
+        return $copy;
     }
 
     // Copies the serie itself, its covers, its logos and its blocks - not its books nor its strips, which stay with the original
@@ -55,9 +84,7 @@ class BookDuplicator
             ->setKind($source->getKind())
             ->setLanguage($source->getLanguage())
             ->setAuthor($source->getAuthor())
-            ->setAuthorWebsite($source->getAuthorWebsite())
             ->setIllustrator($source->getIllustrator())
-            ->setIllustratorWebsite($source->getIllustratorWebsite())
             ->setCreation($now)
             ->setModification($now)
             ->setUser($this->currentUser());
@@ -84,10 +111,8 @@ class BookDuplicator
             ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->bookRepository->findOneBy(['slug' => $candidate])))
             // The column is nullable, its setter is not - a book with no summary yet copies as one with an empty summary
             ->setSummary((string) $source->getSummary())
-            ->setAuthor((string) $source->getAuthor())
-            ->setAuthorWebsite($source->getAuthorWebsite())
+            ->setAuthor($source->getAuthor())
             ->setIllustrator($source->getIllustrator())
-            ->setIllustratorWebsite($source->getIllustratorWebsite())
             ->setPublished($source->getPublished())
             ->setSerie($source->getSerie())
             ->setNumber($source->getNumber())

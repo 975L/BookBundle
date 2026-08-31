@@ -15,12 +15,15 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Management\BookExportProvider;
 use c975L\BookBundle\Management\BookImportProvider;
+use c975L\BookBundle\Management\ContributorResolver;
 use c975L\BookBundle\Management\MediaArchiver;
 use c975L\BookBundle\Management\SerieResolver;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Tests\ArchiveTestTrait;
 use c975L\UiBundle\Management\BlockDataExporter;
@@ -28,6 +31,7 @@ use c975L\UiBundle\Management\BlockDataImporter;
 use c975L\UiBundle\Registry\FormBlockDependencyRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class BookImportProviderTest extends TestCase
 {
@@ -87,7 +91,7 @@ class BookImportProviderTest extends TestCase
 
     public function testImportWritesOverTheBookTheSiteAlreadyHoldsAtThatSlug(): void
     {
-        $existing = new Book()->setSlug('tome-1')->setTitle('Ancien titre')->setAuthor('LM')->setSummary('')
+        $existing = new Book()->setSlug('tome-1')->setTitle('Ancien titre')->setAuthor(self::contributor('LM', 'lm'))->setSummary('')
             ->setCreation(new \DateTime())->setModification(new \DateTime());
         $existing->addEdition(new BookEdition()->setKind('ebook'));
         $existing->addLink(new BookLink()->setKind('epub_fnac')->setUrl('https://fnac.example/ancien'));
@@ -109,7 +113,7 @@ class BookImportProviderTest extends TestCase
     // A file already on disk under that name keeps its row rather than being dropped and built anew, which is what spares a re-import the whole catalog
     public function testImportMatchesAnExistingFileByTheNameItIsServedUnder(): void
     {
-        $existing = new Book()->setSlug('tome-1')->setTitle('Tome 1')->setAuthor('LM')->setSummary('')
+        $existing = new Book()->setSlug('tome-1')->setTitle('Tome 1')->setAuthor(self::contributor('LM', 'lm'))->setSummary('')
             ->setCreation(new \DateTime())->setModification(new \DateTime());
         $kept = new BookMedia()->setName('medias/book/books/cover-tome-1/c.webp')->setTitle('Ancien')->setUpdatedAt(new \DateTimeImmutable());
         $dropped = new BookMedia()->setName('medias/book/books/cover-tome-1/old.webp')->setUpdatedAt(new \DateTimeImmutable());
@@ -163,7 +167,7 @@ class BookImportProviderTest extends TestCase
         $book = new Book()
             ->setSlug('tome-1')
             ->setTitle('Tome 1')
-            ->setAuthor('Laurent Marquet')
+            ->setAuthor(self::contributor())
             ->setSummary('Résumé')
             ->setData(['dedication' => 'Pour Kalaan'])
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
@@ -195,6 +199,7 @@ class BookImportProviderTest extends TestCase
             $bookRepository,
             new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class)),
             new MediaArchiver($em, $projectDir),
+            new ContributorResolver($em, $this->createStub(ContributorRepository::class), new AsciiSlugger()),
             new SerieResolver($em, $this->createStub(SerieRepository::class)),
         );
     }
@@ -236,5 +241,11 @@ class BookImportProviderTest extends TestCase
         }
 
         $this->fail(sprintf('No %s was persisted.', $class));
+    }
+
+    // The person the fixtures credit, a row of their own now that a name is no longer a column (see Entity\Contributor)
+    private static function contributor(string $name = 'Laurent Marquet', string $slug = 'laurent-marquet'): Contributor
+    {
+        return new Contributor()->setName($name)->setSlug($slug);
     }
 }

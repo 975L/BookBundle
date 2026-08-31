@@ -29,7 +29,7 @@ services:
             - { name: 'ui.script', priority: 100 }
 
     # Block kinds registered in UiBundle
-    # cacheable: false on all 4 below - their templates call book_block_*() (BookBlockExtension), which queries Book/Serie/Strip live at render time; those entities aren't watched by BlockCacheInvalidationListener, so caching by this block's own id would go stale as soon as a book/serie/strip is published/edited elsewhere, with nothing to invalidate it
+    # cacheable: false on the kinds below whose template calls book_block_*() (BookBlockExtension), which queries Book/Serie/Strip live at render time; those entities aren't watched by BlockCacheInvalidationListener, so caching by this block's own id would go stale as soon as a book/serie/strip is published/edited elsewhere, with nothing to invalidate it
     book.block.series:
         class: stdClass
         tags:
@@ -41,6 +41,20 @@ services:
               category: 'label.category_books'
               form: 'c975L\BookBundle\Form\Block\SeriesBlockType'
               template: '@c975LBook/blocks/Series.html.twig'
+              pickable: true
+              cacheable: false
+
+    book.block.contributors:
+        class: stdClass
+        tags:
+            - name: ui.block
+              kind: book_contributors
+              label: 'label.block_contributors'
+              description: 'label.block_contributors_description'
+              translation_domain: 'book'
+              category: 'label.category_books'
+              form: 'c975L\BookBundle\Form\Block\ContributorsBlockType'
+              template: '@c975LBook/blocks/Contributors.html.twig'
               pickable: true
               cacheable: false
 
@@ -72,7 +86,7 @@ services:
               pickable: true
               cacheable: false
 
-    # The one kind of the four whose content is its own attached medias rather than a live query, hence cacheable and fed by a BlockFixtureProvider where the other three need the showcase
+    # The kind whose content is its own attached medias rather than a live query, hence cacheable and fed by a BlockFixtureProvider where the others need the showcase
     book.block.reader:
         class: stdClass
         tags:

@@ -60,7 +60,9 @@
             {# The same readings as Book:Informations and as the structured data, which fall back on the serie - and the illustrator is only named when not already the author, failing which the line repeats the same name twice #}
             {% set author = book.effectiveAuthor %}
             {% set illustrator = book.effectiveIllustrator %}
-            {{ author }}{% if illustrator and illustrator != author %} - {{ illustrator }}{% endif %} -
+            {# Joined rather than separated by a fixed dash: neither credit is required, and a book crediting nobody would otherwise open its line on a stray dash #}
+            {% set credits = [author, illustrator and (author is null or illustrator.id != author.id) ? illustrator : null]|filter(c => c) %}
+            {{ credits|join(' - ') }}{% if credits is not empty %} - {% endif %}
             {% if book.published == null or book.published|date("Ymd") > "now"|date("Ymd") %}
                 {{ 'label.to_be_published'|trans({}, 'book', book.language) }}{% if book.published %} ({{ book.published|date('d/m/Y') }}){% endif %}
             {% else %}

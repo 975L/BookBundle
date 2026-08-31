@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Twig;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use Twig\Attribute\AsTwigFunction;
@@ -38,6 +39,20 @@ class BookUrlExtension
             BookPublicUrlResolver::serieRoute($serie),
             ['slug' => (string) $serie->getSlug(), ...$parameters]
         );
+    }
+
+    // The path of a person's page, the templates handing the person over rather than spelling their slug
+    #[AsTwigFunction('contributor_path')]
+    public function contributorPath(Contributor $contributor): ?string
+    {
+        return $this->publicUrlResolver->resolvePath('contributor_display', ['slug' => (string) $contributor->getSlug()]);
+    }
+
+    // The same page as an absolute url, needed wherever a path says nothing - a share tag, a structured-data node
+    #[AsTwigFunction('contributor_url')]
+    public function contributorUrl(Contributor $contributor): ?string
+    {
+        return $this->publicUrlResolver->resolve('contributor_display', ['slug' => (string) $contributor->getSlug()]);
     }
 
     // The same page as an absolute url, which the JSON-LD of a serie's page needs where a path says nothing

@@ -75,6 +75,31 @@
     }
 }
 
+/* Portraits side by side, square where a cover is upright - a shelf of faces rather than of books */
+.ui-block-thumb--book_contributors {
+    .ui-block-thumb__media {
+        display: block;
+        background-image: linear-gradient(to right, currentcolor 0 60%, transparent 60%);
+        background-size: 34% 100%;
+        background-color: transparent;
+    }
+
+    .ui-block-thumb__title {
+        display: none;
+    }
+
+    .ui-block-thumb__line {
+        height: .1875rem;
+        background-image: linear-gradient(to right, currentcolor 0 60%, transparent 60%);
+        background-size: 34% 100%;
+        background-color: transparent;
+    }
+
+    .ui-block-thumb__line + .ui-block-thumb__line {
+        display: none;
+    }
+}
+
 /* The plates of a comic, stacked wide one under the other */
 .ui-block-thumb--book_serie_strips {
     justify-content: center;

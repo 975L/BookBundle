@@ -65,12 +65,12 @@ class BookRoutePrefixTest extends TestCase
         $this->assertFalse($this->prefix(['book-route-series' => ' / '])->isEnabled('book-route-series'));
     }
 
-    // Seven pairs, and no two of them naming the same thing: two families sharing an entry would serve one another's pages, and two route parameters bearing the same name would overwrite each other in the router's context (see BookRoutePrefixListener)
+    // Nine pairs, and no two of them naming the same thing: two families sharing an entry would serve one another's pages, and two route parameters bearing the same name would overwrite each other in the router's context (see BookRoutePrefixListener)
     public function testEachFamilyCarriesAnEntryAndAParameterOfItsOwn(): void
     {
-        $this->assertCount(7, BookRoutePrefix::PREFIXES);
+        $this->assertCount(9, BookRoutePrefix::PREFIXES);
         $this->assertSame(BookRoutePrefix::PREFIXES, array_unique(BookRoutePrefix::PREFIXES));
-        $this->assertCount(7, array_unique(array_keys(BookRoutePrefix::PREFIXES)));
+        $this->assertCount(9, array_unique(array_keys(BookRoutePrefix::PREFIXES)));
     }
 
     /** @param array<string, string> $entries */
