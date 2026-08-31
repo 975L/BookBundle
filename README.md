@@ -677,6 +677,10 @@ A saved block moves from one container to another by drag and drop, `BookBlockOw
 
 A block hovers the same editing pencil as the sections above it (see *Display pages*): `BookBlockEditUrlProvider` answers UiBundle which screen composes a given block row, and the link opens it on that very row (`focusBlock`).
 
+![BookBundle blocks](.github/images/BookBlocks.png)
+
+One tile per kind, captured on the showcase at [bundles.975l.com](https://bundles.975l.com/pages/blocks/Book) - a kind with several variants shows only its first one, and a kind with no example there has no tile. Colors are the showcase's own theme, not what a site with its own theme renders.
+
 The bundle also ships five block kinds of its own. Four put a selection of the catalog on any page of the site — `book_series`, `book_books`, `book_to_be_published` and `book_serie_strips`. Set to UiBundle's `compact` variant, they print a book at a thumbnail's width, with its cover, its title and its language and without its summary.
 
 The fifth, `book_reader`, reads an illustrated album page by page along its recording. Its medias are the album's pages in order, then the audio file; its `cues` say at which second of the recording each page is turned. The voice is the clock: it turns the pages, and a page turned by hand moves the playhead to that page's cue. Left without cues, the pages are turned by hand alone. It drives UiBundle's `slider` through the slider's own dots, so the two stay independent.

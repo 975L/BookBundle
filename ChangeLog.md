@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.4.2
+
+The README shows the block kinds as a strip of tiles
+
+- New `.github/images/BookBlocks.png`, one tile per showcased block kind (31/08/2026)
+- The README prints it under the blocks section, saying what the tiles do not show (31/08/2026)
+
 ## v2.4.1
 
 A block kind is recognised by its silhouette in the picker
