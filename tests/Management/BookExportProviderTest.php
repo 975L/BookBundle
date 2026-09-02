@@ -38,8 +38,8 @@ class BookExportProviderTest extends TestCase
     public function testExportAllSerializesEveryBookFromTheRepository(): void
     {
         $book = new Book()
-            ->setSlug('papa-calin')
-            ->setTitle('Papa Câlin')
+            ->setSlug('contes-du-soir')
+            ->setTitle('Contes du Soir')
             ->setAuthor(self::contributor())
             ->setSummary('Une histoire')
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
@@ -52,8 +52,8 @@ class BookExportProviderTest extends TestCase
         $data = $this->createProvider(sys_get_temp_dir(), $bookRepository)->exportAll();
 
         $this->assertCount(1, $data['items']);
-        $this->assertSame('papa-calin', $data['items'][0]['slug']);
-        $this->assertSame('Papa Câlin', $data['items'][0]['title']);
+        $this->assertSame('contes-du-soir', $data['items'][0]['slug']);
+        $this->assertSame('Contes du Soir', $data['items'][0]['title']);
         $this->assertFalse($data['items'][0]['isDeleted']);
         $this->assertSame([], $data['files']);
     }
@@ -71,15 +71,15 @@ class BookExportProviderTest extends TestCase
 
     public function testSerializeNamesTheSerieAndTheTranslatedBookBySlug(): void
     {
-        $serie = new Serie()->setSlug('papa-calin')->setTitle('Papa Câlin');
-        $translated = new Book()->setSlug('daddy-hug')->setTitle('Daddy Hug')->setAuthor(self::contributor('LM', 'lm'))->setSummary('');
+        $serie = new Serie()->setSlug('contes-du-soir')->setTitle('Contes du Soir');
+        $translated = new Book()->setSlug('evening-tales')->setTitle('Evening Tales')->setAuthor(self::contributor('LM', 'lm'))->setSummary('');
         $book = $this->createBook()->setSerie($serie)->setTranslationBook($translated);
 
         $item = $this->createProvider(sys_get_temp_dir())->serialize([$book])['items'][0];
 
-        $this->assertSame('papa-calin', $item['serie']);
-        $this->assertSame('Papa Câlin', $item['serieTitle']);
-        $this->assertSame('daddy-hug', $item['translationBook']);
+        $this->assertSame('contes-du-soir', $item['serie']);
+        $this->assertSame('Contes du Soir', $item['serieTitle']);
+        $this->assertSame('evening-tales', $item['translationBook']);
     }
 
     public function testSerializeCarriesTheFormatsAndTheFilesAndPlatformsOfTheBook(): void

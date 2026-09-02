@@ -1,0 +1,395 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="fr" datatype="plaintext" original="book_narration.fr.xlf">
+        <body>
+            <trans-unit id="aynUNnW">
+                <source>narration.books</source>
+                <target>« Livres » liste tout le catalogue : informations, auteur, illustrateur, éditions, liens de vente et blocks de contenu.</target>
+            </trans-unit>
+            <trans-unit id="wVe4G1M">
+                <source>narration.contributors</source>
+                <target>« Auteurs et illustrateurs » tient les personnes créditées par le catalogue. Chacune a sa page, qui liste ce qu'elle a signé ; un livre ou une série les choisit dans cette liste plutôt que de retaper leur nom.</target>
+            </trans-unit>
+            <trans-unit id="exSRKHD">
+                <source>narration.guided_step_book_composition_add</source>
+                <target>Ajoutez un block. Chacun a son type et son propre formulaire, et ils s'empilent dans l'ordre de la page.</target>
+            </trans-unit>
+            <trans-unit id="gyZzj6B">
+                <source>narration.guided_step_book_composition_done</source>
+                <target>La page est composée : les blocks s'affichent sous les informations du livre, sur sa page publique.</target>
+            </trans-unit>
+            <trans-unit id="RsowHNN">
+                <source>narration.guided_step_book_composition_edit</source>
+                <target>Ouvrez un livre avec le crayon, au bout de sa ligne.</target>
+            </trans-unit>
+            <trans-unit id=".76L87n">
+                <source>narration.guided_step_book_composition_open</source>
+                <target>Le panneau vous emmène sur les livres, où tout le catalogue est listé.</target>
+            </trans-unit>
+            <trans-unit id="PyZPa7F">
+                <source>narration.guided_step_book_composition_save</source>
+                <target>Enregistrez le livre.</target>
+            </trans-unit>
+            <trans-unit id="EfFqLVt">
+                <source>narration.guided_step_book_composition_tab</source>
+                <target>Ouvrez le dernier onglet du formulaire, celui des blocks : il porte la composition de la page.</target>
+            </trans-unit>
+            <trans-unit id="ptppQQ4">
+                <source>narration.guided_step_book_contributor_creation_done</source>
+                <target>La personne est au catalogue : sa page est en ligne, encore vide de crédits. Une série ou un livre la choisit désormais dans ses champs d'auteur et d'illustrateur, et s'y affiche de lui-même.</target>
+            </trans-unit>
+            <trans-unit id="H2EMpXm">
+                <source>narration.guided_step_book_contributor_creation_name</source>
+                <target>Saisissez son nom. C'est celui qui s'affiche sur sa page et sous chaque livre qu'elle a signé, et l'adresse de cette page en découle.</target>
+            </trans-unit>
+            <trans-unit id="Vt7PhcI">
+                <source>narration.guided_step_book_contributor_creation_new</source>
+                <target>Cliquez sur « Ajouter » : le bouton ouvre le formulaire d'une nouvelle personne.</target>
+            </trans-unit>
+            <trans-unit id="15gPj4p">
+                <source>narration.guided_step_book_contributor_creation_open</source>
+                <target>Le panneau vous emmène sur l'écran des auteurs et illustrateurs, qui liste toutes les personnes créditées par le catalogue.</target>
+            </trans-unit>
+            <trans-unit id="3SVuf4P">
+                <source>narration.guided_step_book_contributor_creation_portrait</source>
+                <target>Déposez son portrait : une seule image, affichée en tête de sa page. Déposer un autre fichier sur la ligne déjà posée la remplace.</target>
+            </trans-unit>
+            <trans-unit id="xTvDT34">
+                <source>narration.guided_step_book_contributor_creation_save</source>
+                <target>Enregistrez avec le bouton en bas du formulaire.</target>
+            </trans-unit>
+            <trans-unit id="wJRXPnB">
+                <source>narration.guided_step_book_contributor_creation_summary</source>
+                <target>Rédigez sa biographie : les quelques lignes qui ouvrent sa page, au-dessus de ce qu'elle a signé.</target>
+            </trans-unit>
+            <trans-unit id="22HNWV0">
+                <source>narration.guided_step_book_contributor_creation_website</source>
+                <target>Indiquez son site web, sa propre adresse, vers laquelle sa page renvoie. Un livre qui la crédite ne la porte plus.</target>
+            </trans-unit>
+            <trans-unit id="wwIfTuU">
+                <source>narration.guided_step_book_creation_author</source>
+                <target>Créditez son auteur, dans la même liste que celle de la série. Laissé vide, un livre d'une série crédite qui la série crédite : ne le renseignez que pour un livre signé par quelqu'un d'autre.</target>
+            </trans-unit>
+            <trans-unit id="qq3vB.v">
+                <source>narration.guided_step_book_creation_done</source>
+                <target>Le livre est publié : sa page est en ligne, et le sitemap la déclarera à la prochaine régénération, dont le raccourci est sur le tableau de bord.</target>
+            </trans-unit>
+            <trans-unit id="N_8xm9n">
+                <source>narration.guided_step_book_creation_editions</source>
+                <target>Ajoutez ses éditions : chaque forme publiée du livre, papier, numérique ou audio, avec son ISBN et sa date de parution, dépliée sur place.</target>
+            </trans-unit>
+            <trans-unit id="ueX4rE0">
+                <source>narration.guided_step_book_creation_editions_add</source>
+                <target>Le bouton d'ajout ouvre une édition de plus, dont les fichiers et les plateformes s'ajoutent dans le panneau même.</target>
+            </trans-unit>
+            <trans-unit id="4.DDKjm">
+                <source>narration.guided_step_book_creation_new</source>
+                <target>Créez un livre avec le bouton d'ajout : il ouvre le formulaire d'un livre vide.</target>
+            </trans-unit>
+            <trans-unit id="SIi3gJJ">
+                <source>narration.guided_step_book_creation_open</source>
+                <target>Le panneau vous emmène sur les livres, où tout le catalogue est listé.</target>
+            </trans-unit>
+            <trans-unit id="29QaM7u">
+                <source>narration.guided_step_book_creation_published</source>
+                <target>Datez la parution. Un livre sans date, ou dont la date est à venir, reste hors des listes publiques et apparaît parmi les parutions à venir.</target>
+            </trans-unit>
+            <trans-unit id="rNl4b5r">
+                <source>narration.guided_step_book_creation_save</source>
+                <target>Enregistrez le livre.</target>
+            </trans-unit>
+            <trans-unit id="Wuifh39">
+                <source>narration.guided_step_book_creation_serie</source>
+                <target>Rattachez-le à une série : le livre y prend sa place, et la page de la série liste alors ses tomes.</target>
+            </trans-unit>
+            <trans-unit id="KHQTOs6">
+                <source>narration.guided_step_book_creation_technical_tab</source>
+                <target>Ouvrez le deuxième onglet du formulaire, celui de la page : il porte les éditions et le financement participatif.</target>
+            </trans-unit>
+            <trans-unit id="qalvavl">
+                <source>narration.guided_step_book_creation_title</source>
+                <target>Donnez-lui un titre. Il remplit l'identifiant d'url juste en dessous, qui est l'adresse de la page du livre.</target>
+            </trans-unit>
+            <trans-unit id="dmKDqHw">
+                <source>narration.guided_step_book_duplication_done</source>
+                <target>La copie est un livre à part entière : plus rien ne la lie à l'original, et modifier l'un laisse l'autre intact.</target>
+            </trans-unit>
+            <trans-unit id="IlAqeaf">
+                <source>narration.guided_step_book_duplication_duplicate</source>
+                <target>Cliquez sur « Dupliquer » et confirmez : la copie est enregistrée aussitôt avec ses fichiers, ses liens et ses blocks, puis s'ouvre sur son propre écran. Les livres d'une série ne sont jamais copiés avec elle, dupliquer l'un est une décision à part.</target>
+            </trans-unit>
+            <trans-unit id="kDmIV9a">
+                <source>narration.guided_step_book_duplication_open</source>
+                <target>Le panneau vous emmène sur le catalogue, où se choisit le livre à copier.</target>
+            </trans-unit>
+            <trans-unit id="VlkZsi7">
+                <source>narration.guided_step_book_duplication_save</source>
+                <target>Enregistrez avec le bouton en bas du formulaire.</target>
+            </trans-unit>
+            <trans-unit id="V1qHxl5">
+                <source>narration.guided_step_book_duplication_title</source>
+                <target>Renommez la copie. Le titre et l'adresse arrivent marqués comme copie, pour ne pas heurter l'original : les deux sont à vous de réécrire.</target>
+            </trans-unit>
+            <trans-unit id="iPiRr1O">
+                <source>narration.guided_step_book_export_done</source>
+                <target>Le fichier est sur votre ordinateur. Un JSON se réinjecte par l'import d'un autre site, qui lit les mêmes clés que celui-ci a écrites.</target>
+            </trans-unit>
+            <trans-unit id="0nau6dB">
+                <source>narration.guided_step_book_export_format</source>
+                <target>Choisissez un format. Le CSV s'ouvre dans un tableur, le JSON se relit par un import, le SQL rejoue la table telle quelle. Le fichier se télécharge aussitôt.</target>
+            </trans-unit>
+            <trans-unit id="m1ycXC_">
+                <source>narration.guided_step_book_export_group</source>
+                <target>Dépliez le bouton d'export : il réunit les trois formats dans un menu.</target>
+            </trans-unit>
+            <trans-unit id="lnMQ9CE">
+                <source>narration.guided_step_book_export_open</source>
+                <target>Le panneau vous emmène sur les livres. Les mêmes boutons se trouvent sur les séries, les planches et les personnes, chacun exportant sa propre table.</target>
+            </trans-unit>
+            <trans-unit id="xI5x6Ac">
+                <source>narration.guided_step_book_export_select</source>
+                <target>Pour n'emporter que quelques livres plutôt que toute la table, cochez-les. La case de l'en-tête prend la page d'un coup.</target>
+            </trans-unit>
+            <trans-unit id="dlMB1JC">
+                <source>narration.guided_step_book_export_selection</source>
+                <target>Exportez la sélection : la barre apparaît dès qu'une ligne est cochée, et n'emporte que ce qui est coché.</target>
+            </trans-unit>
+            <trans-unit id="yDv8bsy">
+                <source>narration.guided_step_book_hidden_done</source>
+                <target>Le livre est retiré du site : sa page répond 404, et rien n'a été retiré. Ce n'est pas la corbeille.</target>
+            </trans-unit>
+            <trans-unit id="2Z4EgQB">
+                <source>narration.guided_step_book_hidden_edit</source>
+                <target>Ouvrez le livre : le même interrupteur se trouve dans la fiche, où ce qu'il change est écrit dessous.</target>
+            </trans-unit>
+            <trans-unit id="jjtNZpx">
+                <source>narration.guided_step_book_hidden_field</source>
+                <target>Repérez l'interrupteur « Masqué », dans le premier onglet, à côté de « Publié ». La ligne d'aide dit ce qu'un livre masqué ne répond plus.</target>
+            </trans-unit>
+            <trans-unit id="DOK_9ym">
+                <source>narration.guided_step_book_hidden_open</source>
+                <target>Le panneau vous emmène sur le catalogue, où l'interrupteur est offert sur chaque ligne.</target>
+            </trans-unit>
+            <trans-unit id="dvRVDex">
+                <source>narration.guided_step_book_hidden_save</source>
+                <target>Enregistrez le livre.</target>
+            </trans-unit>
+            <trans-unit id="xgT0vnD">
+                <source>narration.guided_step_book_hidden_switch</source>
+                <target>Basculez la ligne sur « Masqué » : un clic retire le livre du site, un second l'y remet, sans rien d'autre à enregistrer.</target>
+            </trans-unit>
+            <trans-unit id="y85M99i">
+                <source>narration.guided_step_book_media_move_done</source>
+                <target>Le fichier a changé de liste, mais il reste dans son propre livre : une liste appartenant à un autre livre n'est pas une cible, quoi que dise le glissement.</target>
+            </trans-unit>
+            <trans-unit id="bJLL5Pj">
+                <source>narration.guided_step_book_media_move_edit</source>
+                <target>Modifiez un livre existant. Le geste n'est proposé que sur un livre déjà enregistré : un livre en cours de création ne porte encore aucun fichier à déplacer.</target>
+            </trans-unit>
+            <trans-unit id="9zqH322">
+                <source>narration.guided_step_book_media_move_extracts</source>
+                <target>Repérez les extraits : c'est la liste qu'un fichier quitte ou rejoint. Le feuilletage juste au-dessus accepte les mêmes fichiers, ce qui rend l'échange possible.</target>
+            </trans-unit>
+            <trans-unit id="UbQ4E5a">
+                <source>narration.guided_step_book_media_move_handle</source>
+                <target>Saisissez une ligne par sa poignée, glissez-la sur l'autre liste et lâchez : la page se recharge, le fichier ayant changé de liste sans quitter le livre.</target>
+            </trans-unit>
+            <trans-unit id="1oSMT98">
+                <source>narration.guided_step_book_media_move_open</source>
+                <target>Le panneau vous emmène sur le catalogue, où se choisit le livre qui porte le fichier.</target>
+            </trans-unit>
+            <trans-unit id="dzJebRH">
+                <source>narration.guided_step_book_media_move_tab</source>
+                <target>Ouvrez l'onglet « Page », celui qui porte les fichiers du livre : le feuilletage, les extraits, les audios et les vidéos.</target>
+            </trans-unit>
+            <trans-unit id="rSlOmZ3">
+                <source>narration.guided_step_book_reader_add</source>
+                <target>Ajoutez un block. Une nouvelle ligne ouvre d'elle-même la palette des types.</target>
+            </trans-unit>
+            <trans-unit id="5O1N.65">
+                <source>narration.guided_step_book_reader_auto_advance</source>
+                <target>Cochez-la et la voix tourne les pages. Décoché, les repères ne servent qu'à la navigation manuelle.</target>
+            </trans-unit>
+            <trans-unit id="rvh6WUj">
+                <source>narration.guided_step_book_reader_cues</source>
+                <target>Minutez les pages, une ligne chacune : son numéro, et la seconde de l'enregistrement où elle est tournée. Laissé vide, le lecteur tourne les pages seul.</target>
+            </trans-unit>
+            <trans-unit id="Gc89204">
+                <source>narration.guided_step_book_reader_done</source>
+                <target>Le lecteur est en place. Ouvrez la page publique : l'enregistrement se joue, et l'album se feuillette tout seul.</target>
+            </trans-unit>
+            <trans-unit id="vF0ziAR">
+                <source>narration.guided_step_book_reader_edit</source>
+                <target>Ouvrez le livre dont vous avez les pages et l'enregistrement sous la main.</target>
+            </trans-unit>
+            <trans-unit id="J5GABPv">
+                <source>narration.guided_step_book_reader_id</source>
+                <target>Nommez le lecteur. Cet identifiant est son ancre dans la page, et un seul lecteur peut le porter.</target>
+            </trans-unit>
+            <trans-unit id="SYyThhr">
+                <source>narration.guided_step_book_reader_kind</source>
+                <target>Choisissez la tuile nommée « Lecteur » : sa silhouette montre une page et une barre de lecture.</target>
+            </trans-unit>
+            <trans-unit id="ikN9Z5Y">
+                <source>narration.guided_step_book_reader_medias</source>
+                <target>Attachez les pages et l'enregistrement en une fois : les images sont les pages, dans leur ordre, et le fichier audio est l'enregistrement.</target>
+            </trans-unit>
+            <trans-unit id="yqcnwv5">
+                <source>narration.guided_step_book_reader_open</source>
+                <target>Le lecteur est un block de la page d'un livre, on part donc du livre qui porte l'album.</target>
+            </trans-unit>
+            <trans-unit id="gy4Pf5r">
+                <source>narration.guided_step_book_reader_save</source>
+                <target>Enregistrez : le block est écrit avec la page, et ses fichiers rejoignent leur place définitive.</target>
+            </trans-unit>
+            <trans-unit id="MtZSUgL">
+                <source>narration.guided_step_book_reader_tab</source>
+                <target>Allez au dernier onglet du formulaire, celui qui compose la page.</target>
+            </trans-unit>
+            <trans-unit id="mHMw_iu">
+                <source>narration.guided_step_book_serie_creation_author</source>
+                <target>Créditez son auteur : saisissez quelques lettres et choisissez-le parmi les personnes du catalogue. Chaque livre de la série en hérite, sauf s'il nomme le sien. L'illustrateur se crédite juste en dessous, de la même façon.</target>
+            </trans-unit>
+            <trans-unit id="6d3..us">
+                <source>narration.guided_step_book_serie_creation_covers</source>
+                <target>Déposez la couverture. Les images de la série servent de vignette dans les listes, et d'image partagée sur les réseaux sociaux.</target>
+            </trans-unit>
+            <trans-unit id="WhCarxd">
+                <source>narration.guided_step_book_serie_creation_done</source>
+                <target>La série est créée. Elle peut maintenant recevoir des livres, et être posée comme cible d'un menu du site.</target>
+            </trans-unit>
+            <trans-unit id="GKxWRk5">
+                <source>narration.guided_step_book_serie_creation_kind</source>
+                <target>Choisissez le type : une série regroupe soit des livres, soit des planches de bande dessinée, ce qui décide de la page qui la liste.</target>
+            </trans-unit>
+            <trans-unit id="PVpS2yg">
+                <source>narration.guided_step_book_serie_creation_new</source>
+                <target>Créez une série avec le bouton d'ajout : il ouvre le formulaire d'une série vide.</target>
+            </trans-unit>
+            <trans-unit id="lhGfOFf">
+                <source>narration.guided_step_book_serie_creation_open</source>
+                <target>Le panneau vous emmène sur les séries, qui listent les collections du catalogue.</target>
+            </trans-unit>
+            <trans-unit id="PJDltqe">
+                <source>narration.guided_step_book_serie_creation_save</source>
+                <target>Enregistrez la série.</target>
+            </trans-unit>
+            <trans-unit id="r0z3gpb">
+                <source>narration.guided_step_book_serie_creation_summary</source>
+                <target>Écrivez le résumé : ce texte présente la série sur sa page publique.</target>
+            </trans-unit>
+            <trans-unit id="O9kehNx">
+                <source>narration.guided_step_book_serie_creation_title</source>
+                <target>Donnez-lui un titre. Il est repris sur la page publique de la série et dans les menus qui la visent.</target>
+            </trans-unit>
+            <trans-unit id="IobgP2E">
+                <source>narration.guided_step_book_sorting_column</source>
+                <target>Regardez la colonne « Position ». Le numéro qu'elle affiche est celui que suivent les pages publiques : il s'écrit par le glissement, jamais en le saisissant ici.</target>
+            </trans-unit>
+            <trans-unit id="1zsOHoB">
+                <source>narration.guided_step_book_sorting_done</source>
+                <target>Le site suit cet ordre : rechargez une page publique qui liste les séries pour le voir. Une série ajoutée ensuite arrive à la fin, en attendant d'être glissée à sa place.</target>
+            </trans-unit>
+            <trans-unit id="6FOagRo">
+                <source>narration.guided_step_book_sorting_handle</source>
+                <target>Glissez une ligne par sa poignée et déposez-la où vous la voulez : le nouvel ordre est enregistré aussitôt, sans bouton à valider.</target>
+            </trans-unit>
+            <trans-unit id="InA.8fX">
+                <source>narration.guided_step_book_sorting_open</source>
+                <target>Le panneau vous emmène sur les séries. Celle des auteurs et illustrateurs se trie exactement de la même façon.</target>
+            </trans-unit>
+            <trans-unit id="UVtNxpy">
+                <source>narration.guided_step_book_strip_creation_characters</source>
+                <target>Dites qui parle : les noms séparés par une virgule. Ce sont eux que les pastilles de la série filtrent.</target>
+            </trans-unit>
+            <trans-unit id="HHP.rG8">
+                <source>narration.guided_step_book_strip_creation_done</source>
+                <target>La planche est en ligne : elle se lit dans sa série, se filtre par ses personnages et répond à son numéro.</target>
+            </trans-unit>
+            <trans-unit id="xA0beHl">
+                <source>narration.guided_step_book_strip_creation_media_tab</source>
+                <target>Ouvrez le deuxième onglet du formulaire, celui des médias, où se dépose le dessin.</target>
+            </trans-unit>
+            <trans-unit id="nL_sdda">
+                <source>narration.guided_step_book_strip_creation_medias</source>
+                <target>Déposez le dessin : c'est l'image que la page montre en grand, et que sa carte reprend en petit.</target>
+            </trans-unit>
+            <trans-unit id="g1qIHh4">
+                <source>narration.guided_step_book_strip_creation_new</source>
+                <target>Créez une planche : le bouton ouvre le formulaire d'une planche vide.</target>
+            </trans-unit>
+            <trans-unit id="aBW5LVr">
+                <source>narration.guided_step_book_strip_creation_number</source>
+                <target>Numérotez-la. Le numéro donne son rang dans la série, et répond aussi comme adresse courte.</target>
+            </trans-unit>
+            <trans-unit id="ymk.vzr">
+                <source>narration.guided_step_book_strip_creation_open</source>
+                <target>Le panneau vous emmène sur les planches, la liste d'où l'on crée la suivante.</target>
+            </trans-unit>
+            <trans-unit id="yEIKblJ">
+                <source>narration.guided_step_book_strip_creation_save</source>
+                <target>Enregistrez avec le bouton en bas du formulaire.</target>
+            </trans-unit>
+            <trans-unit id="Frej9UR">
+                <source>narration.guided_step_book_strip_creation_serie</source>
+                <target>Rattachez-la à sa série : c'est elle qui la fait lire à la suite des autres, et le fil d'Ariane y remonte.</target>
+            </trans-unit>
+            <trans-unit id="EpkdCXT">
+                <source>narration.guided_step_book_strip_creation_title</source>
+                <target>Donnez-lui un titre. Il nomme la planche partout où elle est listée, et son adresse en découle.</target>
+            </trans-unit>
+            <trans-unit id=".QzKE3N">
+                <source>narration.guided_step_book_trash_delete</source>
+                <target>Mettez le livre à la corbeille. L'icône demande confirmation, puis le livre quitte le catalogue sans rien perdre d'autre.</target>
+            </trans-unit>
+            <trans-unit id="efm2EUz">
+                <source>narration.guided_step_book_trash_done</source>
+                <target>Le livre est à la corbeille. Le remettre en place ou le supprimer pour de bon revient à l'administrateur du site.</target>
+            </trans-unit>
+            <trans-unit id="94e4Mrw">
+                <source>narration.guided_step_book_trash_open</source>
+                <target>Le panneau vous emmène sur le catalogue, d'où part et où revient le geste.</target>
+            </trans-unit>
+            <trans-unit id="X8Lzhmn">
+                <source>narration.guided_step_book_trash_switch</source>
+                <target>Regardez la corbeille : le même écran y bascule, et revient d'un second clic.</target>
+            </trans-unit>
+            <trans-unit id="TEUhO_F">
+                <source>narration.guided_step_book_version_publication_done</source>
+                <target>La nouvelle version est parue : le livre garde son adresse et ses lecteurs, et la version d'avant se rejoint depuis lui.</target>
+            </trans-unit>
+            <trans-unit id="baVUoPJ">
+                <source>narration.guided_step_book_version_publication_editions</source>
+                <target>Déclarez le format neuf, son ISBN et sa date de parution : c'est ce qui fait paraître le texte neuf.</target>
+            </trans-unit>
+            <trans-unit id="NuAwcMh">
+                <source>narration.guided_step_book_version_publication_open</source>
+                <target>Le panneau vous emmène sur le catalogue, où chaque ligne porte le geste des versions.</target>
+            </trans-unit>
+            <trans-unit id="Fo9ZTux">
+                <source>narration.guided_step_book_version_publication_previous</source>
+                <target>Vérifiez le jumeau : le champ « Remplace » nomme la version reléguée. Elle garde sa page et son ISBN, et ne quitte que le catalogue.</target>
+            </trans-unit>
+            <trans-unit id=".xt5IQZ">
+                <source>narration.guided_step_book_version_publication_publish</source>
+                <target>Déclinez le livre. Le bouton demande confirmation, puis ouvre le livre qui reste, vidé de ses formats, partis avec le jumeau.</target>
+            </trans-unit>
+            <trans-unit id="1CAia.N">
+                <source>narration.guided_step_book_version_publication_save</source>
+                <target>Enregistrez avec le bouton en bas du formulaire.</target>
+            </trans-unit>
+            <trans-unit id="aGlRGiA">
+                <source>narration.guided_step_book_version_publication_technical_tab</source>
+                <target>Ouvrez le deuxième onglet du formulaire, celui de la page, où se déclarent les formats.</target>
+            </trans-unit>
+            <trans-unit id="6XzWZHL">
+                <source>narration.series</source>
+                <target>« Séries » liste les collections du catalogue, qu'elles regroupent des livres ou des planches de bande dessinée.</target>
+            </trans-unit>
+            <trans-unit id="IAxPJd7">
+                <source>narration.strips</source>
+                <target>« Planches » liste les planches publiées, chacune rattachée à sa série, avec ses médias et ses blocks de contenu.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

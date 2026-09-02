@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="fr" datatype="plaintext" original="validators.en.xlf">
+        <body>
+            <trans-unit id="62M6aq9">
+                <source>label.media_without_file</source>
+                <target>Cette entrée ne porte aucun fichier, ajoutez-en un ou supprimez la ligne</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

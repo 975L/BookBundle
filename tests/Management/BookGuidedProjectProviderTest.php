@@ -55,10 +55,10 @@ class BookGuidedProjectProviderTest extends TestCase
         $projects = $this->projects();
 
         $this->assertSame(
-            ['book-contributor-creation', 'book-serie-creation', 'book-creation', 'book-media-move', 'book-composition', 'book-sorting', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash', 'book-export'],
+            ['book-contributor-creation', 'book-serie-creation', 'book-creation', 'book-media-move', 'book-composition', 'book-reader', 'book-sorting', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash', 'book-export'],
             array_column($projects, 'slug')
         );
-        $this->assertSame([6005, 6010, 6020, 6025, 6030, 6035, 6040, 6045, 6050, 6055, 6060, 6070], array_column($projects, 'order'));
+        $this->assertSame([6005, 6010, 6020, 6025, 6030, 6033, 6035, 6040, 6045, 6050, 6055, 6060, 6070], array_column($projects, 'order'));
     }
 
     public function testEverySlugIsPrefixedWithTheBundleName(): void
@@ -81,7 +81,7 @@ class BookGuidedProjectProviderTest extends TestCase
     {
         $expected = array_fill_keys([
             'book-contributor-creation', 'book-serie-creation', 'book-creation', 'book-media-move', 'book-composition',
-            'book-sorting', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash',
+            'book-reader', 'book-sorting', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash',
         ], 'ROLE_EDITOR') + ['book-export' => 'ROLE_ADMIN'];
 
         $roles = array_column($this->projects(), 'role', 'slug');
@@ -122,7 +122,7 @@ class BookGuidedProjectProviderTest extends TestCase
         $this->createProvider($controllers)->getGuidedProjects();
 
         $this->assertSame(
-            ['ContributorCrudController', 'SerieCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'SerieCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController'],
+            ['ContributorCrudController', 'SerieCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'SerieCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController'],
             array_map(static fn (string $fqcn): string => basename(str_replace('\\', '/', $fqcn)), $controllers)
         );
     }
@@ -140,7 +140,7 @@ class BookGuidedProjectProviderTest extends TestCase
             }
         }
 
-        $this->assertCount(8, $saveSteps, 'The parcours saving nothing are those whose gestures are recorded on the spot: the trash, the sorting, the file move and the export');
+        $this->assertCount(9, $saveSteps, 'The parcours saving nothing are those whose gestures are recorded on the spot: the trash, the sorting, the file move and the export');
 
         foreach ($saveSteps as $step) {
             $this->assertSame('.action-saveAndReturn', $step['highlight']);
@@ -150,8 +150,8 @@ class BookGuidedProjectProviderTest extends TestCase
     // A built-in action named by a step has to be one EasyAdmin still knows, the CRUD controllers' own ones being spelled out here
     public function testEveryBuiltInActionHighlightedIsAnEasyAdminOne(): void
     {
-        // The ones this bundle declares itself, next to EasyAdmin's (see BookCrudController and TrashableCrudTrait)
-        $known = [...new \ReflectionClass(Action::class)->getConstants(), 'publishVersion', 'trash', 'duplicate', 'exportSql', 'exportCsv', 'exportJson', 'exportSelection'];
+        // The ones this bundle declares itself, next to EasyAdmin's (see BookCrudController and TrashableCrudTrait) - "export" being the group the three formats sit in, and the only part of it a step can point at
+        $known = [...new \ReflectionClass(Action::class)->getConstants(), 'publishVersion', 'trash', 'duplicate', 'export', 'exportSql', 'exportCsv', 'exportJson', 'exportSelection'];
 
         foreach ($this->highlights() as $highlight) {
             if (!preg_match('/^\.action-([A-Za-z]+)$/', $highlight, $matches)) {
@@ -175,10 +175,10 @@ class BookGuidedProjectProviderTest extends TestCase
         $this->assertNotContains('.action-deletePermanently', $highlights);
     }
 
-    // A field is pointed at through the widget the user sees: EasyAdmin clips the select of a choice or an association out of sight, and TrixEditorType hides its textarea, so a bare "#Entity_property" on those outlines nothing
+    // A field is pointed at through the widget the user sees: TrixEditorType hides its textarea, an autocompleted association has its select clipped by TomSelect, and a plain choice or association is a native select only below UiBundle's threshold of 10 options - so only the ones that can never reach it, "#Serie_kind" and its two values, are pointed at through their own id
     public function testNoStepHighlightsAWidgetEasyAdminHidesFromSight(): void
     {
-        $hidden = ['#Serie_kind', '#Serie_summary', '#Serie_covers', '#Book_serie', '#Book_previousVersion', '#Strip_serie', '#Strip_summary', '#Contributor_summary'];
+        $hidden = ['#Serie_summary', '#Serie_covers', '#Book_serie', '#Strip_serie', '#Strip_summary', '#Contributor_summary'];
 
         foreach ($this->highlights() as $highlight) {
             $this->assertNotContains($highlight, $hidden, sprintf('"%s" points at an element EasyAdmin renders out of sight', $highlight));
@@ -220,6 +220,8 @@ class BookGuidedProjectProviderTest extends TestCase
         $sources .= file_get_contents(\dirname(__DIR__, 2) . '/src/Service/BookMediaMoveRowAttrBuilder.php');
         // "data-column" is EasyAdmin's own, the index cell of a boolean carrying no field id to point at instead
         $sources .= file_get_contents(\dirname(__DIR__, 2) . '/vendor/easycorp/easyadmin-bundle/templates/crud/index.html.twig');
+        // "data-kind" is laid on the tiles of the block palette by UiBundle's picker, which builds them from the select it hides
+        $sources .= file_get_contents(\dirname(__DIR__, 2) . '/vendor/c975l/core-bundle/UiBundle/assets/js/block-picker.js');
 
         $attributes = [];
         foreach ($this->highlights() as $highlight) {

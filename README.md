@@ -198,7 +198,7 @@ needs nothing of this: `BookRoutePrefixListener` puts the prefixes in the router
 `path('book_display', {slug: …})` keeps taking the slug alone.
 
 **Left empty, a setting takes its pages off the site altogether** — unlike GalleryBundle's own prefix, which
-falls back to a default. That is what a site whose books are read under its own routes sets: papa-calin.com
+falls back to a default. That is what a site whose books are read under its own routes sets: contes-du-soir.example
 reads them as `/histoire/{numéro}-{slug}`, from its own controller, and would otherwise serve every story at
 two addresses competing for the same search result. The sitemap and the menu targets follow: a family whose
 prefix is empty declares nothing (see `BookSitemapProvider`, `Management\LinkableRouteProvider`).
@@ -265,11 +265,11 @@ A headless browser takes the picture, and `strip:card` hands it over:
 
 ```bash
 # One webp per slug, photographed off the running site
-StripsCards.sh /strips/repliques-de-papa-calin /tmp/cards http://127.0.0.1:8000 1200
+StripsCards.sh /strips/repliques-de-contes-du-soir /tmp/cards http://127.0.0.1:8000 1200
 
 # Handed to the media each planche already carries
-php bin/console strip:card --dir=/tmp/cards --serie=repliques-de-papa-calin --dry-run
-php bin/console strip:card --dir=/tmp/cards --serie=repliques-de-papa-calin
+php bin/console strip:card --dir=/tmp/cards --serie=repliques-de-contes-du-soir --dry-run
+php bin/console strip:card --dir=/tmp/cards --serie=repliques-de-contes-du-soir
 ```
 
 The command writes nothing itself: it sets the file on the `StripMedia` and lets **Vich** do the naming, the

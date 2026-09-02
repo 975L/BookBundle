@@ -177,6 +177,10 @@ so a filter or a search the visitor came with survives the jump.
 before its cover would otherwise put an `mp3` in an `<img>` — and, failing that, on the cover of another
 version of the same text.
 
+A media row now has to carry a file, a name or a hosted address (`Media::validateFileOrAddress()`), so an
+entry added and saved with nothing in it is refused by the form instead of standing in front of the
+fallback: `covers|first` never answers an empty row any more.
+
 ## The editor's pencil
 
 `book_edit_urls(book)`, `serie_edit_urls(serie)`, `contributor_edit_urls(contributor)` and

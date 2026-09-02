@@ -66,8 +66,10 @@ trait TrashableCrudTrait
         // A raw dump of the whole table is not what composing a catalog needs, so the three exports stay stricter than everything else here - the methods themselves check that same role again
         $exportRole = $this->configService->get('site-role-admin');
 
+        // ActionFactory overwrites a group's own cssClass with "btn" and lays no "action-<name>" class on its entries, where the added class goes through untouched - and a closed dropdown hides its entries anyway, so the step points at the button opening it
         $exportGroup = ActionGroup::new('export', t('label.export', [], 'book'), 'fa fa-download')
             ->createAsGlobalActionGroup()
+            ->addCssClass('action-export')
             ->addAction(Action::new('exportSql', t('label.export_sql', [], 'book'))->linkToCrudAction('exportSql'))
             ->addAction(Action::new('exportCsv', t('label.export_csv', [], 'book'))->linkToCrudAction('exportCsv'))
             ->addAction(Action::new('exportJson', t('label.export_json', [], 'book'))->linkToCrudAction('exportJson'))

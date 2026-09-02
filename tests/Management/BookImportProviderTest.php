@@ -62,12 +62,12 @@ class BookImportProviderTest extends TestCase
         $book = $this->firstOf($persisted, Book::class);
         $this->assertSame('tome-1', $book->getSlug());
         $this->assertSame('Tome 1', $book->getTitle());
-        $this->assertSame(['dedication' => 'Pour Kalaan'], $book->getData());
+        $this->assertSame(['dedication' => 'Pour Alwin'], $book->getData());
         $this->assertSame('2026-01-02 10:00:00', $book->getCreation()->format('Y-m-d H:i:s'));
 
         // The serie this environment doesn't hold yet, created on the fly rather than dropped
-        $this->assertSame('la-guilde', $book->getSerie()?->getSlug());
-        $this->assertSame('La Guilde des Seigneurs', $book->getSerie()?->getTitle());
+        $this->assertSame('la-compagnie', $book->getSerie()?->getSlug());
+        $this->assertSame('La Compagnie des Ombres', $book->getSerie()?->getTitle());
 
         $edition = $book->getEdition('paperback');
         $this->assertSame('9781234567897', $edition?->getIsbn());
@@ -135,12 +135,12 @@ class BookImportProviderTest extends TestCase
     {
         $persisted = [];
         $this->createProvider(sys_get_temp_dir(), persisted: $persisted)->import([
-            ['slug' => 'daddy-hug', 'title' => 'Daddy Hug', 'language' => 'en', 'translationBook' => 'papa-calin'],
-            ['slug' => 'papa-calin', 'title' => 'Papa Câlin', 'language' => 'fr'],
+            ['slug' => 'evening-tales', 'title' => 'Evening Tales', 'language' => 'en', 'translationBook' => 'contes-du-soir'],
+            ['slug' => 'contes-du-soir', 'title' => 'Contes du Soir', 'language' => 'fr'],
         ]);
 
         $books = array_values(array_filter($persisted, static fn (object $e) => $e instanceof Book));
-        $this->assertSame('papa-calin', $books[0]->getTranslationBook()?->getSlug());
+        $this->assertSame('contes-du-soir', $books[0]->getTranslationBook()?->getSlug());
         $this->assertNull($books[1]->getTranslationBook());
     }
 
@@ -169,10 +169,10 @@ class BookImportProviderTest extends TestCase
             ->setTitle('Tome 1')
             ->setAuthor(self::contributor())
             ->setSummary('Résumé')
-            ->setData(['dedication' => 'Pour Kalaan'])
+            ->setData(['dedication' => 'Pour Alwin'])
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'))
-            ->setSerie(new Serie()->setSlug('la-guilde')->setTitle('La Guilde des Seigneurs'));
+            ->setSerie(new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie des Ombres'));
 
         $edition = new BookEdition()->setKind('paperback')->setIsbn('9781234567897')->setPages(48)->setPosition(0);
         $book->addEdition($edition);

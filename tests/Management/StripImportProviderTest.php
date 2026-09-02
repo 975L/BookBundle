@@ -45,12 +45,12 @@ class StripImportProviderTest extends TestCase
             ->setSlug('la-tuile')
             ->setTitle('La tuile')
             ->setNumber(12)
-            ->setCharacters('Le Seigneur, Kalaan')
+            ->setCharacters('Le Seigneur, Alwin')
             ->setSummary('Une planche')
             ->setPublished(new \DateTime('2026-03-04'))
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'))
-            ->setSerie(new Serie()->setSlug('la-guilde')->setTitle('La Guilde des Seigneurs'));
+            ->setSerie(new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie des Ombres'));
         $strip->addMedia(new StripMedia()->setName('medias/book/strips/plate-la-tuile/p.webp')->setKind('plate')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable('2026-02-01 09:00:00')));
 
         $export = new StripExportProvider($this->createStub(StripRepository::class), new BlockDataExporter($sourceDir), new MediaArchiver($this->createStub(EntityManagerInterface::class), $sourceDir))
@@ -66,12 +66,12 @@ class StripImportProviderTest extends TestCase
 
         $imported = array_values(array_filter($persisted, static fn (object $e) => $e instanceof Strip))[0];
         $this->assertSame(12, $imported->getNumber());
-        $this->assertSame('Le Seigneur, Kalaan', $imported->getCharacters());
+        $this->assertSame('Le Seigneur, Alwin', $imported->getCharacters());
         // Derived from the characters rather than carried, so it comes back on its own
-        $this->assertSame('le-seigneur,kalaan', $imported->getCharactersSlug());
+        $this->assertSame('le-seigneur,alwin', $imported->getCharactersSlug());
         $this->assertSame('2026-03-04', $imported->getPublished()?->format('Y-m-d'));
         // The serie this environment doesn't hold yet, created on the fly rather than dropped
-        $this->assertSame('la-guilde', $imported->getSerie()?->getSlug());
+        $this->assertSame('la-compagnie', $imported->getSerie()?->getSlug());
         $this->assertSame('plate-bytes', file_get_contents($targetDir . '/public/medias/book/strips/plate-la-tuile/p.webp'));
 
         $this->removeDir($sourceDir);
@@ -84,13 +84,13 @@ class StripImportProviderTest extends TestCase
     {
         $persisted = [];
         $this->createProvider(sys_get_temp_dir(), persisted: $persisted)->import([
-            ['slug' => 'la-tuile', 'title' => 'La tuile', 'serie' => 'la-guilde', 'serieTitle' => 'La Guilde des Seigneurs'],
-            ['slug' => 'le-mur', 'title' => 'Le mur', 'serie' => 'la-guilde', 'serieTitle' => 'La Guilde des Seigneurs'],
+            ['slug' => 'la-tuile', 'title' => 'La tuile', 'serie' => 'la-compagnie', 'serieTitle' => 'La Compagnie des Ombres'],
+            ['slug' => 'le-mur', 'title' => 'Le mur', 'serie' => 'la-compagnie', 'serieTitle' => 'La Compagnie des Ombres'],
         ]);
 
         $series = array_values(array_filter($persisted, static fn (object $e) => $e instanceof Serie));
         $this->assertCount(1, $series);
-        $this->assertSame('La Guilde des Seigneurs', $series[0]->getTitle());
+        $this->assertSame('La Compagnie des Ombres', $series[0]->getTitle());
     }
 
     // @param list<object> $persisted filled with everything the import hands to the entity manager, the flush being a stub

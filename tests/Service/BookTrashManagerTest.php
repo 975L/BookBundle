@@ -65,7 +65,7 @@ class BookTrashManagerTest extends TestCase
 
     public function testRestoringPutsTheRowBackOnTheSite(): void
     {
-        $serie = new Serie()->setTitle('La Guilde')->setSlug('la-guilde')->setIsDeleted(true);
+        $serie = new Serie()->setTitle('La Compagnie')->setSlug('la-compagnie')->setIsDeleted(true);
 
         $this->manager()->restore($serie);
 
@@ -172,7 +172,7 @@ class BookTrashManagerTest extends TestCase
     // The three families this bundle serves are rated the same way, so a row gone for good takes its votes with it whichever one it belongs to - a serie's own key, never another family's
     public function testRemovingASerieForGoodDropsItsOwnRatings(): void
     {
-        $serie = new Serie()->setTitle('La Guilde')->setSlug('la-guilde');
+        $serie = new Serie()->setTitle('La Compagnie')->setSlug('la-compagnie');
         new \ReflectionProperty(Serie::class, 'id')->setValue($serie, 42);
 
         $this->manager()->deletePermanently($serie, 'serie_display');
@@ -226,7 +226,7 @@ class BookTrashManagerTest extends TestCase
 
     public function testASerieHoldingBooksOrStripsSaysSo(): void
     {
-        $serie = new Serie()->setTitle('La Guilde')->setSlug('la-guilde');
+        $serie = new Serie()->setTitle('La Compagnie')->setSlug('la-compagnie');
         $this->assertFalse($serie->holdsContent());
 
         // A book already in the trash names the serie just as much as one on the site

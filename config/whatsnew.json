@@ -1,5 +1,30 @@
 [
     {
+        "date": "2026-09-02",
+        "description": [
+            {
+                "en": "Adding a cover to a serie, a planche or an author and saving before picking the file no longer takes the form down: the entry is simply refused, with a word telling you a file is missing.",
+                "fr": "Ajouter une couverture à une série, une planche ou un auteur puis enregistrer avant d'avoir choisi le fichier ne fait plus tomber le formulaire : la ligne est simplement refusée, avec un mot vous disant qu'il manque un fichier.",
+                "es": "Añadir una portada a una serie, una lámina o un autor y guardar antes de elegir el archivo ya no tumba el formulario: la fila se rechaza sin más, con una palabra que le indica que falta un archivo."
+            },
+            {
+                "en": "A new guided tour, \"Set up the page-turning reader\", walks you through putting a reader on a book's page: picking it in the palette, sending up the pages and the recording in one go, then timing each page.",
+                "fr": "Un nouveau parcours guidé, « Mettre en place le lecteur page à page », vous accompagne pour poser un lecteur sur la page d'un livre : le choisir dans la palette, envoyer les pages et l'enregistrement en une fois, puis minuter chaque page.",
+                "es": "Un nuevo recorrido guiado, «Poner en marcha el lector página a página», le acompaña para colocar un lector en la página de un libro: elegirlo en la paleta, subir las páginas y la grabación de una vez, y luego cronometrar cada página."
+            },
+            {
+                "en": "The guided tours point at the right button whatever the language you read the back office in and whatever the size of your catalog, where two steps used to highlight nothing.",
+                "fr": "Les parcours guidés désignent le bon bouton quelle que soit la langue dans laquelle vous lisez le back-office et quelle que soit la taille de votre catalogue, là où deux étapes ne surlignaient rien.",
+                "es": "Los recorridos guiados señalan el botón correcto sea cual sea el idioma en que lea el back-office y sea cual sea el tamaño de su catálogo, donde dos pasos no resaltaban nada."
+            },
+            {
+                "en": "In the guided tour of the exports, the step now points at the button that unfolds the menu rather than at a format inside it, which closed as soon as you clicked beside it.",
+                "fr": "Dans le parcours guidé des exports, l'étape désigne désormais le bouton qui déplie le menu plutôt qu'un format à l'intérieur, qui se refermait dès que vous cliquiez à côté.",
+                "es": "En el recorrido guiado de las exportaciones, el paso señala ahora el botón que despliega el menú y no un formato dentro de él, que se cerraba en cuanto hacía clic al lado."
+            }
+        ]
+    },
+    {
         "date": "2026-08-31",
         "description": [
             {

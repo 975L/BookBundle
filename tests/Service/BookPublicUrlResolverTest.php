@@ -37,7 +37,7 @@ class BookPublicUrlResolverTest extends TestCase
 
         $this->assertSame('https://example.com/livres', $resolver->resolve('book_index'));
         $this->assertSame('https://example.com/livre/tome-1', $resolver->resolve('book_display', ['slug' => 'tome-1']));
-        $this->assertSame('https://example.com/series/la-guilde', $resolver->resolve('serie_display', ['slug' => 'la-guilde']));
+        $this->assertSame('https://example.com/series/la-compagnie', $resolver->resolve('serie_display', ['slug' => 'la-compagnie']));
         $this->assertSame('https://example.com/strip/planche-1', $resolver->resolve('strip_display', ['slug' => 'planche-1']));
     }
 
@@ -45,12 +45,12 @@ class BookPublicUrlResolverTest extends TestCase
     public function testASerieIsReadBelowTheIndexListingIt(): void
     {
         $resolver = $this->createResolver();
-        $books = new Serie()->setSlug('la-guilde')->setKind(SerieKind::Book->value);
+        $books = new Serie()->setSlug('la-compagnie')->setKind(SerieKind::Book->value);
         $strips = new Serie()->setSlug('repliques')->setKind(SerieKind::Strip->value);
 
         $this->assertSame('serie_display', BookPublicUrlResolver::serieRoute($books));
         $this->assertSame('strip_serie_display', BookPublicUrlResolver::serieRoute($strips));
-        $this->assertSame('https://example.com/series/la-guilde', $resolver->resolve(BookPublicUrlResolver::serieRoute($books), ['slug' => 'la-guilde']));
+        $this->assertSame('https://example.com/series/la-compagnie', $resolver->resolve(BookPublicUrlResolver::serieRoute($books), ['slug' => 'la-compagnie']));
         $this->assertSame('https://example.com/strips/repliques', $resolver->resolve(BookPublicUrlResolver::serieRoute($strips), ['slug' => 'repliques']));
     }
 

@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // The person a book or a serie credits, who used to be a name retyped on each of them along with the address of their site - a spelling apart made a fourth author out of the same one, and the site had nowhere to say who they are
 // One entity and not two: writing and illustrating are two roles, not two natures, and the same person often holds both. Which role is held is said by the relation - Book::$author and Book::$illustrator both point here - so a person exists once, with one page and one slug, however many hats they wear
@@ -78,6 +79,7 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $illustratedSeries;
 
+    #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: ContributorMedia::class, mappedBy: 'contributor', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $medias;

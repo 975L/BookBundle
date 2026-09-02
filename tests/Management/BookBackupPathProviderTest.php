@@ -59,7 +59,7 @@ class BookBackupPathProviderTest extends TestCase
     private function medias(): array
     {
         $book = new Book()->setSlug('tome-1');
-        $serie = new Serie()->setSlug('la-guilde');
+        $serie = new Serie()->setSlug('la-compagnie');
         $strip = new Strip()->setSlug('la-tuile');
 
         return [

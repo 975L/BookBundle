@@ -38,6 +38,7 @@ class MenuProvider implements MenuProviderInterface
             'serie' => [
                 'controller' => SerieCrudController::class,
                 'label' => 'label.series',
+                'narration' => 'narration.series',
                 'translation_domain' => 'book',
                 'icon' => 'fas fa-layer-group',
                 // The very text the series screen opens on (see serie_crud_index.html.twig), reused as-is for the onboarding tour rather than written again for it
@@ -48,6 +49,7 @@ class MenuProvider implements MenuProviderInterface
             'book' => [
                 'controller' => BookCrudController::class,
                 'label' => 'label.books',
+                'narration' => 'narration.books',
                 'translation_domain' => 'book',
                 'icon' => 'fas fa-book',
                 // The very text the catalog screen opens on (see book_crud_index.html.twig), reused as-is for the onboarding tour rather than written again for it
@@ -58,6 +60,7 @@ class MenuProvider implements MenuProviderInterface
             'contributor' => [
                 'controller' => ContributorCrudController::class,
                 'label' => 'label.contributors',
+                'narration' => 'narration.contributors',
                 'translation_domain' => 'book',
                 'icon' => 'fas fa-user-pen',
                 // The very text the people screen opens on (see contributor_crud_index.html.twig), reused as-is for the onboarding tour rather than written again for it
@@ -68,6 +71,7 @@ class MenuProvider implements MenuProviderInterface
             'strip' => [
                 'controller' => StripCrudController::class,
                 'label' => 'label.strips',
+                'narration' => 'narration.strips',
                 'translation_domain' => 'book',
                 'icon' => 'fas fa-border-all',
                 // The very text the strips screen opens on (see strip_crud_index.html.twig), reused as-is for the onboarding tour rather than written again for it

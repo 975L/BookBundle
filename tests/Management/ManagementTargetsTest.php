@@ -41,7 +41,7 @@ class ManagementTargetsTest extends ManagementTargetsTestCase
     private function serieRepository(): SerieRepository
     {
         $repository = $this->createStub(SerieRepository::class);
-        $repository->method('findAll')->willReturn([new Serie()->setSlug('la-guilde-des-seigneurs')->setTitle('La Guilde des Seigneurs')]);
+        $repository->method('findAll')->willReturn([new Serie()->setSlug('la-compagnie-des-ombres')->setTitle('La Compagnie des Ombres')]);
 
         return $repository;
     }

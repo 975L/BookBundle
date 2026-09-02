@@ -39,7 +39,7 @@ class StripExportProviderTest extends TestCase
         $item = $this->createProvider(sys_get_temp_dir(), $stripRepository)->exportAll()['items'][0];
 
         $this->assertSame('la-tuile', $item['slug']);
-        $this->assertSame('Le Seigneur, Kalaan', $item['characters']);
+        $this->assertSame('Le Seigneur, Alwin', $item['characters']);
         // Derived from the characters on the way back in, so it is not carried
         $this->assertArrayNotHasKey('charactersSlug', $item);
     }
@@ -59,13 +59,13 @@ class StripExportProviderTest extends TestCase
     {
         $projectDir = $this->createProjectDir(['medias/book/strips/plate-la-tuile/p.webp' => 'plate-bytes']);
 
-        $strip = $this->createStrip()->setSerie(new Serie()->setSlug('la-guilde')->setTitle('La Guilde des Seigneurs'));
+        $strip = $this->createStrip()->setSerie(new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie des Ombres'));
         $strip->addMedia(new StripMedia()->setName('medias/book/strips/plate-la-tuile/p.webp')->setKind('plate')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable()));
 
         $item = $this->createProvider($projectDir)->serialize([$strip])['items'][0];
 
-        $this->assertSame('la-guilde', $item['serie']);
-        $this->assertSame('La Guilde des Seigneurs', $item['serieTitle']);
+        $this->assertSame('la-compagnie', $item['serie']);
+        $this->assertSame('La Compagnie des Ombres', $item['serieTitle']);
         $this->assertSame('medias/book/strips/plate-la-tuile/p.webp', $item['medias'][0]['name']);
 
         $this->removeDir($projectDir);
@@ -76,7 +76,7 @@ class StripExportProviderTest extends TestCase
         return new Strip()
             ->setSlug('la-tuile')
             ->setTitle('La tuile')
-            ->setCharacters('Le Seigneur, Kalaan')
+            ->setCharacters('Le Seigneur, Alwin')
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'));
     }

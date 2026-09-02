@@ -6,6 +6,8 @@ use c975L\BookBundle\Repository\MediaRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
@@ -85,9 +87,28 @@ abstract class Media implements \Stringable
     #[ORM\ManyToOne()]
     private ?UserInterface $user = null;
 
+    // A media row is written as soon as its owner is, whether or not a file has been picked - so it carries a date from the moment it exists, an upload simply moving that date forward (see setFile)
+    public function __construct()
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
     public function __toString(): string
     {
         return (string) $this->getName();
+    }
+
+    // A row exists from the moment its owner is saved (see the constructor), so nothing stops one being written with no file at all - and a template asking for the first media of a collection is handed that empty row rather than falling back on its placeholder. Not a NotBlank on $name: Vich fills it from the upload after the validation has run, so a legitimate new file would be turned away. A hosted video stands for its own file, its address being what the player reads (see BookVideo and Media::$youtubeUrl)
+    #[Assert\Callback]
+    public function validateFileOrAddress(ExecutionContextInterface $context): void
+    {
+        if (null !== $this->file || null !== $this->name || null !== $this->youtubeUrl) {
+            return;
+        }
+
+        $context->buildViolation('label.media_without_file')
+            ->atPath('file')
+            ->addViolation();
     }
 
     // Critical for preventing duplicates - overrides default Doctrine behavior

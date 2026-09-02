@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\Table(name: 'book_serie')]
@@ -76,6 +77,7 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OrderBy(['number' => 'ASC', 'published' => 'ASC'])]
     private Collection $strips;
 
+    #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: SerieMedia::class, mappedBy: 'serie', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $medias;

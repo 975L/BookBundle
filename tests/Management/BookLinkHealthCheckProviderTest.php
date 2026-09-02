@@ -27,23 +27,23 @@ class BookLinkHealthCheckProviderTest extends TestCase
     // A store answering normally is what the vast majority of the rows are, and they carry the book and the platform the address was declared on
     public function testAReachableLinkIsReportedOk(): void
     {
-        $book = $this->book('Papa Câlin', 'papa-calin', ['amazon' => 'https://amazon.fr/dp/1']);
+        $book = $this->book('Contes du Soir', 'contes-du-soir', ['amazon' => 'https://amazon.fr/dp/1']);
 
         $rows = $this->provider([$book], ['https://amazon.fr/dp/1' => 200])->runChecks();
 
         $this->assertCount(1, $rows);
         $this->assertSame('https://amazon.fr/dp/1', $rows[0]['url']);
-        $this->assertSame('Papa Câlin - amazon', $rows[0]['label']);
+        $this->assertSame('Contes du Soir - amazon', $rows[0]['label']);
         $this->assertSame(HealthCheckResult::STATUS_OK, $rows[0]['status']);
         $this->assertSame('label.health_check_link_ok', $rows[0]['summary']);
-        $this->assertSame(['kind' => 'amazon', 'slug' => 'papa-calin', 'httpCode' => 200, 'books' => ['Papa Câlin - amazon']], $rows[0]['details']);
+        $this->assertSame(['kind' => 'amazon', 'slug' => 'contes-du-soir', 'httpCode' => 200, 'books' => ['Contes du Soir - amazon']], $rows[0]['details']);
         $this->assertSame('BookCrudController/4/editions', $rows[0]['editUrl']);
     }
 
     // The whole point of the check: a store that closed, reported as an error the editor can act on
     public function testAnAddressAnsweringNotFoundIsAnError(): void
     {
-        $rows = $this->provider([$this->book('Papa Câlin', 'papa-calin', ['fnac' => 'https://fnac.com/gone'])], ['https://fnac.com/gone' => 404])->runChecks();
+        $rows = $this->provider([$this->book('Contes du Soir', 'contes-du-soir', ['fnac' => 'https://fnac.com/gone'])], ['https://fnac.com/gone' => 404])->runChecks();
 
         $this->assertSame(HealthCheckResult::STATUS_ERROR, $rows[0]['status']);
         $this->assertSame('label.health_check_link_broken', $rows[0]['summary']);
@@ -52,7 +52,7 @@ class BookLinkHealthCheckProviderTest extends TestCase
     // Most stores turn a HEAD carrying no browser behind it down - the link is fine and there is nothing to fix, so it stays out of the errors
     public function testAPlatformRefusingTheProbeIsSkippedRatherThanReportedBroken(): void
     {
-        $rows = $this->provider([$this->book('Papa Câlin', 'papa-calin', ['amazon' => 'https://amazon.fr/dp/2'])], ['https://amazon.fr/dp/2' => 403])->runChecks();
+        $rows = $this->provider([$this->book('Contes du Soir', 'contes-du-soir', ['amazon' => 'https://amazon.fr/dp/2'])], ['https://amazon.fr/dp/2' => 403])->runChecks();
 
         $this->assertSame(HealthCheckResult::STATUS_SKIPPED, $rows[0]['status']);
         $this->assertSame('label.health_check_link_refused', $rows[0]['summary']);
@@ -61,7 +61,7 @@ class BookLinkHealthCheckProviderTest extends TestCase
     // A host that never answered at all is not a page answering 404, and the two read differently on the dashboard
     public function testAHostThatNeverAnsweredIsToldFromAPageAnswering(): void
     {
-        $rows = $this->provider([$this->book('Papa Câlin', 'papa-calin', ['spotify' => 'https://gone.example/x'])], ['https://gone.example/x' => null])->runChecks();
+        $rows = $this->provider([$this->book('Contes du Soir', 'contes-du-soir', ['spotify' => 'https://gone.example/x'])], ['https://gone.example/x' => null])->runChecks();
 
         $this->assertSame(HealthCheckResult::STATUS_ERROR, $rows[0]['status']);
         $this->assertSame('label.health_check_link_unreachable', $rows[0]['summary']);
@@ -75,7 +75,7 @@ class BookLinkHealthCheckProviderTest extends TestCase
         $checker->expects($this->never())->method('status');
 
         $provider = new BookLinkHealthCheckProvider(
-            $this->bookService([$this->book('Papa Câlin', 'papa-calin', ['fnac' => '/dp/1'])]),
+            $this->bookService([$this->book('Contes du Soir', 'contes-du-soir', ['fnac' => '/dp/1'])]),
             $this->registry(),
             $checker,
             $this->adminUrlGenerator(),
@@ -91,19 +91,19 @@ class BookLinkHealthCheckProviderTest extends TestCase
     // Results are kept per (url, kind), so two books sold on the same address are one row, naming both
     public function testTwoBooksSharingAnAddressAreOneRow(): void
     {
-        $first = $this->book('Papa Câlin', 'papa-calin', ['amazon' => 'https://amazon.fr/dp/1']);
+        $first = $this->book('Contes du Soir', 'contes-du-soir', ['amazon' => 'https://amazon.fr/dp/1']);
         $second = $this->book('Mamie ViteVite', 'mamie-vitevite', ['amazon' => 'https://amazon.fr/dp/1'], 5);
 
         $rows = $this->provider([$first, $second], ['https://amazon.fr/dp/1' => 200])->runChecks();
 
         $this->assertCount(1, $rows);
-        $this->assertSame(['Papa Câlin - amazon', 'Mamie ViteVite - amazon'], $rows[0]['details']['books']);
+        $this->assertSame(['Contes du Soir - amazon', 'Mamie ViteVite - amazon'], $rows[0]['details']['books']);
     }
 
     // A book declaring no platform at all, and one whose address was left empty, have nothing to check
     public function testABookWithNoAddressIsSkippedEntirely(): void
     {
-        $this->assertSame([], $this->provider([$this->book('Papa Câlin', 'papa-calin', ['fnac' => ''])], [])->runChecks());
+        $this->assertSame([], $this->provider([$this->book('Contes du Soir', 'contes-du-soir', ['fnac' => ''])], [])->runChecks());
     }
 
     /** @param array<string, ?int> $statuses url => the code the host answers, null for a host that never answered */

@@ -16,6 +16,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: StripRepository::class)]
 #[ORM\Table(name: 'book_strip')]
@@ -73,6 +74,7 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $blocks;
 
+    #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: StripMedia::class, mappedBy: 'strip', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $medias;

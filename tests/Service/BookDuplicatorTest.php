@@ -67,20 +67,20 @@ class BookDuplicatorTest extends TestCase
     public function testTheCopyOfASerieCarriesItsMediasAndBlocksButNotItsBooks(): void
     {
         $serie = new Serie()
-            ->setTitle('La Guilde des Seigneurs')
-            ->setSlug('la-guilde-des-seigneurs')
+            ->setTitle('La Compagnie des Ombres')
+            ->setSlug('la-compagnie-des-ombres')
             ->setKind('strip')
             ->setLanguage('fr')
             ->setAuthor(new Contributor()->setName('Tim Loval')->setSlug('tim-loval'));
-        $serie->addCover(new SerieMedia()->setName('medias/book/series/cover-guilde.webp'));
-        $serie->addLogo(new SerieMedia()->setName('medias/book/series/logo-guilde.webp'));
+        $serie->addCover(new SerieMedia()->setName('medias/book/series/cover-compagnie.webp'));
+        $serie->addLogo(new SerieMedia()->setName('medias/book/series/logo-compagnie.webp'));
         $serie->addBlock(new Block()->setKind('article')->setData(['text' => 'Un texte']));
         $serie->addBook(new Book()->setTitle('Tome 1'));
 
         $copy = $this->duplicator->duplicateSerie($serie);
 
-        $this->assertSame('La Guilde des Seigneurs (copie)', $copy->getTitle());
-        $this->assertSame('la-guilde-des-seigneurs-copie', $copy->getSlug());
+        $this->assertSame('La Compagnie des Ombres (copie)', $copy->getTitle());
+        $this->assertSame('la-compagnie-des-ombres-copie', $copy->getSlug());
         $this->assertSame('strip', $copy->getKind());
         $this->assertSame('Tim Loval', $copy->getAuthor()?->getName());
         $this->assertCount(2, $copy->getMedias());
@@ -110,7 +110,7 @@ class BookDuplicatorTest extends TestCase
 
     public function testTheCopyOfABookStaysInItsSerieAndKeepsItsOwnFields(): void
     {
-        $serie = new Serie()->setTitle('La Guilde des Seigneurs')->setSlug('la-guilde-des-seigneurs');
+        $serie = new Serie()->setTitle('La Compagnie des Ombres')->setSlug('la-compagnie-des-ombres');
         $book = $this->book()->setSerie($serie);
 
         $copy = $this->duplicator->duplicateBook($book);

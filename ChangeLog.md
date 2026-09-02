@@ -1,5 +1,24 @@
 # Changelog
 
+## v2.5.1
+
+The bundle's own javascript is run rather than read
+
+- **This bundle's own javascript is now run rather than read**: 9 scenarios over `assets/js/reader.js`, where it had none (02/09/2026)
+- New `tests/Assets/JsCase`, declaring where the assets are to UiBundle's `Testing\JsCase` harness (02/09/2026)
+- `c975l/core-bundle` floor raised to `^1.21`, `chrome-php/chrome` added to `require-dev` (02/09/2026)
+- The loop the reader must not close is put under load: the guard sends nobody back to the page they have just left, and is released on the next frame (02/09/2026)
+- Cues read in time rather than in entry order, an untimed page never turned to, an album with no recording still turned by hand, and neither listener outliving the page Turbo caches (02/09/2026)
+- **`#Serie_kind` is pointed at directly**, a two-value choice being a native select (02/09/2026)
+- `#Book_previousVersion` is named through its row (`.form-group:has(...)`), its options crossing UiBundle's autocomplete threshold past ten living books (02/09/2026)
+- The `book-composition` step scoping the blocks tab names the active pane, an id slugged from the translated label matching nothing outside French (02/09/2026)
+- **New `book-reader` guided project** (order 6033): picking the kind in the palette, attaching the pages and the recording in one upload, then timing the pages cue by cue (02/09/2026)
+- **A media row with no file, no name and no address is refused by the form** rather than written and handed to a template as a cover (02/09/2026)
+- New `tests/Translation/NarrationCatalogueTest`, holding every declared narration to being shipped in both locales and every shipped one to still being declared (02/09/2026)
+- The `c975l-book-display-pages` skill states the media rule next to the cover fallback (02/09/2026)
+- **A media saved before a file is picked no longer answers 500**: `Media::$updatedAt` is stamped at construction, an upload moving the date forward (01/09/2026)
+- **The export steps point at the button unfolding the menu**, the group carrying `action-export` through `addCssClass()` and the three formats being named by the step (01/09/2026)
+
 ## v2.5.0
 
 An author is a row of the catalog, not a name retyped on each book
@@ -48,6 +67,7 @@ An author is a row of the catalog, not a name retyped on each book
 - New `ContributorTest`, `ContributorResolverTest` and `ContributorRepositoryTest` (31/08/2026)
 - `BookPublicUrlGeneratorTestTrait` declares the two contributor routes and their prefixes, which left the tests reading them as a family served elsewhere (31/08/2026)
 - `BookSitemapProviderTest`, `BookUrlExtensionTest`, `BookEditUrlExtensionTest` and `BookTrashManagerTest` take in the person (31/08/2026)
+- The fixtures no longer carry the maintainer's own books: `La Compagnie des Ombres`, `Contes du Soir` and neutral character names stand where real titles, slugs and a real domain did - a public bundle names nobody's work but the reader's (01/09/2026)
 
 ## v2.4.3
 

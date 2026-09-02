@@ -78,6 +78,10 @@
                 <source>description.guided_project_book_media_move</source>
                 <target>A file dropped in the wrong list is dragged into the right one, keeping the file itself - no need to delete it and upload it again.</target>
             </trans-unit>
+            <trans-unit id="qKPaJ8x">
+                <source>description.guided_project_book_reader</source>
+                <target>The reader plays the recording of an album and turns its pages along with it, at the seconds you give it.</target>
+            </trans-unit>
             <trans-unit id="vfRiQY8">
                 <source>description.guided_project_book_serie_creation</source>
                 <target>A serie gathers the books or the strips of one collection. Creating it first saves going back over each book to attach it.</target>
@@ -269,6 +273,50 @@
             <trans-unit id="WK1Sl_R">
                 <source>description.guided_step_book_media_move_tab</source>
                 <target>The tab holding the files of the book: the leafed-through pages, the extracts, the audios and the videos.</target>
+            </trans-unit>
+            <trans-unit id="rjCPwF3">
+                <source>description.guided_step_book_reader_add</source>
+                <target>A new row opens the palette of kinds on its own.</target>
+            </trans-unit>
+            <trans-unit id="2XM.fH2">
+                <source>description.guided_step_book_reader_auto_advance</source>
+                <target>Unticked, the cues only serve the manual navigation.</target>
+            </trans-unit>
+            <trans-unit id="__.ujDX">
+                <source>description.guided_step_book_reader_cues</source>
+                <target>One row per page: its number, and the second of the recording it is turned at. Left empty, the reader turns the pages alone.</target>
+            </trans-unit>
+            <trans-unit id="qeISV6S">
+                <source>description.guided_step_book_reader_done</source>
+                <target>Open the public page: the recording plays, and the album leafs through on its own.</target>
+            </trans-unit>
+            <trans-unit id="kGIrCrq">
+                <source>description.guided_step_book_reader_edit</source>
+                <target>Open the book whose pages and recording you have at hand.</target>
+            </trans-unit>
+            <trans-unit id="MtEL4oD">
+                <source>description.guided_step_book_reader_id</source>
+                <target>This identifier is the anchor of the reader in the page, and only one reader can carry it.</target>
+            </trans-unit>
+            <trans-unit id="1LAfhmB">
+                <source>description.guided_step_book_reader_kind</source>
+                <target>In the palette, the tile named "Reader": its silhouette shows a page and a play bar.</target>
+            </trans-unit>
+            <trans-unit id="98v3aXG">
+                <source>description.guided_step_book_reader_medias</source>
+                <target>Everything goes up in one go: the images are the pages, in their order, and the audio file is the recording.</target>
+            </trans-unit>
+            <trans-unit id="c3yi.Qb">
+                <source>description.guided_step_book_reader_open</source>
+                <target>The reader is a block of a book page, so it starts on the book holding the album.</target>
+            </trans-unit>
+            <trans-unit id="SGm84w6">
+                <source>description.guided_step_book_reader_save</source>
+                <target>The block is written with the page, and its files are moved to their final place.</target>
+            </trans-unit>
+            <trans-unit id="4fD3sJ1">
+                <source>description.guided_step_book_reader_tab</source>
+                <target>The last tab of the form is the one composing the page.</target>
             </trans-unit>
             <trans-unit id="7HxJV3F">
                 <source>description.guided_step_book_serie_creation_author</source>
@@ -890,6 +938,10 @@
                 <source>label.guided_project_book_media_move</source>
                 <target>Move a file from one list to another</target>
             </trans-unit>
+            <trans-unit id="j9o3bim">
+                <source>label.guided_project_book_reader</source>
+                <target>Set up the page-turning reader</target>
+            </trans-unit>
             <trans-unit id="fp0G5g8">
                 <source>label.guided_project_book_serie_creation</source>
                 <target>Create a serie</target>
@@ -1101,6 +1153,50 @@
             <trans-unit id="tpdpeQW">
                 <source>label.guided_step_book_media_move_tab</source>
                 <target>Open the "Page" tab</target>
+            </trans-unit>
+            <trans-unit id="yilasXR">
+                <source>label.guided_step_book_reader_add</source>
+                <target>Add a block</target>
+            </trans-unit>
+            <trans-unit id="sMLYucH">
+                <source>label.guided_step_book_reader_auto_advance</source>
+                <target>Let the voice turn the pages</target>
+            </trans-unit>
+            <trans-unit id="Bj0THum">
+                <source>label.guided_step_book_reader_cues</source>
+                <target>Time the pages</target>
+            </trans-unit>
+            <trans-unit id="59KYh2N">
+                <source>label.guided_step_book_reader_done</source>
+                <target>The reader is up</target>
+            </trans-unit>
+            <trans-unit id="aDR2EaP">
+                <source>label.guided_step_book_reader_edit</source>
+                <target>Edit the book</target>
+            </trans-unit>
+            <trans-unit id="QnJi367">
+                <source>label.guided_step_book_reader_id</source>
+                <target>Name the reader</target>
+            </trans-unit>
+            <trans-unit id="RjacHFG">
+                <source>label.guided_step_book_reader_kind</source>
+                <target>Pick the reader</target>
+            </trans-unit>
+            <trans-unit id="p84J8SH">
+                <source>label.guided_step_book_reader_medias</source>
+                <target>Attach the pages and the recording</target>
+            </trans-unit>
+            <trans-unit id="95a8yt3">
+                <source>label.guided_step_book_reader_open</source>
+                <target>Open the catalog</target>
+            </trans-unit>
+            <trans-unit id="i_.kfxi">
+                <source>label.guided_step_book_reader_save</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="GF.Nu1N">
+                <source>label.guided_step_book_reader_tab</source>
+                <target>Go to the blocks</target>
             </trans-unit>
             <trans-unit id="vxlTXH9">
                 <source>label.guided_step_book_serie_creation_author</source>

@@ -78,6 +78,10 @@
                 <source>description.guided_project_book_media_move</source>
                 <target>Un archivo dejado en la lista equivocada se arrastra a la correcta, conservando el archivo mismo: no hace falta borrarlo y volver a subirlo.</target>
             </trans-unit>
+            <trans-unit id="qKPaJ8x">
+                <source>description.guided_project_book_reader</source>
+                <target>El lector reproduce la grabación de un álbum y pasa sus páginas con ella, en los segundos que usted le indique.</target>
+            </trans-unit>
             <trans-unit id="vfRiQY8">
                 <source>description.guided_project_book_serie_creation</source>
                 <target>Una serie agrupa los libros o las láminas de una misma colección. Crearla primero evita volver a cada libro para vincularlo.</target>
@@ -269,6 +273,50 @@
             <trans-unit id="WK1Sl_R">
                 <source>description.guided_step_book_media_move_tab</source>
                 <target>La pestaña que lleva los archivos del libro: el hojeado, los extractos, los audios y los vídeos.</target>
+            </trans-unit>
+            <trans-unit id="rjCPwF3">
+                <source>description.guided_step_book_reader_add</source>
+                <target>Una nueva fila abre por sí misma la paleta de tipos.</target>
+            </trans-unit>
+            <trans-unit id="2XM.fH2">
+                <source>description.guided_step_book_reader_auto_advance</source>
+                <target>Sin marcar, las marcas solo sirven para la navegación manual.</target>
+            </trans-unit>
+            <trans-unit id="__.ujDX">
+                <source>description.guided_step_book_reader_cues</source>
+                <target>Una fila por página: su número y el segundo de la grabación en que se pasa. Si se deja vacío, el lector pasa las páginas solo.</target>
+            </trans-unit>
+            <trans-unit id="qeISV6S">
+                <source>description.guided_step_book_reader_done</source>
+                <target>Abra la página pública: la grabación se reproduce y el álbum se hojea solo.</target>
+            </trans-unit>
+            <trans-unit id="kGIrCrq">
+                <source>description.guided_step_book_reader_edit</source>
+                <target>Abra el libro cuyas páginas y grabación tenga a mano.</target>
+            </trans-unit>
+            <trans-unit id="MtEL4oD">
+                <source>description.guided_step_book_reader_id</source>
+                <target>Este identificador es el ancla del lector en la página, y solo un lector puede llevarlo.</target>
+            </trans-unit>
+            <trans-unit id="1LAfhmB">
+                <source>description.guided_step_book_reader_kind</source>
+                <target>En la paleta, la casilla llamada «Lector»: su silueta muestra una página y una barra de reproducción.</target>
+            </trans-unit>
+            <trans-unit id="98v3aXG">
+                <source>description.guided_step_book_reader_medias</source>
+                <target>Todo se sube de una vez: las imágenes son las páginas, en su orden, y el archivo de audio es la grabación.</target>
+            </trans-unit>
+            <trans-unit id="c3yi.Qb">
+                <source>description.guided_step_book_reader_open</source>
+                <target>El lector es un bloque de la página de un libro, así que se parte del libro que contiene el álbum.</target>
+            </trans-unit>
+            <trans-unit id="SGm84w6">
+                <source>description.guided_step_book_reader_save</source>
+                <target>El bloque se guarda con la página y sus archivos pasan a su ubicación definitiva.</target>
+            </trans-unit>
+            <trans-unit id="4fD3sJ1">
+                <source>description.guided_step_book_reader_tab</source>
+                <target>La última pestaña del formulario es la que compone la página.</target>
             </trans-unit>
             <trans-unit id="7HxJV3F">
                 <source>description.guided_step_book_serie_creation_author</source>
@@ -890,6 +938,10 @@
                 <source>label.guided_project_book_media_move</source>
                 <target>Mover un archivo de una lista a otra</target>
             </trans-unit>
+            <trans-unit id="j9o3bim">
+                <source>label.guided_project_book_reader</source>
+                <target>Poner en marcha el lector página a página</target>
+            </trans-unit>
             <trans-unit id="fp0G5g8">
                 <source>label.guided_project_book_serie_creation</source>
                 <target>Crear una serie</target>
@@ -1101,6 +1153,50 @@
             <trans-unit id="tpdpeQW">
                 <source>label.guided_step_book_media_move_tab</source>
                 <target>Abra la pestaña «Página»</target>
+            </trans-unit>
+            <trans-unit id="yilasXR">
+                <source>label.guided_step_book_reader_add</source>
+                <target>Añadir un bloque</target>
+            </trans-unit>
+            <trans-unit id="sMLYucH">
+                <source>label.guided_step_book_reader_auto_advance</source>
+                <target>Dejar que la voz pase las páginas</target>
+            </trans-unit>
+            <trans-unit id="Bj0THum">
+                <source>label.guided_step_book_reader_cues</source>
+                <target>Cronometrar las páginas</target>
+            </trans-unit>
+            <trans-unit id="59KYh2N">
+                <source>label.guided_step_book_reader_done</source>
+                <target>El lector está en su sitio</target>
+            </trans-unit>
+            <trans-unit id="aDR2EaP">
+                <source>label.guided_step_book_reader_edit</source>
+                <target>Modificar el libro</target>
+            </trans-unit>
+            <trans-unit id="QnJi367">
+                <source>label.guided_step_book_reader_id</source>
+                <target>Nombrar el lector</target>
+            </trans-unit>
+            <trans-unit id="RjacHFG">
+                <source>label.guided_step_book_reader_kind</source>
+                <target>Elegir el lector</target>
+            </trans-unit>
+            <trans-unit id="p84J8SH">
+                <source>label.guided_step_book_reader_medias</source>
+                <target>Adjuntar las páginas y la grabación</target>
+            </trans-unit>
+            <trans-unit id="95a8yt3">
+                <source>label.guided_step_book_reader_open</source>
+                <target>Abrir el catálogo</target>
+            </trans-unit>
+            <trans-unit id="i_.kfxi">
+                <source>label.guided_step_book_reader_save</source>
+                <target>Guardar</target>
+            </trans-unit>
+            <trans-unit id="GF.Nu1N">
+                <source>label.guided_step_book_reader_tab</source>
+                <target>Ir a los bloques</target>
             </trans-unit>
             <trans-unit id="vxlTXH9">
                 <source>label.guided_step_book_serie_creation_author</source>

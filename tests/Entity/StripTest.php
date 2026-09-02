@@ -18,12 +18,12 @@ class StripTest extends TestCase
 {
     public function testCharactersListPairsTheNameWithItsSlug(): void
     {
-        $strip = new Strip()->setCharacters('Timothée, Papa Câlin , Zoé');
+        $strip = new Strip()->setCharacters('Timothée, Contes du Soir , Zoé');
 
         $this->assertSame(
             [
                 ['name' => 'Timothée', 'slug' => 'timothee'],
-                ['name' => 'Papa Câlin', 'slug' => 'papa-calin'],
+                ['name' => 'Contes du Soir', 'slug' => 'contes-du-soir'],
                 ['name' => 'Zoé', 'slug' => 'zoe'],
             ],
             $strip->getCharactersList()

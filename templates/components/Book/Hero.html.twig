@@ -50,7 +50,7 @@
 
         <h1 class="book-hero__title">{{ book.title }}</h1>
 
-        {# Right under the title: what the site has to say about the book where the book is introduced - Papa Câlin names the child whose idea the story was written from. Declared rather than nested, this component being called self-closed by book/display.html.twig, where a slot would never reach it #}
+        {# Right under the title: what the site has to say about the book where the book is introduced - the child whose idea the story was written from, say. Declared rather than nested, this component being called self-closed by book/display.html.twig, where a slot would never reach it #}
         {% set ownLine = book_section_template('hero') %}
         {% if ownLine %}
             {{ include(ownLine, {book: book}) }}
@@ -94,7 +94,7 @@
         </div>
         {% endif %}
 
-        {# What the site has to say right where the book is introduced - Papa Câlin names the child whose idea the story was written from. Nested content, so a site adds it without overriding this template #}
+        {# What the site has to say right where the book is introduced - the child whose idea the story was written from, say. Nested content, so a site adds it without overriding this template #}
         {% block content %}{% endblock %}
     </div>
 </header>

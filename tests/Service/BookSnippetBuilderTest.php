@@ -169,7 +169,7 @@ class BookSnippetBuilderTest extends TestCase
 
         $snippet = $this->builder->buildBook($second);
 
-        $this->assertSame(['@type' => 'BookSeries', 'name' => 'La Guilde des Seigneurs'], $snippet['isPartOf']);
+        $this->assertSame(['@type' => 'BookSeries', 'name' => 'La Compagnie des Ombres'], $snippet['isPartOf']);
         $this->assertSame(2, $snippet['position']);
     }
 
@@ -206,18 +206,18 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertSame(12, $snippet['position']);
         $this->assertSame('https://example.org/source', $snippet['sameAs']);
         // The serie is the very node its own page publishes, a serie holding strips being the one holding the books
-        $this->assertSame(['@type' => 'BookSeries', 'name' => 'La Guilde des Seigneurs'], $snippet['isPartOf']);
+        $this->assertSame(['@type' => 'BookSeries', 'name' => 'La Compagnie des Ombres'], $snippet['isPartOf']);
         // A strip names no author of its own, the serie naming the one who draws them all - with their site, which now travels with the person rather than being retyped on each row that credits them
         $this->assertSame(['@type' => 'Person', 'name' => 'Tim Loval', 'url' => 'https://example.org/auteur'], $snippet['author']);
     }
 
     public function testAStripCarriesTheCharactersItPutsOnStage(): void
     {
-        $snippet = $this->builder->buildStrip($this->strip()->setCharacters('Kalaan, Lilouan'));
+        $snippet = $this->builder->buildStrip($this->strip()->setCharacters('Alwin, Brann'));
 
         $this->assertSame([
-            ['@type' => 'Person', 'name' => 'Kalaan'],
-            ['@type' => 'Person', 'name' => 'Lilouan'],
+            ['@type' => 'Person', 'name' => 'Alwin'],
+            ['@type' => 'Person', 'name' => 'Brann'],
         ], $snippet['character']);
     }
 
@@ -294,7 +294,7 @@ class BookSnippetBuilderTest extends TestCase
     // A serie holding its two published volumes, added in the reverse order of their publication so the sorting is actually exercised
     private function serie(): Serie
     {
-        $serie = new Serie()->setTitle('La Guilde des Seigneurs');
+        $serie = new Serie()->setTitle('La Compagnie des Ombres');
         $serie->addBook(new Book()->setTitle('Tome 2')->setPublished(new \DateTime('2026-06-01')));
         $serie->addBook($this->book());
 

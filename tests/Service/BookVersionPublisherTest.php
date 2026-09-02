@@ -31,7 +31,7 @@ class BookVersionPublisherTest extends TestCase
             ->setSlug('chat-et-chocolat')
             ->setNumber(12)
             ->setLanguage('fr')
-            ->setAuthor(new Contributor()->setName('Papa Câlin')->setSlug('papa-calin'))
+            ->setAuthor(new Contributor()->setName('Contes du Soir')->setSlug('contes-du-soir'))
             ->setData(['idea' => 'Melvin, 5 ans']);
 
         $previous = $this->publisher()->createPreviousVersion($book, 'Chat et Chocolat — Édition originale');
@@ -40,7 +40,7 @@ class BookVersionPublisherTest extends TestCase
         $this->assertSame('chat-et-chocolat-previous', $previous->getSlug());
         $this->assertSame(12, $previous->getNumber());
         $this->assertSame('fr', $previous->getLanguage());
-        $this->assertSame('Papa Câlin', $previous->getAuthor()?->getName());
+        $this->assertSame('Contes du Soir', $previous->getAuthor()?->getName());
         $this->assertSame(['idea' => 'Melvin, 5 ans'], $previous->getData());
         $this->assertSame($book, $previous->getNewerVersion());
         // The book itself did not move address: it is the one outside links carry

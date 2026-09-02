@@ -79,8 +79,8 @@ class BookSitemapProviderTest extends TestCase
     private function serie(): Serie
     {
         return new Serie()
-            ->setTitle('La Guilde des Seigneurs')
-            ->setSlug('la-guilde-des-seigneurs')
+            ->setTitle('La Compagnie des Ombres')
+            ->setSlug('la-compagnie-des-ombres')
             ->setSummary('Le résumé de la série')
             ->setModification(new \DateTime('2026-02-20'));
     }
@@ -140,11 +140,11 @@ class BookSitemapProviderTest extends TestCase
         $urls = $this->createProvider([], [$this->serie()])->getUrls();
 
         $this->assertSame([
-            'loc' => 'https://example.com/series/la-guilde-des-seigneurs',
+            'loc' => 'https://example.com/series/la-compagnie-des-ombres',
             'lastmod' => '2026-02-20',
             'changefreq' => 'monthly',
             'priority' => 8,
-            'title' => 'La Guilde des Seigneurs',
+            'title' => 'La Compagnie des Ombres',
             'description' => 'Le résumé de la série',
         ], $urls[2]);
     }

@@ -26,7 +26,7 @@ class SerieRepositoryTest extends TestCase
     // A serie's page lists what its catalog lists: a book a newer version replaces leaves it, as it left the trash-free listing
     public function testASeriePageLeavesOutABookAlreadyReplaced(): void
     {
-        $this->createRepository()->findOneBySlugWithSortedBooks('histoires-de-papa-calin');
+        $this->createRepository()->findOneBySlugWithSortedBooks('histoires-de-contes-du-soir');
 
         $this->assertStringContainsString('b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL', $this->dql);
     }
@@ -90,7 +90,7 @@ class SerieRepositoryTest extends TestCase
     // The serie itself is looked up whatever its state - its page answers 410 out of the trash and 404 set aside, which both need the row - where the books it lists leave it
     public function testASeriePageLeavesOutTheBooksSetAside(): void
     {
-        $this->createRepository()->findOneBySlugWithSortedBooks('histoires-de-papa-calin');
+        $this->createRepository()->findOneBySlugWithSortedBooks('histoires-de-contes-du-soir');
 
         $this->assertStringContainsString('b.hidden = false', $this->dql);
         $this->assertStringNotContainsString('s.hidden', $this->dql);

@@ -51,7 +51,7 @@ class StripImportCommandTest extends TestCase
         $this->file('001/001-Cases-page001.jpg');
         $this->file('001/001.pdf.webp');
 
-        $tester = $this->import([['id' => 1, 'slug' => 'planche-1', 'title' => 'Planche 1', 'characters' => 'Papa,Kalaan', 'published' => '2026-01-02']]);
+        $tester = $this->import([['id' => 1, 'slug' => 'planche-1', 'title' => 'Planche 1', 'characters' => 'Papa,Alwin', 'published' => '2026-01-02']]);
 
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
         $this->assertTrue($this->flushed);
@@ -60,7 +60,7 @@ class StripImportCommandTest extends TestCase
         $this->assertSame('Planche 1', $strip->getTitle());
         $this->assertSame('planche-1', $strip->getSlug());
         $this->assertSame(1, $strip->getNumber());
-        $this->assertSame('Papa,Kalaan', $strip->getCharacters());
+        $this->assertSame('Papa,Alwin', $strip->getCharacters());
         $this->assertSame('La tribu, planche 1', $strip->getSummary());
         $this->assertSame('02/01/2026', $strip->getPublished()?->format('d/m/Y'));
     }
@@ -110,11 +110,11 @@ class StripImportCommandTest extends TestCase
                 ['id' => 1, 'slug' => 'planche-1', 'title' => 'Planche 1'],
                 ['id' => 2, 'slug' => 'planche-2', 'title' => 'Planche 2'],
             ],
-            ['--source-url-template' => 'https://papa-calin.com/replique/{number}', '--source-url-max' => '1']
+            ['--source-url-template' => 'https://contes-du-soir.example/replique/{number}', '--source-url-max' => '1']
         );
 
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
-        $this->assertSame('https://papa-calin.com/replique/1', $this->strips()[0]->getSourceUrl());
+        $this->assertSame('https://contes-du-soir.example/replique/1', $this->strips()[0]->getSourceUrl());
         $this->assertNull($this->strips()[1]->getSourceUrl());
     }
 

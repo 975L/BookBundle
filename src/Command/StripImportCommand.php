@@ -66,7 +66,7 @@ class StripImportCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'URL template for sourceUrl field. Use {number} as placeholder. ' .
-                'Example: https://papa-calin.com/replique/{number}'
+                'Example: https://contes-du-soir.example/replique/{number}'
             )
             ->addOption(
                 'source-url-max',

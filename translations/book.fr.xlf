@@ -78,6 +78,10 @@
                 <source>description.guided_project_book_media_move</source>
                 <target>Un fichier déposé dans la mauvaise liste se glisse dans la bonne, en gardant le fichier lui-même — inutile de le supprimer et de le redéposer.</target>
             </trans-unit>
+            <trans-unit id="qKPaJ8x">
+                <source>description.guided_project_book_reader</source>
+                <target>Le lecteur joue l'enregistrement d'un album et en tourne les pages avec lui, aux secondes que vous lui donnez.</target>
+            </trans-unit>
             <trans-unit id="vfRiQY8">
                 <source>description.guided_project_book_serie_creation</source>
                 <target>Une série regroupe les livres ou les planches d'une même collection. La créer d'abord évite de revenir sur chaque livre pour l'y rattacher.</target>
@@ -269,6 +273,50 @@
             <trans-unit id="WK1Sl_R">
                 <source>description.guided_step_book_media_move_tab</source>
                 <target>L'onglet qui porte les fichiers du livre : le feuilletage, les extraits, les audios et les vidéos.</target>
+            </trans-unit>
+            <trans-unit id="rjCPwF3">
+                <source>description.guided_step_book_reader_add</source>
+                <target>Une nouvelle ligne ouvre d'elle-même la palette des types.</target>
+            </trans-unit>
+            <trans-unit id="2XM.fH2">
+                <source>description.guided_step_book_reader_auto_advance</source>
+                <target>Décoché, les repères ne servent qu'à la navigation manuelle.</target>
+            </trans-unit>
+            <trans-unit id="__.ujDX">
+                <source>description.guided_step_book_reader_cues</source>
+                <target>Une ligne par page : son numéro, et la seconde de l'enregistrement où elle est tournée. Laissé vide, le lecteur tourne les pages seul.</target>
+            </trans-unit>
+            <trans-unit id="qeISV6S">
+                <source>description.guided_step_book_reader_done</source>
+                <target>Ouvrez la page publique : l'enregistrement se joue, et l'album se feuillette tout seul.</target>
+            </trans-unit>
+            <trans-unit id="kGIrCrq">
+                <source>description.guided_step_book_reader_edit</source>
+                <target>Ouvrez le livre dont vous avez les pages et l'enregistrement sous la main.</target>
+            </trans-unit>
+            <trans-unit id="MtEL4oD">
+                <source>description.guided_step_book_reader_id</source>
+                <target>Cet identifiant est l'ancre du lecteur dans la page, et un seul lecteur peut le porter.</target>
+            </trans-unit>
+            <trans-unit id="1LAfhmB">
+                <source>description.guided_step_book_reader_kind</source>
+                <target>Dans la palette, la tuile nommée « Lecteur » : sa silhouette montre une page et une barre de lecture.</target>
+            </trans-unit>
+            <trans-unit id="98v3aXG">
+                <source>description.guided_step_book_reader_medias</source>
+                <target>Tout monte en une fois : les images sont les pages, dans leur ordre, et le fichier audio est l'enregistrement.</target>
+            </trans-unit>
+            <trans-unit id="c3yi.Qb">
+                <source>description.guided_step_book_reader_open</source>
+                <target>Le lecteur est un block de la page d'un livre, on part donc du livre qui porte l'album.</target>
+            </trans-unit>
+            <trans-unit id="SGm84w6">
+                <source>description.guided_step_book_reader_save</source>
+                <target>Le block est écrit avec la page, et ses fichiers rejoignent leur place définitive.</target>
+            </trans-unit>
+            <trans-unit id="4fD3sJ1">
+                <source>description.guided_step_book_reader_tab</source>
+                <target>Le dernier onglet du formulaire est celui qui compose la page.</target>
             </trans-unit>
             <trans-unit id="7HxJV3F">
                 <source>description.guided_step_book_serie_creation_author</source>
@@ -890,6 +938,10 @@
                 <source>label.guided_project_book_media_move</source>
                 <target>Déplacer un fichier d'une liste à l'autre</target>
             </trans-unit>
+            <trans-unit id="j9o3bim">
+                <source>label.guided_project_book_reader</source>
+                <target>Mettre en place le lecteur page à page</target>
+            </trans-unit>
             <trans-unit id="fp0G5g8">
                 <source>label.guided_project_book_serie_creation</source>
                 <target>Créer une série</target>
@@ -1101,6 +1153,50 @@
             <trans-unit id="tpdpeQW">
                 <source>label.guided_step_book_media_move_tab</source>
                 <target>Ouvrez l'onglet « Page »</target>
+            </trans-unit>
+            <trans-unit id="yilasXR">
+                <source>label.guided_step_book_reader_add</source>
+                <target>Ajouter un block</target>
+            </trans-unit>
+            <trans-unit id="sMLYucH">
+                <source>label.guided_step_book_reader_auto_advance</source>
+                <target>Laisser la voix tourner les pages</target>
+            </trans-unit>
+            <trans-unit id="Bj0THum">
+                <source>label.guided_step_book_reader_cues</source>
+                <target>Minuter les pages</target>
+            </trans-unit>
+            <trans-unit id="59KYh2N">
+                <source>label.guided_step_book_reader_done</source>
+                <target>Le lecteur est en place</target>
+            </trans-unit>
+            <trans-unit id="aDR2EaP">
+                <source>label.guided_step_book_reader_edit</source>
+                <target>Modifier le livre</target>
+            </trans-unit>
+            <trans-unit id="QnJi367">
+                <source>label.guided_step_book_reader_id</source>
+                <target>Nommer le lecteur</target>
+            </trans-unit>
+            <trans-unit id="RjacHFG">
+                <source>label.guided_step_book_reader_kind</source>
+                <target>Choisir le lecteur</target>
+            </trans-unit>
+            <trans-unit id="p84J8SH">
+                <source>label.guided_step_book_reader_medias</source>
+                <target>Attacher les pages et l'enregistrement</target>
+            </trans-unit>
+            <trans-unit id="95a8yt3">
+                <source>label.guided_step_book_reader_open</source>
+                <target>Ouvrir le catalogue</target>
+            </trans-unit>
+            <trans-unit id="i_.kfxi">
+                <source>label.guided_step_book_reader_save</source>
+                <target>Enregistrer</target>
+            </trans-unit>
+            <trans-unit id="GF.Nu1N">
+                <source>label.guided_step_book_reader_tab</source>
+                <target>Aller aux blocks</target>
             </trans-unit>
             <trans-unit id="vxlTXH9">
                 <source>label.guided_step_book_serie_creation_author</source>

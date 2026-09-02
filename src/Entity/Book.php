@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ORM\Table(name: 'book_book')]
@@ -73,6 +74,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $blocks;
 
+    #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: BookMedia::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $medias;
@@ -89,14 +91,17 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $data = null;
 
+    #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: BookVideo::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $videos;
 
+    #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: BookPresse::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $presses;
 
+    #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: BookMarketing::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $marketings;

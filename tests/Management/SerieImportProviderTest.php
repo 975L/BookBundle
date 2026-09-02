@@ -41,17 +41,17 @@ class SerieImportProviderTest extends TestCase
 
     public function testRoundTripRebuildsTheSerieAndLaysItsFilesBackWhereTheyWere(): void
     {
-        $sourceDir = $this->createProjectDir(['medias/book/series/cover-la-guilde/c.webp' => 'cover-bytes']);
+        $sourceDir = $this->createProjectDir(['medias/book/series/cover-la-compagnie/c.webp' => 'cover-bytes']);
         $serie = new Serie()
-            ->setSlug('la-guilde')
-            ->setTitle('La Guilde des Seigneurs')
+            ->setSlug('la-compagnie')
+            ->setTitle('La Compagnie des Ombres')
             ->setSummary('Un univers')
             ->setKind('bd')
             ->setLanguage('fr')
             ->setAuthor(new Contributor()->setName('Laurent Marquet')->setSlug('laurent-marquet'))
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'));
-        $serie->addCover(new SerieMedia()->setName('medias/book/series/cover-la-guilde/c.webp')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable('2026-02-01 09:00:00')));
+        $serie->addCover(new SerieMedia()->setName('medias/book/series/cover-la-compagnie/c.webp')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable('2026-02-01 09:00:00')));
 
         $export = new SerieExportProvider($this->createStub(SerieRepository::class), new BlockDataExporter($sourceDir), new MediaArchiver($this->createStub(EntityManagerInterface::class), $sourceDir))
             ->serialize([$serie]);
@@ -65,11 +65,11 @@ class SerieImportProviderTest extends TestCase
         $this->assertSame(['created' => 1, 'updated' => 0], $result);
 
         $imported = array_values(array_filter($persisted, static fn (object $e) => $e instanceof Serie))[0];
-        $this->assertSame('la-guilde', $imported->getSlug());
+        $this->assertSame('la-compagnie', $imported->getSlug());
         $this->assertSame('bd', $imported->getKind());
         $this->assertSame('Laurent Marquet', $imported->getAuthor()?->getName());
         $this->assertCount(1, $imported->getCovers());
-        $this->assertSame('cover-bytes', file_get_contents($targetDir . '/public/medias/book/series/cover-la-guilde/c.webp'));
+        $this->assertSame('cover-bytes', file_get_contents($targetDir . '/public/medias/book/series/cover-la-compagnie/c.webp'));
 
         $this->removeDir($sourceDir);
         $this->removeDir($filesDir);
@@ -80,22 +80,22 @@ class SerieImportProviderTest extends TestCase
     public function testImportKeepsASerieInTheTrash(): void
     {
         $persisted = [];
-        $this->createProvider(sys_get_temp_dir(), persisted: $persisted)->import([['slug' => 'la-guilde', 'title' => 'La Guilde', 'isDeleted' => true]]);
+        $this->createProvider(sys_get_temp_dir(), persisted: $persisted)->import([['slug' => 'la-compagnie', 'title' => 'La Compagnie', 'isDeleted' => true]]);
 
         $this->assertTrue(array_values(array_filter($persisted, static fn (object $e) => $e instanceof Serie))[0]->isDeleted());
     }
 
     public function testImportDetachesTheMediasTheArchiveNoLongerHolds(): void
     {
-        $existing = new Serie()->setSlug('la-guilde')->setTitle('La Guilde')->setCreation(new \DateTime())->setModification(new \DateTime());
-        $kept = new SerieMedia()->setName('medias/book/series/cover-la-guilde/c.webp')->setKind('cover')->setUpdatedAt(new \DateTimeImmutable());
+        $existing = new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie')->setCreation(new \DateTime())->setModification(new \DateTime());
+        $kept = new SerieMedia()->setName('medias/book/series/cover-la-compagnie/c.webp')->setKind('cover')->setUpdatedAt(new \DateTimeImmutable());
         $existing->addMedia($kept);
-        $existing->addMedia(new SerieMedia()->setName('medias/book/series/logo-la-guilde/l.webp')->setKind('logo')->setUpdatedAt(new \DateTimeImmutable()));
+        $existing->addMedia(new SerieMedia()->setName('medias/book/series/logo-la-compagnie/l.webp')->setKind('logo')->setUpdatedAt(new \DateTimeImmutable()));
 
         $result = $this->createProvider(sys_get_temp_dir(), $existing)->import([[
-            'slug' => 'la-guilde',
-            'title' => 'La Guilde',
-            'medias' => [['name' => 'medias/book/series/cover-la-guilde/c.webp', 'kind' => 'cover', 'position' => 0]],
+            'slug' => 'la-compagnie',
+            'title' => 'La Compagnie',
+            'medias' => [['name' => 'medias/book/series/cover-la-compagnie/c.webp', 'kind' => 'cover', 'position' => 0]],
         ]]);
 
         $this->assertSame(['created' => 0, 'updated' => 1], $result);

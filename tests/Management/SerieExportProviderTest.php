@@ -38,8 +38,8 @@ class SerieExportProviderTest extends TestCase
 
         $data = $this->createProvider(sys_get_temp_dir(), $serieRepository)->exportAll();
 
-        $this->assertSame('papa-calin', $data['items'][0]['slug']);
-        $this->assertSame('Papa Câlin', $data['items'][0]['title']);
+        $this->assertSame('contes-du-soir', $data['items'][0]['slug']);
+        $this->assertSame('Contes du Soir', $data['items'][0]['title']);
         $this->assertFalse($data['items'][0]['isDeleted']);
     }
 
@@ -51,19 +51,19 @@ class SerieExportProviderTest extends TestCase
 
         $data = $this->createProvider(sys_get_temp_dir(), $serieRepository)->serializeIds([2]);
 
-        $this->assertSame(['papa-calin'], array_column($data['items'], 'slug'));
+        $this->assertSame(['contes-du-soir'], array_column($data['items'], 'slug'));
     }
 
     public function testSerializeRegistersTheCoversAndTheLogosOfASerie(): void
     {
         $projectDir = $this->createProjectDir([
-            'medias/book/series/cover-papa-calin/c.webp' => 'cover-bytes',
-            'medias/book/series/logo-papa-calin/l.webp' => 'logo-bytes',
+            'medias/book/series/cover-contes-du-soir/c.webp' => 'cover-bytes',
+            'medias/book/series/logo-contes-du-soir/l.webp' => 'logo-bytes',
         ]);
 
         $serie = $this->createSerie();
-        $serie->addCover(new SerieMedia()->setName('medias/book/series/cover-papa-calin/c.webp')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable()));
-        $serie->addLogo(new SerieMedia()->setName('medias/book/series/logo-papa-calin/l.webp')->setPosition(1)->setUpdatedAt(new \DateTimeImmutable()));
+        $serie->addCover(new SerieMedia()->setName('medias/book/series/cover-contes-du-soir/c.webp')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable()));
+        $serie->addLogo(new SerieMedia()->setName('medias/book/series/logo-contes-du-soir/l.webp')->setPosition(1)->setUpdatedAt(new \DateTimeImmutable()));
 
         $data = $this->createProvider($projectDir)->serialize([$serie]);
 
@@ -76,8 +76,8 @@ class SerieExportProviderTest extends TestCase
     private function createSerie(): Serie
     {
         return new Serie()
-            ->setSlug('papa-calin')
-            ->setTitle('Papa Câlin')
+            ->setSlug('contes-du-soir')
+            ->setTitle('Contes du Soir')
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'));
     }

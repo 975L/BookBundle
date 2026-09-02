@@ -1,0 +1,395 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="en" datatype="plaintext" original="book_narration.en.xlf">
+        <body>
+            <trans-unit id="aynUNnW">
+                <source>narration.books</source>
+                <target>"Books" lists the whole catalog: information, author, illustrator, editions, sales links and content blocks.</target>
+            </trans-unit>
+            <trans-unit id="wVe4G1M">
+                <source>narration.contributors</source>
+                <target>"Authors and illustrators" holds the people the catalog credits. Each has their page, listing what they signed; a book or a serie picks them from this list rather than retyping their name.</target>
+            </trans-unit>
+            <trans-unit id="exSRKHD">
+                <source>narration.guided_step_book_composition_add</source>
+                <target>Add a block. Each has its kind and its own form, and they stack in the order of the page.</target>
+            </trans-unit>
+            <trans-unit id="gyZzj6B">
+                <source>narration.guided_step_book_composition_done</source>
+                <target>The page is composed: the blocks are rendered below the book's own information, on its public page.</target>
+            </trans-unit>
+            <trans-unit id="RsowHNN">
+                <source>narration.guided_step_book_composition_edit</source>
+                <target>Open a book with the pencil, at the end of its row.</target>
+            </trans-unit>
+            <trans-unit id=".76L87n">
+                <source>narration.guided_step_book_composition_open</source>
+                <target>The panel takes you to the books, where the whole catalog is listed.</target>
+            </trans-unit>
+            <trans-unit id="PyZPa7F">
+                <source>narration.guided_step_book_composition_save</source>
+                <target>Save the book.</target>
+            </trans-unit>
+            <trans-unit id="EfFqLVt">
+                <source>narration.guided_step_book_composition_tab</source>
+                <target>Open the last tab of the form, the blocks one: it holds the composition of the page.</target>
+            </trans-unit>
+            <trans-unit id="ptppQQ4">
+                <source>narration.guided_step_book_contributor_creation_done</source>
+                <target>The person is in the catalog: their page is online, still empty of credits. A serie or a book now picks them in its author and illustrator fields, and shows up there on its own.</target>
+            </trans-unit>
+            <trans-unit id="H2EMpXm">
+                <source>narration.guided_step_book_contributor_creation_name</source>
+                <target>Type their name. It is the one shown on their page and under every book they signed, and the address of that page follows from it.</target>
+            </trans-unit>
+            <trans-unit id="Vt7PhcI">
+                <source>narration.guided_step_book_contributor_creation_new</source>
+                <target>Click "Add": the button opens the form of a new person.</target>
+            </trans-unit>
+            <trans-unit id="15gPj4p">
+                <source>narration.guided_step_book_contributor_creation_open</source>
+                <target>The panel takes you to the authors and illustrators screen, which lists everybody the catalog credits.</target>
+            </trans-unit>
+            <trans-unit id="3SVuf4P">
+                <source>narration.guided_step_book_contributor_creation_portrait</source>
+                <target>Lay their portrait: one image only, shown at the head of their page. Laying another file on the row already there replaces it.</target>
+            </trans-unit>
+            <trans-unit id="xTvDT34">
+                <source>narration.guided_step_book_contributor_creation_save</source>
+                <target>Save with the button at the bottom of the form.</target>
+            </trans-unit>
+            <trans-unit id="wJRXPnB">
+                <source>narration.guided_step_book_contributor_creation_summary</source>
+                <target>Write their biography: the few lines opening their page, above what they signed.</target>
+            </trans-unit>
+            <trans-unit id="22HNWV0">
+                <source>narration.guided_step_book_contributor_creation_website</source>
+                <target>Give their website, their own address, which their page links to. A book crediting them no longer carries it.</target>
+            </trans-unit>
+            <trans-unit id="wwIfTuU">
+                <source>narration.guided_step_book_creation_author</source>
+                <target>Credit its author, from the same list as the serie's. Left empty, a book in a serie credits whoever the serie credits: fill it in only for a book signed by somebody else.</target>
+            </trans-unit>
+            <trans-unit id="qq3vB.v">
+                <source>narration.guided_step_book_creation_done</source>
+                <target>The book is published: its page is online, and the sitemap will declare it at the next rebuild, whose shortcut sits on the dashboard.</target>
+            </trans-unit>
+            <trans-unit id="N_8xm9n">
+                <source>narration.guided_step_book_creation_editions</source>
+                <target>Add its editions: each published form of the book, paper, digital or audio, with its ISBN and its release date, unfolded in place.</target>
+            </trans-unit>
+            <trans-unit id="ueX4rE0">
+                <source>narration.guided_step_book_creation_editions_add</source>
+                <target>The add button unfolds one more edition, whose files and platforms are added inside the panel itself.</target>
+            </trans-unit>
+            <trans-unit id="4.DDKjm">
+                <source>narration.guided_step_book_creation_new</source>
+                <target>Create a book with the add button: it opens the form of an empty book.</target>
+            </trans-unit>
+            <trans-unit id="SIi3gJJ">
+                <source>narration.guided_step_book_creation_open</source>
+                <target>The panel takes you to the books, where the whole catalog is listed.</target>
+            </trans-unit>
+            <trans-unit id="29QaM7u">
+                <source>narration.guided_step_book_creation_published</source>
+                <target>Date the publication. A book with no date, or with a date still ahead, stays out of the public lists and shows up among the ones to be published.</target>
+            </trans-unit>
+            <trans-unit id="rNl4b5r">
+                <source>narration.guided_step_book_creation_save</source>
+                <target>Save the book.</target>
+            </trans-unit>
+            <trans-unit id="Wuifh39">
+                <source>narration.guided_step_book_creation_serie</source>
+                <target>Attach it to a serie: the book takes its place there, and the serie's page then lists its volumes.</target>
+            </trans-unit>
+            <trans-unit id="KHQTOs6">
+                <source>narration.guided_step_book_creation_technical_tab</source>
+                <target>Open the second tab of the form, the page one: it holds the editions and the crowdfunding.</target>
+            </trans-unit>
+            <trans-unit id="qalvavl">
+                <source>narration.guided_step_book_creation_title</source>
+                <target>Give it a title. It fills the slug just below, which is the address of the book's page.</target>
+            </trans-unit>
+            <trans-unit id="dmKDqHw">
+                <source>narration.guided_step_book_duplication_done</source>
+                <target>The copy is a book of its own: nothing ties it to the original any more, and editing one leaves the other untouched.</target>
+            </trans-unit>
+            <trans-unit id="IlAqeaf">
+                <source>narration.guided_step_book_duplication_duplicate</source>
+                <target>Click duplicate and confirm: the copy is saved at once with its files, its links and its blocks, then opens on its own screen. The books of a serie are never copied along, duplicating one is its own decision.</target>
+            </trans-unit>
+            <trans-unit id="kDmIV9a">
+                <source>narration.guided_step_book_duplication_open</source>
+                <target>The panel takes you to the catalog, where the book to copy is picked.</target>
+            </trans-unit>
+            <trans-unit id="VlkZsi7">
+                <source>narration.guided_step_book_duplication_save</source>
+                <target>Save with the button at the bottom of the form.</target>
+            </trans-unit>
+            <trans-unit id="V1qHxl5">
+                <source>narration.guided_step_book_duplication_title</source>
+                <target>Rename the copy. The title and the address arrive marked as a copy, so as not to collide with the original: both are yours to rewrite.</target>
+            </trans-unit>
+            <trans-unit id="iPiRr1O">
+                <source>narration.guided_step_book_export_done</source>
+                <target>The file is on your computer. A JSON comes back in through the import of another site, which reads the same keys this one wrote.</target>
+            </trans-unit>
+            <trans-unit id="0nau6dB">
+                <source>narration.guided_step_book_export_format</source>
+                <target>Pick a format. CSV opens in a spreadsheet, JSON is read back by an import, SQL replays the table as it stands. The file downloads straight away.</target>
+            </trans-unit>
+            <trans-unit id="m1ycXC_">
+                <source>narration.guided_step_book_export_group</source>
+                <target>Unfold the export button: it gathers the three formats in a menu.</target>
+            </trans-unit>
+            <trans-unit id="lnMQ9CE">
+                <source>narration.guided_step_book_export_open</source>
+                <target>The panel takes you to the books. The same buttons sit on the series, the strips and the people, each exporting its own table.</target>
+            </trans-unit>
+            <trans-unit id="xI5x6Ac">
+                <source>narration.guided_step_book_export_select</source>
+                <target>To take out a handful of books rather than the whole table, tick them. The box in the header takes the page at once.</target>
+            </trans-unit>
+            <trans-unit id="dlMB1JC">
+                <source>narration.guided_step_book_export_selection</source>
+                <target>Export the selection: the bar appears as soon as a row is ticked, and only carries out what is ticked.</target>
+            </trans-unit>
+            <trans-unit id="yDv8bsy">
+                <source>narration.guided_step_book_hidden_done</source>
+                <target>The book is off the site: its page answers 404, and nothing was taken away. This is not the trash.</target>
+            </trans-unit>
+            <trans-unit id="2Z4EgQB">
+                <source>narration.guided_step_book_hidden_edit</source>
+                <target>Open the book: the same switch sits in the form, where what it changes is written under it.</target>
+            </trans-unit>
+            <trans-unit id="jjtNZpx">
+                <source>narration.guided_step_book_hidden_field</source>
+                <target>Find the hidden switch, in the first tab, next to published. The help line says what a book set aside stops answering.</target>
+            </trans-unit>
+            <trans-unit id="DOK_9ym">
+                <source>narration.guided_step_book_hidden_open</source>
+                <target>The panel takes you to the catalog, where the switch is offered on every row.</target>
+            </trans-unit>
+            <trans-unit id="dvRVDex">
+                <source>narration.guided_step_book_hidden_save</source>
+                <target>Save the book.</target>
+            </trans-unit>
+            <trans-unit id="xgT0vnD">
+                <source>narration.guided_step_book_hidden_switch</source>
+                <target>Switch the row to hidden: one click takes the book off the site, a second puts it back, with nothing else to save.</target>
+            </trans-unit>
+            <trans-unit id="y85M99i">
+                <source>narration.guided_step_book_media_move_done</source>
+                <target>The file has changed list, but it stays in its own book: a list belonging to another book is no target, whatever the drag says.</target>
+            </trans-unit>
+            <trans-unit id="bJLL5Pj">
+                <source>narration.guided_step_book_media_move_edit</source>
+                <target>Edit an existing book. The gesture is only offered on a book already saved: a book being created holds no file to move yet.</target>
+            </trans-unit>
+            <trans-unit id="9zqH322">
+                <source>narration.guided_step_book_media_move_extracts</source>
+                <target>Find the extracts: this is the list a file leaves or lands in. The leafed-through pages just above accept the same files, which is what makes the swap possible.</target>
+            </trans-unit>
+            <trans-unit id="UbQ4E5a">
+                <source>narration.guided_step_book_media_move_handle</source>
+                <target>Grab a row by its grip, drag it onto the other list and let go: the page reloads, the file having changed list without leaving the book.</target>
+            </trans-unit>
+            <trans-unit id="1oSMT98">
+                <source>narration.guided_step_book_media_move_open</source>
+                <target>The panel takes you to the catalog, where the book holding the file is picked.</target>
+            </trans-unit>
+            <trans-unit id="dzJebRH">
+                <source>narration.guided_step_book_media_move_tab</source>
+                <target>Open the page tab, the one holding the files of the book: the leafed-through pages, the extracts, the audios and the videos.</target>
+            </trans-unit>
+            <trans-unit id="rSlOmZ3">
+                <source>narration.guided_step_book_reader_add</source>
+                <target>Add a block. A new row opens the palette of kinds on its own.</target>
+            </trans-unit>
+            <trans-unit id="5O1N.65">
+                <source>narration.guided_step_book_reader_auto_advance</source>
+                <target>Tick it and the voice turns the pages. Unticked, the cues only serve the manual navigation.</target>
+            </trans-unit>
+            <trans-unit id="rvh6WUj">
+                <source>narration.guided_step_book_reader_cues</source>
+                <target>Time the pages, one row each: its number, and the second of the recording it is turned at. Left empty, the reader turns the pages alone.</target>
+            </trans-unit>
+            <trans-unit id="Gc89204">
+                <source>narration.guided_step_book_reader_done</source>
+                <target>The reader is up. Open the public page: the recording plays, and the album leafs through on its own.</target>
+            </trans-unit>
+            <trans-unit id="vF0ziAR">
+                <source>narration.guided_step_book_reader_edit</source>
+                <target>Open the book whose pages and recording you have at hand.</target>
+            </trans-unit>
+            <trans-unit id="J5GABPv">
+                <source>narration.guided_step_book_reader_id</source>
+                <target>Name the reader. This identifier is its anchor in the page, and only one reader can carry it.</target>
+            </trans-unit>
+            <trans-unit id="SYyThhr">
+                <source>narration.guided_step_book_reader_kind</source>
+                <target>Pick the tile named "Reader": its silhouette shows a page and a play bar.</target>
+            </trans-unit>
+            <trans-unit id="ikN9Z5Y">
+                <source>narration.guided_step_book_reader_medias</source>
+                <target>Attach the pages and the recording in one go: the images are the pages, in their order, and the audio file is the recording.</target>
+            </trans-unit>
+            <trans-unit id="yqcnwv5">
+                <source>narration.guided_step_book_reader_open</source>
+                <target>The reader is a block of a book page, so we start on the book holding the album.</target>
+            </trans-unit>
+            <trans-unit id="gy4Pf5r">
+                <source>narration.guided_step_book_reader_save</source>
+                <target>Save: the block is written with the page, and its files are moved to their final place.</target>
+            </trans-unit>
+            <trans-unit id="MtZSUgL">
+                <source>narration.guided_step_book_reader_tab</source>
+                <target>Go to the last tab of the form, the one composing the page.</target>
+            </trans-unit>
+            <trans-unit id="mHMw_iu">
+                <source>narration.guided_step_book_serie_creation_author</source>
+                <target>Credit its author: type a few letters and pick them among the people of the catalog. Every book of the serie inherits them unless it names its own. The illustrator is credited just below, the same way.</target>
+            </trans-unit>
+            <trans-unit id="6d3..us">
+                <source>narration.guided_step_book_serie_creation_covers</source>
+                <target>Drop the cover in. The serie's images stand as its thumbnail in the lists, and as the image shared on social networks.</target>
+            </trans-unit>
+            <trans-unit id="WhCarxd">
+                <source>narration.guided_step_book_serie_creation_done</source>
+                <target>The serie exists. It can now hold books, and be set as the target of a site menu.</target>
+            </trans-unit>
+            <trans-unit id="GKxWRk5">
+                <source>narration.guided_step_book_serie_creation_kind</source>
+                <target>Choose the kind: a serie gathers either books or comic strips, which is what decides the page listing it.</target>
+            </trans-unit>
+            <trans-unit id="PVpS2yg">
+                <source>narration.guided_step_book_serie_creation_new</source>
+                <target>Create a serie with the add button: it opens the form of an empty serie.</target>
+            </trans-unit>
+            <trans-unit id="lhGfOFf">
+                <source>narration.guided_step_book_serie_creation_open</source>
+                <target>The panel takes you to the series, which list the collections of the catalog.</target>
+            </trans-unit>
+            <trans-unit id="PJDltqe">
+                <source>narration.guided_step_book_serie_creation_save</source>
+                <target>Save the serie.</target>
+            </trans-unit>
+            <trans-unit id="r0z3gpb">
+                <source>narration.guided_step_book_serie_creation_summary</source>
+                <target>Write the summary: this text introduces the serie on its public page.</target>
+            </trans-unit>
+            <trans-unit id="O9kehNx">
+                <source>narration.guided_step_book_serie_creation_title</source>
+                <target>Give it a title. It is shown on the serie's public page and in the menus pointing at it.</target>
+            </trans-unit>
+            <trans-unit id="IobgP2E">
+                <source>narration.guided_step_book_sorting_column</source>
+                <target>Look at the position column. The number it prints is what the public pages follow: it is written by the drag, never typed here.</target>
+            </trans-unit>
+            <trans-unit id="1zsOHoB">
+                <source>narration.guided_step_book_sorting_done</source>
+                <target>The site follows that order: reload a public page listing the series to see it. A serie added later lands at the end, waiting to be dragged into place.</target>
+            </trans-unit>
+            <trans-unit id="6FOagRo">
+                <source>narration.guided_step_book_sorting_handle</source>
+                <target>Drag a row by its grip and drop it where you want it: the new order is recorded at once, with no save button to press.</target>
+            </trans-unit>
+            <trans-unit id="InA.8fX">
+                <source>narration.guided_step_book_sorting_open</source>
+                <target>The panel takes you to the series. The authors and illustrators one is sorted exactly the same way.</target>
+            </trans-unit>
+            <trans-unit id="UVtNxpy">
+                <source>narration.guided_step_book_strip_creation_characters</source>
+                <target>Say who speaks: the names separated by a comma. They are what the serie's badges filter on.</target>
+            </trans-unit>
+            <trans-unit id="HHP.rG8">
+                <source>narration.guided_step_book_strip_creation_done</source>
+                <target>The strip is online: it is read within its serie, filtered by its characters and answers to its number.</target>
+            </trans-unit>
+            <trans-unit id="xA0beHl">
+                <source>narration.guided_step_book_strip_creation_media_tab</source>
+                <target>Open the second tab of the form, the media one, where the drawing is attached.</target>
+            </trans-unit>
+            <trans-unit id="nL_sdda">
+                <source>narration.guided_step_book_strip_creation_medias</source>
+                <target>Attach the drawing: this is the image the page shows full size, and that its card takes up in miniature.</target>
+            </trans-unit>
+            <trans-unit id="g1qIHh4">
+                <source>narration.guided_step_book_strip_creation_new</source>
+                <target>Create a strip: the button opens the form of an empty strip.</target>
+            </trans-unit>
+            <trans-unit id="aBW5LVr">
+                <source>narration.guided_step_book_strip_creation_number</source>
+                <target>Number it. The number gives its rank within the serie, and answers as a short address too.</target>
+            </trans-unit>
+            <trans-unit id="ymk.vzr">
+                <source>narration.guided_step_book_strip_creation_open</source>
+                <target>The panel takes you to the strips, the list where the next one is created.</target>
+            </trans-unit>
+            <trans-unit id="yEIKblJ">
+                <source>narration.guided_step_book_strip_creation_save</source>
+                <target>Save with the button at the bottom of the form.</target>
+            </trans-unit>
+            <trans-unit id="Frej9UR">
+                <source>narration.guided_step_book_strip_creation_serie</source>
+                <target>Attach it to its serie: that is what has it read after the others, and the breadcrumb goes back up to it.</target>
+            </trans-unit>
+            <trans-unit id="EpkdCXT">
+                <source>narration.guided_step_book_strip_creation_title</source>
+                <target>Give it a title. It names the strip everywhere it is listed, and its address follows from it.</target>
+            </trans-unit>
+            <trans-unit id=".QzKE3N">
+                <source>narration.guided_step_book_trash_delete</source>
+                <target>Move the book to the trash. The icon asks for confirmation, then the book leaves the catalog without losing anything else.</target>
+            </trans-unit>
+            <trans-unit id="efm2EUz">
+                <source>narration.guided_step_book_trash_done</source>
+                <target>The book is in the trash. Restoring it or deleting it for good is the site administrator's to do.</target>
+            </trans-unit>
+            <trans-unit id="94e4Mrw">
+                <source>narration.guided_step_book_trash_open</source>
+                <target>The panel takes you to the catalog, where the gesture starts and comes back.</target>
+            </trans-unit>
+            <trans-unit id="X8Lzhmn">
+                <source>narration.guided_step_book_trash_switch</source>
+                <target>Look into the trash: the same screen switches to it, and comes back on a second click.</target>
+            </trans-unit>
+            <trans-unit id="TEUhO_F">
+                <source>narration.guided_step_book_version_publication_done</source>
+                <target>The new version is out: the book keeps its address and its readers, and the previous version is reached from it.</target>
+            </trans-unit>
+            <trans-unit id="baVUoPJ">
+                <source>narration.guided_step_book_version_publication_editions</source>
+                <target>Declare the new format, its ISBN and its publication date: this is what makes the new text appear.</target>
+            </trans-unit>
+            <trans-unit id="NuAwcMh">
+                <source>narration.guided_step_book_version_publication_open</source>
+                <target>The panel takes you to the catalog, where every row carries the versions gesture.</target>
+            </trans-unit>
+            <trans-unit id="Fo9ZTux">
+                <source>narration.guided_step_book_version_publication_previous</source>
+                <target>Check the twin: the replaces field names the version set aside. It keeps its page and its ISBN, and only leaves the catalog.</target>
+            </trans-unit>
+            <trans-unit id=".xt5IQZ">
+                <source>narration.guided_step_book_version_publication_publish</source>
+                <target>Branch the book off. The button asks for confirmation, then opens the book that stays, emptied of its formats, gone with the twin.</target>
+            </trans-unit>
+            <trans-unit id="1CAia.N">
+                <source>narration.guided_step_book_version_publication_save</source>
+                <target>Save with the button at the bottom of the form.</target>
+            </trans-unit>
+            <trans-unit id="aGlRGiA">
+                <source>narration.guided_step_book_version_publication_technical_tab</source>
+                <target>Open the second tab of the form, the page one, where the formats are declared.</target>
+            </trans-unit>
+            <trans-unit id="6XzWZHL">
+                <source>narration.series</source>
+                <target>"Series" lists the collections of the catalog, whether they gather books or comic strips.</target>
+            </trans-unit>
+            <trans-unit id="IAxPJd7">
+                <source>narration.strips</source>
+                <target>"Strips" lists the published strips, each attached to its serie, with its media and its content blocks.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
