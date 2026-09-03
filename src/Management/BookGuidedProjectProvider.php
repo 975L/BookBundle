@@ -399,11 +399,11 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => '.form-tabs-tablist .nav-item:last-child .nav-link',
                 ],
                 [
-                    // Scoped to the pane the step before it opens, a book form carrying three block collections. Adding a row opens the palette on its own, the kind select being hidden behind it (see UiBundle's block-collection.js)
+                    // The collection's add button in the active pane, adding a row opening the palette the step after this one points into (see UiBundle's block-collection.js)
                     'label' => 'label.guided_step_book_reader_add',
                     'description' => 'description.guided_step_book_reader_add',
                     'narration' => 'narration.guided_step_book_reader_add',
-                    'highlight' => '.tab-pane.active [data-ui-sort-group]',
+                    'highlight' => '.tab-pane.active .field-collection-add-button',
                 ],
                 [
                     // The silhouette of the kind in the palette, each tile carrying the kind it stands for (see UiBundle's block-picker.js)

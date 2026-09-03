@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.5.2
+
+The reader step points at the button opening the palette
+
+- The `book-reader` step adding a block points at the collection's add button rather than at the collection, the palette the step after it names being opened by that click (03/09/2026)
+
 ## v2.5.1
 
 The bundle's own javascript is run rather than read
