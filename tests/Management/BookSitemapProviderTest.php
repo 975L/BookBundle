@@ -11,10 +11,12 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Management\BookSitemapProvider;
+use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\ContributorServiceInterface;
@@ -36,6 +38,7 @@ class BookSitemapProviderTest extends TestCase
         array $series = [],
         array $strips = [],
         array $contributors = [],
+        array $categories = [],
         string $siteUrl = 'https://example.com',
         array $prefixes = [],
     ): BookSitemapProvider {
@@ -52,6 +55,9 @@ class BookSitemapProviderTest extends TestCase
         // Only the people a shown book or serie still credits, which is what the index lists too (see ContributorRepository::findCredited())
         $contributorService = $this->createStub(ContributorServiceInterface::class);
         $contributorService->method('findCredited')->willReturn($contributors);
+        // Only the categories holding a book the site shows, which is what their index lists too (see BookCategoryRepository::findWithBooks())
+        $categoryService = $this->createStub(BookCategoryServiceInterface::class);
+        $categoryService->method('findWithBooks')->willReturn($categories);
 
         // The key itself as its own translation, so what an url carries can be told from what a catalog says
         $translator = $this->createStub(TranslatorInterface::class);
@@ -59,6 +65,7 @@ class BookSitemapProviderTest extends TestCase
 
         return new BookSitemapProvider(
             new BookPublicUrlResolver($configService, $this->createRoutePrefix($prefixes), $this->createUrlGenerator()),
+            $categoryService,
             $bookService,
             $contributorService,
             $serieService,
@@ -91,6 +98,15 @@ class BookSitemapProviderTest extends TestCase
             ->setTitle('Planche 1')
             ->setSlug('planche-1')
             ->setModification(new \DateTime('2026-03-25'));
+    }
+
+    private function category(): BookCategory
+    {
+        return new BookCategory()
+            ->setTitle('Romans')
+            ->setSlug('romans')
+            ->setSummary('Le résumé de la catégorie')
+            ->setModification(new \DateTime('2026-05-10'));
     }
 
     private function contributor(): Contributor
@@ -180,7 +196,30 @@ class BookSitemapProviderTest extends TestCase
     // Without "site-url", BookPublicUrlResolver can't build absolute urls, and a sitemap accepts nothing else
     public function testGetUrlsReturnsEmptyArrayWhenSiteUrlIsNotConfigured(): void
     {
-        $this->assertSame([], $this->createProvider([$this->book()], [$this->serie()], [$this->strip()], [$this->contributor()], '')->getUrls());
+        $this->assertSame([], $this->createProvider([$this->book()], [$this->serie()], [$this->strip()], [$this->contributor()], [], '')->getUrls());
+    }
+
+    // A fresh install serves no category page at all, its ConfigBundle entry being empty: nothing of the family is declared until the site fills it in
+    public function testGetUrlsDeclaresNoCategoryUntilTheSiteServesThem(): void
+    {
+        $urls = $this->createProvider(categories: [$this->category()])->getUrls();
+
+        $this->assertSame(['https://example.com/livres', 'https://example.com/series', 'https://example.com/strips', 'https://example.com/auteurs'], array_column($urls, 'loc'));
+    }
+
+    // Once the site says under which word it serves them, the index and each category are declared like any other family
+    public function testGetUrlsDeclaresACategoryWhereTheSiteServesThem(): void
+    {
+        $urls = $this->createProvider(
+            categories: [$this->category()],
+            prefixes: ['book-route-categories' => 'categories']
+        )->getUrls();
+
+        $category = array_values(array_filter($urls, static fn (array $url): bool => 'https://example.com/categories/romans' === $url['loc']))[0];
+        $this->assertSame('Romans', $category['title']);
+        $this->assertSame('Le résumé de la catégorie', $category['description']);
+        $this->assertSame('2026-05-10', $category['lastmod']);
+        $this->assertContains('https://example.com/categories', array_column($urls, 'loc'));
     }
 
     // A family read elsewhere has no page on this site, index included - declaring one would advertise an url the router answers nothing for
@@ -191,6 +230,7 @@ class BookSitemapProviderTest extends TestCase
             [],
             [$this->strip()],
             [$this->contributor()],
+            [],
             'https://example.com',
             ['book-route-strips' => '', 'book-route-strip' => '', 'book-route-contributors' => '', 'book-route-contributor' => '']
         );

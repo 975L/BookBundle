@@ -9,27 +9,26 @@
 
 namespace c975L\BookBundle\Form\Block;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class SerieStripsBlockType extends AbstractType
+// The data sub-form of the "book_serie_strips" kind - the head it shares with every other listing is in AbstractBookListingBlockType
+class SerieStripsBlockType extends AbstractBookListingBlockType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // Added before the head this kind shares with the other listings: it is the only required field of the form, and it would otherwise be read after six optional ones
         $builder
             ->add('serieSlug', TextType::class, [
-                'label' => 'Slug de la série',
+                'label' => 'label.block_serie_slug',
                 'required' => true,
                 'constraints' => [new NotBlank()],
             ])
-            ->add('max', IntegerType::class, [
-                'label' => 'Nombre de strips (vide = tous)',
-                'required' => false,
-                'attr' => ['min' => 1],
-            ])
         ;
+
+        parent::buildForm($builder, $options);
+
+        $this->addSelectionFields($builder, 'label.block_max_strips');
     }
 }

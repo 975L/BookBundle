@@ -118,8 +118,22 @@ class StripRepository extends ServiceEntityRepository
         ;
     }
 
-    // The planche a number leads to, which a numbered url and a short link both ask for (see StripController::shortcut()) - a planche has no version replacing it, so its number names it alone
-    // The same filters as the rest of the catalog: a number leads to what reads today, never to a draft or to a planche in the trash - which would answer 404 while the published planche bearing that number would never be reached
+    // Whether a planche waits for a date still ahead, read for the same reason as BookRepository::hasScheduled(): a serie publishing one a week always has the next one dated, and an entry cached today would hold it back on the day it comes out
+    public function hasScheduled(): bool
+    {
+        return [] !== $this->createQueryBuilder('s')
+            ->select('s.id')
+            ->andWhere('s.isDeleted = false')
+            ->andWhere('s.hidden = false')
+            ->andWhere('s.published > :now')
+            ->setParameter('now', new \DateTime())
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    // The planche a number leads to, which a numbered url and a short link both ask for (see StripController::shortcut()) - a planche has no version replacing it, so its number names it alone. The same filters as the rest of the catalog: a number leads to what reads today, never to a draft or to a planche in the trash - which would answer 404 while the published planche bearing that number would never be reached
     public function findOneByNumber(int $number): ?Strip
     {
         return $this->createQueryBuilder('s')
@@ -205,11 +219,8 @@ class StripRepository extends ServiceEntityRepository
         return $end === $strip ? null : $end;
     }
 
-    /**
-     * The characters speaking in one serie, each named once - what its own listing offers to filter on, read off the field rather than by loading every planche.
-     *
-     * @return array<int, array{name: string, slug: string}>
-     */
+    // The characters speaking in one serie, each named once - what its own listing offers to filter on, read off the field rather than by loading every planche.
+    /** @return array<int, array{name: string, slug: string}> */
     public function findCharactersBySerie(Serie $serie): array
     {
         $rows = $this->createQueryBuilder('s')

@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\Contributor;
@@ -18,12 +19,18 @@ use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookSnippetBuilder;
+use c975L\UiBundle\Service\RatingSnippetBuilder;
 use PHPUnit\Framework\TestCase;
 
 // The schema.org graph a book's, a serie's and a strip's page publish - what is emitted matters as much as what is left out, an empty property being worse than an absent one
 class BookSnippetBuilderTest extends TestCase
 {
     private BookSnippetBuilder $builder;
+
+    private RatingSnippetBuilder $ratingSnippetBuilder;
+
+    /** @var array<string, mixed> */
+    private array $aggregateRating = [];
 
     protected function setUp(): void
     {
@@ -34,7 +41,11 @@ class BookSnippetBuilderTest extends TestCase
             ->willReturnCallback(static fn (string $route, array $parameters = []) => 'https://example.org/livre/' . $parameters['slug'])
         ;
 
-        $this->builder = new BookSnippetBuilder($publicUrlResolver);
+        // Nobody voted unless a test says so: the tally is UiBundle's own business, tested there
+        $this->ratingSnippetBuilder = $this->createStub(RatingSnippetBuilder::class);
+        $this->ratingSnippetBuilder->method('build')->willReturnCallback(fn (): array => $this->aggregateRating);
+
+        $this->builder = new BookSnippetBuilder($publicUrlResolver, $this->ratingSnippetBuilder);
     }
 
     public function testABookWithoutTitlePublishesNothing(): void
@@ -56,6 +67,22 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertSame('2026-01-15', $snippet['datePublished']);
         $this->assertSame('7-10', $snippet['typicalAgeRange']);
         $this->assertSame(['@type' => 'Person', 'name' => 'Tim Loval', 'url' => 'https://example.org/auteur'], $snippet['author']);
+    }
+
+    // What the book is about, said with the word schema.org has for it - and only the categories the site serves, a hidden one being off the site and out of the graph with it
+    public function testTheCategoriesReachTheGraphAsGenres(): void
+    {
+        $book = $this->book();
+        $book->addCategory(new BookCategory()->setTitle('Romans'));
+        $book->addCategory(new BookCategory()->setTitle('Brouillons')->setHidden(true));
+
+        $this->assertSame(['Romans'], $this->builder->buildBook($book)['genre']);
+    }
+
+    // A book filed under nothing says nothing: an empty key would publish a graph claiming a genre it does not have
+    public function testABookWithoutACategoryPublishesNoGenre(): void
+    {
+        $this->assertArrayNotHasKey('genre', $this->builder->buildBook($this->book()));
     }
 
     // The summary is written in a rich text editor, and a graph carries the words only
@@ -281,6 +308,92 @@ class BookSnippetBuilderTest extends TestCase
         return new Contributor()->setName('Tim Loval')->setSlug('tim-loval')->setWebsite('https://example.org/auteur');
     }
 
+    // The person a page is about: what they signed is published by the books themselves, so their own node says who they are and where else they are found
+    public function testAPersonIsPublishedAsThemselves(): void
+    {
+        $contributor = new Contributor()
+            ->setName('Camille Ferrand')
+            ->setSlug('camille-ferrand')
+            ->setSummary('<p>Écrit depuis  2011.</p>')
+            ->setWebsite('https://camille-ferrand.example');
+
+        $snippet = $this->builder->buildContributor($contributor, 'https://example.org/camille.webp', 'https://example.org/auteurs/camille-ferrand');
+
+        $this->assertSame('Person', $snippet['@type']);
+        $this->assertSame('Camille Ferrand', $snippet['name']);
+        $this->assertSame('Écrit depuis 2011.', $snippet['description']);
+        $this->assertSame('https://example.org/camille.webp', $snippet['image']);
+        $this->assertSame('https://camille-ferrand.example', $snippet['sameAs']);
+        $this->assertSame('https://example.org/auteurs/camille-ferrand', $snippet['url']);
+    }
+
+    // No name, no node: a person without one names nobody
+    public function testAPersonWithoutANamePublishesNothing(): void
+    {
+        $this->assertSame([], $this->builder->buildContributor(new Contributor()));
+    }
+
+    public function testTheTrailIsPublishedAsABreadcrumb(): void
+    {
+        $snippet = $this->builder->buildBreadcrumb([
+            ['name' => 'Séries', 'url' => 'https://example.org/series'],
+            ['name' => 'La Compagnie des Ombres', 'url' => 'https://example.org/serie/la-compagnie-des-ombres'],
+            ['name' => 'Tome 1', 'url' => 'https://example.org/livre/tome-1'],
+        ]);
+
+        $this->assertSame('BreadcrumbList', $snippet['@type']);
+        $this->assertSame([1, 2, 3], array_column($snippet['itemListElement'], 'position'));
+        // "item" and not "url": a breadcrumb level names what it leads to, where a listing's card carries its own address
+        $this->assertSame('https://example.org/livre/tome-1', $snippet['itemListElement'][2]['item']);
+    }
+
+    // A level pointing nowhere is dropped rather than numbered, and what is left of the trail is renumbered from one
+    public function testALevelWithNothingToPointAtIsLeftOutOfTheTrail(): void
+    {
+        $snippet = $this->builder->buildBreadcrumb([
+            ['name' => 'Séries', 'url' => ''],
+            ['name' => 'La Compagnie des Ombres', 'url' => 'https://example.org/serie/la-compagnie-des-ombres'],
+            ['name' => 'Tome 1', 'url' => 'https://example.org/livre/tome-1'],
+        ]);
+
+        $this->assertSame([1, 2], array_column($snippet['itemListElement'], 'position'));
+        $this->assertSame('La Compagnie des Ombres', $snippet['itemListElement'][0]['name']);
+    }
+
+    // A trail whose only level is the page itself says nothing its url does not already say
+    public function testATrailOfOneLevelPublishesNothing(): void
+    {
+        $this->assertSame([], $this->builder->buildBreadcrumb([['name' => 'Tome 1', 'url' => 'https://example.org/livre/tome-1']]));
+        $this->assertSame([], $this->builder->buildBreadcrumb([]));
+    }
+
+    public function testAListingPublishesWhatThePageHolds(): void
+    {
+        $snippet = $this->builder->buildItemList([
+            ['name' => 'Tome 1', 'url' => 'https://example.org/livre/tome-1'],
+            ['name' => 'Tome 2', 'url' => 'https://example.org/livre/tome-2'],
+        ]);
+
+        $this->assertSame('ItemList', $snippet['@type']);
+        $this->assertSame(2, $snippet['numberOfItems']);
+        $this->assertSame('https://example.org/livre/tome-2', $snippet['itemListElement'][1]['url']);
+    }
+
+    // The second page numbers its cards from where the first stopped, a listing growing on scroll being one list read in several answers
+    public function testASecondPageNumbersItsCardsFromWhereTheFirstStopped(): void
+    {
+        $snippet = $this->builder->buildItemList([['name' => 'Tome 11', 'url' => 'https://example.org/livre/tome-11']], 10);
+
+        $this->assertSame(11, $snippet['itemListElement'][0]['position']);
+        // The count is what this page holds, never what the whole catalog does
+        $this->assertSame(1, $snippet['numberOfItems']);
+    }
+
+    public function testAnEmptyListingPublishesNothing(): void
+    {
+        $this->assertSame([], $this->builder->buildItemList([]));
+    }
+
     // An edition, which says only what the book comes out under: the date is the book's, the only one there is
     private static function edition(string $kind, string $isbn): BookEdition
     {
@@ -299,5 +412,32 @@ class BookSnippetBuilderTest extends TestCase
         $serie->addBook($this->book());
 
         return $serie;
+    }
+
+    // The tally the page already shows above the title, said in the graph too - what puts the stars in a search result
+    public function testTheVotesCastOnABookArePublishedAsAnAggregateRating(): void
+    {
+        $this->aggregateRating = ['@type' => 'AggregateRating', 'ratingValue' => '5.0', 'ratingCount' => 2, 'bestRating' => 5, 'worstRating' => 1];
+        $book = new Book()->setTitle('La Tractopelle');
+        new \ReflectionProperty(Book::class, 'id')->setValue($book, 7);
+
+        $this->assertSame($this->aggregateRating, $this->builder->buildBook($book)['aggregateRating']);
+    }
+
+    // Nobody voted: an AggregateRating over no vote is what Google rejects the whole rich result for, so the book publishes none
+    public function testABookNobodyVotedOnPublishesNoRating(): void
+    {
+        $book = new Book()->setTitle('La Tractopelle');
+        new \ReflectionProperty(Book::class, 'id')->setValue($book, 7);
+
+        $this->assertArrayNotHasKey('aggregateRating', $this->builder->buildBook($book));
+    }
+
+    // A book never saved has nothing to read votes against, and no query is run for it
+    public function testABookWithNoIdPublishesNoRating(): void
+    {
+        $this->aggregateRating = ['@type' => 'AggregateRating', 'ratingValue' => '5.0', 'ratingCount' => 2];
+
+        $this->assertArrayNotHasKey('aggregateRating', $this->builder->buildBook(new Book()->setTitle('La Tractopelle')));
     }
 }

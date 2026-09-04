@@ -14,6 +14,10 @@
                 <source>description.book_gplay_affiliate</source>
                 <target>Ajoutée aux adresses Google Play des livres, pour que les ventes venues du site vous soient rattachées. Laissée vide, une adresse s'ouvre telle qu'elle est enregistrée</target>
             </trans-unit>
+            <trans-unit id="4hRTGMu">
+                <source>description.book_isbn_prefixes</source>
+                <target>Les racines ISBN de la maison, une par ligne et avec leurs tirets, ex. « 978-2-488750 ». La coupure d'un ISBN ne se déduit pas du numéro : elle vient des plages officielles de l'Agence internationale de l'ISBN. Un numéro qui ne commence par aucune racine déclarée s'affiche sans tirets.</target>
+            </trans-unit>
             <trans-unit id="DXvp5yF">
                 <source>description.book_rating</source>
                 <target>Affiche la note des lecteurs sur la page d'un livre, d'une série et d'une planche, ainsi que sur chaque vignette des listes de livres et de planches. L'icône et l'échelle se règlent dans les réglages d'UiBundle.</target>
@@ -29,6 +33,10 @@
             <trans-unit id="sKxO26f">
                 <source>description.book_route_books</source>
                 <target>Premier segment de l'URL listant les livres, ex. "livres" pour /livres. La modification est immédiate, mais les anciennes URL renvoient une page introuvable : prévoyez une redirection si elles sont indexées. Vide, la page n'est plus servie du tout - c'est ce que règle un site dont les livres se lisent sous ses propres adresses.</target>
+            </trans-unit>
+            <trans-unit id="S.gP_be">
+                <source>description.book_route_categories</source>
+                <target>Premier segment de l'URL listant les catégories du catalogue, ex. "categories", et de la page de chaque catégorie en dessous (/categories/romans). Vide, les pages ne sont pas servies : les catégories restent affichées sur les fiches des livres, comme de simples mots-clés.</target>
             </trans-unit>
             <trans-unit id="TzhcPoc">
                 <source>description.book_route_contributor</source>
@@ -78,6 +86,10 @@
                 <source>label.book_gplay_affiliate</source>
                 <target>Identifiant d'affiliation Google Play</target>
             </trans-unit>
+            <trans-unit id="S6xSPpL">
+                <source>label.book_isbn_prefixes</source>
+                <target>Racines ISBN</target>
+            </trans-unit>
             <trans-unit id="ZRe0eUt">
                 <source>label.book_rating</source>
                 <target>Notes des lecteurs</target>
@@ -93,6 +105,10 @@
             <trans-unit id="MGsjb2q">
                 <source>label.book_route_books</source>
                 <target>Préfixe URL de la liste des livres</target>
+            </trans-unit>
+            <trans-unit id="zIWscEd">
+                <source>label.book_route_categories</source>
+                <target>Préfixe URL de la liste des catégories de livres</target>
             </trans-unit>
             <trans-unit id="77RpenE">
                 <source>label.book_route_contributor</source>

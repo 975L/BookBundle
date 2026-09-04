@@ -1,4 +1,7 @@
-{% set books = book_block_to_be_published() %}
+{# Adapter for the dynamic Block system - the books waiting for their date are resolved live (see BookBlockExtension), the block itself only storing what to show and the head it shows it under. Nothing scheduled, no section at all: its head would announce books that are not coming #}
+{% set books = book_block_to_be_published(max ?? null, random ?? false) %}
 {% if books is not empty %}
-    <twig:c975LBook:Book:ToBePublished books="{{ books }}" />
+    <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" id="{{ anchor_id }}">
+        <twig:c975LBook:Book:Books books="{{ books }}"/>
+    </twig:c975LBook:Listing:Section>
 {% endif %}

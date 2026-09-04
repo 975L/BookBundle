@@ -73,7 +73,7 @@ class SerieImportProvider implements ImportProviderInterface
     }
 
     // The serie's own fields, written in three groups: what it is, who made it, and where it stands
-    // @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors
+    /** @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors */
     private function fillSerie(Serie $serie, array $item, array &$contributors): void
     {
         $serie
@@ -88,7 +88,7 @@ class SerieImportProvider implements ImportProviderInterface
     }
 
     // The two people a serie credits, named as they were when they were two strings (see BookImportProvider::fillBookContributors())
-    // @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors
+    /** @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors */
     private function fillSerieContributors(Serie $serie, array $item, array &$contributors): void
     {
         $serie

@@ -1,0 +1,12 @@
+{# <twig:c975LBook:Category:Category category="{{ category }}" [:editable="false"]/> - a category as a listing shows it #}
+{# No cover: a category is a word the catalog is cut by, not an object with a picture. Its card carries the name and the sentence the editor wrote under it - a plain <article>, as a serie's and a person's card are, rather than UiBundle's Card: a component tag takes no conditional attribute, and the editing pencil is laid on one #}
+{% props category, editable = false %}
+{# "editable": the pencil leading to the category's screen, drawn by UiBundle's overlay above what carries the url - the same condition as a serie's card, a listing rendered outside the blocks cache #}
+{% set editUrl = editable|default(false)|to_bool and is_granted(config('site-role-editor')) ? book_category_edit_url(category) : null %}
+{% set url = book_category_path(category) %}
+<article class="width-250"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+    {# Left without a page - the site serving its categories none - the name is printed and not linked (see BookRoutePrefix) #}
+    <h3>{% if url %}<a href="{{ url }}">{{ category.title }}</a>{% else %}{{ category.title }}{% endif %}</h3>
+    {# A <div>, not a <p>: Trix stores the summary as html, already block-level, and a <p> would be split by a list or a quotation #}
+    {% if category.summary %}<div class="text">{{ category.summary|raw }}</div>{% endif %}
+</article>

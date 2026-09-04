@@ -1,4 +1,8 @@
-{% set strips = book_block_serie_strips(serieSlug, max ?? null) %}
+{# Adapter for the dynamic Block system - the planches are resolved live (see BookBlockExtension), the block itself only storing what to show and the head it shows it under #}
+{% set strips = book_block_serie_strips(serieSlug, max ?? null, random ?? false) %}
 {% if strips is not empty %}
-    <twig:c975LBook:Strip:Cards strips="{{ strips }}" />
+    <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" id="{{ anchor_id }}">
+        {# Empty id: the section around it already carries the block's own anchor, and the two would otherwise both answer to a link #}
+        <twig:c975LBook:Strip:Cards strips="{{ strips }}" id=""/>
+    </twig:c975LBook:Listing:Section>
 {% endif %}

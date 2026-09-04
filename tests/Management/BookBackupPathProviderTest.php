@@ -43,7 +43,7 @@ class BookBackupPathProviderTest extends TestCase
         }
     }
 
-    // @return array<string, string>
+    /** @return array<string, string> */
     private function paths(): array
     {
         $modes = [];

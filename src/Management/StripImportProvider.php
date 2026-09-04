@@ -72,7 +72,7 @@ class StripImportProvider implements ImportProviderInterface
     }
 
     // The strip's own fields, what it holds written apart from where it stands
-    // @param array<string, \c975L\BookBundle\Entity\Serie> $series
+    /** @param array<string, \c975L\BookBundle\Entity\Serie> $series */
     private function fillStrip(Strip $strip, array $item, array &$series): void
     {
         $strip

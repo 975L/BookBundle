@@ -50,6 +50,10 @@
                 <source>confirm.publish_new_version</source>
                 <target>Mettre de côté ce que ce livre a publié jusqu'ici ? Un livre jumeau naît et reçoit les formats parus avec leurs fichiers et leurs plateformes ; celui-ci garde son adresse, ses notes et ses traductions, et repart avec des formats à remplir. Le jumeau reste en vente sous son ISBN, il quitte seulement le catalogue.</target>
             </trans-unit>
+            <trans-unit id="Q5BJ8Ui">
+                <source>description.guided_project_book_category_creation</source>
+                <target>Ranger le catalogue par sujet : une catégorie, sa phrase de présentation, et les livres qu'on y classe ensuite depuis leur propre fiche. Inutile si vos livres se rangent par série seule.</target>
+            </trans-unit>
             <trans-unit id="YT.YFdA">
                 <source>description.guided_project_book_composition</source>
                 <target>Au-delà de ses propres champs, une page de livre se compose en blocks : bandeau, texte, galerie, appel à l'action.</target>
@@ -102,6 +106,30 @@
                 <source>description.guided_project_book_version_publication</source>
                 <target>Ce qui a paru jusqu'ici est mis de côté dans un jumeau, et le livre garde son adresse, ses notes et ses traductions pour recevoir le texte neuf.</target>
             </trans-unit>
+            <trans-unit id="5kHBelb">
+                <source>description.guided_step_book_category_creation_code</source>
+                <target>Le code du métier (CLIL, Thema, BISAC), demandé par les distributeurs. Laissez vide si vous publiez par vous-même : il est stocké et jamais interprété.</target>
+            </trans-unit>
+            <trans-unit id="R8Rp9q8">
+                <source>description.guided_step_book_category_creation_done</source>
+                <target>La catégorie existe. Classez-y des livres depuis leur propre fiche, puis, si vous voulez qu'elle ait une page à elle, remplissez « Préfixe URL de la liste des catégories de livres » dans la configuration : sans cela, son nom s'affiche sur les fiches sans être cliquable.</target>
+            </trans-unit>
+            <trans-unit id="0KowA7R">
+                <source>description.guided_step_book_category_creation_new</source>
+                <target>Le bouton ouvre le formulaire de création.</target>
+            </trans-unit>
+            <trans-unit id="SrfnwAx">
+                <source>description.guided_step_book_category_creation_open</source>
+                <target>L'écran liste les catégories du catalogue. Une catégorie dit de quoi parle un livre, là où la série dit à quoi il appartient : un livre en porte autant qu'il en mérite, ou aucune.</target>
+            </trans-unit>
+            <trans-unit id="aBC4DCa">
+                <source>description.guided_step_book_category_creation_summary</source>
+                <target>La phrase en tête de sa page, reprise dans les résultats de recherche. Une liste sans un mot à elle est une page sans contenu propre.</target>
+            </trans-unit>
+            <trans-unit id="e8YAjV3">
+                <source>description.guided_step_book_category_creation_title</source>
+                <target>Le mot sous lequel les lecteurs retrouveront ces livres : « Romans », « Jeunesse », « Carnets ». L'adresse de sa page en est déduite.</target>
+            </trans-unit>
             <trans-unit id="QmMk4WE">
                 <source>description.guided_step_book_composition_add</source>
                 <target>Chaque block a son type et son propre formulaire, et ils s'empilent dans l'ordre de la page.</target>
@@ -114,6 +142,14 @@
                 <source>description.guided_step_book_composition_edit</source>
                 <target>Le crayon ouvre le formulaire d'un livre déjà créé.</target>
             </trans-unit>
+            <trans-unit id=".WXSibX">
+                <source>description.guided_step_book_composition_heading</source>
+                <target>Une listing porte désormais son surtitre, son titre, son paragraphe et son aplat : plus besoin de poser une « section de texte » au-dessus de la grille.</target>
+            </trans-unit>
+            <trans-unit id="acTCj2X">
+                <source>description.guided_step_book_composition_listing</source>
+                <target>Les cinq kinds de listing — livres, séries, personnes, à paraître, planches — tirent chacun leur grille du catalogue et se tiennent à jour tout seuls.</target>
+            </trans-unit>
             <trans-unit id="xM7BPum">
                 <source>description.guided_step_book_composition_open</source>
                 <target>L'écran des livres liste tout le catalogue.</target>
@@ -125,6 +161,10 @@
             <trans-unit id="YJAmTzg">
                 <source>description.guided_step_book_contributor_creation_done</source>
                 <target>Sa page est en ligne, encore vide de crédits. Une série ou un livre la choisit désormais dans ses champs « Auteur » et « Illustrateur », et s'y affiche de lui-même.</target>
+            </trans-unit>
+            <trans-unit id="BloTzU.">
+                <source>description.guided_step_book_contributor_creation_links</source>
+                <target>Une ligne par plateforme, pointant la page qui liste tout ce qu’elle a signé — sa page à elle, pas celle d’un livre.</target>
             </trans-unit>
             <trans-unit id="ZZSrxfd">
                 <source>description.guided_step_book_contributor_creation_name</source>
@@ -153,6 +193,14 @@
             <trans-unit id="jpNzYRk">
                 <source>description.guided_step_book_creation_author</source>
                 <target>La même liste que celle de la série. Laissé vide, un livre d'une série crédite qui la série crédite — ne le renseignez que pour un livre signé par quelqu'un d'autre.</target>
+            </trans-unit>
+            <trans-unit id="OKcYtbC">
+                <source>description.guided_step_book_creation_categories</source>
+                <target>De quoi parle le livre : autant de catégories qu'il en mérite, ou aucune. La série au-dessus dit à quoi il appartient, ce qui n'est pas la même question.</target>
+            </trans-unit>
+            <trans-unit id="aQ0akEr">
+                <source>description.guided_step_book_creation_contributors</source>
+                <target>Qui d'autre a participé — la voix qui l'a lu, la plume qui l'a traduit — une ligne par personne et par rôle</target>
             </trans-unit>
             <trans-unit id="rlVv156">
                 <source>description.guided_step_book_creation_done</source>
@@ -454,6 +502,18 @@
                 <source>flash.book_restored</source>
                 <target>Le livre a été restauré</target>
             </trans-unit>
+            <trans-unit id="NihCQZ4">
+                <source>flash.category_deleted_permanently</source>
+                <target>La catégorie a été supprimée définitivement</target>
+            </trans-unit>
+            <trans-unit id="530kFU8">
+                <source>flash.category_duplicated</source>
+                <target>La catégorie a été dupliquée, vous en modifiez la copie</target>
+            </trans-unit>
+            <trans-unit id="GKjtT3u">
+                <source>flash.category_restored</source>
+                <target>La catégorie a été restaurée</target>
+            </trans-unit>
             <trans-unit id="conGOGB">
                 <source>flash.contributor_deleted_permanently</source>
                 <target>L'auteur/illustrateur a été supprimé définitivement.</target>
@@ -526,6 +586,18 @@
                 <source>label.age</source>
                 <target>Âge</target>
             </trans-unit>
+            <trans-unit id="mI27.Xt">
+                <source>label.age-help</source>
+                <target>Le public auquel le livre s'adresse, écrit comme les moteurs le lisent : « 3-6 », « 7-10 ». Les chiffres seuls, sans le mot « ans » : l'unité est déjà dite par la donnée.</target>
+            </trans-unit>
+            <trans-unit id="PmT6SQr">
+                <source>label.anchor</source>
+                <target>Ancre</target>
+            </trans-unit>
+            <trans-unit id="ufovuez">
+                <source>label.anchor_help</source>
+                <target>Identifiant court pour lier le menu à cette section (ex. "series"). Vide = déduit du titre.</target>
+            </trans-unit>
             <trans-unit id="cUeKXyD">
                 <source>label.audios-help</source>
                 <target>L'enregistrement du livre, dans chacun des formats qu'un lecteur peut emporter. Il appartient au livre : le format audio, plus bas, ne dit que l'ISBN sous lequel il paraît.</target>
@@ -566,6 +638,26 @@
                 <source>label.block_books_description</source>
                 <target>Met en avant une sélection de livres</target>
             </trans-unit>
+            <trans-unit id="8T9Q76Z">
+                <source>label.block_categories</source>
+                <target>Catégories</target>
+            </trans-unit>
+            <trans-unit id="g7.CWul">
+                <source>label.block_categories_description</source>
+                <target>Met en avant une sélection de catégories du catalogue</target>
+            </trans-unit>
+            <trans-unit id="8EhvItE">
+                <source>label.block_category_slug</source>
+                <target>Slug de la catégorie</target>
+            </trans-unit>
+            <trans-unit id="L6HeG8y">
+                <source>label.block_category_slug_help</source>
+                <target>Laissez vide pour afficher tout le catalogue</target>
+            </trans-unit>
+            <trans-unit id="diEBoLH">
+                <source>label.block_content</source>
+                <target>Description</target>
+            </trans-unit>
             <trans-unit id="cC4x2kn">
                 <source>label.block_contributors</source>
                 <target>Auteurs/illustrateurs</target>
@@ -573,6 +665,54 @@
             <trans-unit id="4j9p1.J">
                 <source>label.block_contributors_description</source>
                 <target>La grille des auteurs et illustrateurs du catalogue, chacun menant à sa page.</target>
+            </trans-unit>
+            <trans-unit id="8iWTa1A">
+                <source>label.block_display_more_books</source>
+                <target>Afficher le lien "Tous les livres"</target>
+            </trans-unit>
+            <trans-unit id="Kse8UC4">
+                <source>label.block_display_more_categories</source>
+                <target>Afficher le lien "Toutes les catégories"</target>
+            </trans-unit>
+            <trans-unit id="9S1iovi">
+                <source>label.block_display_more_contributors</source>
+                <target>Afficher le lien "Tous nos auteurs"</target>
+            </trans-unit>
+            <trans-unit id="GqUll0x">
+                <source>label.block_display_more_series</source>
+                <target>Afficher le lien "Toutes les séries"</target>
+            </trans-unit>
+            <trans-unit id="EOPRqPX">
+                <source>label.block_eyebrow</source>
+                <target>Surtitre</target>
+            </trans-unit>
+            <trans-unit id="yNut8oi">
+                <source>label.block_max_books</source>
+                <target>Nombre de livres (vide = tous)</target>
+            </trans-unit>
+            <trans-unit id="AvLaFXa">
+                <source>label.block_max_categories</source>
+                <target>Nombre de catégories (vide = toutes)</target>
+            </trans-unit>
+            <trans-unit id="0Nk6p4_">
+                <source>label.block_max_contributors</source>
+                <target>Nombre d'auteurs/illustrateurs (vide = tous)</target>
+            </trans-unit>
+            <trans-unit id="TL.Ew3D">
+                <source>label.block_max_series</source>
+                <target>Nombre de séries (vide = toutes)</target>
+            </trans-unit>
+            <trans-unit id="ZN0TBrD">
+                <source>label.block_max_strips</source>
+                <target>Nombre de planches (vide = toutes)</target>
+            </trans-unit>
+            <trans-unit id="LUKicrM">
+                <source>label.block_random</source>
+                <target>Tirage aléatoire</target>
+            </trans-unit>
+            <trans-unit id="uSfEtPG">
+                <source>label.block_random_help</source>
+                <target>Avec un nombre maximum, tire au hasard dans tout le catalogue et renouvelle le tirage à chaque affichage.</target>
             </trans-unit>
             <trans-unit id="w8_6t_3">
                 <source>label.block_reader</source>
@@ -585,6 +725,10 @@
             <trans-unit id="us3SJ0p">
                 <source>label.block_reader_media_help</source>
                 <target>Les pages de l'album dans l'ordre, puis la bande son</target>
+            </trans-unit>
+            <trans-unit id="XWzsDqO">
+                <source>label.block_serie_slug</source>
+                <target>Slug de la série</target>
             </trans-unit>
             <trans-unit id="aVV8G4w">
                 <source>label.block_serie_strips</source>
@@ -601,6 +745,10 @@
             <trans-unit id="vb..Vuq">
                 <source>label.block_series_description</source>
                 <target>Met en avant une sélection de séries de livres</target>
+            </trans-unit>
+            <trans-unit id="t9d9.Qz">
+                <source>label.block_title</source>
+                <target>Titre</target>
             </trans-unit>
             <trans-unit id="_LI5GD2">
                 <source>label.block_to_be_published</source>
@@ -622,9 +770,37 @@
                 <source>label.book</source>
                 <target>Livre</target>
             </trans-unit>
+            <trans-unit id="8UAq6ua">
+                <source>label.book_contributor</source>
+                <target>Personne</target>
+            </trans-unit>
+            <trans-unit id="N.7q3_l">
+                <source>label.book_contributors</source>
+                <target>Participants</target>
+            </trans-unit>
+            <trans-unit id="7OjFZVA">
+                <source>label.book_contributors-help</source>
+                <target>Qui d'autre a participé au livre — la voix qui l'a lu, la plume qui l'a porté dans une autre langue. Une ligne par personne et par rôle. L'auteur et l'illustrateur ne se saisissent pas ici : ils ont chacun leur champ plus haut, et se reprennent de la série quand le livre n'en nomme aucun</target>
+            </trans-unit>
             <trans-unit id="Cva7dGG">
                 <source>label.book_cover-help</source>
                 <target>Première de couverture du livre, celle que la page affiche en tête</target>
+            </trans-unit>
+            <trans-unit id="ZJlIbsN">
+                <source>label.book_released_discover</source>
+                <target>Découvrir le livre</target>
+            </trans-unit>
+            <trans-unit id="O4guNPz">
+                <source>label.book_released_intro</source>
+                <target>Vous aviez demandé à être prévenu de la parution de %book% : il est disponible.</target>
+            </trans-unit>
+            <trans-unit id="GmpNcwY">
+                <source>label.book_released_last</source>
+                <target>C'est le seul message que vous recevrez pour ce livre, et votre adresse vient d'être supprimée de la liste.</target>
+            </trans-unit>
+            <trans-unit id="QfsBeGk">
+                <source>label.book_released_subject</source>
+                <target>Le livre que vous attendiez est paru</target>
             </trans-unit>
             <trans-unit id="o_KHEEL">
                 <source>label.book_sample_book_hours_summary</source>
@@ -657,6 +833,30 @@
             <trans-unit id="FBNwI7B">
                 <source>label.book_sample_book_thread_two_title</source>
                 <target>Le fil rouge, tome 2</target>
+            </trans-unit>
+            <trans-unit id="npvrC4Q">
+                <source>label.book_sample_category_notebooks_summary</source>
+                <target>Ce qui s'écrit à côté du travail : notes, croquis, essais.</target>
+            </trans-unit>
+            <trans-unit id="mnq9cHw">
+                <source>label.book_sample_category_notebooks_title</source>
+                <target>Carnets</target>
+            </trans-unit>
+            <trans-unit id="SaArtop">
+                <source>label.book_sample_category_novels_summary</source>
+                <target>Des récits au long cours, pour ceux qui aiment prendre le temps.</target>
+            </trans-unit>
+            <trans-unit id="HLHXP1Y">
+                <source>label.book_sample_category_novels_title</source>
+                <target>Romans</target>
+            </trans-unit>
+            <trans-unit id="aeOZ3vV">
+                <source>label.book_sample_category_youth_summary</source>
+                <target>Des histoires à lire seul ou à deux, dès les premières pages tournées.</target>
+            </trans-unit>
+            <trans-unit id="n.WVegE">
+                <source>label.book_sample_category_youth_title</source>
+                <target>Jeunesse</target>
             </trans-unit>
             <trans-unit id="L4zYmvJ">
                 <source>label.book_sample_language</source>
@@ -710,9 +910,45 @@
                 <source>label.catalog</source>
                 <target>Catalogue</target>
             </trans-unit>
+            <trans-unit id="7qqvm2o">
+                <source>label.categories</source>
+                <target>Catégories</target>
+            </trans-unit>
+            <trans-unit id="ptxe5V2">
+                <source>label.categories-help</source>
+                <target>Ce dont parle le livre. Un livre peut en porter plusieurs, ou aucune.</target>
+            </trans-unit>
+            <trans-unit id="s.qKVcQ">
+                <source>label.categories_all</source>
+                <target>Toutes nos catégories</target>
+            </trans-unit>
+            <trans-unit id="My2i5PY">
+                <source>label.categories_more</source>
+                <target>Découvrez toutes nos catégories</target>
+            </trans-unit>
+            <trans-unit id="Sz26b2N">
+                <source>label.categories_summary</source>
+                <target>Liste des catégories</target>
+            </trans-unit>
+            <trans-unit id="xS4pB3k">
+                <source>label.category</source>
+                <target>Catégorie</target>
+            </trans-unit>
             <trans-unit id="xhVIWY9">
                 <source>label.category_books</source>
                 <target>Livres</target>
+            </trans-unit>
+            <trans-unit id="eRCGjDU">
+                <source>label.category_code</source>
+                <target>Code de classification</target>
+            </trans-unit>
+            <trans-unit id="GmMf4lO">
+                <source>label.category_code-help</source>
+                <target>Le code de la catégorie dans les classifications du métier (CLIL en France, Thema ou BISAC ailleurs), demandé par les distributeurs. Laissez vide si vous n'en avez pas besoin.</target>
+            </trans-unit>
+            <trans-unit id="6ewv1y0">
+                <source>label.category_summary-help</source>
+                <target>La phrase qui présente la catégorie, en tête de sa page et dans les résultats de recherche.</target>
             </trans-unit>
             <trans-unit id="J2ePCOx">
                 <source>label.characters</source>
@@ -725,6 +961,18 @@
             <trans-unit id="sQ8j0Zw">
                 <source>label.contributor_books</source>
                 <target>Ses livres</target>
+            </trans-unit>
+            <trans-unit id="iEFxilh">
+                <source>label.contributor_buy</source>
+                <target>Acheter</target>
+            </trans-unit>
+            <trans-unit id="nSTkSch">
+                <source>label.contributor_link_url-help</source>
+                <target>L'adresse de la page de cette personne chez la plateforme, collée telle qu'elle est donnée - sa page d'auteur, pas celle d'un livre.</target>
+            </trans-unit>
+            <trans-unit id="CkEdMQp">
+                <source>label.contributor_links-help</source>
+                <target>Les plateformes où trouver ses livres, et la boutique du site elle-même, mise en avant sur la page.</target>
             </trans-unit>
             <trans-unit id="NpZVHh8">
                 <source>label.contributor_series</source>
@@ -886,6 +1134,14 @@
                 <source>label.gallery_showcase_book_books_description</source>
                 <target>Liste des derniers livres publiés</target>
             </trans-unit>
+            <trans-unit id="ZQmWP93">
+                <source>label.gallery_showcase_book_categories</source>
+                <target>Catégories (bloc)</target>
+            </trans-unit>
+            <trans-unit id="m1A0orl">
+                <source>label.gallery_showcase_book_categories_description</source>
+                <target>Liste des catégories du catalogue</target>
+            </trans-unit>
             <trans-unit id="6WoIf1t">
                 <source>label.gallery_showcase_book_serie_strips</source>
                 <target>Planches d'une série (bloc)</target>
@@ -909,6 +1165,10 @@
             <trans-unit id="4VaL1RS">
                 <source>label.gallery_showcase_book_to_be_published_description</source>
                 <target>Liste des livres en cours de publication</target>
+            </trans-unit>
+            <trans-unit id="oPngwpd">
+                <source>label.guided_project_book_category_creation</source>
+                <target>Créer une catégorie</target>
             </trans-unit>
             <trans-unit id="xHGOxRr">
                 <source>label.guided_project_book_composition</source>
@@ -962,6 +1222,34 @@
                 <source>label.guided_project_book_version_publication</source>
                 <target>Publier une nouvelle version</target>
             </trans-unit>
+            <trans-unit id="CsL_Bx8">
+                <source>label.guided_step_book_category_creation_code</source>
+                <target>Le code de classification</target>
+            </trans-unit>
+            <trans-unit id="brfTO8G">
+                <source>label.guided_step_book_category_creation_done</source>
+                <target>C'est fait</target>
+            </trans-unit>
+            <trans-unit id="JHMjd6m">
+                <source>label.guided_step_book_category_creation_new</source>
+                <target>Créer</target>
+            </trans-unit>
+            <trans-unit id="magZAfd">
+                <source>label.guided_step_book_category_creation_open</source>
+                <target>Ouvrir les catégories</target>
+            </trans-unit>
+            <trans-unit id="0q5di8m">
+                <source>label.guided_step_book_category_creation_save</source>
+                <target>Enregistrer</target>
+            </trans-unit>
+            <trans-unit id="kNKbB.o">
+                <source>label.guided_step_book_category_creation_summary</source>
+                <target>La présentation</target>
+            </trans-unit>
+            <trans-unit id="XfYYiRM">
+                <source>label.guided_step_book_category_creation_title</source>
+                <target>Le nom</target>
+            </trans-unit>
             <trans-unit id="8EtrFFM">
                 <source>label.guided_step_book_composition_add</source>
                 <target>Ajouter un block</target>
@@ -973,6 +1261,14 @@
             <trans-unit id="LCHRmAw">
                 <source>label.guided_step_book_composition_edit</source>
                 <target>Modifier un livre</target>
+            </trans-unit>
+            <trans-unit id="s0X0VjJ">
+                <source>label.guided_step_book_composition_heading</source>
+                <target>Écrivez le chapeau dans le block</target>
+            </trans-unit>
+            <trans-unit id="XUDzoXg">
+                <source>label.guided_step_book_composition_listing</source>
+                <target>Choisissez une listing du catalogue</target>
             </trans-unit>
             <trans-unit id="hiz8WZC">
                 <source>label.guided_step_book_composition_open</source>
@@ -989,6 +1285,10 @@
             <trans-unit id="ezePHfM">
                 <source>label.guided_step_book_contributor_creation_done</source>
                 <target>La personne est au catalogue</target>
+            </trans-unit>
+            <trans-unit id="T7ttjxD">
+                <source>label.guided_step_book_contributor_creation_links</source>
+                <target>Où on la trouve en vente</target>
             </trans-unit>
             <trans-unit id="W2.gBd2">
                 <source>label.guided_step_book_contributor_creation_name</source>
@@ -1021,6 +1321,14 @@
             <trans-unit id="kBrZaFD">
                 <source>label.guided_step_book_creation_author</source>
                 <target>Créditez son auteur</target>
+            </trans-unit>
+            <trans-unit id="_VVsFwO">
+                <source>label.guided_step_book_creation_categories</source>
+                <target>Les catégories</target>
+            </trans-unit>
+            <trans-unit id="r3JBrmu">
+                <source>label.guided_step_book_creation_contributors</source>
+                <target>Créditez les autres participants</target>
             </trans-unit>
             <trans-unit id="AHQWS0V">
                 <source>label.guided_step_book_creation_done</source>
@@ -1338,6 +1646,10 @@
                 <source>label.health_check_link_broken</source>
                 <target>Lien cassé (HTTP %code%)</target>
             </trans-unit>
+            <trans-unit id="DOJ7pMz">
+                <source>label.health_check_link_internal</source>
+                <target>Adresse du site lui-même : rien à sonder tant que l'adresse du site n'est pas renseignée.</target>
+            </trans-unit>
             <trans-unit id="7cT9Emx">
                 <source>label.health_check_link_invalid</source>
                 <target>Adresse invalide : une plateforme se déclare avec son adresse entière, protocole compris</target>
@@ -1381,6 +1693,10 @@
             <trans-unit id="vdNqq8K">
                 <source>label.info_book</source>
                 <target>Liste de tous les livres publiés. Créez, modifiez ou supprimez un livre : informations, auteur, illustrateur, liens de vente, marketing, presse et blocs de contenu.</target>
+            </trans-unit>
+            <trans-unit id="rBI9eRF">
+                <source>label.info_category</source>
+                <target>Liste de toutes les catégories du catalogue. Créez, modifiez ou supprimez une catégorie ; les blocs de contenu de sa page s'y gèrent aussi. Un livre en reçoit autant que nécessaire depuis sa propre fiche.</target>
             </trans-unit>
             <trans-unit id="nD1o3ug">
                 <source>label.info_contributor</source>
@@ -1614,9 +1930,97 @@
                 <source>label.read-intro</source>
                 <target>Feuilletez les premières pages de ce livre.</target>
             </trans-unit>
+            <trans-unit id="pqqOcjv">
+                <source>label.release_alert_confirmation_intro</source>
+                <target>Vous serez prévenu par courriel dès la parution de %book%.</target>
+            </trans-unit>
+            <trans-unit id="4YQFjgT">
+                <source>label.release_alert_confirmation_once</source>
+                <target>Vous ne recevrez qu'un seul message, celui de la parution, et rien d'autre.</target>
+            </trans-unit>
+            <trans-unit id="gk.U.BZ">
+                <source>label.release_alert_confirmation_subject</source>
+                <target>Vous serez prévenu de la parution</target>
+            </trans-unit>
+            <trans-unit id="QM7PYkW">
+                <source>label.release_alert_confirmation_unsubscribe</source>
+                <target>Vous n'avez rien demandé, ou vous changez d'avis ? Désinscrivez-vous ici : %url%</target>
+            </trans-unit>
+            <trans-unit id="1MkoJRR">
+                <source>label.release_alert_email</source>
+                <target>Votre adresse électronique</target>
+            </trans-unit>
+            <trans-unit id="5VP4hMt">
+                <source>label.release_alert_email_help</source>
+                <target>Elle ne sert qu'à vous prévenir de la parution de ce livre.</target>
+            </trans-unit>
+            <trans-unit id="8_vS6eM">
+                <source>label.release_alert_intro</source>
+                <target>Indiquez votre adresse pour être prévenu dès la parution de %book%.</target>
+            </trans-unit>
+            <trans-unit id="bZs81Nz">
+                <source>label.release_alert_notify_me</source>
+                <target>Me prévenir de la parution</target>
+            </trans-unit>
+            <trans-unit id="ru2YlIe">
+                <source>label.release_alert_submit</source>
+                <target>Me prévenir</target>
+            </trans-unit>
+            <trans-unit id="kKub2X9">
+                <source>label.release_alert_title</source>
+                <target>Être prévenu de la parution de %book%</target>
+            </trans-unit>
+            <trans-unit id="0WA254k">
+                <source>label.release_alert_unsubscribe_submit</source>
+                <target>Confirmer ma désinscription</target>
+            </trans-unit>
+            <trans-unit id="j6qQsJz">
+                <source>label.release_alert_unsubscribe_title</source>
+                <target>Désinscription de l'alerte de parution</target>
+            </trans-unit>
+            <trans-unit id="vduZRt9">
+                <source>label.release_alert_unsubscribed_title</source>
+                <target>Désinscription</target>
+            </trans-unit>
+            <trans-unit id="Gj4Ca1d">
+                <source>label.role</source>
+                <target>Rôle</target>
+            </trans-unit>
+            <trans-unit id="8Ss6PNi">
+                <source>label.role_narrator</source>
+                <target>Narrateur</target>
+            </trans-unit>
+            <trans-unit id="z3jpW2W">
+                <source>label.role_translator</source>
+                <target>Traducteur</target>
+            </trans-unit>
             <trans-unit id="wuLVBeQ">
                 <source>label.search_placeholder</source>
                 <target>Entrer les caractères recherchés</target>
+            </trans-unit>
+            <trans-unit id="LqQIe5o">
+                <source>label.section_background</source>
+                <target>Fond de la section</target>
+            </trans-unit>
+            <trans-unit id="S3aOJc1">
+                <source>label.section_background_dark</source>
+                <target>Foncé</target>
+            </trans-unit>
+            <trans-unit id="dG59CiC">
+                <source>label.section_background_help</source>
+                <target>Peint la section en aplat pleine largeur - les textes, filets et boutons qu'elle contient s'inversent automatiquement pour rester lisibles.</target>
+            </trans-unit>
+            <trans-unit id="gxWXTr3">
+                <source>label.section_background_muted</source>
+                <target>Gris clair</target>
+            </trans-unit>
+            <trans-unit id="UcA_IiR">
+                <source>label.section_background_none</source>
+                <target>Aucun (fond de page)</target>
+            </trans-unit>
+            <trans-unit id="r82HE3G">
+                <source>label.section_background_primary</source>
+                <target>Couleur principale</target>
             </trans-unit>
             <trans-unit id="k_6r8.5">
                 <source>label.serie</source>
@@ -1630,9 +2034,17 @@
                 <source>label.series</source>
                 <target>Séries</target>
             </trans-unit>
+            <trans-unit id="0_AR.rM">
+                <source>label.series_all</source>
+                <target>Toutes nos séries</target>
+            </trans-unit>
             <trans-unit id="5zU4NCz">
                 <source>label.series_more</source>
                 <target>Découvrez toutes nos séries</target>
+            </trans-unit>
+            <trans-unit id="9P9hTcI">
+                <source>label.series_summary</source>
+                <target>Liste des séries</target>
             </trans-unit>
             <trans-unit id="0kGqgMZ">
                 <source>label.slug</source>
@@ -1717,6 +2129,34 @@
             <trans-unit id="rJFIqnF">
                 <source>label.website</source>
                 <target>Site web</target>
+            </trans-unit>
+            <trans-unit id="mRRxT4w">
+                <source>text.books_explanation</source>
+                <target>Ces livres sont disponibles sous différentes plateformes et formats. Retrouvez les informations pour chaque livre en le sélectionnant.</target>
+            </trans-unit>
+            <trans-unit id="SYzuLh_">
+                <source>text.release_alert_already_published</source>
+                <target>Ce livre est déjà paru : vous pouvez le découvrir dès maintenant.</target>
+            </trans-unit>
+            <trans-unit id="Ga3wjSz">
+                <source>text.release_alert_privacy</source>
+                <target>Votre adresse n'est conservée que pour vous annoncer cette parution, et supprimée dès l'envoi. Un courriel de confirmation vous parvient tout de suite, avec le lien pour vous désinscrire.</target>
+            </trans-unit>
+            <trans-unit id="A3vhiwv">
+                <source>text.release_alert_subscribed</source>
+                <target>C'est noté : vous serez prévenu dès la parution. Un courriel de confirmation vient de vous être envoyé.</target>
+            </trans-unit>
+            <trans-unit id="qfS4PRc">
+                <source>text.release_alert_unavailable</source>
+                <target>Ce livre n'est plus au catalogue, aucun e-mail de parution ne sera envoyé.</target>
+            </trans-unit>
+            <trans-unit id="dxjjuJP">
+                <source>text.release_alert_unsubscribe_confirm</source>
+                <target>Un clic et votre adresse quitte cette liste d'attente : vous ne serez pas prévenu de la parution du livre.</target>
+            </trans-unit>
+            <trans-unit id="ofTxT19">
+                <source>text.release_alert_unsubscribed</source>
+                <target>Votre adresse a été supprimée : vous ne recevrez pas d'annonce de parution.</target>
             </trans-unit>
             <trans-unit id="7TID4un">
                 <source>text.series</source>

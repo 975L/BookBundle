@@ -9,25 +9,26 @@
 
 namespace c975L\BookBundle\Form\Block;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class BooksBlockType extends AbstractType
+// The data sub-form of the "book_books" kind - the head it shares with every other listing is in AbstractBookListingBlockType
+class BooksBlockType extends AbstractBookListingBlockType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        parent::buildForm($builder, $options);
+
+        // The catalog the listing draws from, narrowed down to one category - by slug and not by a picker, block data being stored as JSON and holding no entity (see SerieStripsBlockType, which names its serie the same way). Left empty, the whole catalog
         $builder
-            ->add('max', IntegerType::class, [
-                'label' => 'Nombre de livres (vide = tous)',
-                'required' => false,
-                'attr' => ['min' => 1],
-            ])
-            ->add('displayMore', CheckboxType::class, [
-                'label' => 'Afficher le lien "Tous les livres"',
+            ->add('categorySlug', TextType::class, [
+                'label' => 'label.block_category_slug',
+                'help' => 'label.block_category_slug_help',
                 'required' => false,
             ])
         ;
+
+        $this->addSelectionFields($builder, 'label.block_max_books');
+        $this->addDisplayMoreField($builder, 'label.block_display_more_books');
     }
 }

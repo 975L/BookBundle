@@ -17,6 +17,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Management\BookBlockEditUrlProvider;
+use c975L\BookBundle\Repository\BookCategoryRepository;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
@@ -89,6 +90,7 @@ class BookBlockEditUrlProviderTest extends TestCase
 
         $provider = new BookBlockEditUrlProvider(
             $this->adminUrlGenerator(),
+            $this->createStub(BookCategoryRepository::class),
             $repository,
             $this->createStub(ContributorRepository::class),
             $this->createStub(SerieRepository::class),
@@ -98,10 +100,11 @@ class BookBlockEditUrlProviderTest extends TestCase
         $this->assertSame([], $provider->getEditUrls([new Block()]));
     }
 
-    private function provider(array $books = [], array $series = [], array $strips = [], array $contributors = []): BookBlockEditUrlProvider
+    private function provider(array $books = [], array $series = [], array $strips = [], array $contributors = [], array $categories = []): BookBlockEditUrlProvider
     {
         return new BookBlockEditUrlProvider(
             $this->adminUrlGenerator(),
+            $this->repository(BookCategoryRepository::class, $categories),
             $this->repository(BookRepository::class, $books),
             $this->repository(ContributorRepository::class, $contributors),
             $this->repository(SerieRepository::class, $series),

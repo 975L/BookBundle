@@ -123,7 +123,7 @@ class StripImportCommand extends Command
     }
 
     // What the options describe, once they are known to name a serie and a directory that exists - null, the error already written, for anything the import cannot run on
-    // @return array{serie: Serie, tableName: string, numberColumn: string, mediaRootFs: string, publicPrefix: string, urlTemplate: ?string, urlMax: int, dryRun: bool}|null
+    /** @return array{serie: Serie, tableName: string, numberColumn: string, mediaRootFs: string, publicPrefix: string, urlTemplate: ?string, urlMax: int, dryRun: bool}|null */
     private function importContext(SymfonyStyle $io, InputInterface $input): ?array
     {
         $serieSlug = $input->getOption('serie');
@@ -185,7 +185,7 @@ class StripImportCommand extends Command
     }
 
     // One strip per row of the source table, answering how many were written and how many the table could not name
-    // @return array{0: int, 1: int}
+    /** @return array{0: int, 1: int} */
     private function importRows(SymfonyStyle $io, array $rows, Serie $serie, array $options): array
     {
         $now = new \DateTime();
@@ -273,7 +273,7 @@ class StripImportCommand extends Command
     }
 
     // What a file's own name says it is, or null for anything the strip directory holds beside its pages
-    // @return array{0: string, 1: int}|null the kind and the rank it is shown at
+    /** @return array{0: string, 1: int}|null the kind and the rank it is shown at */
     private function recogniseMedia(string $file, string $numFormatted): ?array
     {
         $number = preg_quote($numFormatted, '/');

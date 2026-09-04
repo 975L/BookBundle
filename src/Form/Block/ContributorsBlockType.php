@@ -9,25 +9,16 @@
 
 namespace c975L\BookBundle\Form\Block;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class ContributorsBlockType extends AbstractType
+// The data sub-form of the "book_contributors" kind - the head it shares with every other listing is in AbstractBookListingBlockType
+class ContributorsBlockType extends AbstractBookListingBlockType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('max', IntegerType::class, [
-                'label' => 'Nombre d\'auteurs/illustrateurs (vide = tous)',
-                'required' => false,
-                'attr' => ['min' => 1],
-            ])
-            ->add('displayMore', CheckboxType::class, [
-                'label' => 'Afficher le lien "Tous nos auteurs"',
-                'required' => false,
-            ])
-        ;
+        parent::buildForm($builder, $options);
+
+        $this->addSelectionFields($builder, 'label.block_max_contributors');
+        $this->addDisplayMoreField($builder, 'label.block_display_more_contributors');
     }
 }

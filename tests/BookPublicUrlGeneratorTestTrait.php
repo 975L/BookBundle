@@ -20,7 +20,7 @@ use Symfony\Component\Routing\RouteCollection;
 // Shared by every test constructing a real BookPublicUrlResolver - a real UrlGenerator over the same route shapes as BookController, SerieController and StripController, so tests exercise the actual routing rather than a hand-duplicated string
 trait BookPublicUrlGeneratorTestTrait
 {
-    // The prefixes a fresh install carries, one per ConfigBundle entry of BookRoutePrefix::PREFIXES
+    // The prefixes a fresh install carries, one per ConfigBundle entry of BookRoutePrefix::PREFIXES - "book-route-categories" is left out on purpose, a fresh install serving no category page until the site says under which word it wants them (see config/configs.json)
     private const array DEFAULT_ROUTE_PREFIXES = [
         'book-route-books' => 'livres',
         'book-route-book' => 'livre',
@@ -36,6 +36,8 @@ trait BookPublicUrlGeneratorTestTrait
         $routes = new RouteCollection();
         $routes->add('book_index', new Route('/{books_prefix}'));
         $routes->add('book_display', new Route('/{book_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
+        $routes->add('book_category_index', new Route('/{categories_prefix}'));
+        $routes->add('book_category_display', new Route('/{categories_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
         $routes->add('serie_index', new Route('/{series_prefix}'));
         $routes->add('serie_display', new Route('/{series_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
         $routes->add('contributor_index', new Route('/{contributors_prefix}'));

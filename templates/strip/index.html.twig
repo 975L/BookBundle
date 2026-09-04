@@ -1,8 +1,8 @@
 {% extends 'layout.html.twig' %}
 
-{# Defines specific variables #}
-{% set title = 'label.strips_series'|trans({}, 'book') %}
-{% set summarySocialNetwork = 'label.strips_series_list'|trans({}, 'book') %}
+{# Defines specific variables. The row an editor wrote for this url wins, these translated labels being its fallback (see ConfigBundle's UrlMetadata) #}
+{% set title = url_metadata_title('label.strips_series'|trans({}, 'book')) %}
+{% set summarySocialNetwork = url_metadata_summary('label.strips_series_list'|trans({}, 'book')) %}
 
 {# Editor-only: the pencil UiBundle floats over each card leads to that serie's own edit screen (see its assets/js/block-edit-overlay.js). Gated on the very role the edit screen asks for, a pencil leading to a 403 being worse than no pencil #}
 {% set canEdit = is_granted(config('site-role-editor')) %}
@@ -29,4 +29,15 @@
             {% endif %}
         </div>
     </div>
+
+    {# What this page of the series of planches holds, in the order it prints it - the pages that follow publish their own, each numbering its cards from where this one stopped. The address is read before it is made absolute: a site serving this index but not the pages it lists answers null, and a level pointing nowhere is left out rather than published empty (see BookUrlExtension) #}
+    {% set entries = [] %}
+    {% for item in series %}
+        {% set itemPath = serie_path(item) %}
+        {% if itemPath %}{% set entries = entries|merge([{name: item.title, url: absolute_url(itemPath)}]) %}{% endif %}
+    {% endfor %}
+    {% set jsonLd = book_item_list_json_ld(entries, (series.getCurrentPageNumber - 1) * series.getItemNumberPerPage) %}
+    {% if jsonLd %}
+        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+    {% endif %}
 {% endblock %}

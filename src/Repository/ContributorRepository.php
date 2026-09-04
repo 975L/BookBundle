@@ -69,11 +69,14 @@ class ContributorRepository extends ServiceEntityRepository
             ->leftJoin('c.illustratedBooks', 'ib', 'WITH', 'ib.isDeleted = false AND ib.hidden = false AND ib.newerVersion IS NULL')
             ->leftJoin('c.authoredSeries', 'asr', 'WITH', 'asr.isDeleted = false AND asr.hidden = false')
             ->leftJoin('c.illustratedSeries', 'isr', 'WITH', 'isr.isDeleted = false AND isr.hidden = false')
+            // The parts held by a row rather than by a column count as much: a narrator or a translator is credited nowhere else, and the index would list nobody it did not also record as an author
+            ->leftJoin('c.credits', 'cr')
+            ->leftJoin('cr.book', 'cb', 'WITH', 'cb.isDeleted = false AND cb.hidden = false AND cb.newerVersion IS NULL')
             ->leftJoin('c.medias', 'm')
             ->addSelect('m')
             ->andWhere('c.isDeleted = false')
             ->andWhere('c.hidden = false')
-            ->andWhere('ab.id IS NOT NULL OR ib.id IS NOT NULL OR asr.id IS NOT NULL OR isr.id IS NOT NULL')
+            ->andWhere('ab.id IS NOT NULL OR ib.id IS NOT NULL OR asr.id IS NOT NULL OR isr.id IS NOT NULL OR cb.id IS NOT NULL')
             ->groupBy('c.id')
             ->addGroupBy('m.id')
             ->orderBy('c.position', 'ASC')
@@ -83,12 +86,11 @@ class ContributorRepository extends ServiceEntityRepository
         ;
     }
 
-    // A person with everything they are credited on, their books' own covers joined. Looked up whatever their state - someone in the trash has to be found for their page to answer 410 rather than a plain 404 (see ContributorController::display()) - where what they are credited on leaves them as soon as it is trashed or set aside
-    // A book replaced by a newer version leaves their page as it left the catalog: it keeps its own page, reached from the search or from the version replacing it (see Book::$newerVersion)
+    // A person with everything they are credited on, their books' own covers joined. Looked up whatever their state - someone in the trash has to be found for their page to answer 410 rather than a plain 404 (see ContributorController::display()) - where what they are credited on leaves them as soon as it is trashed or set aside. A book replaced by a newer version leaves their page as it left the catalog: it keeps its own page, reached from the search or from the version replacing it (see Book::$newerVersion)
     public function findOneBySlugWithWorks(string $slug): ?Contributor
     {
         return $this->createQueryBuilder('c')
-            ->select('c', 'ab', 'ib', 'abm', 'ibm', 'asr', 'isr', 'asrm', 'isrm')
+            ->select('c', 'ab', 'ib', 'abm', 'ibm', 'asr', 'isr', 'asrm', 'isrm', 'cr', 'cb', 'cbm')
             ->leftJoin('c.authoredBooks', 'ab', 'WITH', 'ab.isDeleted = false AND ab.hidden = false AND ab.newerVersion IS NULL')
             ->leftJoin('ab.medias', 'abm')
             ->leftJoin('c.illustratedBooks', 'ib', 'WITH', 'ib.isDeleted = false AND ib.hidden = false AND ib.newerVersion IS NULL')
@@ -97,6 +99,10 @@ class ContributorRepository extends ServiceEntityRepository
             ->leftJoin('asr.medias', 'asrm')
             ->leftJoin('c.illustratedSeries', 'isr', 'WITH', 'isr.isDeleted = false AND isr.hidden = false')
             ->leftJoin('isr.medias', 'isrm')
+            // What they narrated or translated, read under the same conditions as what they signed - Contributor::getBooks() merges the three
+            ->leftJoin('c.credits', 'cr')
+            ->leftJoin('cr.book', 'cb', 'WITH', 'cb.isDeleted = false AND cb.hidden = false AND cb.newerVersion IS NULL')
+            ->leftJoin('cb.medias', 'cbm')
             ->andWhere('c.slug = :slug')
             ->setParameter('slug', $slug)
             ->getQuery()
@@ -104,8 +110,7 @@ class ContributorRepository extends ServiceEntityRepository
         ;
     }
 
-    // The person a name stands for, which is what the migration off the four string columns matches on, and what an import falls back to when the archive predates this entity (see ContributorImportProvider)
-    // Never someone in the trash: an import would credit them on a book, their page would answer 410, and the foreign key would then refuse to delete them for good
+    // The person a name stands for, which is what the migration off the four string columns matches on, and what an import falls back to when the archive predates this entity (see ContributorImportProvider). Never someone in the trash: an import would credit them on a book, their page would answer 410, and the foreign key would then refuse to delete them for good
     public function findOneByName(string $name): ?Contributor
     {
         return $this->findOneBy(['name' => $name, 'isDeleted' => false]);

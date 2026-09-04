@@ -10,6 +10,7 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
@@ -20,7 +21,7 @@ use c975L\UiBundle\Registry\PlaceholderMediaRegistry;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
-// Shows all 4 of BookBundle's block kinds in a block gallery/showcase (see UiBundle's GalleryShowcaseRegistry, consumed by the public block showcase). None fit BlockFixtureProviderInterface: their templates all resolve real content live via book_block_*() (BookBlockExtension), querying Book/Serie/Strip straight from the database. Rendered here instead, directly against the same underlying components with in-memory (never persisted) sample entities, bypassing those queries.
+// Shows all 5 of BookBundle's block kinds in a block gallery/showcase (see UiBundle's GalleryShowcaseRegistry, consumed by the public block showcase). None fit BlockFixtureProviderInterface: their templates all resolve real content live via book_block_*() (BookBlockExtension), querying Book/Serie/Strip straight from the database. Rendered here instead, directly against the same underlying components with in-memory (never persisted) sample entities, bypassing those queries.
 class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
 {
     public function __construct(
@@ -38,6 +39,11 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
                 'description' => $this->translator->trans('label.gallery_showcase_book_series_description', [], 'book'),
                 'kind' => 'book_series',
                 'variants' => ['' => $this->seriesVariant()],
+            ],
+            $this->translator->trans('label.gallery_showcase_book_categories', [], 'book') => [
+                'description' => $this->translator->trans('label.gallery_showcase_book_categories_description', [], 'book'),
+                'kind' => 'book_categories',
+                'variants' => ['' => $this->categoriesVariant()],
             ],
             $this->translator->trans('label.gallery_showcase_book_books', [], 'book') => [
                 'description' => $this->translator->trans('label.gallery_showcase_book_books_description', [], 'book'),
@@ -83,6 +89,24 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         ]);
     }
 
+    // No picture on these ones: a category's card is its name and the sentence under it, which is what the kind draws on a real site too (see components/Category/Category.html.twig)
+    private function categoriesVariant(): string
+    {
+        $categories = [];
+
+        foreach ($this->catalog->getCategories() as $spec) {
+            $categories[] = new BookCategory()
+                ->setTitle($this->trans($spec['title']))
+                ->setSlug($spec['slug'])
+                ->setSummary($this->trans($spec['summary']));
+        }
+
+        return $this->twig->render('@c975LBook/components/Category/Categories.html.twig', [
+            'categories' => $categories,
+            'displayMore' => 'true',
+        ]);
+    }
+
     // A cover is what a catalog shows of a book, so each sample carries one, on the same terms as a serie's
     private function booksVariant(): string
     {
@@ -105,7 +129,7 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         ]);
     }
 
-    // "published" left null on purpose: Book/Book.html.twig reads it to display the "à paraître" wording, and the catalog holds one such book for exactly this
+    // "published" left null on purpose: Book/Book.html.twig reads it to display the "à paraître" wording, and the catalog holds one such book for exactly this. The same grid as the variant above, which is what the kind now draws: its heading is typed on the block and no longer written by a component of its own
     private function toBePublishedVariant(): string
     {
         $books = [];
@@ -119,7 +143,7 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
             $books[] = $this->covered($book, $spec['slug'], $rank);
         }
 
-        return $this->twig->render('@c975LBook/components/Book/ToBePublished.html.twig', [
+        return $this->twig->render('@c975LBook/components/Book/Books.html.twig', [
             'books' => $books,
         ]);
     }
@@ -161,14 +185,7 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         return $book;
     }
 
-    /**
-     * The picture a sample card shows: the one the site declares for that very row, keyed "book/<slug>" or
-     * "serie/<slug>" - the very keys the seeded demo reads, so the showcase and a demo site show the same cover.
-     *
-     * Failing that, one of the generic pool, dealt by rank: a rail is read side by side, and two cards sharing one
-     * photograph read as a bug. That is where this parts from BookDemoFixtureProvider, which reads its own off the
-     * slug - a row of the base has no rail to stand in, and keeps its picture whatever is loaded beside it.
-     */
+    // The picture a sample card shows: the one the site declares for that row, keyed "book/<slug>" or "serie/<slug>" - the keys the seeded demo reads, so showcase and demo show the same cover - failing which one of the generic pool, dealt by rank, two cards of a rail sharing a photograph reading as a bug (where BookDemoFixtureProvider deals off the slug, a stored row standing in no rail)
     private function picture(string $owner, string $slug, int $rank): ?string
     {
         $declared = $this->placeholderMediaRegistry->getImagesFor($owner . '/' . $slug);
@@ -182,11 +199,8 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         return [] === $pool ? null : $pool[$rank % \count($pool)];
     }
 
-    /**
-     * The catalog's books, out or still to come - the two the "books" and "to be published" variants each stand for.
-     *
-     * @return list<array{slug: string, title: string, summary: string, serie: string, published: ?string, creation: string, number: int, illustrated: bool}>
-     */
+    // The catalog's books, out or still to come - the two the "books" and "to be published" variants each stand for.
+    /** @return list<array{slug: string, title: string, summary: string, serie: string, published: ?string, creation: string, number: int, illustrated: bool, age: string}> */
     private function released(bool $out): array
     {
         return array_values(array_filter(

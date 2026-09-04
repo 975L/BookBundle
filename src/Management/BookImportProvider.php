@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMarketing;
@@ -22,8 +23,7 @@ use c975L\ConfigBundle\Management\ImportProviderInterface;
 use c975L\UiBundle\Management\BlockDataImporter;
 use Doctrine\ORM\EntityManagerInterface;
 
-// Imports a "book_book" content export (see BookExportProvider) - matches by slug, which is what a book answers at, and never by the exported id
-// Every child row is written over rather than dropped and built anew, each on the one natural key it has: a version by its kind, a platform by the version and the kind it sells for, a file by the name it is served under. That is what keeps a re-import from rewriting the whole catalog on disk, and what a version's files depend on - dropping a version takes them with it (see BookEdition::$medias)
+// Imports a "book_book" content export (see BookExportProvider) - matches by slug, which is what a book answers at, and never by the exported id. Every child row is written over rather than dropped and built anew, each on the one natural key it has: a version by its kind, a platform by the version and the kind it sells for, a file by the name it is served under. That is what keeps a re-import from rewriting the whole catalog on disk, and what a version's files depend on - dropping a version takes them with it (see BookEdition::$medias)
 class BookImportProvider implements ImportProviderInterface
 {
     public const KIND = 'book_book';
@@ -34,6 +34,7 @@ class BookImportProvider implements ImportProviderInterface
         private readonly BlockDataImporter $blockDataImporter,
         private readonly MediaArchiver $mediaArchiver,
         private readonly ContributorResolver $contributorResolver,
+        private readonly BookCategoryResolver $categoryResolver,
         private readonly SerieResolver $serieResolver,
     ) {
     }
@@ -51,6 +52,9 @@ class BookImportProvider implements ImportProviderInterface
         $series = [];
         // The people written by this very run, keyed by name, for the same reason the series are (see ContributorResolver)
         $contributors = [];
+        // The categories written by this very run, keyed by slug, for the reason the series are (see BookCategoryResolver)
+        $categories = [];
+
         // The books written by this very run, keyed by slug: what the translations are resolved against below, findOneBy() not seeing a book persisted but not yet flushed
         $books = [];
 
@@ -59,10 +63,11 @@ class BookImportProvider implements ImportProviderInterface
             $isNew = null === $book;
             $book ??= new Book();
 
-            $this->fillBook($book, $item, $series, $contributors);
+            $this->fillBook($book, $item, $series, $contributors, $categories);
             $this->replaceBlocks($book, $item['blocks'] ?? [], $filesDir);
 
             $this->syncEditions($book, $item['editions'] ?? []);
+            $this->syncContributors($book, $item['contributors'] ?? [], $contributors);
             $written = [...$written, ...$this->syncMedias($book, $item)];
             $this->syncLinks($book, $item['links'] ?? []);
 
@@ -81,7 +86,7 @@ class BookImportProvider implements ImportProviderInterface
     }
 
     // A second pass, the translated book being a book like any other: the archive lists the two in whichever order, and the one named may not have been read yet when the row naming it was
-    // @param array<string, Book> $books
+    /** @param array<string, Book> $books */
     private function linkBooks(array $items, array $books): void
     {
         foreach ($items as $item) {
@@ -90,9 +95,12 @@ class BookImportProvider implements ImportProviderInterface
         }
     }
 
-    // @param array<string, \c975L\BookBundle\Entity\Serie> $series
-    // @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors
-    private function fillBook(Book $book, array $item, array &$series, array &$contributors): void
+    /**
+     * @param array<string, \c975L\BookBundle\Entity\Serie>        $series
+     * @param array<string, \c975L\BookBundle\Entity\Contributor>  $contributors
+     * @param array<string, \c975L\BookBundle\Entity\BookCategory> $categories
+     */
+    private function fillBook(Book $book, array $item, array &$series, array &$contributors, array &$categories): void
     {
         $this->fillBookIdentity($book, $item);
         $this->fillBookContributors($book, $item, $contributors);
@@ -101,6 +109,21 @@ class BookImportProvider implements ImportProviderInterface
         $this->fillBookPublication($book, $item);
 
         $book->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
+
+        $this->fillBookCategories($book, $item, $categories);
+    }
+
+    // What the book is about, replaced whole rather than merged: an archive says which categories the book carries, and one taken off it there must come off it here too. Absent from an archive written before they existed, and read there as none
+    /** @param array<string, \c975L\BookBundle\Entity\BookCategory> $categories */
+    private function fillBookCategories(Book $book, array $item, array &$categories): void
+    {
+        foreach ($book->getCategories()->toArray() as $current) {
+            $book->removeCategory($current);
+        }
+
+        foreach ($this->categoryResolver->resolveAll((array) ($item['categories'] ?? []), $categories) as $category) {
+            $book->addCategory($category);
+        }
     }
 
     // What the book is, everything but the two keys optional: an archive predating one of them imports a book that simply doesn't say
@@ -116,12 +139,63 @@ class BookImportProvider implements ImportProviderInterface
     }
 
     // The two people a book credits, named as they were when they were two strings: the resolver turns each name into the row it stands for, creating it when this environment doesn't hold it yet
-    // @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors
+    /** @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors */
     private function fillBookContributors(Book $book, array $item, array &$contributors): void
     {
         $book
             ->setAuthor($this->contributorResolver->resolve($item['author'] ?? null, $item['authorWebsite'] ?? null, $contributors))
             ->setIllustrator($this->contributorResolver->resolve($item['illustrator'] ?? null, $item['illustratorWebsite'] ?? null, $contributors));
+    }
+
+    // The parts held by a row, written over on the pair they are named by - the person and the role, which is what names one credit within its book. A credit the archive no longer holds is dropped, the row saying nothing on its own
+    /** @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors */
+    private function syncContributors(Book $book, array $creditsData, array &$contributors): void
+    {
+        $existing = [];
+        foreach ($book->getContributors() as $credit) {
+            $existing[$credit->getContributor()?->getName() . '|' . $credit->getRole()] = $credit;
+        }
+
+        $written = [];
+        foreach ($creditsData as $creditData) {
+            $key = $this->writeCredit($book, $creditData, $existing, $contributors);
+
+            if (null !== $key) {
+                $written[$key] = true;
+            }
+        }
+
+        foreach ($existing as $key => $credit) {
+            if (!isset($written[$key])) {
+                $book->removeContributor($credit);
+            }
+        }
+    }
+
+    // One credit of the archive written onto the book, the pair naming it answering back so the parts no longer held can be dropped; null when the row names nobody or no part, the pair being the only key it has
+    /**
+     * @param array<string, BookContributor>                      $existing
+     * @param array<string, \c975L\BookBundle\Entity\Contributor> $contributors
+     */
+    private function writeCredit(Book $book, array $creditData, array $existing, array &$contributors): ?string
+    {
+        $contributor = $this->contributorResolver->resolve($creditData['name'] ?? null, $creditData['website'] ?? null, $contributors);
+        $role = (string) ($creditData['role'] ?? '');
+
+        if (null === $contributor || '' === $role) {
+            return null;
+        }
+
+        $key = $contributor->getName() . '|' . $role;
+        $credit = $existing[$key] ?? new BookContributor()
+            ->setContributor($contributor)
+            ->setRole($role);
+        $credit->setPosition($creditData['position'] ?? 0);
+
+        $this->em->persist($credit);
+        $book->addContributor($credit);
+
+        return $key;
     }
 
     // The three dates the book carries, each read from the archive when it holds one
@@ -179,7 +253,7 @@ class BookImportProvider implements ImportProviderInterface
     }
 
     // The versions written over on their kind, which is what names one within its book. A version the archive no longer holds is dropped last, after the files have been re-bound: dropping it takes whatever still hangs off it (see BookEdition::$medias)
-    // @return array<string, BookEdition> keyed by kind, for the files and the platforms to name theirs
+    /** @return array<string, BookEdition> keyed by kind, for the files and the platforms to name theirs */
     private function syncEditions(Book $book, array $editionsData): array
     {
         $existing = [];
@@ -219,8 +293,9 @@ class BookImportProvider implements ImportProviderInterface
     }
 
     // The book's five families of files, each written over on the name it is served under (see MediaArchiver::sync()) - a version's own files then bound back to it by its kind
-    // @param array<string, BookEdition> $editions
-    // @return list<array{0: \c975L\BookBundle\Entity\Media, 1: array}>
+    /**
+     * @return list<array{0: \c975L\BookBundle\Entity\Media, 1: array}>
+     */
     private function syncMedias(Book $book, array $item): array
     {
         $written = $this->mediaArchiver->sync(
@@ -262,7 +337,7 @@ class BookImportProvider implements ImportProviderInterface
     }
 
     // The book this one translates, taken from what the run has just written first and from the site's own catalog otherwise - null for an archive naming a book neither holds, which is what a partial selection carries
-    // @param array<string, Book> $books
+    /** @param array<string, Book> $books */
     private function linkTranslation(Book $book, ?string $slug, array $books): void
     {
         $book->setTranslationBook(
@@ -273,7 +348,7 @@ class BookImportProvider implements ImportProviderInterface
     }
 
     // Resolved in the same second pass and against the same map: the book that replaces this one is a book of the archive like any other, listed before or after it
-    // @param array<string, Book> $books
+    /** @param array<string, Book> $books */
     private function linkNewerVersion(Book $book, ?string $slug, array $books): void
     {
         $book->setNewerVersion(

@@ -1,6 +1,6 @@
 ---
 name: c975l-book-customization
-description: "Use this skill when a single site has to bend the c975L BookBundle to its own catalog without overriding a controller — the words it gives its file kinds, its editions and its platforms, the sections its book pages hold and in what order, the fields it adds to a book, which rows its catalog page lists and under what name, and the url prefixes of its public pages. Triggers on: BookCustomizationProviderInterface, BookCustomizationRegistry, book.customization_provider, BookCatalogProviderInterface, BookCatalogRegistry, book.catalog_provider, getMediaKinds, getEditionKinds, getLinkKinds, getSections, getDataFormType, getBooks, getTitle, book_catalog_title, BookCatalogExtension, BookLinkKind, BookLinkGroup, BookMediaKind, BookEditionKind, SerieKind, book_link_label, book_link_icon, book_link_url, book_links_of, book_edition_label, BookLinkExtension, BookRoutePrefix, book-route-books, book-route-book, book-route-series, book-route-contributors, book-route-contributor, book-route-strips, book-route-strip, book-route-book-shortcut, book-route-strip-shortcut, book-catalog-title, book-gplay-affiliate, book-rating, book-confetti, book-strip-card, Book::data, BookDataField."
+description: "Use this skill when a single site has to bend the c975L BookBundle to its own catalog without overriding a controller — the words it gives its file kinds, its editions and its platforms, the sections its book pages hold and in what order, the fields it adds to a book, which rows its catalog page lists and under what name, and the url prefixes of its public pages. Triggers on: BookCustomizationProviderInterface, BookCustomizationRegistry, book.customization_provider, BookCatalogProviderInterface, BookCatalogRegistry, book.catalog_provider, getMediaKinds, getEditionKinds, getContributorRoles, getLinkKinds, getSections, getDataFormType, getBooks, getTitle, book_catalog_title, BookCatalogExtension, BookLinkKind, BookLinkGroup, BookMediaKind, BookEditionKind, BookContributorRole, BookContributor, SerieKind, book_link_label, book_link_icon, book_link_url, book_links_of, book_edition_label, book_role_label, BookLinkExtension, BookRoutePrefix, book-route-books, book-route-book, book-route-series, book-route-contributors, book-route-contributor, book-route-strips, book-route-strip, book-route-book-shortcut, book-route-strip-shortcut, book-catalog-title, book-gplay-affiliate, book-rating, book-confetti, book-strip-card, Book::data, BookDataField."
 ---
 
 # c975L BookBundle — customizing a catalog
@@ -26,6 +26,7 @@ class CatalogCustomization implements BookCustomizationProviderInterface
 {
     public function getMediaKinds(): array   { return ['page' => 'label.page', 'still' => 'Photogramme']; }
     public function getEditionKinds(): array { return ['paper' => 'label.paper', 'illustrated' => 'Édition illustrée']; }
+    public function getContributorRoles(): array { return ['narrator' => 'label.role_narrator', 'colourist' => 'Coloriste']; }
     public function getLinkKinds(): array
     {
         return ['epub_local' => ['label' => 'La librairie du coin', 'group' => 'epub', 'icon' => 'images/coin.svg']];
@@ -39,6 +40,7 @@ class CatalogCustomization implements BookCustomizationProviderInterface
 | --- | --- | --- |
 | `getMediaKinds()` | `BookMediaKind` | `kind => label` |
 | `getEditionKinds()` | `BookEditionKind` | `kind => label` |
+| `getContributorRoles()` | `BookContributorRole` | `role => label` |
 | `getLinkKinds()` | `BookLinkKind` | `kind => ['label', 'group', 'icon']` |
 | `getSections()` | the bundle's own page | `key => ['anchor', 'label', 'domain', 'icon', 'animation', 'template', 'form', 'field']` |
 | `getDataFormType()` | no extra fields | a form class mapped on `Book::$data` |

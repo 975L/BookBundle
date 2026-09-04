@@ -1,1 +1,7 @@
-<twig:c975LBook:Serie:Series series="{{ book_block_series(max ?? null) }}" displayMore="{{ displayMore ?? false }}" />
+{# Adapter for the dynamic Block system - the series are resolved live (see BookBlockExtension), the block itself only storing what to show and the head it shows it under #}
+{% set series = book_block_series(max ?? null, random ?? false) %}
+{% if series is not empty %}
+    <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" id="{{ anchor_id }}">
+        <twig:c975LBook:Serie:Series series="{{ series }}" displayMore="{{ displayMore ?? false }}"/>
+    </twig:c975LBook:Listing:Section>
+{% endif %}

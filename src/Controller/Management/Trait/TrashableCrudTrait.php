@@ -305,8 +305,8 @@ trait TrashableCrudTrait
     abstract protected function duplicateEntity(mixed $entity): object;
 
     // The checked rows, serialized by the export provider of this very family - the same one the "export sync all" dashboard shortcut reads (see eg. Management\BookExportProvider)
-    // @param list<int> $ids
-    // @return array{items: list<array<string, mixed>>, files: array<string, string>}
+    /** @param list<int> $ids */
+    /** @return array{items: list<array<string, mixed>>, files: array<string, string>} */
     abstract protected function serializeSelection(array $ids): array;
 
     // Toggles between the catalog and its trash - the same index, listing what left the site instead of what is on it

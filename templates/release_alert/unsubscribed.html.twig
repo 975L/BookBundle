@@ -1,0 +1,12 @@
+{% extends 'layout.html.twig' %}
+{% trans_default_domain 'book' %}
+
+{# Defines specific variables #}
+{% set title = 'label.release_alert_unsubscribed_title'|trans %}
+
+{# The page a link in an e-mail lands on, and nothing a search engine has any business indexing #}
+{% set robots = 'noindex, follow' %}
+
+{% block content %}
+    <p class="text lead">{{ 'text.release_alert_unsubscribed'|trans }}</p>
+{% endblock %}

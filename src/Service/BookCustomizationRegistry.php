@@ -3,8 +3,10 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Contract\BookCustomizationProviderInterface;
+use c975L\BookBundle\Contract\PlatformLinkInterface;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookLink;
+use c975L\BookBundle\Enum\BookContributorRole;
 use c975L\BookBundle\Enum\BookEditionKind;
 use c975L\BookBundle\Enum\BookLinkKind;
 use c975L\BookBundle\Enum\BookMediaKind;
@@ -14,6 +16,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 // Merges what every site declares about its catalog (see BookCustomizationProviderInterface), so the forms and the CRUD read one vocabulary whether the app customizes anything or not
 class BookCustomizationRegistry
 {
+    // The two parts a book holds in columns of its own, which no vocabulary declares (see Contributor::getRoles())
+    private const array COLUMN_ROLES = ['author' => 'label.author', 'illustrator' => 'label.illustrator'];
+
     /** @param iterable<BookCustomizationProviderInterface> $providers */
     public function __construct(
         private readonly iterable $providers,
@@ -39,6 +44,25 @@ class BookCustomizationRegistry
         return [] === $kinds ? BookEditionKind::defaults() : $kinds;
     }
 
+    // The bundle's own narrator and translator when the site names no part of its own, which is what a catalog credits until it publishes something a colourist or a preface writer had a hand in
+    /** @return array<string, string> role => label */
+    public function getContributorRoles(): array
+    {
+        $roles = ProviderMerger::merge($this->providers, static fn (BookCustomizationProviderInterface $provider) => $provider->getContributorRoles());
+
+        return [] === $roles ? BookContributorRole::defaults() : $roles;
+    }
+
+    // How a part names itself on a page and on a screen. The two a book holds in columns of its own are named here too, no vocabulary declaring them: they say what the book's sheet says. A part the vocabulary does not hold prints as it is stored, which is what makes a forgotten declaration visible rather than silent
+    public function getRoleLabel(string $role, ?string $locale = null): string
+    {
+        if ('' === $role) {
+            return '';
+        }
+
+        return $this->translator->trans(self::COLUMN_ROLES[$role] ?? $this->getContributorRoles()[$role] ?? $role, [], 'book', $locale);
+    }
+
     // The bundle's own stores and podcast apps when the site names no platform of its own, which is what a catalog sells on until it opens a shop the bundle never heard of
     /** @return array<string, array{label: string, group: string, icon: string}> kind => platform */
     public function getLinkKinds(): array
@@ -49,7 +73,7 @@ class BookCustomizationRegistry
     }
 
     // How a platform names itself on a page - its own brand, printed as it stands. Handed to the translator all the same: a brand is no key and comes back as is, where a common noun - the site's own shop - is said in the book's language. A kind the vocabulary does not hold prints as it is stored, which is what makes a forgotten declaration visible rather than silent
-    public function getLinkLabel(BookLink | string | null $link, ?string $locale = null): string
+    public function getLinkLabel(PlatformLinkInterface | string | null $link, ?string $locale = null): string
     {
         $kind = $this->linkKind($link);
         $label = $this->getLinkKinds()[$kind]['label'] ?? $kind;
@@ -58,7 +82,7 @@ class BookCustomizationRegistry
     }
 
     // The asset path of the icon standing for the platform, null for one declaring none
-    public function getLinkIcon(BookLink | string | null $link): ?string
+    public function getLinkIcon(PlatformLinkInterface | string | null $link): ?string
     {
         $icon = $this->getLinkKinds()[$this->linkKind($link)]['icon'] ?? null;
 
@@ -66,7 +90,7 @@ class BookCustomizationRegistry
     }
 
     // What the platform sells or plays, which is the card a page prints it in (see BookLinkGroup)
-    public function getLinkGroup(BookLink | string | null $link): ?string
+    public function getLinkGroup(PlatformLinkInterface | string | null $link): ?string
     {
         return $this->getLinkKinds()[$this->linkKind($link)]['group'] ?? null;
     }
@@ -86,9 +110,9 @@ class BookCustomizationRegistry
         return $links;
     }
 
-    private function linkKind(BookLink | string | null $link): string
+    private function linkKind(PlatformLinkInterface | string | null $link): string
     {
-        return $link instanceof BookLink ? (string) $link->getKind() : (string) $link;
+        return $link instanceof PlatformLinkInterface ? (string) $link->getKind() : (string) $link;
     }
 
     // How the site lays out a book's page - the order, the names and the look of its sections (see BookCustomizationProviderInterface::getSections()). Merged rather than taken from the first provider: a satellite bundle dressing the section it adds must not have to know about the site's own

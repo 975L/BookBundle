@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\ContributorLink;
 use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\ConfigBundle\Management\ExportProviderInterface;
 use c975L\UiBundle\Management\BlockDataExporter;
@@ -37,13 +38,13 @@ class ContributorExportProvider implements ExportProviderInterface
     }
 
     // The rows an admin checked on the index, serialized exactly as the whole list is - what the "export selection" action of the crud screen hands to ContentExporter (see Controller\Management\Trait\TrashableCrudTrait::exportSelection())
-    // @param list<int> $ids
+    /** @param list<int> $ids */
     public function serializeIds(array $ids): array
     {
         return $this->serialize($this->contributorRepository->findBy(['id' => $ids]));
     }
 
-    // @param iterable<Contributor> $contributors
+    /** @param iterable<Contributor> $contributors */
     public function serialize(iterable $contributors): array
     {
         $files = [];
@@ -78,6 +79,15 @@ class ContributorExportProvider implements ExportProviderInterface
             // Their editorial page, carried the same way SerieExportProvider carries a serie's, its own medias joining the archive
             'blocks' => $this->blockDataExporter->exportBlocks($contributor->getBlocks(), $files),
             'medias' => $medias,
+            // Where their books are bought, each address as it is stored (see BookExportProvider, which carries a book's the same way)
+            'links' => array_map(
+                static fn (ContributorLink $link): array => [
+                    'kind' => $link->getKind(),
+                    'url' => $link->getUrl(),
+                    'position' => $link->getPosition(),
+                ],
+                $contributor->getLinks()->toArray()
+            ),
         ];
     }
 }

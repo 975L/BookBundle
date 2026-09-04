@@ -102,7 +102,7 @@ class SerieImportProviderTest extends TestCase
         $this->assertSame([$kept], array_values($existing->getMedias()->toArray()));
     }
 
-    // @param list<object> $persisted filled with everything the import hands to the entity manager, the flush being a stub
+    /** @param list<object> $persisted filled with everything the import hands to the entity manager, the flush being a stub */
     private function createProvider(string $projectDir, ?Serie $existingSerie = null, array &$persisted = []): SerieImportProvider
     {
         $em = $this->createStub(EntityManagerInterface::class);

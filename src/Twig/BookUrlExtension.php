@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Twig;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
@@ -39,6 +40,13 @@ class BookUrlExtension
             BookPublicUrlResolver::serieRoute($serie),
             ['slug' => (string) $serie->getSlug(), ...$parameters]
         );
+    }
+
+    // The path of a category's page, null where the site gives its categories no page at all - which is what a site using them as plain tags does (see BookRoutePrefix)
+    #[AsTwigFunction('book_category_path')]
+    public function categoryPath(BookCategory $category): ?string
+    {
+        return $this->publicUrlResolver->resolvePath('book_category_display', ['slug' => (string) $category->getSlug()]);
     }
 
     // The path of a person's page, the templates handing the person over rather than spelling their slug

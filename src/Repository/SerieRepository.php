@@ -56,7 +56,34 @@ class SerieRepository extends ServiceEntityRepository
             $query->setMaxResults($number);
         }
 
-        return $query->getQuery()->getResult();
+        return $this->withCovers($query->getQuery()->getResult());
+    }
+
+    // The covers the cards of this listing read, loaded in one query for the whole list rather than one per serie. Kept out of the query above for the same reason as BookRepository::withCovers(): a to-many join multiplies the rows its setMaxResults() cuts
+    /**
+     * @param Serie[] $series
+     *
+     * @return Serie[] The same series, in the same order, their medias already loaded
+     */
+    private function withCovers(array $series): array
+    {
+        $ids = array_values(array_filter(array_map(static fn (Serie $serie): ?int => $serie->getId(), $series)));
+
+        if ([] === $ids) {
+            return $series;
+        }
+
+        // The result is dropped on purpose: hydrating it fills the medias collection of the very series the caller already holds
+        $this->createQueryBuilder('s')
+            ->select('s', 'medias')
+            ->leftJoin('s.medias', 'medias')
+            ->andWhere('s.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $series;
     }
 
     // The two lists below share no serie: a serie is filed under the kind it declares, and under what it holds when it declares none (see SerieKind). That is what keeps the books' index and the planches' one from listing the same serie twice
@@ -66,14 +93,15 @@ class SerieRepository extends ServiceEntityRepository
     public function findWithBooks(): array
     {
         return $this->createQueryBuilder('s')
-            // On the join too: a serie whose every book is set aside holds none the index could list, and would head a section with nothing under it
-            ->innerJoin('s.books', 'b', 'WITH', 'b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL')
+            // On the join too: a serie whose every book is set aside, or whose every book is still to come out, holds none the index could list, and would head a section with nothing under it - the same conditions the catalog reads a book by (see BookRepository::publishedQueryBuilder())
+            ->innerJoin('s.books', 'b', 'WITH', 'b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL AND b.published IS NOT NULL AND b.published <= :now')
             ->leftJoin('s.medias', 'm')
             ->addSelect('m')
             ->andWhere('s.isDeleted = false')
             ->andWhere('s.hidden = false')
             ->andWhere('s.kind IS NULL OR s.kind = :kind')
             ->setParameter('kind', SerieKind::Book->value)
+            ->setParameter('now', new \DateTime())
             ->orderBy('s.position', 'ASC')
             ->addOrderBy('s.title', 'ASC')
             ->getQuery()
@@ -101,8 +129,7 @@ class SerieRepository extends ServiceEntityRepository
         ;
     }
 
-    // A serie with its books sorted, the unpublished ones first. The serie itself is looked up whatever its state - a serie in the trash has to be found for its page to answer 410 rather than a plain 404 (see SerieController::display()) - where the books it lists leave it as soon as they are trashed
-    // A book replaced by a newer version leaves the list of its serie, as it left the catalog: it keeps its page, reached from the search or from the version replacing it (see Book::$newerVersion)
+    // A serie with its books sorted, the unpublished ones first. The serie itself is looked up whatever its state - a serie in the trash has to be found for its page to answer 410 rather than a plain 404 (see SerieController::display()) - where the books it lists leave it as soon as they are trashed. A book replaced by a newer version leaves the list of its serie, as it left the catalog: it keeps its page, reached from the search or from the version replacing it (see Book::$newerVersion)
     public function findOneBySlugWithSortedBooks(string $slug): ?Serie
     {
         return $this->createQueryBuilder('s')

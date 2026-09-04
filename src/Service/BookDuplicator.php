@@ -11,12 +11,16 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\ContributorLink;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
+use c975L\BookBundle\Repository\BookCategoryRepository;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
@@ -35,6 +39,7 @@ use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 class BookDuplicator
 {
     public function __construct(
+        private readonly BookCategoryRepository $categoryRepository,
         private readonly BookRepository $bookRepository,
         private readonly ContributorRepository $contributorRepository,
         private readonly Security $security,
@@ -70,6 +75,14 @@ class BookDuplicator
             $copy->addBlock($this->cloneBlock($block));
         }
 
+        // Where their books are bought travels with the copy, as a book's own platforms do: it is the same person's page at the store
+        foreach ($source->getLinks() as $link) {
+            $copy->addLink(new ContributorLink()
+                ->setKind($link->getKind())
+                ->setUrl($link->getUrl())
+                ->setPosition($link->getPosition()));
+        }
+
         return $copy;
     }
 
@@ -101,8 +114,28 @@ class BookDuplicator
         return $copy;
     }
 
-    // Copies the book with its files, its platform links, its press, its videos, its marketing and its blocks - it stays in the same serie, and keeps pointing at the same original when it is a translation
-    // The versions are not copied over: a duplicate is a new book, which the editor then qualifies - a new version is published by its own gesture, the only one chaining books one behind the other (see BookVersionPublisher)
+    // Copies the category with its editorial blocks - the books it holds stay where they are: a copy is a new heading an editor then files books under, not a second name for the same shelf
+    public function duplicateCategory(BookCategory $source): BookCategory
+    {
+        $now = new \DateTime();
+        $copy = new BookCategory()
+            ->setTitle($this->copyTitle($source->getTitle(), 100))
+            ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->categoryRepository->findOneBy(['slug' => $candidate])))
+            ->setSummary($source->getSummary())
+            ->setCode($source->getCode())
+            ->setPosition($source->getPosition())
+            ->setCreation($now)
+            ->setModification($now)
+            ->setUser($this->currentUser());
+
+        foreach ($source->getBlocks() as $block) {
+            $copy->addBlock($this->cloneBlock($block));
+        }
+
+        return $copy;
+    }
+
+    // Copies the book with its files, its platform links, its press, its videos, its marketing and its blocks - it stays in the same serie, and keeps pointing at the same original when it is a translation. The versions are not copied over: a duplicate is a new book, which the editor then qualifies - a new version is published by its own gesture, the only one chaining books one behind the other (see BookVersionPublisher)
     public function duplicateBook(Book $source): Book
     {
         $now = new \DateTime();
@@ -135,6 +168,19 @@ class BookDuplicator
                 ->setPages($edition->getPages())
                 ->setFormat($edition->getFormat())
                 ->setPosition($edition->getPosition()));
+        }
+
+        // What it is about, which a copy is about too - the same rows, never copies of them: a category is shared by the whole catalog
+        foreach ($source->getCategories() as $category) {
+            $copy->addCategory($category);
+        }
+
+        // The people it credits beyond its author and its illustrator, which the copy carries too: a copied book is the same work read by the same voice
+        foreach ($source->getContributors() as $credit) {
+            $copy->addContributor(new BookContributor()
+                ->setContributor($credit->getContributor())
+                ->setRole($credit->getRole())
+                ->setPosition($credit->getPosition()));
         }
 
         foreach ($source->getMedias() as $media) {

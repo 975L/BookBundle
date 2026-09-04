@@ -10,12 +10,17 @@
 
 namespace c975L\BookBundle\Tests\Management;
 
+use c975L\BookBundle\Contract\PlatformLinkInterface;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookLink;
+use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\ContributorLink;
 use c975L\BookBundle\Management\BookLinkHealthCheckProvider;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\ConfigBundle\Entity\HealthCheckResult;
+use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\ConfigBundle\Service\UrlStatusChecker;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use PHPUnit\Framework\TestCase;
@@ -36,8 +41,8 @@ class BookLinkHealthCheckProviderTest extends TestCase
         $this->assertSame('Contes du Soir - amazon', $rows[0]['label']);
         $this->assertSame(HealthCheckResult::STATUS_OK, $rows[0]['status']);
         $this->assertSame('label.health_check_link_ok', $rows[0]['summary']);
-        $this->assertSame(['kind' => 'amazon', 'slug' => 'contes-du-soir', 'httpCode' => 200, 'books' => ['Contes du Soir - amazon']], $rows[0]['details']);
-        $this->assertSame('BookCrudController/4/editions', $rows[0]['editUrl']);
+        $this->assertSame(['kind' => 'amazon', 'slug' => 'contes-du-soir', 'httpCode' => 200, 'declaredOn' => ['Contes du Soir - amazon']], $rows[0]['details']);
+        $this->assertSame('BookCrudController/4/buyLinks', $rows[0]['editUrl']);
     }
 
     // The whole point of the check: a store that closed, reported as an error the editor can act on
@@ -75,9 +80,11 @@ class BookLinkHealthCheckProviderTest extends TestCase
         $checker->expects($this->never())->method('status');
 
         $provider = new BookLinkHealthCheckProvider(
-            $this->bookService([$this->book('Contes du Soir', 'contes-du-soir', ['fnac' => '/dp/1'])]),
+            $this->bookService([$this->book('Contes du Soir', 'contes-du-soir', ['fnac' => 'dp/1'])]),
+            $this->contributorService([]),
             $this->registry(),
             $checker,
+            $this->configService('https://editions.example'),
             $this->adminUrlGenerator(),
             $this->translator(),
         );
@@ -97,7 +104,63 @@ class BookLinkHealthCheckProviderTest extends TestCase
         $rows = $this->provider([$first, $second], ['https://amazon.fr/dp/1' => 200])->runChecks();
 
         $this->assertCount(1, $rows);
-        $this->assertSame(['Contes du Soir - amazon', 'Mamie ViteVite - amazon'], $rows[0]['details']['books']);
+        $this->assertSame(['Contes du Soir - amazon', 'Mamie ViteVite - amazon'], $rows[0]['details']['declaredOn']);
+    }
+
+    // A person's own page at a store rots exactly as a book's does, and the row leads to the collection it is written in
+    public function testThePlatformsAPersonDeclaresAreCheckedToo(): void
+    {
+        $contributor = new Contributor()->setName('Ludmila Brazov')->setSlug('ludmila-brazov');
+        new \ReflectionProperty(Contributor::class, 'id')->setValue($contributor, 3);
+        $contributor->addLink(new ContributorLink()->setKind('fnac')->setUrl('https://fnac.com/ia1/Ludmila-Brazov'));
+
+        $rows = $this->provider([], ['https://fnac.com/ia1/Ludmila-Brazov' => 404], [$contributor])->runChecks();
+
+        $this->assertCount(1, $rows);
+        $this->assertSame('Ludmila Brazov - fnac', $rows[0]['label']);
+        $this->assertSame(HealthCheckResult::STATUS_ERROR, $rows[0]['status']);
+        $this->assertSame('ludmila-brazov', $rows[0]['details']['slug']);
+        $this->assertSame('ContributorCrudController/3/links', $rows[0]['editUrl']);
+    }
+
+    // A book and its author sending to the same store are one row, naming both: the dashboard lists an address once
+    public function testABookAndAPersonSharingAnAddressAreOneRow(): void
+    {
+        $contributor = new Contributor()->setName('Ludmila Brazov')->setSlug('ludmila-brazov');
+        new \ReflectionProperty(Contributor::class, 'id')->setValue($contributor, 3);
+        $contributor->addLink(new ContributorLink()->setKind('amazon')->setUrl('https://amazon.fr/dp/1'));
+
+        $rows = $this->provider([$this->book('Contes du Soir', 'contes-du-soir', ['amazon' => 'https://amazon.fr/dp/1'])], ['https://amazon.fr/dp/1' => 200], [$contributor])->runChecks();
+
+        $this->assertCount(1, $rows);
+        $this->assertSame(['Contes du Soir - amazon', 'Ludmila Brazov - amazon'], $rows[0]['details']['declaredOn']);
+    }
+
+    // The site's own shop is stored as the page writes it - "/shop/..." - so it is probed against the address the site declares for itself rather than reported as a malformed address
+    public function testAnAddressOfTheSiteItselfIsProbedUnderTheSiteAddress(): void
+    {
+        $contributor = new Contributor()->setName('Ludmila Brazov')->setSlug('ludmila-brazov');
+        new \ReflectionProperty(Contributor::class, 'id')->setValue($contributor, 3);
+        $contributor->addLink(new ContributorLink()->setKind('shop')->setUrl('/shop/category/ludmila-brazov'));
+
+        $rows = $this->provider([], ['https://editions.example/shop/category/ludmila-brazov' => 200], [$contributor])->runChecks();
+
+        $this->assertSame(HealthCheckResult::STATUS_OK, $rows[0]['status']);
+        // Filed under the address as it is stored, which is the one the editor reads on the screen
+        $this->assertSame('/shop/category/ludmila-brazov', $rows[0]['url']);
+    }
+
+    // A site that has not filled its own address in has nothing to probe such a row against, and no error to report either
+    public function testAnAddressOfTheSiteItselfIsSkippedWhenTheSiteDeclaresNoAddress(): void
+    {
+        $contributor = new Contributor()->setName('Ludmila Brazov')->setSlug('ludmila-brazov');
+        new \ReflectionProperty(Contributor::class, 'id')->setValue($contributor, 3);
+        $contributor->addLink(new ContributorLink()->setKind('shop')->setUrl('/shop/category/ludmila-brazov'));
+
+        $rows = $this->provider([], [], [$contributor], '')->runChecks();
+
+        $this->assertSame(HealthCheckResult::STATUS_SKIPPED, $rows[0]['status']);
+        $this->assertSame('label.health_check_link_internal', $rows[0]['summary']);
     }
 
     // A book declaring no platform at all, and one whose address was left empty, have nothing to check
@@ -107,18 +170,37 @@ class BookLinkHealthCheckProviderTest extends TestCase
     }
 
     /** @param array<string, ?int> $statuses url => the code the host answers, null for a host that never answered */
-    private function provider(array $books, array $statuses): BookLinkHealthCheckProvider
+    private function provider(array $books, array $statuses, array $contributors = [], string $siteUrl = 'https://editions.example'): BookLinkHealthCheckProvider
     {
         $checker = $this->createStub(UrlStatusChecker::class);
         $checker->method('status')->willReturnCallback(static fn (string $url): ?int => $statuses[$url] ?? null);
 
         return new BookLinkHealthCheckProvider(
             $this->bookService($books),
+            $this->contributorService($contributors),
             $this->registry(),
             $checker,
+            $this->configService($siteUrl),
             $this->adminUrlGenerator(),
             $this->translator(),
         );
+    }
+
+    // The address the site declares for itself, empty for a site that declares none
+    private function configService(string $siteUrl): ConfigServiceInterface
+    {
+        $configService = $this->createStub(ConfigServiceInterface::class);
+        $configService->method('get')->willReturnCallback(static fn (string $slug): ?string => 'site-url' === $slug ? $siteUrl : null);
+
+        return $configService;
+    }
+
+    private function contributorService(array $contributors): ContributorServiceInterface
+    {
+        $contributorService = $this->createStub(ContributorServiceInterface::class);
+        $contributorService->method('findAll')->willReturn($contributors);
+
+        return $contributorService;
     }
 
     private function bookService(array $books): BookServiceInterface
@@ -133,7 +215,9 @@ class BookLinkHealthCheckProviderTest extends TestCase
     private function registry(): BookCustomizationRegistry
     {
         $registry = $this->createStub(BookCustomizationRegistry::class);
-        $registry->method('getLinkLabel')->willReturnCallback(static fn (BookLink $link): string => (string) $link->getKind());
+        $registry->method('getLinkLabel')->willReturnCallback(static fn (PlatformLinkInterface $link): string => (string) $link->getKind());
+        // The stores sell the digital book, the rest is heard: enough for the edit link to be told from one gesture to the other
+        $registry->method('getLinkGroup')->willReturnCallback(static fn (PlatformLinkInterface $link): string => \in_array($link->getKind(), ['amazon', 'fnac'], true) ? 'epub' : 'podcast');
 
         return $registry;
     }

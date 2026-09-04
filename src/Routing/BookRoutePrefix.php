@@ -13,8 +13,7 @@ namespace c975L\BookBundle\Routing;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Attribute\AsRoutingConditionService;
 
-// The first segment of each public route, edited in the back office and read at each request rather than baked into the router's cache - a site serves the catalog in its own language ("livres", "books", "libros"), and the change applies straight away with no cache to clear
-// Same shape as GalleryBundle's own GalleryRoutePrefix, with one difference that matters: an empty value here turns the pair off instead of falling back to a default. A site whose books are read under its own routes - as numbered "histoires", say - would otherwise serve every book at two addresses competing for the same search result
+// The first segment of each public route, edited in the back office and read at each request rather than baked into the router's cache - a site serves the catalog in its own language ("livres", "books", "libros"), and the change applies straight away with no cache to clear. Same shape as GalleryBundle's own GalleryRoutePrefix, with one difference that matters: an empty value here turns the pair off instead of falling back to a default. A site whose books are read under its own routes - as numbered "histoires", say - would otherwise serve every book at two addresses competing for the same search result
 #[AsRoutingConditionService(alias: self::ALIAS)]
 class BookRoutePrefix
 {
@@ -25,6 +24,7 @@ class BookRoutePrefix
         'book-route-books' => 'books_prefix',
         'book-route-book' => 'book_prefix',
         'book-route-series' => 'series_prefix',
+        'book-route-categories' => 'categories_prefix',
         'book-route-contributors' => 'contributors_prefix',
         'book-route-contributor' => 'contributor_prefix',
         'book-route-strips' => 'strips_prefix',

@@ -15,8 +15,7 @@
                 {% endif %}
             </strong>
         </p>
-        {# The serie's author and illustrator stand for a book naming none of its own - the same reading BookSnippetBuilder gives the structured data, so the page and the snippet never name two different people #}
-        {# Their name leads to their own page now that they have one, not to their site off ours: that address is printed there, beside everything else they signed. Null when this site doesn't serve the family, the name then reading as plain text (see BookRoutePrefix) #}
+        {# The serie's author and illustrator stand for a book naming none of its own - the same reading BookSnippetBuilder gives the structured data, so the page and the snippet never name two different people. Their name leads to their own page now that they have one, not to their site off ours: that address is printed there, beside everything else they signed. Null when this site doesn't serve the family, the name then reading as plain text (see BookRoutePrefix) #}
         {% if book.effectiveAuthor %}
             <p>
                 {{ 'label.author'|trans({}, 'book', book.language) }} :
@@ -39,6 +38,20 @@
                 {% endif %}
             </p>
         {% endif %}
+        {# Everyone else the book credits, one line per row in the order the back office lays them: the part they took is said in the site's own vocabulary, whose label only that vocabulary knows (see BookCustomizationProviderInterface::getContributorRoles()) #}
+        {% for credit in book.contributors %}
+            {% if credit.contributor %}
+                <p>
+                    {{ book_role_label(credit, book.language) }} :
+                    {% set creditPath = contributor_path(credit.contributor) %}
+                    {% if creditPath %}
+                        <a href="{{ creditPath }}">{{ credit.contributor.name }}</a>
+                    {% else %}
+                        <strong>{{ credit.contributor.name }}</strong>
+                    {% endif %}
+                </p>
+            {% endif %}
+        {% endfor %}
         {# The endonym, read from the one place the bundle names languages (see BookTranslationExtension) rather than from a list of this template's own #}
         <p>{{ 'label.language'|trans({}, 'book', book.language) }} : <strong>{{ book_language_label(book.language) }}</strong></p>
         {% if book.age %}
@@ -56,8 +69,19 @@
                 {% endif %}
             </p>
         {% endif %}
-        {# The other languages and the other versions of the same text: they read in the book's informations rather than in the hero, where three buttons already say what a reader came for #}
-        {# Each language by its endonym, each version by the title its publisher gave it: the bundle translates neither (see BookTranslationExtension and BookVersionExtension) #}
+        {# What the book is about, on the line following what it belongs to - the path being null on a site giving its categories no page of their own, where the names stay written but are clickable nowhere (see BookUrlExtension). Only the ones the site shows: a category set aside answers 404 #}
+        {% set categories = book.shownCategories %}
+        {% if categories|length %}
+            <p>
+                {{ 'label.categories'|trans({}, 'book', book.language) }} :
+                {% for category in categories %}
+                    {%- set categoryPath = book_category_path(category) -%}
+                    {%- if categoryPath -%}<a href="{{ categoryPath }}">{{ category.title }}</a>{%- else -%}<strong>{{ category.title }}</strong>{%- endif -%}
+                    {%- if not loop.last %}, {% endif -%}
+                {% endfor %}
+            </p>
+        {% endif %}
+        {# The other languages and the other versions of the same text: they read in the book's informations rather than in the hero, where three buttons already say what a reader came for. Each language by its endonym, each version by the title its publisher gave it: the bundle translates neither (see BookTranslationExtension and BookVersionExtension) #}
         {% set others = [] %}
         {% for translation in book_translations(book) %}
             {% set path = book_path('book_display', {'slug': translation.slug}) %}
@@ -80,16 +104,18 @@
                 {% for version in versions %}<a href="{{ version.url }}">{{ version.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
             </p>
         {% endif %}
-        {# One line per edition: its name, its ISBN, and what it is physically - the date is the book's and reads above #}
-        {% if book.editions|length %}
+        {# One line per edition: its name, its ISBN, and what it is physically - the date is the book's and reads above. An edition holding neither ISBN, format nor pagination has nothing to say and drops out here #}
+        {% set editions = book.editions|filter(edition => edition.isbn or edition.format or edition.pages) %}
+        {% if editions|length %}
             <h3>{{ 'label.editions'|trans({}, 'book', book.language) }}</h3>
-            {% for edition in book.editions %}
+            {% for edition in editions %}
+                {# The format and the pagination belong to the edition, not to the book: an epub has neither the size nor the page count of its paperback #}
+                {% set details = [edition.format, edition.pages ? edition.pages ~ ' ' ~ 'label.pages'|trans({}, 'book', book.language)|lower : null]|filter(part => part) %}
                 <p>
                     {{ book_edition_label(edition, book.language) }} :
-                    <strong>{{ edition.isbn ? edition.isbn|isbn : "-" }}</strong>
-                    {# The format and the pagination belong to the edition, not to the book: an epub has neither the size nor the page count of its paperback. The date is the book's and reads above #}
-                    {% if edition.format %} - {{ edition.format }}{% endif %}
-                    {% if edition.pages %} - {{ edition.pages }} {{ 'label.pages'|trans({}, 'book', book.language)|lower }}{% endif %}
+                    {# No ISBN is a legitimate state, not a hole to fill: an audio sold on the site alone never needed a number, so its absence stays silent rather than showing a dash #}
+                    {% if edition.isbn %}<strong>{{ edition.isbn|isbn }}</strong>{% if details|length %} - {% endif %}{% endif %}
+                    {{ details|join(' - ') }}
                 </p>
             {% endfor %}
         {% endif %}

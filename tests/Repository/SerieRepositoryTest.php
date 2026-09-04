@@ -23,6 +23,12 @@ class SerieRepositoryTest extends TestCase
 {
     private string $dql = '';
 
+    /** Every DQL the repository handed over, in order: what a listing costing a second query is read on @var list<string> */
+    private array $dqls = [];
+
+    /** What the next query answers, the ones after it answering nothing @var list<list<Serie>> */
+    private array $results = [];
+
     // A serie's page lists what its catalog lists: a book a newer version replaces leaves it, as it left the trash-free listing
     public function testASeriePageLeavesOutABookAlreadyReplaced(): void
     {
@@ -96,6 +102,36 @@ class SerieRepositoryTest extends TestCase
         $this->assertStringNotContainsString('s.hidden', $this->dql);
     }
 
+    // The covers the cards of the listing read, in one query for the whole list: the collection cannot be joined into the listing itself, whose setMaxResults() would then cut rows and not series
+    public function testTheCoversOfTheListingAreReadInOneQueryForTheWholeList(): void
+    {
+        $repository = $this->createRepository();
+        $this->results = [[$this->serie(1), $this->serie(2)]];
+
+        $repository->findAll(6);
+
+        $this->assertCount(2, $this->dqls);
+        $this->assertStringContainsString('LEFT JOIN s.medias medias', $this->dql);
+        $this->assertStringContainsString('s.id IN (:ids)', $this->dql);
+    }
+
+    // Nothing listed, nothing to read
+    public function testAnEmptyListingAsksForNoCoverAtAll(): void
+    {
+        $this->createRepository()->findAll(6);
+
+        $this->assertCount(1, $this->dqls);
+    }
+
+    // A serie as the listing hands it over: only its id is read, the covers query being built on that alone
+    private function serie(int $id): Serie
+    {
+        $serie = new Serie();
+        new \ReflectionProperty(Serie::class, 'id')->setValue($serie, $id);
+
+        return $serie;
+    }
+
     // The query the repository builds is read back through the DQL the entity manager is handed, the rest of it being Doctrine's own
     private function createRepository(): SerieRepository
     {
@@ -106,12 +142,13 @@ class SerieRepositoryTest extends TestCase
         $entityManager->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($entityManager));
         $entityManager->method('createQuery')->willReturnCallback(function (string $dql): Query {
             $this->dql = $dql;
+            $this->dqls[] = $dql;
 
             $query = $this->createStub(Query::class);
             $query->method('setParameters')->willReturnSelf();
             $query->method('setFirstResult')->willReturnSelf();
             $query->method('setMaxResults')->willReturnSelf();
-            $query->method('getResult')->willReturn([]);
+            $query->method('getResult')->willReturn(array_shift($this->results) ?? []);
             $query->method('getOneOrNullResult')->willReturn(null);
 
             return $query;

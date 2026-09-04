@@ -1,0 +1,17 @@
+{# <twig:c975LBook:Category:Categories categories="{{ categories }}" [:editable="false"] [:infinite="false"] [displayMore="false"]/> #}
+{# The block interpolates "1"/"" where the pages pass "true"/"false" spelled out, and any non-empty string is true in Twig: the value is brought down to a boolean once here rather than tested at each call #}
+{% set displayMore = displayMore|default(false)|to_bool %}
+{# "infinite" marks the list for UiBundle's infiniteScroll controller, which reads the page it fetches through this very attribute - only the listing that grows carries it, another listing sitting on the same page would otherwise answer in its place #}
+<div class="cards"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
+    {% for category in categories %}
+        <twig:c975LBook:Category:Category category="{{ category }}" :editable="editable|default(false)"/>
+    {% endfor %}
+    {# The card leading to the whole list, left out where the site serves no such index - an empty prefix takes those pages off the site (see BookRoutePrefix) #}
+    {% set moreUrl = book_path('book_category_index') %}
+    {% if displayMore and moreUrl %}
+        <article class="text-center width-150">
+            <h3 class="card-title">{{ 'label.categories_more'|trans({}, 'book') }}</h3>
+            <twig:c975LUi:Button:Button label="{{ 'label.categories'|trans({}, 'book') }}" url="{{ moreUrl }}" />
+        </article>
+    {% endif %}
+</div>

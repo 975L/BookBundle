@@ -1,0 +1,16 @@
+{# Static usage: <twig:c975LBook:Listing:Section title="Nos séries" [eyebrow=""] [text=""] [background=""] [id=""]>the cards</twig:c975LBook:Listing:Section> #}
+{# Dynamic usage (Block system): see templates/blocks/, every listing kind of this bundle wrapping its grid in this one head - written once here rather than in each of the five adapters #}
+{# A headingless <section> is invalid HTML, hence the <div> fallback #}
+{% set tag = (eyebrow|default('') or title|default('')) ? 'section' : 'div' %}
+{# Matched, not interpolated: the value comes from stored block data and must not write any class name #}
+{% set background = background|default('') in ['muted', 'primary', 'dark'] ? ' section--bg-' ~ background : '' %}
+<{{ tag }} class="book-listing{{ background }}"{% if id|default('') %} id="{{ id }}"{% endif %}>
+    <div class="section-wrap">
+        {{ include('@c975LUi/components/Section/_head.html.twig') }}
+        {# The paragraph opening the section, laid on a reading measure rather than on the grid's full width (see sass/_book.scss). No nl2br: Trix already encodes its line breaks, so it would double them into blank lines #}
+        {% if text|default('') %}
+            <div class="book-listing__intro">{{ text|raw }}</div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+</{{ tag }}>

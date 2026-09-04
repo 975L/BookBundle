@@ -1,14 +1,14 @@
 {% extends 'layout.html.twig' %}
 
-{# Defines specific variables #}
-{% set title = 'Nos séries' %}
-{% set summarySocialNetwork = 'Liste des séries' %}
+{# Defines specific variables. The row an editor wrote for this url wins, these translated labels being its fallback (see ConfigBundle's UrlMetadata) #}
+{% set title = url_metadata_title('label.series'|trans({}, 'book')) %}
+{% set summarySocialNetwork = url_metadata_summary('label.series_summary'|trans({}, 'book')) %}
 
 {# Editor-only: the pencil UiBundle floats over each card leads to this serie's screen (see assets/js/block-edit-overlay.js). Bound to the very role the screen asks for, a pencil leading to a 403 being worth less than no pencil #}
 {% set canEdit = is_granted(config('site-role-editor')) %}
 
 {% block content %}
-    <h2>Toutes nos séries</h2>
+    <h2>{{ 'label.series_all'|trans({}, 'book') }}</h2>
     {# The listing grows instead of turning pages, as the catalog's does (see book/index.html.twig) #}
     <div id="series" data-controller="infiniteScroll{{ canEdit ? ' blockEditOverlay' : '' }}"{% if canEdit %} data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
         <twig:c975LBook:Serie:Series series="{{ series }}" :editable="canEdit" :infinite="true"/>
@@ -29,4 +29,15 @@
             {% endif %}
         </div>
     </div>
+
+    {# What this page of the series holds, in the order it prints it - the pages that follow publish their own, each numbering its cards from where this one stopped. The address is read before it is made absolute: a site serving this index but not the pages it lists answers null, and a level pointing nowhere is left out rather than published empty (see BookUrlExtension) #}
+    {% set entries = [] %}
+    {% for item in series %}
+        {% set itemPath = serie_path(item) %}
+        {% if itemPath %}{% set entries = entries|merge([{name: item.title, url: absolute_url(itemPath)}]) %}{% endif %}
+    {% endfor %}
+    {% set jsonLd = book_item_list_json_ld(entries, (series.getCurrentPageNumber - 1) * series.getItemNumberPerPage) %}
+    {% if jsonLd %}
+        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+    {% endif %}
 {% endblock %}

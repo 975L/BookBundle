@@ -132,7 +132,7 @@ class ContributorImportProviderTest extends TestCase
         $this->assertSame([$kept], array_values($existing->getMedias()->toArray()));
     }
 
-    // @param list<object> $persisted filled with everything the import hands to the entity manager, the flush being a stub
+    /** @param list<object> $persisted filled with everything the import hands to the entity manager, the flush being a stub */
     private function createProvider(string $projectDir, ?Contributor $existing = null, ?Contributor $existingByName = null, array &$persisted = []): ContributorImportProvider
     {
         $em = $this->createStub(EntityManagerInterface::class);

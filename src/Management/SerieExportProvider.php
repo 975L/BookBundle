@@ -37,13 +37,13 @@ class SerieExportProvider implements ExportProviderInterface
     }
 
     // The rows an admin checked on the catalog's index, serialized exactly as the whole catalog is - what the "export selection" action of the crud screen hands to ContentExporter (see Controller\Management\Trait\TrashableCrudTrait::exportSelection())
-    // @param list<int> $ids
+    /** @param list<int> $ids */
     public function serializeIds(array $ids): array
     {
         return $this->serialize($this->serieRepository->findBy(['id' => $ids]));
     }
 
-    // @param iterable<Serie> $series
+    /** @param iterable<Serie> $series */
     public function serialize(iterable $series): array
     {
         $files = [];

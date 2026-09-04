@@ -5,6 +5,7 @@ namespace c975L\BookBundle\Controller\Management;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Field\BookDataField;
+use c975L\BookBundle\Form\BookContributorType;
 use c975L\BookBundle\Form\BookCoverType;
 use c975L\BookBundle\Form\BookEditionType;
 use c975L\BookBundle\Form\BookFlipbookType;
@@ -153,6 +154,16 @@ class BookCrudController extends AbstractCrudController
                 ])
                 ->setCrudController(SerieCrudController::class)
                 ->autocomplete(),
+            // What the book is about, where the serie above says what it belongs to: as many as it deserves, none being just as valid (see Entity\BookCategory). Hidden from the index, where a row of tags would take the width the title needs
+            AssociationField::new('categories')
+                ->setLabel(t('label.categories', [], 'book'))
+                ->setHelp(t('label.categories-help', [], 'book'))
+                ->hideOnIndex()
+                ->setFormTypeOptions([
+                    'by_reference' => false,
+                ])
+                ->setCrudController(BookCategoryCrudController::class)
+                ->autocomplete(),
             ChoiceField::new('language')
                 ->setLabel(t('label.language', [], 'book'))
                 ->setTranslatableChoices([
@@ -160,6 +171,11 @@ class BookCrudController extends AbstractCrudController
                     'en' => t('label.english', [], 'book'),
                     'es' => t('label.spanish', [], 'book'),
                 ]),
+            // The age the book is read at, in the form schema.org reads it: the value fills the page's typicalAgeRange as much as the line the informations show (see BookSnippetBuilder)
+            TextField::new('age')
+                ->setLabel(t('label.age', [], 'book'))
+                ->setHelp(t('label.age-help', [], 'book'))
+                ->hideOnIndex(),
             AssociationField::new('translationBook')
                 ->setLabel(t('label.translations', [], 'book'))
                 ->setFormTypeOption('query_builder', fn ($repository) => $repository->createQueryBuilder('s')
@@ -186,8 +202,24 @@ class BookCrudController extends AbstractCrudController
                 ->setFormTypeOption('query_builder', $this->versionQueryBuilder())
                 ->formatValue(fn ($value) => $value instanceof Book ? $value->getTitle() : null),
             ...$this->dataFields(),
-            // Author and illustrator, picked among the people the site records rather than retyped on each book: the site each is read on travels with them, and a spelling apart no longer makes a second author (see Entity\Contributor)
-            // Left empty, a book in a serie credits whoever the serie does (see Book::getEffectiveAuthor())
+            ...$this->creditFields(),
+            // Dates
+            DateTimeField::new('creation')
+                ->setLabel(t('label.creation', [], 'book'))
+                ->hideOnIndex()
+                ->setFormTypeOption('disabled', 'disabled'),
+            DateTimeField::new('modification')
+                ->setLabel(t('label.modification', [], 'book'))
+                ->hideOnIndex()
+                ->setFormTypeOption('disabled', 'disabled'),
+        ];
+    }
+
+    // Who made the book, under the "informations" tab: the two the catalog holds in columns of its own, then one row per other part
+    private function creditFields(): array
+    {
+        return [
+            // Author and illustrator, picked among the people the site records rather than retyped on each book: the site each is read on travels with them, and a spelling apart no longer makes a second author (see Entity\Contributor). Left empty, a book in a serie credits whoever the serie does (see Book::getEffectiveAuthor())
             FormField::addFieldset(t('label.author', [], 'book'))
                 ->hideOnIndex(),
             AssociationField::new('author')
@@ -201,29 +233,31 @@ class BookCrudController extends AbstractCrudController
                 ->setLabel(t('label.illustrator', [], 'book'))
                 ->setHelp(t('label.illustrator-help', [], 'book'))
                 ->autocomplete(),
-            // Dates
-            DateTimeField::new('creation')
-                ->setLabel(t('label.creation', [], 'book'))
+
+            // Everyone else the book credits - the voice that read it, the pen that carried it into another language - one row per part rather than one field per role: a catalog crediting a colourist names it in its own vocabulary and no column is added to it (see BookContributorType)
+            FormField::addFieldset(t('label.book_contributors', [], 'book'))
+                ->hideOnIndex(),
+            CollectionField::new('contributors')
+                ->setLabel(false)
+                ->setHelp(t('label.book_contributors-help', [], 'book'))
                 ->hideOnIndex()
-                ->setFormTypeOption('disabled', 'disabled'),
-            DateTimeField::new('modification')
-                ->setLabel(t('label.modification', [], 'book'))
-                ->hideOnIndex()
-                ->setFormTypeOption('disabled', 'disabled'),
+                ->setEntryType(BookContributorType::class)
+                ->allowAdd()
+                ->allowDelete()
+                ->setFormTypeOption('by_reference', false)
+                // The marker laid on the row is what BookGuidedProjectProvider's tour points at, a collection printing no field id of its own
+                ->setFormTypeOption('row_attr', ['data-book-contributors' => '1']),
         ];
     }
 
-    // The "page" tab: the very sections a book's page lays out, in the order it prints them (see BookSectionsExtension) - the header it opens on, its videos, its versions, then what comes under them
-    // The images and files the public page is built from, each collection carrying the book's id so its rows can be swapped by drag-and-drop: where a file or a platform is written is where it is read
-    // A declaration of fields, one line per field: its length says how much the screen shows, not how much the method decides
+    // The "page" tab: the very sections a book's page lays out, in the order it prints them (see BookSectionsExtension) - the header it opens on, its videos, its versions, then what comes under them. The images and files the public page is built from, each collection carrying the book's id so its rows can be swapped by drag-and-drop: where a file or a platform is written is where it is read. A declaration of fields, one line per field: its length says how much the screen shows, not how much the method decides
     /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
     private function pageFields(?Book $book, ?int $bookId): array
     {
         return [
             FormField::addTab(t('label.page', [], 'book'))
                 ->hideOnIndex(),
-            // Header - three fields rather than one collection asking which of the three a file is: the field it is dropped on is what says so (see Book::addCover() and its two siblings)
-            // Each holds one image only, hence allowAdd() closed as soon as it is there (see isEmpty()): a book has one cover, and "Add an item" under the one already laid invited a second nothing would have shown
+            // Header - three fields rather than one collection asking which of the three a file is: the field it is dropped on is what says so (see Book::addCover() and its two siblings). Each holds one image only, hence allowAdd() closed as soon as it is there (see isEmpty()): a book has one cover, and "Add an item" under the one already laid invited a second nothing would have shown
             FormField::addFieldset(t('label.hero', [], 'book'))
                 ->hideOnIndex(),
             CollectionField::new('covers')
@@ -262,8 +296,7 @@ class BookCrudController extends AbstractCrudController
                 ->allowDelete()
                 ->setFormTypeOption('by_reference', false)
                 ->setFormTypeOption('row_attr', $this->mediaMoveRowAttrBuilder->build($bookId, BookMediaMoveRowAttrBuilder::TARGET_FLIPBOOK)),
-            // The extracts: what the page runs through a slider, after the hero's backdrop
-            // Named by the verb of its section, like the others: the edit screen reads in the page's order and under the same words (see BookSectionsExtension::book()) - the field itself keeps the name of what is dropped in it, pages
+            // The extracts: what the page runs through a slider, after the hero's backdrop. Named by the verb of its section, like the others: the edit screen reads in the page's order and under the same words (see BookSectionsExtension::book()) - the field itself keeps the name of what is dropped in it, pages
             FormField::addFieldset(t('label.read', [], 'book'))
                 ->hideOnIndex(),
             CollectionField::new('extracts')
@@ -337,8 +370,7 @@ class BookCrudController extends AbstractCrudController
             // Editions - what the book comes out under and nothing more: the ISBN, the size, the pagination, the date. Its files and its platforms belong to the book, under the gesture they serve (see BookEditionType). Another version of the text is no edition: it is a book apart, named above by "Replaced by"
             FormField::addFieldset(t('label.editions', [], 'book'))
                 ->hideOnIndex(),
-            // The marker laid on the row is what BookGuidedProjectProvider's tour points at, a collection printing no field id of its own
-            // Labelled by the fieldset it is alone in, which would otherwise print the same word twice
+            // The marker laid on the row is what BookGuidedProjectProvider's tour points at, a collection printing no field id of its own. Labelled by the fieldset it is alone in, which would otherwise print the same word twice
             CollectionField::new('editions')
                 ->setLabel(false)
                 ->setHelp(t('label.editions-help', [], 'book'))
@@ -363,8 +395,7 @@ class BookCrudController extends AbstractCrudController
                 ->hideOnIndex()
                 ->setEntryType(BookMarketingType::class),
 
-            // Blocks
-            // Crowdfunding
+            // Blocks. Crowdfunding
             FormField::addFieldset(t('label.crowdfunding', [], 'book'))
                 ->hideOnIndex(),
             // The address the campaign is pledged on, which is what Book:Crowdfunding turns into its "support" button - a plain text field here would let a button be built on something that is not a link
@@ -502,8 +533,7 @@ class BookCrudController extends AbstractCrudController
         ;
     }
 
-    // The two faces of the versions gesture keep their column between the copy and the trash - only one of the two shows per row
-    // No #[\Override]: the redefined method comes from a trait, which PHP considers declared in this very class
+    // The two faces of the versions gesture keep their column between the copy and the trash - only one of the two shows per row. No #[\Override]: the redefined method comes from a trait, which PHP considers declared in this very class
     protected function extraIndexActions(): array
     {
         return ['publishVersion', 'publishVersionDone'];

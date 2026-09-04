@@ -11,14 +11,14 @@
 namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\ContributorLink;
 use c975L\BookBundle\Entity\ContributorMedia;
 use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\ConfigBundle\Management\ImportProviderInterface;
 use c975L\UiBundle\Management\BlockDataImporter;
 use Doctrine\ORM\EntityManagerInterface;
 
-// Imports a "book_contributor" content export (see ContributorExportProvider) - matches by slug, which is what a person answers at, and never by the exported id
-// A row created on the fly by ContributorResolver, when a book naming someone was imported first, is filled in here rather than doubled: the two match on the same slug
+// Imports a "book_contributor" content export (see ContributorExportProvider) - matches by slug, which is what a person answers at, and never by the exported id. A row created on the fly by ContributorResolver, when a book naming someone was imported first, is filled in here rather than doubled: the two match on the same slug
 class ContributorImportProvider implements ImportProviderInterface
 {
     public const KIND = 'book_contributor';
@@ -60,6 +60,8 @@ class ContributorImportProvider implements ImportProviderInterface
                 $contributor->removeMedia(...),
             )];
 
+            $this->syncLinks($contributor, $item['links'] ?? []);
+
             $this->em->persist($contributor);
             $isNew ? $created++ : $updated++;
         }
@@ -95,6 +97,43 @@ class ContributorImportProvider implements ImportProviderInterface
             ->setIsDeleted($item['isDeleted'] ?? false)
             // Absent from an archive written before the flag existed, and read there as "shown"
             ->setHidden($item['hidden'] ?? false);
+    }
+
+    // The platforms overwritten on their kind, a person having one address per platform - what the archive no longer holds is detached, orphanRemoval deleting the row on flush (see BookImportProvider::syncLinks())
+    private function syncLinks(Contributor $contributor, array $linksData): void
+    {
+        $existing = [];
+        foreach ($contributor->getLinks() as $link) {
+            $existing[(string) $link->getKind()] = $link;
+        }
+
+        $kept = [];
+        foreach ($linksData as $linkData) {
+            $kept[$this->writeLink($contributor, $linkData, $existing)] = true;
+        }
+
+        foreach ($existing as $key => $link) {
+            if (!isset($kept[$key])) {
+                $contributor->removeLink($link);
+            }
+        }
+    }
+
+    // One platform of the archive written onto the person, answering the kind it is filed under so the ones no longer held can be detached
+    /** @param array<string, ContributorLink> $existing */
+    private function writeLink(Contributor $contributor, array $linkData, array $existing): string
+    {
+        $key = (string) ($linkData['kind'] ?? '');
+        $link = $existing[$key] ?? new ContributorLink();
+        $link
+            ->setKind($linkData['kind'] ?? null)
+            ->setUrl($linkData['url'] ?? null)
+            ->setPosition($linkData['position'] ?? 0);
+
+        $this->em->persist($link);
+        $contributor->addLink($link);
+
+        return $key;
     }
 
     // Existing Blocks have no natural key to match the imported ones against, so the whole collection is replaced - BlockRemovalListener removes the orphaned rows (and their Medias) on flush, same as SerieImportProvider

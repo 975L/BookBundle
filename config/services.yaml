@@ -17,6 +17,11 @@ services:
         arguments:
             $providers: !tagged_iterator book.catalog_provider
 
+    # Same reading as UiBundle's own limiters: c975LBookBundle prepends "book_release_alert" itself, so the public subscription route is never served unlimited, and a site that took the limiter away still gets a controller rather than a container that refuses to compile
+    c975L\BookBundle\Controller\BookReleaseAlertController:
+        arguments:
+            $releaseAlertLimiterFactory: '@?limiter.book_release_alert'
+
     # The bundle's own stylesheet, loaded before the site's themes/*.css so a design still wins over it
     c975L\BookBundle\Service\StylesheetProvider:
         tags:
@@ -29,7 +34,7 @@ services:
             - { name: 'ui.script', priority: 100 }
 
     # Block kinds registered in UiBundle
-    # cacheable: false on the kinds below whose template calls book_block_*() (BookBlockExtension), which queries Book/Serie/Strip live at render time; those entities aren't watched by BlockCacheInvalidationListener, so caching by this block's own id would go stale as soon as a book/serie/strip is published/edited elsewhere, with nothing to invalidate it
+    # The kinds below call book_block_*() (BookBlockExtension), which queries Book/Serie/Strip live at render time - entities BlockCacheInvalidationListener does not watch. They are cached all the same, under the catalog tag BookBlockCacheTagProvider applies and BookCacheInvalidationListener drops; the two listings reading a date decline their entry for as long as a book or a planche is dated ahead, nothing firing the day that date comes round (see BookBlockCacheTagProvider)
     book.block.series:
         class: stdClass
         tags:
@@ -40,9 +45,25 @@ services:
               translation_domain: 'book'
               category: 'label.category_books'
               form: 'c975L\BookBundle\Form\Block\SeriesBlockType'
+              translatable: 'eyebrow, title, content'
               template: '@c975LBook/blocks/Series.html.twig'
               pickable: true
-              cacheable: false
+              cacheable: true
+
+    book.block.categories:
+        class: stdClass
+        tags:
+            - name: ui.block
+              kind: book_categories
+              label: 'label.block_categories'
+              description: 'label.block_categories_description'
+              translation_domain: 'book'
+              category: 'label.category_books'
+              form: 'c975L\BookBundle\Form\Block\CategoriesBlockType'
+              translatable: 'eyebrow, title, content'
+              template: '@c975LBook/blocks/Categories.html.twig'
+              pickable: true
+              cacheable: true
 
     book.block.contributors:
         class: stdClass
@@ -54,9 +75,10 @@ services:
               translation_domain: 'book'
               category: 'label.category_books'
               form: 'c975L\BookBundle\Form\Block\ContributorsBlockType'
+              translatable: 'eyebrow, title, content'
               template: '@c975LBook/blocks/Contributors.html.twig'
               pickable: true
-              cacheable: false
+              cacheable: true
 
     book.block.books:
         class: stdClass
@@ -68,9 +90,10 @@ services:
               translation_domain: 'book'
               category: 'label.category_books'
               form: 'c975L\BookBundle\Form\Block\BooksBlockType'
+              translatable: 'eyebrow, title, content'
               template: '@c975LBook/blocks/Books.html.twig'
               pickable: true
-              cacheable: false
+              cacheable: true
 
     book.block.to_be_published:
         class: stdClass
@@ -82,11 +105,12 @@ services:
               translation_domain: 'book'
               category: 'label.category_books'
               form: 'c975L\BookBundle\Form\Block\BooksToBePublishedBlockType'
+              translatable: 'eyebrow, title, content'
               template: '@c975LBook/blocks/BooksToBePublished.html.twig'
               pickable: true
-              cacheable: false
+              cacheable: true
 
-    # The kind whose content is its own attached medias rather than a live query, hence cacheable and fed by a BlockFixtureProvider where the others need the showcase
+    # The kind whose content is its own attached medias rather than a live query: cached on its own Block/Media events alone, and fed by a BlockFixtureProvider where the others need the showcase
     book.block.reader:
         class: stdClass
         tags:
@@ -115,6 +139,7 @@ services:
               translation_domain: 'book'
               category: 'label.category_books'
               form: 'c975L\BookBundle\Form\Block\SerieStripsBlockType'
+              translatable: 'eyebrow, title, content'
               template: '@c975LBook/blocks/SerieStrips.html.twig'
               pickable: true
-              cacheable: false
+              cacheable: true

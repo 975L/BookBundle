@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Twig;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Tests\BookPublicUrlGeneratorTestTrait;
@@ -83,6 +84,22 @@ class BookUrlExtensionTest extends TestCase
 
         $this->assertNull($extension->contributorPath($contributor));
         $this->assertNull($extension->contributorUrl($contributor));
+    }
+
+    // A site giving its categories a page of their own reaches them the same way, the templates handing the category over rather than spelling its slug
+    public function testACategorysPageIsGeneratedFromTheCategoryItself(): void
+    {
+        $category = new BookCategory()->setTitle('Romans')->setSlug('romans');
+
+        $this->assertSame('/categories/romans', $this->createExtension('https://example.com', ['book-route-categories' => 'categories'])->categoryPath($category));
+    }
+
+    // The default: a fresh install serves no category page, and the names then read as plain text on a book's page rather than as broken links
+    public function testACategorysPageIsNotGeneratedWithoutACategoryPrefix(): void
+    {
+        $category = new BookCategory()->setTitle('Romans')->setSlug('romans');
+
+        $this->assertNull($this->createExtension()->categoryPath($category));
     }
 
     private function createExtension(string $siteUrl = 'https://example.com', array $prefixes = []): BookUrlExtension

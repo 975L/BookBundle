@@ -1,12 +1,7 @@
-{# UiBundle's own card, so a site restyling its cards restyles these along with them - only what a planche adds to one is written here #}
-{# What the card holds is the site's call, not this bundle's: a planche is read for its drawing where a reply is read for what was said (setting "book-strip-card", one of "image", "text" or "both") #}
-{# The three of them are given on the planche's own page, where the card is shown as it is but neither linked to the page it is on nor titled below the page's own heading #}
-{# "rating": the score the listing shows and lets the visitor set, without how many voted - a card is read at a glance, the planche's own page is where the tally is spelled out (see Strip:Hero). "aggregate" is the tally the listing already read for the whole page (see Strip:Cards) #}
-{# "editable": the pencil leading to the planche's own edit screen, drawn by UiBundle's overlay over whatever carries the url. Only a listing rendered outside the block cache asks for it, that cache being shared by every visitor (see Strip:Cards, and ShopBundle's own card for the same reason) #}
+{# UiBundle's own card, so a site restyling its cards restyles these along with them - only what a planche adds to one is written here. What the card holds is the site's call, not this bundle's: a planche is read for its drawing where a reply is read for what was said (setting "book-strip-card", one of "image", "text" or "both"). The three of them are given on the planche's own page, where the card is shown as it is but neither linked to the page it is on nor titled below the page's own heading. "rating": the score the listing shows and lets the visitor set, without how many voted - a card is read at a glance, the planche's own page is where the tally is spelled out (see Strip:Hero). "aggregate" is the tally the listing already read for the whole page (see Strip:Cards). "editable": the pencil leading to the planche's own edit screen, drawn by UiBundle's overlay over whatever carries the url. Only a listing rendered outside the block cache asks for it, that cache being shared by every visitor (see Strip:Cards, and ShopBundle's own card for the same reason) #}
 {% props card, display = null, level = 'h2', linked = true, rating = false, aggregate = null, editable = false %}
 {% set display = display ?? config('book-strip-card')|default('image') %}
-{# The mark a text card opens on, named by the site (setting "book-strip-card-icon") - a drawing is its own mark, so it is only worn where there is none #}
-{# "mark" and not "icon": the nested content is rendered in the card's own context, where "icon" is one of its props (see UiBundle's Card.html.twig) and would shadow this one #}
+{# The mark a text card opens on, named by the site (setting "book-strip-card-icon") - a drawing is its own mark, so it is only worn where there is none. "mark" and not "icon": the nested content is rendered in the card's own context, where "icon" is one of its props (see UiBundle's Card.html.twig) and would shadow this one #}
 {% set mark = config('book-strip-card-icon')|default('') %}
 {% set firstMedia = card.medias.first %}
 {% set url = path('strip_display', {'slug': card.slug}) %}
@@ -38,7 +33,7 @@
     {% endif %}
     {# Under everything else, so the card keeps reading as a drawing first: the icons are the only thing here the visitor acts on rather than follows #}
     {% if showRating %}
-        <twig:c975LUi:Rating:Rating ownerType="strip" ownerId="{{ card.id }}" icon="{{ config('book-strip-rating-icon') }}" compact="true" :aggregate="ratingTally"/>
+        <twig:c975LUi:Rating:Rating ownerType="strip" ownerId="{{ card.id }}" icon="{{ config('book-strip-rating-icon') }}" compact="true" :aggregate="ratingTally" locale="{{ card.serie ? card.serie.language : '' }}"/>
     {% endif %}
 </twig:c975LUi:Card:Card>
 {% if editUrl %}</div>{% endif %}

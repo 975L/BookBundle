@@ -9,25 +9,16 @@
 
 namespace c975L\BookBundle\Form\Block;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class SeriesBlockType extends AbstractType
+// The data sub-form of the "book_series" kind - the head it shares with every other listing is in AbstractBookListingBlockType
+class SeriesBlockType extends AbstractBookListingBlockType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('max', IntegerType::class, [
-                'label' => 'Nombre de séries (vide = toutes)',
-                'required' => false,
-                'attr' => ['min' => 1],
-            ])
-            ->add('displayMore', CheckboxType::class, [
-                'label' => 'Afficher le lien "Toutes les séries"',
-                'required' => false,
-            ])
-        ;
+        parent::buildForm($builder, $options);
+
+        $this->addSelectionFields($builder, 'label.block_max_series');
+        $this->addDisplayMoreField($builder, 'label.block_display_more_series');
     }
 }

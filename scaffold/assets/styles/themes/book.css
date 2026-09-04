@@ -31,8 +31,16 @@
     /* --book-eyebrow-spacing: 0.14em; */
 
 
-    /* The measure of the sentence a hero prints under the title, short enough to stay one paragraph rather than a column of text */
+    /* The measure of the summary a hero prints under the title, narrow enough to read as prose rather than as a column of text */
     /* --book-hero-summary-measure: 60ch; */
+
+    /* What separates two paragraphs of that summary: it is written in a rich text editor, whose blocks carry no margin of their own */
+    /* --book-hero-summary-space: 0.6em; */
+
+    /* The parts someone is credited under, printed under their name on their page and on their card: said quietly, the name being what is read */
+    /* --book-roles-size: 0.9rem; */
+    /* --book-roles-opacity: 0.75; */
+    /* --book-roles-space: 0.2rem; */
 
     /* What a section holds decides its shape: text at a paragraph's measure, media bounded in height, platforms on one line - the ceiling in vh on a phone, in px from the wide step on */
     /* The flipbook accompanies, the extracts are what a reader comes for */
@@ -107,6 +115,9 @@
 
     /* The trail saying where a page sits - the series, the serie, the planche. It is the first thing under the navbar, and reads as part of it without a gap of its own */
     /* --book-breadcrumb-margin-block-start: 1.5rem; */
+
+    /* What holds a hero off a fixed navbar on a page opening straight on it, no trail above it - the very gap the page keeps between the hero and what follows */
+    /* --book-hero-margin-block-start: var(--book-column-gap); */
     /* --book-breadcrumb-font-size: 1.1rem; */
     /* --book-breadcrumb-color: color-mix(in srgb, var(--text) 60%, var(--background)); */
 

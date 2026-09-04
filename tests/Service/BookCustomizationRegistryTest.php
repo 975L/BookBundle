@@ -17,15 +17,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BookCustomizationRegistryTest extends TestCase
 {
-    private static function provider(array $mediaKinds = [], array $editionKinds = [], ?string $formType = null, array $linkKinds = [], array $sections = []): BookCustomizationProviderInterface
+    private static function provider(array $mediaKinds = [], array $editionKinds = [], ?string $formType = null, array $linkKinds = [], array $sections = [], array $contributorRoles = []): BookCustomizationProviderInterface
     {
-        return new readonly class ($mediaKinds, $editionKinds, $formType, $linkKinds, $sections) implements BookCustomizationProviderInterface {
+        return new readonly class ($mediaKinds, $editionKinds, $formType, $linkKinds, $sections, $contributorRoles) implements BookCustomizationProviderInterface {
             public function __construct(
                 private array $mediaKinds,
                 private array $editionKinds,
                 private ?string $formType,
                 private array $linkKinds,
                 private array $sections,
+                private array $contributorRoles,
             ) {
             }
 
@@ -37,6 +38,11 @@ class BookCustomizationRegistryTest extends TestCase
             public function getEditionKinds(): array
             {
                 return $this->editionKinds;
+            }
+
+            public function getContributorRoles(): array
+            {
+                return $this->contributorRoles;
             }
 
             public function getLinkKinds(): array
@@ -69,6 +75,21 @@ class BookCustomizationRegistryTest extends TestCase
         $registry = new BookCustomizationRegistry([self::provider(editionKinds: ['illustrated_paper' => 'Illustrée papier'])], self::registryTranslator());
 
         $this->assertSame(['illustrated_paper' => 'Illustrée papier'], $registry->getEditionKinds());
+    }
+
+    // A site naming no part of its own credits the narrator and the translator the bundle names itself - author and illustrator are no roles here, each being a column of the book
+    public function testTheBundlesOwnContributorRolesStandWhenNoSiteNamesAny(): void
+    {
+        $registry = new BookCustomizationRegistry([self::provider()], self::registryTranslator());
+
+        $this->assertSame(['narrator', 'translator'], array_keys($registry->getContributorRoles()));
+    }
+
+    public function testASiteNamingItsOwnContributorRolesReplacesTheDefaults(): void
+    {
+        $registry = new BookCustomizationRegistry([self::provider(contributorRoles: ['colourist' => 'Coloriste'])], self::registryTranslator());
+
+        $this->assertSame(['colourist' => 'Coloriste'], $registry->getContributorRoles());
     }
 
     // A site naming no file of its own gets the vocabulary the bundle sets and reads itself, which is what leaves an app with nothing to declare

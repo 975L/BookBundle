@@ -27,15 +27,20 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - Book and series catalog with detail views and listings growing as the visitor scrolls
 - Each book supports media, video, press, and marketing sub-collections with drag-and-drop ordering
 - Series group books with sorted ordering
+- What a book is about said apart from what it belongs to: flat categories, as many on a book as it deserves, with a page of their own where the site wants one and read as plain keywords where it doesn't
 - Multilingual: books can reference translations across languages
 - Each published form of a book — paperback, ebook, audiobook, illustrated edition — as a row carrying its own ISBN, its size and its page count
 - Where a book is read, listened to or watched, as rows rather than columns — adding a platform is an enum case, not a migration
 - What a single site adds to a book — its own fields, its own media and edition vocabulary — declared rather than coded into an overridden CRUD
 - The people the catalog credits recorded once, with a page of their own listing everything they signed — a book picks its author and its illustrator from that list rather than retyping a name
+- The other parts someone takes in a book — narrating it, translating it — one row per part rather than one column per role, so a catalog crediting a colourist names it in its own vocabulary
 - Admin CRUD via EasyAdmin for books, series and the people crediting them
 - A book, a serie or a strip duplicated in one click, with its files, its editions, its platforms and its blocks
 - A new version of a book published in one click: the book keeps its address and its readers, a twin carries what came out so far
+- A book still to come tells its readers when it is out: an address left on its page, one e-mail sent the day it appears, and the row deleted with it
 - Reader reviews on a book's page, behind UiBundle's `ui-enable-reviews` setting
+- The site's age warning stated on a book declaring an age — one sentence written once in the back office (CoreBundle's `site-age-warning`), printed on every such book and said in the book's own language where the site translated it
+- The four catalog indexes describable from the back office — title and shared sentence written in *Descriptions d'urls*, over the bundle's own labels
 - Deletion goes through a trash, and the urls that leave the site answer 410 rather than 404 — a renamed one 301s to its new address
 - A book, a serie or a strip set aside in one click: kept whole in the back office, off every listing and out of the sitemap, back with the same click
 - A demo site seeded with a made-up catalog of its own, in the site's own language
@@ -156,6 +161,8 @@ showcase — contributes the same file through its own stylesheet provider.
 | `book_display` | `/livre/{slug}` | `book-route-book` | Book detail page |
 | `serie_index` | `/series` | `book-route-series` | The book series, growing on scroll |
 | `serie_display` | `/series/{slug}` | `book-route-series` | Book series detail page, listing what it holds |
+| `book_category_index` | *unset* | `book-route-categories` | The catalog categories, growing on scroll |
+| `book_category_display` | *unset* | `book-route-categories` | A category's page, listing the books filed under it |
 | `contributor_index` | `/auteurs` | `book-route-contributors` | The people the catalog credits, growing on scroll |
 | `contributor_display` | `/auteur/{slug}` | `book-route-contributor` | An author's or illustrator's page, listing what they signed |
 | `strip_index` | `/strips` | `book-route-strips` | The strip series, growing on scroll |
@@ -164,6 +171,9 @@ showcase — contributes the same file through its own stylesheet provider.
 | `book_shortcut` | `/b{number}` | `book-route-book-shortcut` | Short link to a book, 301 |
 | `strip_shortcut` | `/s{number}` | `book-route-strip-shortcut` | Short link to a strip, 301 |
 | `strip_card` | `/strip-card/{slug}` | — | The planche's card alone in a square frame, for a headless browser to photograph — `noindex` |
+| `book_release_alert_new` | `/book/release-alert/{id}` | — | Where an address is left to be told a book is out — `noindex` |
+| `book_release_alert_unsubscribe` | `/book/release-alert/{token}/unsubscribe` | — | The link the acknowledgement e-mail carries, opening a page with a button — `noindex` |
+| `book_release_alert_unsubscribe_confirm` | `/book/release-alert/{token}/unsubscribe` | — | That button, in `POST` — what actually drops the subscription |
 
 The two indexes share no serie: each one lists the series of its own kind, `Serie::kind` saying which
 (`Enum\SerieKind`), and a serie that declares none is filed by what it holds. A planche is listed by the
@@ -176,6 +186,13 @@ under two route names, `BookPublicUrlResolver::serieRoute()` saying which one a 
 under the other segment, a serie answers `301` towards its own. In Twig, `serie_path(serie)` and
 `serie_url(serie)` generate them, so a template never has to tell the two apart. `contributor_path(person)`
 and `contributor_url(person)` do the same for the page of an author or of an illustrator.
+
+The **categories** are the one family a fresh install serves no page for: their setting ships empty, so a
+site upgrading to a version holding them sees nothing appear. Filled in, the index and each category answer
+below that segment — `/categories` and `/categories/romans` — and `book_category_path(category)` generates them,
+answering `null` for as long as the setting is empty. Their names are printed on a book's sheet either way:
+left without a page, a category *is* a keyword, which is what a site wanting tags rather than rayons leaves
+them as.
 
 A book and a strip also answer to their **number**, wherever their slug is expected: `/livre/3` and
 `/livre/003-le-tracteur` both 301 to `/livre/le-tracteur`. The slug is tried first, so a book actually
@@ -381,6 +398,43 @@ The `summary` of a book, a serie and a planche is typed in UiBundle's own Trix e
 would leave these three the only rich-text fields of the back office without it. The button appears once
 the rephrase feature is configured in UiBundle, and stays absent otherwise.
 
+### Categories
+
+A serie says what a book **belongs to**; a category says what it is **about**. The two answer different
+questions, so a book sits in one serie and carries as many categories as it deserves — or none.
+
+`BookCategory` is flat and many-to-many: no parent, no tree. That is on purpose. The trade's own
+classifications — CLIL in France, Thema and BISAC abroad — *are* trees, because a store carrying millions
+of titles has no other way to be walked; a publisher's catalog of a few dozen would get nodes holding three
+books. What such a catalog actually needs is a word, and a book carrying several of them. Where the
+professional code matters — a publisher distributing through a wholesaler is asked for it — it is one
+optional `code` column on the category, stored and never interpreted: the norm without the tree.
+
+A flat category with a page of its own **is** a tag, once the tag has an address. So the bundle ships one
+family and not two, and which of the two words a site uses is a matter of translation, not of storage:
+override `label.category`, `label.categories` and the `label.categor*` keys around them to read *Genres*,
+*Thèmes*, *Rayons* or *Tags*.
+
+**Nothing appears until the site asks for it.** Create no category and the catalog is exactly what it was.
+And the `book-route-categories` setting ships *empty*, unlike every other prefix: no index, no category
+page, no sitemap entry — the names still print on a book's sheet, as plain words. Fill it in and the pages
+answer below that segment, `book_category_path(category)` starts returning an address, and the names become
+links (see [Routes](#routes)).
+
+The screen sits under **Catalogue** in the back office, laid out like the series' one — drag to reorder,
+the *Masqué* switch, the trash, the copy, the exports, and the blocks composing the category's page. A book
+is filed from its own screen, in an autocomplete field beside the serie.
+
+```twig
+{# The categories of a book, the ones the site actually serves - a hidden one answers 404 #}
+{% for category in book.shownCategories %}
+    <a href="{{ book_category_path(category) }}">{{ category.title }}</a>
+{% endfor %}
+```
+
+On a page composed in blocks, `book_categories` prints the categories holding at least one shown book, and
+`book_books` narrowed down to a category slug prints that shelf alone (see [Blocks](#blocks)).
+
 ### Editions
 
 A book is published in more than one form, and each has its own identifier: the paperback, the ebook, the
@@ -458,6 +512,50 @@ readily as the reverse (`book_versions()`, `Twig\BookVersionExtension`).
 A third version chains onto the second rather than beside it: a book already replaced is not replaced
 again, it is the version replacing it that comes in versions in its turn. `Service\BookVersionPublisher`
 builds that graph, so a site splitting an already published catalog can call it from a command of its own.
+
+### Telling readers a book is out
+
+A book with no date, or with a date still to come, carries a **Me prévenir de la parution** link on its
+page. It leads to a page of its own — the sheet's html is handed to a shared cache per fragment, where a
+form needs a session and a csrf token — asking for one thing, an e-mail address, behind the honeypot and
+the hourly limiter every public form of the ecosystem is served under (`book_release_alert`).
+
+**One address, one e-mail, and then nothing.** The subscription is acknowledged straight away by a first
+message, which is the only thing sent before the parution and the only way out offered until then: it
+carries the unsubscribe link, so somebody whose address was typed by a third party leaves from there. That
+link **opens a page carrying a button** rather than unsubscribing on sight: the mail gateways that walk
+every address of a message before it is read — Outlook's Safe Links, an antivirus — would otherwise take
+the reader off the list minutes after they asked to be on it. The
+day the book comes out, `c975l:book:release-alerts:send` writes the one message the whole list exists for
+and **deletes the row with it** — a book is published once, so nothing is left to wait for and nothing
+left to keep. The parution e-mail carries no unsubscribe link for that reason: there is no longer anything
+to unsubscribe from.
+
+```bash
+# Scheduled by the bundle itself (Scheduler\BookMaintenanceTaskProvider), nightly - a book is
+# dated to the day, so it comes out at 00:00 and the first run of the night tells everyone waiting.
+# Nothing to add to the site's MaintenanceSchedule, and this is only how to run it by hand
+php bin/console c975l:book:release-alerts:send
+```
+
+The same run drops the waiting lists of books announced and never published (24 months, see
+`Service\BookReleaseAlertService::PENDING_RETENTION_MONTHS`), and prints what is left waiting: a queue
+that stops going down is how a site finds out its mailer is refusing. A book deleted takes its list with
+it, and `--limit` (50 by default) says how many are written to in one run.
+
+An address the mailer keeps refusing is counted rather than retried for ever: past three failed nights the
+row is dropped, and the queue is read by that count first, so a handful of dead addresses no longer fills
+every run's batch from the head of the list.
+
+Which books are written about is `BookRepository::publishedQueryBuilder()`'s own reading, asked in the
+database rather than in PHP: a book set aside, one of a serie set aside, one in the trash or one replaced
+by a newer version is not published, and nobody is told about it. The subscription form reads those same
+conditions (`Book::isShownInCatalog()`), so an address is never taken for a book the nightly run would
+skip — the acknowledgement would have promised a message that never comes.
+
+The two messages are `EmailTemplate` rows an admin composes, `book_release_alert_confirmation` and
+`book_released`, seeded by `php bin/console c975l:ui:email-templates:ensure` and sent under the site-wide
+`email-*` addresses — this bundle declares no address of its own.
 
 ### Trash, redirects and 410
 
@@ -557,6 +655,12 @@ class BookCustomizationProvider implements BookCustomizationProviderInterface
     public function getEditionKinds(): array
     {
         return ['original_digital' => 'Originelle numérique', 'illustrated_paper' => 'Illustrée papier'];
+    }
+
+    // The parts someone takes in this site's books beyond signing or drawing them - none declared falls back to the bundle's narrator/translator
+    public function getContributorRoles(): array
+    {
+        return ['narrator' => 'label.role_narrator', 'colourist' => 'Coloriste'];
     }
 
     // How this site lays out a book's page: the order, the words, the look, and what it adds inside a card
@@ -663,6 +767,24 @@ public function getLinkKinds(): array
 
 Declaring one replaces the bundle's catalog whole. A template reads a link through `book_link_label()`, `book_link_icon()`, `book_link_url()` and `book_links_of(book, 'epub')` — the entity answers none of the three, the vocabulary being the site's and not the row's.
 
+**A book credits more than its author and its illustrator.** Those two are columns of the book, being the
+two it takes from its serie when it names none; every other part — the voice that read it, the pen that
+carried it into another language — is a `BookContributor` row joining the book and the person, with the
+part it names. The rows are written on the book's screen, under the "Participants" fieldset, and the sheet
+prints one line per row under the author and the illustrator, the part said in the site's own vocabulary
+(`getContributorRoles()`, falling back to `BookContributorRole`'s narrator and translator). A person's page
+lists what they only narrated or translated beside what they signed, and the index of people counts them as
+credited. **What someone did is said under their name** — on their page and on their card alike, read from
+what credits them (`Contributor::getRoles()`) rather than from a field of their own, the two columns of a
+book coming before the parts its rows name.
+
+**A person carries their own platforms** — their author page at a store, not one book's — held by `ContributorLink` in the same shape and read from the same vocabulary. They are written under the "Buy" fieldset of their screen, and their page prints them in the card a book's page prints, under the same anchor:
+
+```twig
+{# the site's own shop at the head and accented, then the stores #}
+<twig:c975LBook:Contributor:Shops contributor="{{ contributor }}" />
+```
+
 ### ISBN filter
 
 Format a raw ISBN string in Twig:
@@ -674,13 +796,13 @@ Format a raw ISBN string in Twig:
 
 ### Blocks
 
-`Book`, `Serie` and `Strip` implement UiBundle's `HasBlocksInterface`, so their pages are composed in the back-office with the kinds of UiBundle (`hero`, `text_section`, `image`, `slider`, `cta_band`…) — no template to write. The detail templates render the collection:
+`Book`, `Serie`, `Strip`, `Contributor` and `BookCategory` implement UiBundle's `HasBlocksInterface`, so their pages are composed in the back-office with the kinds of UiBundle (`hero`, `text_section`, `image`, `slider`, `cta_band`…) — no template to write. The detail templates render the collection:
 
 ```twig
 <twig:c975LUi:Blocks:Blocks blocks="{{ book.blocks }}"/>
 ```
 
-A saved block moves from one container to another by drag and drop, `BookBlockOwnerResolver` being what lets UiBundle's move screen find the book, serie or strip holding it.
+A saved block moves from one container to another by drag and drop, `BookBlockOwnerResolver` being what lets UiBundle's move screen find the book, serie, strip, person or category holding it.
 
 A block hovers the same editing pencil as the sections above it (see *Display pages*): `BookBlockEditUrlProvider` answers UiBundle which screen composes a given block row, and the link opens it on that very row (`focusBlock`).
 
@@ -688,9 +810,15 @@ A block hovers the same editing pencil as the sections above it (see *Display pa
 
 One tile per kind, captured on the showcase at [bundles.975l.com](https://bundles.975l.com/pages/blocks/Book) - a kind with several variants shows only its first one, and a kind with no example there has no tile. Colors are the showcase's own theme, not what a site with its own theme renders.
 
-The bundle also ships six block kinds of its own. Five put a selection of the catalog on any page of the site — `book_series`, `book_books`, `book_to_be_published`, `book_serie_strips` and `book_contributors`, which prints the people the catalog credits, each leading to their own page. Set to UiBundle's `compact` variant, they print a book at a thumbnail's width, with its cover, its title and its language and without its summary.
+The bundle also ships seven block kinds of its own. Six put a selection of the catalog on any page of the site — `book_series`, `book_categories`, `book_books`, `book_to_be_published`, `book_serie_strips` and `book_contributors`, which prints the people the catalog credits, each leading to their own page. `book_books` also takes a category slug, so a page prints "our novels" without a listing of its own. Set to UiBundle's `compact` variant, they print a book at a thumbnail's width, with its cover, its title and its language and without its summary.
 
-The sixth, `book_reader`, reads an illustrated album page by page along its recording. Its medias are the album's pages in order, then the audio file; its `cues` say at which second of the recording each page is turned. The voice is the clock: it turns the pages, and a page turned by hand moves the playhead to that page's cue. Left without cues, the pages are turned by hand alone. It drives UiBundle's `slider` through the slider's own dots, so the two stay independent.
+Each of the six carries its own head — an anchor, an eyebrow, a title, a paragraph written in the rich text editor and a colored flat, the very fields a `text_section` offers (`AbstractBookListingBlockType`, drawn by the `Listing:Section` component). Written on the listing itself rather than in a text block placed above it: the two were one section on the page and two rows in the back office, and the pair had to be moved, hidden and translated together. Left empty, the listing renders as a bare grid of covers, which is what a page composed before those fields existed shows.
+
+They also take how many rows to keep and whether to draw them at random — the whole catalog is shuffled before the maximum applies, so "four books at random" draws from the shelf and not from its first four.
+
+Those six resolve their content at render time, on rows no Block event ever signals a change of, and are cached all the same: their entry carries a catalog tag dropped whenever a book, a serie, a planche, a contributor or one of their medias is saved. The two listing books and the one listing planches decline their entry — rendered live, stored nothing — for as long as something is dated ahead: an entry never expires, and nothing is saved the day a publication date comes round. A listing drawing at random declines its entry too, a cached one freezing a single draw until the catalog itself changed.
+
+The seventh, `book_reader`, reads an illustrated album page by page along its recording. Its medias are the album's pages in order, then the audio file; its `cues` say at which second of the recording each page is turned. The voice is the clock: it turns the pages, and a page turned by hand moves the playhead to that page's cue. Left without cues, the pages are turned by hand alone. It drives UiBundle's `slider` through the slider's own dots, so the two stay independent.
 
 ```twig
 {# Outside a composed page - a story rendered from an entity, say - the component is called directly #}
@@ -699,11 +827,17 @@ The sixth, `book_reader`, reads an illustrated album page by page along its reco
 
 ### Structured data
 
-A book's, a serie's and a strip's page publish their schema.org graph as JSON-LD, built by `BookSnippetBuilder` from the fields those pages already show: author, illustrator, language, publication date, page count, age range, one `workExample` per released edition, and the volume's rank in its serie (`isPartOf`/`position`, `hasPart` on the serie side).
+A book's, a serie's and a strip's page publish their schema.org graph as JSON-LD, built by `BookSnippetBuilder` from the fields those pages already show: author, illustrator, translator, language, publication date, page count, age range, the categories it carries as its `genre`, one `workExample` per released edition, and the volume's rank in its serie (`isPartOf`/`position`, `hasPart` on the serie side).
 
 An edition carries the ISBN and the page count of its own form, an audio one being an `Audiobook` rather than a `Book`, and the addresses the book is found at under the gesture that edition serves (`sameAs`) — the podcast apps for a recording, the bookshops for a printed or digital one. A translation is not an edition: it is a book of its own, paired with the one it translates through `translationOfWork` and `workTranslation`, at the url `BookPublicUrlResolver` spells for it.
 
 A strip is a `ComicStory` — its characters, its rank in its serie and the address it first appeared at (`sameAs`) — where a book of that same serie is a `Book`, the two being read and indexed apart. One not published yet publishes nothing.
+
+The page of a person the catalog credits publishes them as a `Person` — their name, their portrait, the sentence their page opens on, and their own site as `sameAs`, which is what tells two authors of the same name apart. What they signed is not repeated there: each book already names its author.
+
+The trail a reader follows is published beside it as a `BreadcrumbList`, emitted by the `Breadcrumb` component itself rather than by each page — that is where the hierarchy is already resolved, levels included that a site serving no index, or holding a hidden serie, leaves out. A trail whose only level is the page itself publishes nothing, saying no more than the url does.
+
+The four listings — the catalog, the series, the planches and the people — publish an `ItemList` of what the page holds. A listing growing on scroll is one list read in several answers, so each page numbers its cards from where the last one stopped and counts only its own.
 
 Overriding a display template keeps the markup, which is a Twig function rather than a template of its own:
 
@@ -755,7 +889,9 @@ There is nothing to schedule and no command to add: ConfigBundle already runs `c
 php bin/console c975l:health-check:run --kind=book-links
 ```
 
-Every book is checked, published or not — a book to be published shows its pre-order links, and those are the ones worth catching before its release day. Each row names the book and the platform it was declared on, and links to the book's edit screen, opened on its editions.
+Every book is checked, published or not — a book to be published shows its pre-order links, and those are the ones worth catching before its release day — and every person the catalog credits, their own page at a store rotting exactly as a book's does. Each row names what the address was declared on — a book by its title, a person by their name — and leads to the screen it is typed on, opened on the very collection holding it. A book and its author sending to the same address are one row, naming both.
+
+An address of the site itself — the site's own shop, written as the page reads it (`/shop/...`) — is probed under the address the site declares in `site-url`, and reported as nothing to probe when the site declares none.
 
 A platform answering `401`, `403`, `405` or `429` is reported **skipped**, not broken: most stores turn down a `HEAD` request carrying no browser behind it, and there is nothing there for an editor to fix. `404`/`410`, any other error code, and a host that never answered at all are reported as errors, the http code being kept in the row's details. The provider enumerates every link each run, so an address that is deleted or corrected drops off the dashboard instead of leaving its last red row behind.
 
@@ -772,7 +908,7 @@ zips the checked rows only, through the very same providers (`serializeIds()`), 
 on the same screen. Both are restricted to `site-role-admin`, like the raw table dumps beside them.
 
 Ids never need to match between the two sites. Every row is matched on what it actually answers at — a serie,
-a book, a strip and a person by their slug, a version by its kind within its book, a platform by the version
+a book, a strip, a category and a person by their slug, a version by its kind within its book, a platform by the version
 and the kind together, a file by the name it is served under. A book naming a serie or an author this
 environment doesn't hold yet has them created on the fly, so the four kinds import in whichever order the
 archive lists them, and a book translating another is bound once the whole archive has been read. A person

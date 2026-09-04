@@ -11,6 +11,8 @@
 namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\Media;
@@ -18,8 +20,7 @@ use c975L\BookBundle\Repository\BookRepository;
 use c975L\ConfigBundle\Management\ExportProviderInterface;
 use c975L\UiBundle\Management\BlockDataExporter;
 
-// Serializes the books - their versions, the platforms that sell them, their covers, extracts, videos, press clippings and marketing files, real files bundled in the archive - into the shape ContentExporter/BookImportProvider expect
-// The serie and the translated book a row names travel as slugs rather than as ids, which never match between two environments, and each under its own kind
+// Serializes the books - their versions, the platforms that sell them, their covers, extracts, videos, press clippings and marketing files, real files bundled in the archive - into the shape ContentExporter/BookImportProvider expect. The serie and the translated book a row names travel as slugs rather than as ids, which never match between two environments, and each under its own kind
 class BookExportProvider implements ExportProviderInterface
 {
     public function __construct(
@@ -41,13 +42,13 @@ class BookExportProvider implements ExportProviderInterface
     }
 
     // The rows an admin checked on the catalog's index, serialized exactly as the whole catalog is - what the "export selection" action of the crud screen hands to ContentExporter (see Controller\Management\Trait\TrashableCrudTrait::exportSelection())
-    // @param list<int> $ids
+    /** @param list<int> $ids */
     public function serializeIds(array $ids): array
     {
         return $this->serialize($this->bookRepository->findBy(['id' => $ids]));
     }
 
-    // @param iterable<Book> $books
+    /** @param iterable<Book> $books */
     public function serialize(iterable $books): array
     {
         $files = [];
@@ -84,12 +85,16 @@ class BookExportProvider implements ExportProviderInterface
             'hidden' => $book->isHidden(),
             'serie' => $book->getSerie()?->getSlug(),
             'serieTitle' => $book->getSerie()?->getTitle(),
+            // What the book is about, named by the slugs its categories answer at - the categories themselves travel under their own kind, and a book naming one this site doesn't hold yet creates it on the way in (see BookCategoryResolver)
+            'categories' => array_values(array_map(static fn (BookCategory $category): string => (string) $category->getSlug(), $book->getCategories()->toArray())),
             // The book this one translates, named by what it answers at - resolved in a second pass on the way back in, the two rows being imported in whichever order the archive lists them
             'translationBook' => $book->getTranslationBook()?->getSlug(),
             // The book that replaces this one, named the same way and resolved in the same second pass (see Book::$newerVersion)
             'newerVersion' => $book->getNewerVersion()?->getSlug(),
             'blocks' => $this->blockDataExporter->exportBlocks($book->getBlocks(), $files),
             'editions' => array_map($this->exportEditionData(...), $book->getEditions()->toArray()),
+            // The parts held by a row rather than by a column, each naming its person the way the author is named - by name, which is the key the resolver matches on
+            'contributors' => array_map($this->exportContributorData(...), $book->getContributors()->toArray()),
             // Flat rather than nested inside the versions they belong to: a link and a file both name their version by kind, and the ones a book carries as a whole - its covers, its backdrop - name none
             'links' => array_map($this->exportLinkData(...), $book->getLinks()->toArray()),
             'medias' => $this->exportMedias($book->getMedias(), $files),
@@ -99,7 +104,7 @@ class BookExportProvider implements ExportProviderInterface
         ];
     }
 
-    // @param iterable<Media> $medias
+    /** @param iterable<Media> $medias */
     private function exportMedias(iterable $medias, array &$files): array
     {
         $data = [];
@@ -121,6 +126,16 @@ class BookExportProvider implements ExportProviderInterface
             'pages' => $edition->getPages(),
             'format' => $edition->getFormat(),
             'position' => $edition->getPosition(),
+        ];
+    }
+
+    private function exportContributorData(BookContributor $credit): array
+    {
+        return [
+            'name' => $credit->getContributor()?->getName(),
+            'website' => $credit->getContributor()?->getWebsite(),
+            'role' => $credit->getRole(),
+            'position' => $credit->getPosition(),
         ];
     }
 

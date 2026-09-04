@@ -1,6 +1,4 @@
-{# <twig:c975LBook:Contributor:Hero contributor="{{ contributor }}" [editUrl=""] /> #}
-{# Same opening as a serie's, the portrait standing where a serie shows its cover. Carries the page's only h1 - contributor/display.html.twig leaves the layout's title block empty #}
-{# The page opens on a background image when one is uploaded: a real <img> and a veil above it, never a background-image - a nonce style-src covers no style attribute (see Book:Hero) #}
+{# <twig:c975LBook:Contributor:Hero contributor="{{ contributor }}" [editUrl=""] />. Same opening as a serie's, the portrait standing where a serie shows its cover, and the only hero carrying its own summary: a person is introduced right beside their portrait, where a book keeps its blurb for a block under the hero. Carries the page's only h1 - contributor/display.html.twig leaves the layout's title block empty. The page opens on a background image when one is uploaded: a real <img> and a veil above it, never a background-image - a nonce style-src covers no style attribute (see Book:Hero) #}
 {% props contributor, editUrl = "" %}
 {% set background = contributor.backgrounds|first != false ? contributor.backgrounds|first : '' %}
 <header class="book-hero book-page__hero{{ background ? ' book-hero--has-bg' : '' }}"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
@@ -15,12 +13,19 @@
     <div class="book-hero__body">
         <h1 class="book-hero__title">{{ contributor.name }}</h1>
 
-        {% set books = contributor.books %}
-        {% if books|length or contributor.website %}
+        {# What they are credited under, read from what credits them rather than from a field of their own (see Contributor::getRoles()): the two columns of a book first, then the parts its rows name #}
+        {% if contributor.roles|length %}
+            <p class="book-hero__roles">{{ contributor.roles|map(role => book_role_label(role))|join(' · ') }}</p>
+        {% endif %}
+
+        {# The sentences they are introduced with, unfolded whole: the number of books they signed used to stand here, and it said "6 livres" over the very list printing them - a site naming its catalog "Toutes nos histoires" read "6 toutes nos histoires". A div rather than a p, the field being written in a rich text editor whose own blocks stand #}
+        {% if contributor.summary %}
+            <div class="book-hero__summary">{{ contributor.summary|raw }}</div>
+        {% endif %}
+
+        {% if contributor.website %}
             <p class="book-hero__meta">
-                {% if books|length %}{{ books|length }} {{ 'label.books'|trans({}, 'book')|lower }}{% endif %}
-                {% if books|length and contributor.website %} - {% endif %}
-                {% if contributor.website %}<a href="{{ contributor.website }}" target="_blank" rel="noopener">{{ 'label.website'|trans({}, 'book') }}</a>{% endif %}
+                <a href="{{ contributor.website }}" target="_blank" rel="noopener">{{ 'label.website'|trans({}, 'book') }}</a>
             </p>
         {% endif %}
     </div>

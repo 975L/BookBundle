@@ -16,10 +16,12 @@ use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\ContributorLink;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
+use c975L\BookBundle\Repository\BookCategoryRepository;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
@@ -53,6 +55,7 @@ class BookDuplicatorTest extends TestCase
 
         // No project directory holding the uploaded files, so no file is copied here - what the copy carries of a media is checked on its columns
         $this->duplicator = new BookDuplicator(
+            $this->createStub(BookCategoryRepository::class),
             $bookRepository,
             $this->createStub(ContributorRepository::class),
             $security,
@@ -106,6 +109,22 @@ class BookDuplicatorTest extends TestCase
         $this->assertSame('9791234567890', $copy->getEditions()->first()->getIsbn());
         $this->assertSame(48, $copy->getEditions()->first()->getPages());
         $this->assertSame('BD', $copy->getEditions()->first()->getFormat());
+    }
+
+    // A person is copied with where their books are bought, the row being theirs and not a book's (see ContributorLink)
+    public function testTheCopyOfAPersonCarriesThePlatformsTheirBooksAreBoughtAt(): void
+    {
+        $contributor = new Contributor()
+            ->setName('Tim Loval')
+            ->setSlug('tim-loval');
+        $contributor->addLink(new ContributorLink()->setKind('epub_fnac')->setUrl('https://www.fnac.com/ia1/Tim-Loval')->setPosition(10));
+
+        $copy = $this->duplicator->duplicateContributor($contributor);
+
+        $this->assertCount(1, $copy->getLinks());
+        $this->assertNotSame($contributor->getLinks()->first(), $copy->getLinks()->first());
+        $this->assertSame('https://www.fnac.com/ia1/Tim-Loval', $copy->getLinks()->first()->getUrl());
+        $this->assertSame($copy, $copy->getLinks()->first()->getContributor());
     }
 
     public function testTheCopyOfABookStaysInItsSerieAndKeepsItsOwnFields(): void

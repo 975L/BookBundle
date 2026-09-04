@@ -15,7 +15,7 @@ use c975L\BookBundle\Entity\Media;
 // Shared by every test of the export and import providers - the two directories they work between: the site's own project directory, where the stored files live under public/, and the one an uploaded zip was extracted into (see ConfigBundle's ContentImportController)
 trait ArchiveTestTrait
 {
-    // @param array<string, string> $files stored name (relative to public/) => bytes
+    /** @param array<string, string> $files stored name (relative to public/) => bytes */
     private function createProjectDir(array $files): string
     {
         $projectDir = sys_get_temp_dir() . '/book_archive_test_' . bin2hex(random_bytes(4));
@@ -28,7 +28,7 @@ trait ArchiveTestTrait
     }
 
     // Plays what ContentImportController does with a zip: the archive's entries laid out under one dir, keyed by the very path the exported items point at
-    // @param array<string, string> $files archive-relative path => disk path, as an export provider returns them
+    /** @param array<string, string> $files archive-relative path => disk path, as an export provider returns them */
     private function extractArchive(array $files): string
     {
         $filesDir = sys_get_temp_dir() . '/book_archive_test_' . bin2hex(random_bytes(4));

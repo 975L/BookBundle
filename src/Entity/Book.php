@@ -65,6 +65,12 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $age = null;
 
+    // What the book is about, where its serie is what it belongs to: as many as it deserves, none being just as valid (see BookCategory). The owning side sits here, this being the screen a category is picked on
+    #[ORM\ManyToMany(targetEntity: BookCategory::class, inversedBy: 'books')]
+    #[ORM\JoinTable(name: 'book_category_link')]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $categories;
+
     // The volume number, which is the book's rank in its serie - named as Strip::$number is, the two being the same thing
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $number = null;
@@ -86,6 +92,14 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OneToMany(targetEntity: BookEdition::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $editions;
+
+    // Who else had a hand in it - the voice that read it, the pen that carried it into another language - each row naming the person and the part they took (see BookContributor). Author and illustrator stay columns of their own: they are the two a book inherits from its serie
+    #[Assert\Valid]
+    // errorPath so the message lands on the person field of the offending row rather than at the head of the form, where EasyAdmin prints what bubbles up from a compound field
+    #[Assert\Unique(message: 'label.contributor_role_duplicate', normalizer: [self::class, 'creditKey'], errorPath: 'contributor')]
+    #[ORM\OneToMany(targetEntity: BookContributor::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $contributors;
 
     // The fields this site adds to a book and no other site has, held as one JSON payload rather than a column each - same reasoning as UiBundle's Block::$data: what a single catalog needs is then a form type it declares (see BookCustomizationProviderInterface::getDataFormType()), no schema migration for every app running this bundle. Anything the database itself has to filter, sort or join on stays a real column, an ISBN being a BookEdition row
     #[ORM\Column(type: Types::JSON, nullable: true)]
@@ -116,8 +130,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OneToMany(mappedBy: 'translationBook', targetEntity: self::class)]
     private Collection $translations;
 
-    // The book that replaces this one - a text newly illustrated, revised or reset comes out as a book of its own, with its own ISBN, its own release date and its own page, rather than as one more edition: an edition is a format (paper, digital, audio), and every format exists for both versions. A book pointing at a newer one is still sold and still read, it only stops being what the catalog lists (see BookRepository::publishedQueryBuilder())
-    // A one-to-one link and not a collection: a version replaces one only and is replaced by one only, and both ends read - the old one's page names the one replacing it as much as the reverse (see BookVersionExtension). A third version chains onto the second, it is not added beside it
+    // The book that replaces this one - a text newly illustrated, revised or reset comes out as a book of its own, with its own ISBN, its own release date and its own page, rather than as one more edition: an edition is a format (paper, digital, audio), and every format exists for both versions. A book pointing at a newer one is still sold and still read, it only stops being what the catalog lists (see BookRepository::publishedQueryBuilder()). A one-to-one link and not a collection: a version replaces one only and is replaced by one only, and both ends read - the old one's page names the one replacing it as much as the reverse (see BookVersionExtension). A third version chains onto the second, it is not added beside it
     #[ORM\OneToOne(targetEntity: self::class, inversedBy: 'previousVersion')]
     #[ORM\JoinColumn(name: 'version_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?self $newerVersion = null;
@@ -138,9 +151,11 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     public function __construct()
     {
         $this->blocks = new ArrayCollection();
+        $this->categories = new ArrayCollection();
         $this->medias = new ArrayCollection();
         $this->links = new ArrayCollection();
         $this->editions = new ArrayCollection();
+        $this->contributors = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->presses = new ArrayCollection();
         $this->marketings = new ArrayCollection();
@@ -191,6 +206,21 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         $this->published = $published;
 
         return $this;
+    }
+
+    // A book still to come, which is what the catalog's "à paraître" listing shows and what the release alert is offered on. Compared day by day and not to the current instant: a book dated today is out, whatever the hour
+    public function isToBePublished(): bool
+    {
+        return null === $this->published || $this->published->format('Ymd') > new \DateTime()->format('Ymd');
+    }
+
+    // Whether the catalog still shows it at all, the parution left out: the conditions BookRepository::publishedQueryBuilder() reads a book by, minus the date, gathered here for what has to answer them in PHP - a release alert taken on a book the catalog has dropped is an e-mail that will never be sent (see BookReleaseAlertRepository::findReleased())
+    public function isShownInCatalog(): bool
+    {
+        return !$this->isDeleted()
+            && !$this->isHidden()
+            && null === $this->newerVersion
+            && (null === $this->serie || !$this->serie->isHidden());
     }
 
     public function getSlug(): ?string
@@ -249,6 +279,39 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     public function setModification(\DateTimeInterface $modification): static
     {
         $this->modification = $modification;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BookCategory>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    // The ones a visitor can open, which is what a book page links to: a category set aside or in the trash is off the site, and a link to it would answer 404
+    /**
+     * @return Collection<int, BookCategory>
+     */
+    public function getShownCategories(): Collection
+    {
+        return $this->categories->filter(static fn (BookCategory $category): bool => !$category->isHidden() && !$category->isDeleted());
+    }
+
+    public function addCategory(BookCategory $category): static
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(BookCategory $category): static
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }
@@ -327,8 +390,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    // The book's recordings, whatever edition they come out under: it is a file of the book, and it is under "Listen" that it is dropped as it is listened to (see BookSectionsExtension::audioMedias(), which reads them the same way for the page)
-    // Recognized by their kind as much as by their extension: a row just added has no file yet, and the kind is what the editor picks first (see BookMediaType)
+    // The book's recordings, whatever edition they come out under: it is a file of the book, and it is under "Listen" that it is dropped as it is listened to (see BookSectionsExtension::audioMedias(), which reads them the same way for the page). Recognized by their kind as much as by their extension: a row just added has no file yet, and the kind is what the editor picks first (see BookMediaType)
     /** @return Collection<int, BookMedia> */
     public function getAudios(): Collection
     {
@@ -345,8 +407,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this->removeMedia($media);
     }
 
-    // The platforms sorted by the gesture they serve, as the page sorts them: the bookshops under "Buy", the podcast apps under "Listen", the channels under "Watch" (see BookSectionsExtension::book())
-    // Three views of one collection, and not three relations: a link belongs to the book only, and its kind is what says which gesture it reads under. Additions and removals therefore go through the collection itself, which stays the only one carrying the rows
+    // The platforms sorted by the gesture they serve, as the page sorts them: the bookshops under "Buy", the podcast apps under "Listen", the channels under "Watch" (see BookSectionsExtension::book()). Three views of one collection, and not three relations: a link belongs to the book only, and its kind is what says which gesture it reads under. Additions and removals therefore go through the collection itself, which stays the only one carrying the rows
     /** @return Collection<int, BookLink> */
     public function getBuyLinks(): Collection
     {
@@ -457,6 +518,57 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
+    /** @return Collection<int, BookContributor> */
+    public function getContributors(): Collection
+    {
+        return $this->contributors;
+    }
+
+    // The people credited under one part - what a page prints on its own line, and what the structured data names as translator. A book crediting the same person twice under the same role is refused by the unique constraint, so the order alone decides who reads first
+    /** @return list<Contributor> */
+    public function getContributorsOf(string $role): array
+    {
+        $contributors = [];
+        foreach ($this->contributors as $credit) {
+            if ($credit->getRole() === $role && null !== $credit->getContributor()) {
+                $contributors[] = $credit->getContributor();
+            }
+        }
+
+        return $contributors;
+    }
+
+    // What makes two credits the same one - the person and the part, the pair the book_contributor_role constraint is built on. Assert\Unique compares the elements it is handed as they come and its fields option only reads arrays, so the pair is built here; a person picked from the catalog is compared on their id, one not yet saved on the object itself
+    public static function creditKey(mixed $credit): mixed
+    {
+        if (!$credit instanceof BookContributor) {
+            return $credit;
+        }
+
+        $contributor = $credit->getContributor();
+
+        return [$contributor?->getId() ?? $contributor, $credit->getRole()];
+    }
+
+    public function addContributor(BookContributor $contributor): static
+    {
+        if (!$this->contributors->contains($contributor)) {
+            $this->contributors->add($contributor);
+            $contributor->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContributor(BookContributor $contributor): static
+    {
+        if ($this->contributors->removeElement($contributor) && $contributor->getBook() === $this) {
+            $contributor->setBook(null);
+        }
+
+        return $this;
+    }
+
     /** @return array<string, mixed> */
     public function getData(): array
     {
@@ -505,8 +617,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    // The three images a book carries as a whole rather than as one of its versions: its first cover, its fourth, and the backdrop its page opens on. The cover is also what a shared link is drawn with - a book has one image to introduce itself, not two. Each is uploaded on a field of its own (see BookCrudController), which is what sets the kind - a site never has to name any of them in its own vocabulary (see BookCustomizationProviderInterface::getMediaKinds()).
-    // The kind, set by the field each is uploaded on, is what tells them from the pages, the recordings and the flipbooks the book also carries
+    // The three images a book carries as a whole rather than as one of its versions: its first cover, its fourth, and the backdrop its page opens on. The cover is also what a shared link is drawn with - a book has one image to introduce itself, not two. Each is uploaded on a field of its own (see BookCrudController), which is what sets the kind - a site never has to name any of them in its own vocabulary (see BookCustomizationProviderInterface::getMediaKinds()). The kind, set by the field each is uploaded on, is what tells them from the pages, the recordings and the flipbooks the book also carries
     public function getCovers(): Collection
     {
         return $this->mediasOfKind('cover');

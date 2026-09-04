@@ -4,6 +4,7 @@ namespace c975L\BookBundle\Controller\Management;
 
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Form\ContributorLinkType;
 use c975L\BookBundle\Form\ContributorMediaType;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
 use c975L\BookBundle\Management\ContributorExportProvider;
@@ -151,6 +152,20 @@ class ContributorCrudController extends AbstractCrudController
                 ->allowAdd(self::isEmpty($contributor?->getBackgrounds()))
                 ->allowDelete()
                 ->setFormTypeOption('by_reference', false),
+
+            // "Buy" - the same fieldset a book carries, holding the person's own page at each store rather than one book's (see BookCrudController and Contributor:Shops)
+            FormField::addFieldset(t('label.buy', [], 'book'))
+                ->hideOnIndex(),
+            CollectionField::new('links')
+                ->setLabel(false)
+                ->setHelp(t('label.contributor_links-help', [], 'book'))
+                ->hideOnIndex()
+                ->setEntryType(ContributorLinkType::class)
+                ->allowAdd()
+                ->allowDelete()
+                ->setFormTypeOption('by_reference', false)
+                // What the guided project points at, a collection printing no field id of its own
+                ->setFormTypeOption('row_attr', ['data-contributor-links' => '1']),
 
             // Blocks
             FormField::addFieldset(t('label.blocks', [], 'book'))

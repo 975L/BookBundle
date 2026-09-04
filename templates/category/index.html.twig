@@ -1,0 +1,44 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{# The row an editor wrote for this url wins, these translated labels being its fallback (see ConfigBundle's UrlMetadata) #}
+{% set title = url_metadata_title('label.categories'|trans({}, 'book')) %}
+{% set summarySocialNetwork = url_metadata_summary('label.categories_summary'|trans({}, 'book')) %}
+
+{# Editor-only: the pencil UiBundle floats over each card leads to this category's screen (see assets/js/block-edit-overlay.js). Bound to the very role the screen asks for, a pencil leading to a 403 being worth less than no pencil #}
+{% set canEdit = is_granted(config('site-role-editor')) %}
+
+{% block content %}
+    <h2>{{ 'label.categories_all'|trans({}, 'book') }}</h2>
+    {# The listing grows instead of turning pages, as the catalog's does (see book/index.html.twig) #}
+    <div id="categories" data-controller="infiniteScroll{{ canEdit ? ' blockEditOverlay' : '' }}"{% if canEdit %} data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
+        <twig:c975LBook:Category:Categories categories="{{ categories }}" :editable="canEdit" :infinite="true"/>
+
+        <div class="text-center">
+            {% if categories.getTotalItemCount > categories.getItemNumberPerPage %}
+                <p aria-live="polite">{{ 'label.categories'|trans({}, 'book') }} <span data-infiniteScroll-target="count">{{ categories|length }}</span> / {{ categories.getTotalItemCount }}</p>
+            {% endif %}
+            {% if categories.getCurrentPageNumber < categories.getPageCount %}
+                {# The paginator's own query is reused rather than rebuilt: whatever the visitor came with stays in it #}
+                <a
+                    href="{{ path(categories.route, categories.query({'p': categories.getCurrentPageNumber + 1})) }}#categories"
+                    rel="next"
+                    class="btn btn-secondary"
+                    data-infiniteScroll-target="next"
+                    data-action="click->infiniteScroll#load"
+                >{{ 'label.load_more'|trans({}, 'book') }}</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {# What this page of the categories holds, in the order it prints it - the pages that follow publish their own, each numbering its cards from where this one stopped #}
+    {% set entries = [] %}
+    {% for item in categories %}
+        {% set itemPath = book_category_path(item) %}
+        {% if itemPath %}{% set entries = entries|merge([{name: item.title, url: absolute_url(itemPath)}]) %}{% endif %}
+    {% endfor %}
+    {% set jsonLd = book_item_list_json_ld(entries, (categories.getCurrentPageNumber - 1) * categories.getItemNumberPerPage) %}
+    {% if jsonLd %}
+        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+    {% endif %}
+{% endblock %}

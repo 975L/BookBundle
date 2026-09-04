@@ -26,8 +26,14 @@
   /* The eyebrow above a title - the serie and the number, set apart from the title by size rather than by a color of its own */
   --book-eyebrow-size: 0.8rem;
   --book-eyebrow-spacing: 0.14em;
-  /* The measure of the sentence a hero prints under the title, short enough to stay one paragraph rather than a column of text */
+  /* The measure of the summary a hero prints under the title, narrow enough to read as prose rather than as a column of text */
   --book-hero-summary-measure: 60ch;
+  /* What separates two paragraphs of that summary: it is written in a rich text editor, whose blocks carry no margin of their own */
+  --book-hero-summary-space: 0.6em;
+  /* The parts someone is credited under, printed under their name on their page and on their card: said quietly, the name being what is read */
+  --book-roles-size: 0.9rem;
+  --book-roles-opacity: 0.75;
+  --book-roles-space: 0.2rem;
   /* What a section holds decides its shape (see sass/_book.scss): text reads at a paragraph's measure, a media is bounded in height rather than taking its natural size, and a row of platforms fits on one line - the ceiling in vh on a phone, in px once there is room enough */
   /* The flipbook shows the book being turned: it accompanies, it does not take over */
   --book-flipbook-max-height: 40vh;
@@ -97,6 +103,8 @@
   /* The trail saying where a page sits - the series, the serie, the planche */
   /* It is the first thing under the navbar, and reads as part of it without a gap of its own */
   --book-breadcrumb-margin-block-start: 1.5rem;
+  /* What holds a hero off a fixed navbar on a page opening straight on it, no trail above it - the very gap the page keeps between the hero and what follows */
+  --book-hero-margin-block-start: var(--book-column-gap);
   --book-breadcrumb-font-size: 1.1rem;
   --book-breadcrumb-color: color-mix(in srgb, var(--text) 60%, var(--background));
   /* The tile a platform is reached through - a shop, a podcast app, any of the Links card's buttons. All one size whatever the mark inside, so a row reads as a row of buttons rather than as logos of assorted heights */
@@ -234,6 +242,35 @@
 
 .book-cards {
   justify-content: flex-start;
+}
+
+.book-cards--centered {
+  justify-content: center;
+}
+
+/* LISTING BLOCKS - the section a "book_series", "book_books", "book_contributors", "book_to_be_published" or "book_serie_strips" block draws around its grid, under the head its editor typed (see templates/components/Listing/Section.html.twig) */
+main :is(.blocks, .block-animation, .block-editable) > .book-listing {
+  margin-block: 0;
+}
+
+.book-listing {
+  padding-top: var(--section-space, clamp(48px, 8vw, 84px));
+}
+
+.flex-columns__col > .book-listing {
+  padding-top: 0;
+}
+
+.book-listing.section--bg-muted,
+.book-listing.section--bg-primary,
+.book-listing.section--bg-dark {
+  padding-bottom: var(--section-space, clamp(48px, 8vw, 84px));
+}
+
+.book-listing__intro {
+  max-width: var(--section-head-max-width, 640px);
+  margin: 0 0 1.5rem;
+  color: var(--section-text-soft, var(--text-muted, var(--text)));
 }
 
 .book-section__intro {
@@ -420,6 +457,10 @@
     grid-column: 1/-1;
   }
 }
+.book-page > .book-page__hero:first-child {
+  margin-block-start: var(--book-hero-margin-block-start);
+}
+
 .book-hero--has-bg {
   position: relative;
   isolation: isolate;
@@ -516,11 +557,26 @@
   color: var(--label-color, inherit);
   text-wrap: pretty;
 }
+.book-hero__summary > * + * {
+  margin-block-start: var(--book-hero-summary-space);
+}
 
 .book-hero__meta {
   margin: 0;
   font-size: 0.9rem;
   opacity: 0.75;
+}
+
+.book-hero__roles,
+.book-card__roles {
+  margin: 0;
+  font-size: var(--book-roles-size);
+  opacity: var(--book-roles-opacity);
+}
+
+.book-card__roles {
+  margin-block-start: var(--book-roles-space);
+  text-align: center;
 }
 
 .book-hero .rating-vote {
@@ -770,3 +826,5 @@
     display: none;
   }
 }
+
+/*# sourceMappingURL=styles.css.map */

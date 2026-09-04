@@ -1,7 +1,7 @@
 {# The block interpolates "1"/"" where the pages pass "true"/"false" spelled out, and any non-empty string is true in Twig: the value is brought down to a boolean once here rather than tested at each call #}
 {% set displayMore = displayMore|default(false)|to_bool %}
 {# "infinite" marks the list for UiBundle's infiniteScroll controller, which reads the page it fetches through this very attribute - only the listing that grows carries it, another listing sitting on the same page would otherwise answer in its place #}
-<div class="cards book-cards"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
+<div class="cards book-cards book-cards--centered"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
     {% for contributor in contributors %}
         <twig:c975LBook:Contributor:Contributor contributor="{{ contributor }}" :editable="editable|default(false)"/>
     {% endfor %}

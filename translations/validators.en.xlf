@@ -2,6 +2,10 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="en" datatype="plaintext" original="validators.en.xlf">
         <body>
+            <trans-unit id="Ri_Y7jV">
+                <source>label.contributor_role_duplicate</source>
+                <target>This person already takes that part in the book, choose another part or another person</target>
+            </trans-unit>
             <trans-unit id="62M6aq9">
                 <source>label.media_without_file</source>
                 <target>This entry carries no file, add one or remove the row</target>

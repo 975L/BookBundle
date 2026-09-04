@@ -14,6 +14,10 @@
                 <source>description.book_gplay_affiliate</source>
                 <target>Added to the books' Google Play addresses, so the sales coming from the site are credited to you. Left empty, an address opens exactly as it is stored</target>
             </trans-unit>
+            <trans-unit id="4hRTGMu">
+                <source>description.book_isbn_prefixes</source>
+                <target>The publisher's own ISBN roots, one per line and with their hyphens, e.g. “978-2-488750”. Where an ISBN is cut is not deducible from the number: it comes from the official ranges of the International ISBN Agency. A number starting with none of the declared roots is printed with no hyphen at all.</target>
+            </trans-unit>
             <trans-unit id="DXvp5yF">
                 <source>description.book_rating</source>
                 <target>Shows the readers' score on the page of a book, of a serie and of a strip, and on every card of the book and strip listings. The icon and the scale are UiBundle's own settings.</target>
@@ -29,6 +33,10 @@
             <trans-unit id="sKxO26f">
                 <source>description.book_route_books</source>
                 <target>First segment of the url listing the books, e.g. "books" for /books. The change applies straight away, but the former urls return a not-found page: set up a redirect if they are indexed. Left empty, the page is not served at all — which is what a site whose books are read under its own addresses sets here.</target>
+            </trans-unit>
+            <trans-unit id="S.gP_be">
+                <source>description.book_route_categories</source>
+                <target>First segment of the url listing the catalog categories, e.g. "categories", and of each category's own page below it (/categories/novels). Left empty, the pages are not served: the categories still read on the book pages, as plain keywords.</target>
             </trans-unit>
             <trans-unit id="TzhcPoc">
                 <source>description.book_route_contributor</source>
@@ -78,6 +86,10 @@
                 <source>label.book_gplay_affiliate</source>
                 <target>Google Play affiliate identifier</target>
             </trans-unit>
+            <trans-unit id="S6xSPpL">
+                <source>label.book_isbn_prefixes</source>
+                <target>ISBN roots</target>
+            </trans-unit>
             <trans-unit id="ZRe0eUt">
                 <source>label.book_rating</source>
                 <target>Reader ratings</target>
@@ -93,6 +105,10 @@
             <trans-unit id="MGsjb2q">
                 <source>label.book_route_books</source>
                 <target>Books list url prefix</target>
+            </trans-unit>
+            <trans-unit id="zIWscEd">
+                <source>label.book_route_categories</source>
+                <target>Book categories list url prefix</target>
             </trans-unit>
             <trans-unit id="77RpenE">
                 <source>label.book_route_contributor</source>

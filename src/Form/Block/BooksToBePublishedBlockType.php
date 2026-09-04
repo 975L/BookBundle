@@ -9,12 +9,15 @@
 
 namespace c975L\BookBundle\Form\Block;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class BooksToBePublishedBlockType extends AbstractType
+// The data sub-form of the "book_to_be_published" kind - the head it shares with every other listing is in AbstractBookListingBlockType. No "display more" here: nothing is published yet, so there is no catalog page these books lead to
+class BooksToBePublishedBlockType extends AbstractBookListingBlockType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        parent::buildForm($builder, $options);
+
+        $this->addSelectionFields($builder, 'label.block_max_books');
     }
 }

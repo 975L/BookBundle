@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set title = category.title %}
+{% set summarySocialNetwork = category.summary %}
+
+{% block content %}
+    {# Editor-only: the pencil UiBundle floats over anything carrying "data-block-edit-url" (see its assets/js/block-edit-overlay.js), leading to the screen the category is written on. Gated on the very role that screen asks for (see configureCrud()) #}
+    {% set editUrl = is_granted(config('site-role-editor')) ? book_category_edit_url(category) : null %}
+
+    <div class="book-page"{% if editUrl %} data-controller="blockEditOverlay" data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
+        <twig:c975LBook:Breadcrumb category="{{ category }}"/>
+
+        <div class="book-page__sections">
+            {# The sentence the category opens on, which is also what its meta description is built from #}
+            {% if category.summary %}
+                <div class="lead"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>{{ category.summary|raw }}</div>
+            {% endif %}
+
+            {# No card around the books: what the category holds is no section to be announced, it is what the page is read for #}
+            <section id="books" class="toc-target">
+                <h2>{{ 'label.books'|trans({}, 'book') }}</h2>
+                <twig:c975LBook:Book:Books books="{{ books }}" displayMore="false" :editable="editUrl is not null"/>
+            </section>
+
+            <twig:c975LUi:Blocks:Blocks blocks="{{ category.blocks }}"/>
+        </div>
+    </div>
+
+    {# The books of the page, said to a search engine as the list they are read as #}
+    {% set entries = [] %}
+    {% for book in books %}
+        {% set itemPath = book_path('book_display', {'slug': book.slug}) %}
+        {% if itemPath %}{% set entries = entries|merge([{name: book.title, url: absolute_url(itemPath)}]) %}{% endif %}
+    {% endfor %}
+    {% set jsonLd = book_item_list_json_ld(entries) %}
+    {% if jsonLd %}
+        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+    {% endif %}
+{% endblock %}

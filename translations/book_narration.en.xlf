@@ -6,9 +6,41 @@
                 <source>narration.books</source>
                 <target>"Books" lists the whole catalog: information, author, illustrator, editions, sales links and content blocks.</target>
             </trans-unit>
+            <trans-unit id="DNxHSeJ">
+                <source>narration.categories</source>
+                <target>"Categories" cuts the catalog by subject: a book carries as many as it deserves, and a category has a page of its own where the site gives it one.</target>
+            </trans-unit>
             <trans-unit id="wVe4G1M">
                 <source>narration.contributors</source>
                 <target>"Authors and illustrators" holds the people the catalog credits. Each has their page, listing what they signed; a book or a serie picks them from this list rather than retyping their name.</target>
+            </trans-unit>
+            <trans-unit id="N9kKVeh">
+                <source>narration.guided_step_book_category_creation_code</source>
+                <target>If you go through a distributor, put the trade code here. Otherwise leave it empty.</target>
+            </trans-unit>
+            <trans-unit id="3cSe4af">
+                <source>narration.guided_step_book_category_creation_done</source>
+                <target>The category is created. You will file books under it from their own screen.</target>
+            </trans-unit>
+            <trans-unit id="Ja9jXLJ">
+                <source>narration.guided_step_book_category_creation_new</source>
+                <target>Click Create.</target>
+            </trans-unit>
+            <trans-unit id="DLtInVg">
+                <source>narration.guided_step_book_category_creation_open</source>
+                <target>Here are your categories. A category says what a book is about, where its serie says what it belongs to.</target>
+            </trans-unit>
+            <trans-unit id="X037Ar9">
+                <source>narration.guided_step_book_category_creation_save</source>
+                <target>Save.</target>
+            </trans-unit>
+            <trans-unit id="qGYLvH4">
+                <source>narration.guided_step_book_category_creation_summary</source>
+                <target>Write the sentence introducing this category at the top of its page.</target>
+            </trans-unit>
+            <trans-unit id="tAZpoIt">
+                <source>narration.guided_step_book_category_creation_title</source>
+                <target>Give it its name: Novels, Children, Notebooks.</target>
             </trans-unit>
             <trans-unit id="exSRKHD">
                 <source>narration.guided_step_book_composition_add</source>
@@ -21,6 +53,14 @@
             <trans-unit id="RsowHNN">
                 <source>narration.guided_step_book_composition_edit</source>
                 <target>Open a book with the pencil, at the end of its row.</target>
+            </trans-unit>
+            <trans-unit id="EBSgZy1">
+                <source>narration.guided_step_book_composition_heading</source>
+                <target>Write the heading right here, in the block. A listing carries its own eyebrow, title, paragraph and background colour, so there is no need to lay a text section above the grid any more.</target>
+            </trans-unit>
+            <trans-unit id="5Lflca4">
+                <source>narration.guided_step_book_composition_listing</source>
+                <target>Pick one of the catalog listings. Books, series, people, forthcoming titles, strips: each draws its own grid from the catalog and keeps itself up to date, so nothing has to be retyped when a title comes out.</target>
             </trans-unit>
             <trans-unit id=".76L87n">
                 <source>narration.guided_step_book_composition_open</source>
@@ -37,6 +77,10 @@
             <trans-unit id="ptppQQ4">
                 <source>narration.guided_step_book_contributor_creation_done</source>
                 <target>The person is in the catalog: their page is online, still empty of credits. A serie or a book now picks them in its author and illustrator fields, and shows up there on its own.</target>
+            </trans-unit>
+            <trans-unit id="iRopJlo">
+                <source>narration.guided_step_book_contributor_creation_links</source>
+                <target>Add a line per store where their work is sold. The address is their own page there, the one listing everything they signed, not the page of a single book.</target>
             </trans-unit>
             <trans-unit id="H2EMpXm">
                 <source>narration.guided_step_book_contributor_creation_name</source>
@@ -69,6 +113,14 @@
             <trans-unit id="wwIfTuU">
                 <source>narration.guided_step_book_creation_author</source>
                 <target>Credit its author, from the same list as the serie's. Left empty, a book in a serie credits whoever the serie credits: fill it in only for a book signed by somebody else.</target>
+            </trans-unit>
+            <trans-unit id="CWXe6p8">
+                <source>narration.guided_step_book_creation_categories</source>
+                <target>Say what this book is about, as many categories as it deserves.</target>
+            </trans-unit>
+            <trans-unit id="kXa_xTG">
+                <source>narration.guided_step_book_creation_contributors</source>
+                <target>Credit everyone else: the voice that read the book, the pen that carried it into another language, one row per person and per part. Author and illustrator are written above.</target>
             </trans-unit>
             <trans-unit id="qq3vB.v">
                 <source>narration.guided_step_book_creation_done</source>

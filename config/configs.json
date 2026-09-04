@@ -33,6 +33,17 @@
         "description": "description.book_route_series"
     },
     {
+        "label": "label.book_route_categories",
+        "slug": "book-route-categories",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_categories"
+    },
+    {
         "label": "label.book_route_contributors",
         "slug": "book-route-contributors",
         "sensitive": false,
@@ -174,6 +185,17 @@
         "group": "book",
         "severity": null,
         "description": "description.book_gplay_affiliate"
+    },
+    {
+        "label": "label.book_isbn_prefixes",
+        "slug": "book-isbn-prefixes",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "textarea",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_isbn_prefixes"
     },
     {
         "label": "label.book_catalog_title",

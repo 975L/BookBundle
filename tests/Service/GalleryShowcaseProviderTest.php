@@ -19,7 +19,7 @@ use Twig\Environment;
 class GalleryShowcaseProviderTest extends TestCase
 {
     /**
-     * @var array<string, array<string, mixed>> template => the context it was rendered with
+     * @var array<string, list<array<string, mixed>>> template => one context per call, the two book variants rendering the same listing
      */
     private array $rendered = [];
 
@@ -32,7 +32,7 @@ class GalleryShowcaseProviderTest extends TestCase
         $twig = $this->createStub(Environment::class);
         $twig->method('render')->willReturnCallback(
             function (string $template, array $context): string {
-                $this->rendered[$template] = $context;
+                $this->rendered[$template][] = $context;
 
                 return "<!-- {$template} -->";
             }
@@ -54,15 +54,14 @@ class GalleryShowcaseProviderTest extends TestCase
      */
     private function renderedSeries(): array
     {
-        return $this->rendered['@c975LBook/components/Serie/Series.html.twig']['series'];
+        return $this->rendered['@c975LBook/components/Serie/Series.html.twig'][0]['series'];
     }
 
-    /**
-     * @return list<\c975L\BookBundle\Entity\Book>
-     */
-    private function renderedBooks(string $template): array
+    // The books handed to one call of a listing: the released ones and the ones still to come are two variants drawn on the very same template, so which call is asked for has to be said.
+    /** @return list<\c975L\BookBundle\Entity\Book> */
+    private function renderedBooks(string $template, int $call = 0): array
     {
-        return $this->rendered[$template]['books'];
+        return $this->rendered[$template][$call]['books'];
     }
 
     /**
@@ -70,16 +69,17 @@ class GalleryShowcaseProviderTest extends TestCase
      */
     private function renderedStrips(): array
     {
-        return $this->rendered['@c975LBook/components/Strip/Cards.html.twig']['strips'];
+        return $this->rendered['@c975LBook/components/Strip/Cards.html.twig'][0]['strips'];
     }
 
-    public function testGetShowcasesReturnsAllFourBlockKinds(): void
+    public function testGetShowcasesReturnsAllFiveBlockKinds(): void
     {
         $showcases = $this->createProvider()->getShowcases();
 
         $this->assertSame(
             [
                 'label.gallery_showcase_book_series',
+                'label.gallery_showcase_book_categories',
                 'label.gallery_showcase_book_books',
                 'label.gallery_showcase_book_to_be_published',
                 'label.gallery_showcase_book_serie_strips',
@@ -142,8 +142,9 @@ class GalleryShowcaseProviderTest extends TestCase
     {
         $this->createProvider()->getShowcases();
 
-        foreach (['@c975LBook/components/Book/Books.html.twig', '@c975LBook/components/Book/ToBePublished.html.twig'] as $template) {
-            foreach ($this->renderedBooks($template) as $book) {
+        // The two calls of the one listing: the books already out, then the ones still to come
+        foreach ([0, 1] as $call) {
+            foreach ($this->renderedBooks('@c975LBook/components/Book/Books.html.twig', $call) as $book) {
                 $this->assertCount(1, $book->getCovers());
                 $this->assertSame('cover', $book->getCovers()->first()->getKind());
             }

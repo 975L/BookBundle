@@ -1,1 +1,7 @@
-<twig:c975LBook:Book:Books books="{{ book_block_books(max ?? null) }}" displayMore="{{ displayMore ?? false }}" />
+{# Adapter for the dynamic Block system - the books are resolved live (see BookBlockExtension), the block itself only storing what to show and the head it shows it under #}
+{% set books = book_block_books(max ?? null, random ?? false, categorySlug ?? null) %}
+{% if books is not empty %}
+    <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" id="{{ anchor_id }}">
+        <twig:c975LBook:Book:Books books="{{ books }}" displayMore="{{ displayMore ?? false }}"/>
+    </twig:c975LBook:Listing:Section>
+{% endif %}

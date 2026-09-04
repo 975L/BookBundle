@@ -10,11 +10,13 @@
 
 namespace c975L\BookBundle\Twig;
 
+use c975L\BookBundle\Controller\Management\BookCategoryCrudController;
 use c975L\BookBundle\Controller\Management\BookCrudController;
 use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
@@ -31,11 +33,11 @@ class BookEditUrlExtension
         'hero' => 'title',
         'resume' => 'summary',
         'apercu' => 'videos',
-        // The extracts are the files held under no edition, the editions are the files held under one, and the shops and the podcasts are the platforms each edition is sold on: all four are edited inside the editions collection
+        // The extracts are the files held under no edition and the editions are the files held under one, both written inside the editions collection - where the platforms used to be written too, before each gesture took a collection of its own (see BookCrudController): the crayon over the shops card then opened the editions
         'extracts' => 'editions',
         'editions' => 'editions',
-        'shops' => 'editions',
-        'podcasts' => 'editions',
+        'shops' => 'buyLinks',
+        'podcasts' => 'listenLinks',
         'crowdfunding' => 'crowdfunding',
         'presse' => 'presses',
         'marketing' => 'marketings',
@@ -47,10 +49,10 @@ class BookEditUrlExtension
         'resume' => 'summary',
     ];
 
-    // A person's page is their portrait, what they are introduced with, and what they signed - the last being written on each book's own screen, it gets no pencil
+    // A person's page is their portrait, the sentences they are introduced with and what they signed - the first two standing together inside the hero, and the last being written on each book's own screen, it gets no pencil
     private const array CONTRIBUTOR_FIELDS = [
         'hero' => 'name',
-        'resume' => 'summary',
+        'shops' => 'links',
     ];
 
     private const array STRIP_FIELDS = [
@@ -129,6 +131,13 @@ class BookEditUrlExtension
     public function serieEditUrl(Serie $serie): ?string
     {
         return $this->editUrl(SerieCrudController::class, $serie->getId());
+    }
+
+    // And for a category's, which its own screen edits whole: a category has no page cut into sections, it has a summary and the books it holds
+    #[AsTwigFunction('book_category_edit_url')]
+    public function categoryEditUrl(BookCategory $category): ?string
+    {
+        return $this->editUrl(BookCategoryCrudController::class, $category->getId());
     }
 
     // And for the card a person is reached by, which their own screen edits whole

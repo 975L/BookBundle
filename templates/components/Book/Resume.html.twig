@@ -1,10 +1,9 @@
-{# <twig:c975LBook:Book:Resume book="{{ book }}" [editUrl=""] /> #}
-{# The sentence the book opens on, laid under the hero: neither title nor anchor, a summary being no destination to jump to - it is what is read before all the rest #}
+{# <twig:c975LBook:Book:Resume book="{{ book }}" [editUrl=""] />. The sentence the book opens on, laid under the hero: neither title nor anchor, a summary being no destination to jump to - it is what is read before all the rest #}
 {% props book, editUrl = "" %}
 {% if book.summary %}
     <div class="book-page__lead"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
         <div class="text lead">
-            <twig:c975LUi:Text:Readmore text="{{ book.summary }}" id="book-summary"/>
+            <twig:c975LUi:Text:Readmore text="{{ book.summary }}" id="book-summary" locale="{{ book.language }}"/>
         </div>
     </div>
 {% endif %}

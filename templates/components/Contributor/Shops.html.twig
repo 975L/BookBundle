@@ -1,0 +1,22 @@
+{# <twig:c975LBook:Contributor:Shops contributor="{{ contributor }}" [section="{{ section }}"] [editUrl=""] />. Where the books someone signed are bought: the very card a book's page prints, the same tiles read from the same vocabulary (see Book:Shops) - what changes is that each address is the person's own page at the store, not one book's. The site's own shop comes at the head of the row and carries the site color, as it does on a book's page: it is the same books everywhere, but it is here the publisher sells them himself #}
+{% props contributor, section = {}, editUrl = "" %}
+{% set section = {anchor: 'shops', label: 'label.contributor_buy'|trans({}, 'book')}|merge(section) %}
+{% set links = contributor.links %}
+{% if links|length %}
+    {# The basket belongs to the site itself (see c975L\BookBundle\Enum\BookLinkKind::Shop): it takes the stores' tile, at the head and accented, rather than leaving the row #}
+    {% set own = links|filter(link => link.kind == 'shop')|first|default(null) %}
+    {% set others = links|filter(link => link.kind != 'shop') %}
+    {% set body %}
+        <div class="flex-center text-center">
+            {% if own %}
+                <div class="book-tile--own">
+                    <twig:c975LUi:Image:Link label="{{ book_link_label(own) }}" src="{{ book_link_icon(own) }}" url="{{ book_link_url(own) }}" width="48" height="48"/>
+                </div>
+            {% endif %}
+            {% for link in others %}
+                <twig:c975LUi:Image:Link label="{{ book_link_label(link) }}" src="{{ book_link_icon(link) }}" url="{{ book_link_url(link) }}" width="48" height="48" target="_blank"/>
+            {% endfor %}
+        </div>
+    {% endset %}
+    {{ include('@c975LBook/book/_section.html.twig', {form: 'links', section: section, editUrl: editUrl, body: body}) }}
+{% endif %}

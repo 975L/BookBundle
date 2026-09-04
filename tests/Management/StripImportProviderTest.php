@@ -93,7 +93,7 @@ class StripImportProviderTest extends TestCase
         $this->assertSame('La Compagnie des Ombres', $series[0]->getTitle());
     }
 
-    // @param list<object> $persisted filled with everything the import hands to the entity manager, the flush being a stub
+    /** @param list<object> $persisted filled with everything the import hands to the entity manager, the flush being a stub */
     private function createProvider(string $projectDir, ?Strip $existingStrip = null, array &$persisted = []): StripImportProvider
     {
         $em = $this->createStub(EntityManagerInterface::class);

@@ -1,1 +1,7 @@
-<twig:c975LBook:Contributor:Contributors contributors="{{ book_block_contributors(max ?? null) }}" displayMore="{{ displayMore ?? false }}" />
+{# Adapter for the dynamic Block system - the people are resolved live (see BookBlockExtension), the block itself only storing what to show and the head it shows it under #}
+{% set contributors = book_block_contributors(max ?? null, random ?? false) %}
+{% if contributors is not empty %}
+    <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" id="{{ anchor_id }}">
+        <twig:c975LBook:Contributor:Contributors contributors="{{ contributors }}" displayMore="{{ displayMore ?? false }}"/>
+    </twig:c975LBook:Listing:Section>
+{% endif %}

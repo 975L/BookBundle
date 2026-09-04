@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Management;
 
+use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\ContributorServiceInterface;
@@ -18,12 +19,12 @@ use c975L\BookBundle\Service\StripServiceInterface;
 use c975L\ConfigBundle\Management\SitemapProviderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-// Declares the books/series/strips (public/sitemap-book.xml) - BookBundle's contribution to the site's sitemap-index.xml, collected like any other bundle's by ConfigBundle's SitemapWriter (c975l:sitemaps:create). The bundle supplies urls and nothing else: rendering and writing the file is the writer's job, as it is for SiteBundle's own pages
-// Only the families this site actually serves: a prefix left empty takes its pages off the site (see BookRoutePrefix), and a sitemap declaring them would advertise urls the router answers nothing for - BookPublicUrlResolver hands back no url for those, index included
+// Declares the books/series/strips (public/sitemap-book.xml) - BookBundle's contribution to the site's sitemap-index.xml, collected like any other bundle's by ConfigBundle's SitemapWriter (c975l:sitemaps:create). The bundle supplies urls and nothing else: rendering and writing the file is the writer's job, as it is for SiteBundle's own pages. Only the families this site actually serves: a prefix left empty takes its pages off the site (see BookRoutePrefix), and a sitemap declaring them would advertise urls the router answers nothing for - BookPublicUrlResolver hands back no url for those, index included
 class BookSitemapProvider implements SitemapProviderInterface
 {
     public function __construct(
         private readonly BookPublicUrlResolver $bookPublicUrlResolver,
+        private readonly BookCategoryServiceInterface $categoryService,
         private readonly BookServiceInterface $bookService,
         private readonly ContributorServiceInterface $contributorService,
         private readonly SerieServiceInterface $serieService,
@@ -37,12 +38,12 @@ class BookSitemapProvider implements SitemapProviderInterface
         return 'book';
     }
 
-    // Every url is built through BookPublicUrlResolver, so the sitemap declares the exact same paths the routes produce - and nothing at all before "site-url" is configured, nor for a family read elsewhere
-    // "title" and "description" are what ConfigBundle's SeoFilesWriter builds public/llms.txt from, the sitemap itself ignoring both. The three indexes, the books and the series carry them: an untitled url is skipped there, and a strip page holds a drawing whose own title says nothing a reader of llms.txt could act on - listing one line per plate would turn the file into a Markdown sitemap, which the format isn't
+    // Every url is built through BookPublicUrlResolver, so the sitemap declares the exact same paths the routes produce - and nothing at all before "site-url" is configured, nor for a family read elsewhere. "title" and "description" are what ConfigBundle's SeoFilesWriter builds public/llms.txt from, the sitemap itself ignoring both. The three indexes, the books and the series carry them: an untitled url is skipped there, and a strip page holds a drawing whose own title says nothing a reader of llms.txt could act on - listing one line per plate would turn the file into a Markdown sitemap, which the format isn't
     public function getUrls(): array
     {
         return array_merge(
             $this->getBookUrls(),
+            $this->getCategoryUrls(),
             $this->getSerieUrls(),
             $this->getStripUrls(),
             $this->getContributorUrls(),
@@ -67,6 +68,30 @@ class BookSitemapProvider implements SitemapProviderInterface
                 'title' => (string) $book->getTitle(),
                 // The back-cover text, handed over as it stands: the writer flattens it, strips its markup and bounds it
                 'description' => $book->getSummary(),
+            ];
+        }
+
+        return $urls;
+    }
+
+    // The categories a visitor can open, their index above them: one holding nothing the site shows is off the index and off the sitemap alike (see BookCategoryRepository::findWithBooks())
+    private function getCategoryUrls(): array
+    {
+        $urls = $this->getIndexUrls('book_category_index', 'label.categories');
+
+        foreach ($this->categoryService->findWithBooks() as $category) {
+            $url = $this->bookPublicUrlResolver->resolve('book_category_display', ['slug' => $category->getSlug()]);
+            if (null === $url) {
+                continue;
+            }
+
+            $urls[] = [
+                'loc' => $url,
+                'lastmod' => date('Y-m-d', $category->getModification()->getTimestamp()),
+                'changefreq' => 'monthly',
+                'priority' => 7,
+                'title' => (string) $category->getTitle(),
+                'description' => $category->getSummary(),
             ];
         }
 

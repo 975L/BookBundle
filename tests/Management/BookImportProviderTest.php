@@ -11,17 +11,20 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Management\BookCategoryResolver;
 use c975L\BookBundle\Management\BookExportProvider;
 use c975L\BookBundle\Management\BookImportProvider;
 use c975L\BookBundle\Management\ContributorResolver;
 use c975L\BookBundle\Management\MediaArchiver;
 use c975L\BookBundle\Management\SerieResolver;
+use c975L\BookBundle\Repository\BookCategoryRepository;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
@@ -183,7 +186,32 @@ class BookImportProviderTest extends TestCase
         return $book;
     }
 
-    // @param list<object> $persisted filled with everything the import hands to the entity manager, the flush being a stub
+    // The categories a book names are matched by slug and created on the fly where the site doesn't hold them yet, so the two kinds import in whichever order the archive lists them (see BookCategoryResolver)
+    public function testImportFilesTheBookUnderTheCategoriesItNames(): void
+    {
+        $persisted = [];
+        $this->createProvider(sys_get_temp_dir(), persisted: $persisted)->import([[
+            'slug' => 'tome-1',
+            'title' => 'Tome 1',
+            'categories' => ['romans', 'jeunesse'],
+        ]]);
+
+        $book = array_values(array_filter($persisted, static fn (object $e) => $e instanceof Book))[0];
+        $this->assertSame(['romans', 'jeunesse'], array_map(static fn (BookCategory $c): ?string => $c->getSlug(), $book->getCategories()->toArray()));
+    }
+
+    // Replaced whole rather than merged: a category an archive no longer names must come off the book here too
+    public function testImportTakesOffTheCategoriesTheArchiveNoLongerNames(): void
+    {
+        $existing = new Book()->setSlug('tome-1')->setTitle('Tome 1')->setSummary('');
+        $existing->addCategory(new BookCategory()->setSlug('anciens')->setTitle('Anciens'));
+
+        $this->createProvider(sys_get_temp_dir(), $existing)->import([['slug' => 'tome-1', 'title' => 'Tome 1', 'categories' => []]]);
+
+        $this->assertCount(0, $existing->getCategories());
+    }
+
+    /** @param list<object> $persisted filled with everything the import hands to the entity manager, the flush being a stub */
     private function createProvider(string $projectDir, ?Book $existingBook = null, array &$persisted = []): BookImportProvider
     {
         $em = $this->createStub(EntityManagerInterface::class);
@@ -200,6 +228,7 @@ class BookImportProviderTest extends TestCase
             new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class)),
             new MediaArchiver($em, $projectDir),
             new ContributorResolver($em, $this->createStub(ContributorRepository::class), new AsciiSlugger()),
+            new BookCategoryResolver($em, $this->createStub(BookCategoryRepository::class)),
             new SerieResolver($em, $this->createStub(SerieRepository::class)),
         );
     }
@@ -213,7 +242,7 @@ class BookImportProviderTest extends TestCase
         );
     }
 
-    // @param array<string, string> $entries archive-relative path => bytes
+    /** @param array<string, string> $entries archive-relative path => bytes */
     private function extractArchiveContent(array $entries): string
     {
         $filesDir = sys_get_temp_dir() . '/book_archive_test_' . bin2hex(random_bytes(4));

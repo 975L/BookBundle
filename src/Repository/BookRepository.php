@@ -69,7 +69,28 @@ class BookRepository extends ServiceEntityRepository
             $query->setMaxResults($number);
         }
 
-        return $query->getQuery()->getResult();
+        return $this->withCovers($query->getQuery()->getResult());
+    }
+
+    // The catalog cut down to one category, in the very order the whole catalog reads (see findAllPublished()) - what a "books" block narrowed down to a category prints, and nothing when the slug names no category
+    /**
+     * @return Book[]
+     */
+    public function findPublishedByCategory(string $slug, ?int $number = null): array
+    {
+        $query = $this->publishedQueryBuilder()
+            ->innerJoin('b.categories', 'category')
+            ->andWhere('category.slug = :categorySlug')
+            ->andWhere('category.isDeleted = false')
+            ->andWhere('category.hidden = false')
+            ->setParameter('categorySlug', $slug)
+        ;
+
+        if (null !== $number) {
+            $query->setMaxResults($number);
+        }
+
+        return $this->withCovers($query->getQuery()->getResult());
     }
 
     // Every book whose page answers, the ones a newer version replaces included: what a sitemap lists and what a link checker walks, where the catalog above lists only what a reader browses (see Book::$newerVersion)
@@ -115,6 +136,22 @@ class BookRepository extends ServiceEntityRepository
         ;
     }
 
+    // Whether a book waits for a date still ahead, which is what tells a listing moving on its own from one only ever changed by a save: the answer is what BookBlockCacheTagProvider caches or renders live on. A book left undated is not one of them - it comes out the day someone dates it, which is an event of its own
+    public function hasScheduled(): bool
+    {
+        return [] !== $this->createQueryBuilder('b')
+            ->select('b.id')
+            ->andWhere('b.isDeleted = false')
+            // A book set aside stays out of every listing the day its date comes round, so it is no reason to keep rendering them live
+            ->andWhere('b.hidden = false')
+            ->andWhere('b.published > :now')
+            ->setParameter('now', new \DateTime())
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // The book a number leads to, which a numbered url and a short link both ask for (see BookController::shortcut()). Two rows can carry the same number - a version and the one replacing it - so the one still listed answers, a reader following a number being meant to land on what the catalog reads today (see Book::$newerVersion)
     public function findOneByNumber(int $number): ?Book
     {
@@ -134,12 +171,14 @@ class BookRepository extends ServiceEntityRepository
         ;
     }
 
-    // The catalog: every book a reader can open, the most recently published first. A book is out when its date has come - the only one it carries, its editions having none (see BookEdition)
-    // A book replaced by a newer version is not listed: it keeps its page, its ISBN and its place in the sitemap, and is reached from the version that replaces it (see Book::$newerVersion)
+    // The catalog: every book a reader can open, the most recently published first. A book is out when its date has come - the only one it carries, its editions having none (see BookEdition). A book replaced by a newer version is not listed: it keeps its page, its ISBN and its place in the sitemap, and is reached from the version that replaces it (see Book::$newerVersion)
     private function publishedQueryBuilder(?string $language = null, bool $includeReplaced = false): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('b')
             ->leftJoin('b.serie', 'serie')
+            // The book this one replaces, joined rather than left to Doctrine: an inverse one-to-one cannot be a lazy proxy - it has to be read to be known absent - so a list built without it costs one query per book (see Book::$previousVersion). A to-one join multiplies no row, so it is safe under the setMaxResults() the callers add, and countPublished() resets the select it adds
+            ->leftJoin('b.previousVersion', 'previousVersion')
+            ->addSelect('previousVersion')
             ->andWhere('b.isDeleted = false')
             // A book set aside by its editor leaves every one of these lists, the sitemap included, until the box is unticked (see Entity\Trait\HideableTrait)
             ->andWhere('b.hidden = false')
@@ -171,8 +210,11 @@ class BookRepository extends ServiceEntityRepository
      */
     public function findAllToBePublished(): array
     {
-        return $this->createQueryBuilder('b')
+        $books = $this->createQueryBuilder('b')
             ->leftJoin('b.serie', 'serie')
+            // Same as publishedQueryBuilder(): the inverse one-to-one is read at hydration whether it is asked for or not
+            ->leftJoin('b.previousVersion', 'previousVersion')
+            ->addSelect('previousVersion')
             ->andWhere('b.isDeleted = false')
             ->andWhere('b.newerVersion IS NULL')
             // The block announcing what is coming is a public one: a book set aside, or one of a serie set aside, is no more announced than it is listed
@@ -185,6 +227,35 @@ class BookRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+
+        return $this->withCovers($books);
+    }
+
+    // The images the cards of a listing read, loaded in one query for the whole list rather than one per book (see BookSectionsExtension::cover(), which asks each book for its own). Kept out of the listing queries themselves: a to-many join multiplies the rows their setMaxResults() then cuts, and a page of six books would come back short
+    /**
+     * @param Book[] $books
+     *
+     * @return Book[] The same books, in the same order, their medias already loaded
+     */
+    private function withCovers(array $books): array
+    {
+        $ids = array_values(array_filter(array_map(static fn (Book $book): ?int => $book->getId(), $books)));
+
+        if ([] === $ids) {
+            return $books;
+        }
+
+        // The result is dropped on purpose: hydrating it fills the medias collection of the very books the caller already holds
+        $this->createQueryBuilder('b')
+            ->select('b', 'medias')
+            ->leftJoin('b.medias', 'medias')
+            ->andWhere('b.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $books;
     }
 
     // The languages the catalog is actually written in, so a list can be offered per language without any site having to declare which ones it publishes
@@ -207,9 +278,7 @@ class BookRepository extends ServiceEntityRepository
         return array_values(array_filter($rows, static fn (?string $language): bool => null !== $language && '' !== $language));
     }
 
-    // Finds books based on search
-    // "$serieId": the search a serie's own page carries, which looks inside that serie alone - the same field asks the whole catalog elsewhere (see book/index.html.twig)
-    // A book replaced by a newer version is answered here, where no list shows it any more: the search and the page of the book replacing it are the two ways left to reach it (see Book::$newerVersion)
+    // Finds books based on search. "$serieId": the search a serie's own page carries, which looks inside that serie alone - the same field asks the whole catalog elsewhere (see book/index.html.twig). A book replaced by a newer version is answered here, where no list shows it any more: the search and the page of the book replacing it are the two ways left to reach it (see Book::$newerVersion)
     public function search(string $query, ?int $serieId = null): array
     {
         if (empty($query)) {

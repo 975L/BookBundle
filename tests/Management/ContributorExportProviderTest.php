@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\ContributorLink;
 use c975L\BookBundle\Entity\ContributorMedia;
 use c975L\BookBundle\Management\ContributorExportProvider;
 use c975L\BookBundle\Management\ContributorImportProvider;
@@ -82,6 +83,17 @@ class ContributorExportProviderTest extends TestCase
         $this->assertArrayNotHasKey('series', $item);
 
         $this->removeDir($projectDir);
+    }
+
+    // Where their books are bought is theirs and not a book's, so it travels with the person
+    public function testSerializeCarriesThePlatformsTheirBooksAreBoughtAt(): void
+    {
+        $contributor = $this->createContributor();
+        $contributor->addLink(new ContributorLink()->setKind('epub_fnac')->setUrl('https://www.fnac.com/ia1/Camille-Ferrand')->setPosition(10));
+
+        $item = $this->createProvider(sys_get_temp_dir())->serialize([$contributor])['items'][0];
+
+        $this->assertSame([['kind' => 'epub_fnac', 'url' => 'https://www.fnac.com/ia1/Camille-Ferrand', 'position' => 10]], $item['links']);
     }
 
     private function createContributor(): Contributor

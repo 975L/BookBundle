@@ -15,14 +15,15 @@ use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-// Builds the canonical public url of an index, a book, a serie or a strip - the single place this bundle's public urls are spelled, so BookSitemapProvider (and anything checking those urls later) can't drift from the routes themselves. Same shape as SiteBundle's PagePublicUrlResolver, with a route name instead of an entity: three families share these routes where a Page has but one
-// The path is generated through the router rather than hand-built, so a renamed route can never leave a stale url behind in the sitemap. The configured prefix is passed to the generator here instead of being read from the request context (BookRoutePrefixListener's job): this runs from a cron command, where there is no request to carry it - and the host comes from "site-url" for that very same reason
+// Builds the canonical public url of an index, a book, a serie or a strip - the single place this bundle's public urls are spelled, so BookSitemapProvider (and anything checking those urls later) can't drift from the routes themselves. Same shape as SiteBundle's PagePublicUrlResolver, with a route name instead of an entity: three families share these routes where a Page has but one. The path is generated through the router rather than hand-built, so a renamed route can never leave a stale url behind in the sitemap. The configured prefix is passed to the generator here instead of being read from the request context (BookRoutePrefixListener's job): this runs from a cron command, where there is no request to carry it - and the host comes from "site-url" for that very same reason
 class BookPublicUrlResolver
 {
     // Public route => the ConfigBundle entry carrying its first segment, the route parameter it fills being BookRoutePrefix::PREFIXES's own
     private const array ROUTE_PREFIXES = [
         'book_index' => 'book-route-books',
         'book_display' => 'book-route-book',
+        'book_category_index' => 'book-route-categories',
+        'book_category_display' => 'book-route-categories',
         'contributor_index' => 'book-route-contributors',
         'contributor_display' => 'book-route-contributor',
         'serie_index' => 'book-route-series',

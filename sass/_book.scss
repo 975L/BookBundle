@@ -142,6 +142,42 @@ $book-bp-column: 1200px;
     justify-content: flex-start;
 }
 
+// The people a catalog credits are the exception: they are a handful and not a shelf, so three portraits pushed against the left edge of a wide page read as a listing that failed to fill (see Contributor:Contributors)
+.book-cards--centered {
+    justify-content: center;
+}
+
+/* LISTING BLOCKS - the section a "book_series", "book_books", "book_contributors", "book_to_be_published" or "book_serie_strips" block draws around its grid, under the head its editor typed (see templates/components/Listing/Section.html.twig) */
+
+// Cancels SiteBundle's page-wide "section { margin: 1em auto }", which parts two flats meant to touch. Vertical only: the shorthand's "0" would also drop the horizontal "auto" a centered section reads, and beat the negative margins a colored flat breaks out of the measure with. Same rule, same reason, as UiBundle's own page sections (sass/_page-sections.scss), which names the kinds that bundle ships and cannot name this one's
+main :is(.blocks, .block-animation, .block-editable) > .book-listing {
+    margin-block: 0;
+}
+
+// The shared rhythm, on the top edge only: a block owns the room above it and declares nothing below, so any two blocks are parted by exactly one step. Read through --section-space, the one property UiBundle writes the whole page's rhythm on, so a site retunes both at once; the fallback restates its value, this sheet having no access to the sass variable holding it
+.book-listing {
+    padding-top: var(--section-space, clamp(48px, 8vw, 84px));
+}
+
+// As a column slot the page-level top padding would misalign the column against its siblings
+.flex-columns__col > .book-listing {
+    padding-top: 0;
+}
+
+// Only on a flat: the step above a block belongs to the block itself, but a colored band paints down to its own edge, and without a bottom padding of its own the last row of covers would sit flush against that edge
+.book-listing.section--bg-muted,
+.book-listing.section--bg-primary,
+.book-listing.section--bg-dark {
+    padding-bottom: var(--section-space, clamp(48px, 8vw, 84px));
+}
+
+// The paragraph opening a listing: on the measure the head above it is laid on, so the two read as one block of text over the grid, and in the quieter color a section's body copy takes inside a colored flat
+.book-listing__intro {
+    max-width: var(--section-head-max-width, 640px);
+    margin: 0 0 1.5rem;
+    color: var(--section-text-soft, var(--text-muted, var(--text)));
+}
+
 // The sentence opening a section: at a paragraph's measure and not the card's, and laid like the name above it
 .book-section__intro {
     width: 100%;
@@ -368,6 +404,11 @@ $book-bp-column: 1200px;
 // HERO
 
 // The page's opening laid over a picture of the book itself: the image is a real <img> and the veil a real element, both taken out of the flow behind the text - a CSS background-image would need a style attribute no CSP nonce covers
+// A page whose first element is its hero - a person's, which carries no trail above it - printed it against the bar of a site whose navbar is fixed: nothing else was there to hold it off, the body only making room for the bar's own height (see SiteBundle, body.navbar-fixed)
+.book-page > .book-page__hero:first-child {
+    margin-block-start: var(--book-hero-margin-block-start);
+}
+
 .book-hero--has-bg {
     position: relative;
     isolation: isolate;
@@ -476,12 +517,31 @@ $book-bp-column: 1200px;
     max-width: var(--book-hero-summary-measure);
     color: var(--label-color, inherit);
     text-wrap: pretty;
+
+    // A rich text editor writes its paragraphs as divs, which carry no margin: without this a summary of three of them reads as one block
+    > * + * {
+        margin-block-start: var(--book-hero-summary-space);
+    }
 }
 
 .book-hero__meta {
     margin: 0;
     font-size: 0.9rem;
     opacity: 0.75;
+}
+
+// What someone is credited under, on their page and on their card alike: one rule for the two, the line saying the same thing in both places
+.book-hero__roles,
+.book-card__roles {
+    margin: 0;
+    font-size: var(--book-roles-size);
+    opacity: var(--book-roles-opacity);
+}
+
+// Centred under the name, where the hero states its own alignment: a card is a portrait, a name and this line, all read on the same axis
+.book-card__roles {
+    margin-block-start: var(--book-roles-space);
+    text-align: center;
 }
 
 // The score is a flex row of its own, so the centring the hero states in text has no hold on it: without this the icons start at the left edge of a block whose every other line is centred

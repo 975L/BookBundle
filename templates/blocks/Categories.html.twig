@@ -1,0 +1,7 @@
+{# Adapter for the dynamic Block system - the categories are resolved live (see BookBlockExtension), the block itself only storing what to show and the head it shows it under #}
+{% set categories = book_block_categories(max ?? null, random ?? false) %}
+{% if categories is not empty %}
+    <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" id="{{ anchor_id }}">
+        <twig:c975LBook:Category:Categories categories="{{ categories }}" displayMore="{{ displayMore ?? false }}"/>
+    </twig:c975LBook:Listing:Section>
+{% endif %}

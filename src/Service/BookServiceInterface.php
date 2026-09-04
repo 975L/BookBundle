@@ -13,11 +13,8 @@ interface BookServiceInterface
      */
     public function findAll(): array;
 
-    /**
-     * The published books, 10 per page.
-     *
-     * @return Pagination<Book>
-     */
+    // The published books, 10 per page.
+    /** @return Pagination<Book> */
     public function findAllPaginated(InputBag $query): Pagination;
 
     /**
@@ -28,35 +25,26 @@ interface BookServiceInterface
      */
     public function findAllPublished(?int $number = null, ?string $language = null): array;
 
-    /**
-     * Every book whose page answers, the ones a newer version replaces included - what a sitemap lists and what a link checker walks.
-     *
-     * @return Book[]
-     */
+    // The catalog cut down to one category, empty where the slug names none.
+    /** @return Book[] */
+    public function findPublishedByCategory(string $slug, ?int $number = null): array;
+
+    // Every book whose page answers, the ones a newer version replaces included - what a sitemap lists and what a link checker walks.
+    /** @return Book[] */
     public function findAllOnline(): array;
 
-    /**
-     * How many books are out, without building a single one of them.
-     *
-     * @param string|null $language narrows the count to one language
-     */
+    // How many books are out, without building a single one of them.
+    /** @param string|null $language narrows the count to one language */
     public function countPublished(?string $language = null): int;
 
-    /**
-     * The languages the catalog is actually written in, so a list can be offered per language without a site declaring which ones it publishes.
-     *
-     * @return list<string>
-     */
+    // The languages the catalog is actually written in, so a list can be offered per language without a site declaring which ones it publishes.
+    /** @return list<string> */
     public function findLanguages(): array;
 
-    /**
-     * Returns the book carrying that slug, null when none does.
-     */
+    // Returns the book carrying that slug, null when none does.
     public function findOneBySlug(string $slug): ?Book;
 
-    /**
-     * Returns the book a number leads to, the one the catalog still lists, null when none does.
-     */
+    // Returns the book a number leads to, the one the catalog still lists, null when none does.
     public function findOneByNumber(int $number): ?Book;
 
     /**
@@ -64,10 +52,7 @@ interface BookServiceInterface
      */
     public function findAllToBePublished(): array;
 
-    /**
-     * Matches published books on their title only.
-     *
-     * @return Book[] empty for an empty search
-     */
+    // Matches published books on their title only.
+    /** @return Book[] empty for an empty search */
     public function search(string $query, ?int $serieId = null): array;
 }

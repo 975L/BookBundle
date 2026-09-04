@@ -1,11 +1,11 @@
-{# <twig:c975LBook:Book:Extracts book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
-{# The pages a reader leafs through before buying, handed to UiBundle's slider. A site whose extracts live in another bundle overrides this template in templates/bundles/c975LBookBundle/components/Book/Extracts.html.twig #}
+{# <twig:c975LBook:Book:Extracts book="{{ book }}" [section="{{ section }}"] [editUrl=""] />. The pages a reader leafs through before buying, handed to UiBundle's slider. A site whose extracts live in another bundle overrides this template in templates/bundles/c975LBookBundle/components/Book/Extracts.html.twig #}
 {% props book, section = {}, editUrl = "" %}
 {% set section = {anchor: 'extracts', label: 'label.read'|trans({}, 'book', book.language)}|merge(section) %}
 {% set medias = book.extracts %}
 {% if medias|length %}
     {% set body %}
-        <twig:c975LUi:Slider:Slider media="{{ medias }}" id="slider" />
+        {# The gallery's own heading comes translated rather than left to the slider, which would read it in the visitor's language on a book written in another. What each page is described as while nobody has typed its own alternative text: a hundred extracts would otherwise publish a hundred empty alt attributes, silent to a screen reader and invisible to Google Images, which is a real channel for an illustrated catalog. Translated in the book's own language, like the heading above it #}
+        <twig:c975LUi:Slider:Slider media="{{ medias }}" id="slider" label="{{ 'label.pages_gallery'|trans({}, 'ui', book.language) }}" fallbackAlt="{{ 'label.pages_gallery'|trans({}, 'ui', book.language) }} - {{ book.title }}" />
     {% endset %}
     {{ include('@c975LBook/book/_section.html.twig', {form: 'slider', book: book, section: section, editUrl: editUrl, body: body}) }}
 {% endif %}

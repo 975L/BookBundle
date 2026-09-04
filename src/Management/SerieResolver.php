@@ -24,7 +24,7 @@ class SerieResolver
     }
 
     // $resolved is carried through one import, keyed by slug: findOneBy() can't see a serie persisted but not yet flushed, so two books of the same absent serie would otherwise each create their own
-    // @param array<string, Serie> $resolved
+    /** @param array<string, Serie> $resolved */
     public function resolve(?string $slug, ?string $title, array &$resolved): ?Serie
     {
         if (null === $slug || '' === $slug) {

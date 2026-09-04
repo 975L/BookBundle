@@ -1,7 +1,13 @@
 {# "editable": the pencil leading to the person's screen, drawn by UiBundle's overlay above what carries the url - the same condition as a serie's card, a listing rendered outside the blocks cache #}
 {% set editUrl = editable|default(false) and is_granted(config('site-role-editor')) ? contributor_edit_url(contributor) : null %}
 <article class="width-200"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
-    {% set imageSrc = contributor.portraits|first != false ? contributor.portraits|first : "bundles/c975lbook/images/no-cover.webp" %}
-    <twig:c975LUi:Image:Link label="{{ contributor.name }}" src="{{ asset(imageSrc) }}" url="{{ contributor_path(contributor) }}" class="img-thumbnail box-shadow" width="200" height="200"/>
+    {% set portrait = contributor.portraits|first %}
+    {% set imageSrc = portrait != false ? portrait : "bundles/c975lbook/images/no-cover.webp" %}
+    {# "ariaLabel" and no "label": the name is printed once, by the heading below - handed as a visible label it was written twice under each portrait, in the body font then in the title's (see UiBundle's Image:Link, which prints a label and reads an ariaLabel). The portrait's own alternative text, the person's name when it carries none. "ariaLabel" stays what the link is read as, the alt being what a search engine indexes the image on #}
+    <twig:c975LUi:Image:Link ariaLabel="{{ contributor.name }}" alt="{{ portrait.alt|default('') ?: contributor.name }}" src="{{ asset(imageSrc) }}" url="{{ contributor_path(contributor) }}" class="img-thumbnail box-shadow" width="200" height="200"/>
     <h3>{{ contributor.name }}</h3>
+    {# The same reading as their page's opening, under the name rather than beside it: a listing of portraits says what each of them did on the catalog #}
+    {% if contributor.roles|length %}
+        <p class="book-card__roles">{{ contributor.roles|map(role => book_role_label(role))|join(' · ') }}</p>
+    {% endif %}
 </article>

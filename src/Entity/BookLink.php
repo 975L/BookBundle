@@ -2,12 +2,13 @@
 
 namespace c975L\BookBundle\Entity;
 
+use c975L\BookBundle\Contract\PlatformLinkInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 // Where a book is read, listened to or watched, one row per platform holding its address. Used to be four "epub_*" columns on the book itself, which is what made adding a store a migration on every site - the platform is now a value (see c975L\BookBundle\Enum\BookLinkKind) and no longer a column
 #[ORM\Entity]
 #[ORM\Table(name: 'book_link')]
-class BookLink implements \Stringable
+class BookLink implements PlatformLinkInterface, \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

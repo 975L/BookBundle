@@ -23,6 +23,12 @@ class BookRepositoryTest extends TestCase
 {
     private string $dql = '';
 
+    /** Every DQL the repository handed over, in order: what a listing costing a second query is read on @var list<string> */
+    private array $dqls = [];
+
+    /** What the next query answers, the ones after it answering nothing @var list<list<Book>> */
+    private array $results = [];
+
     // The catalog lists what a reader browses: a book a newer version replaces is not one of them
     public function testTheCatalogLeavesOutABookAlreadyReplaced(): void
     {
@@ -37,6 +43,19 @@ class BookRepositoryTest extends TestCase
         $this->createRepository()->findAllPublished();
 
         $this->assertStringContainsString('b.hidden = false', $this->dql);
+    }
+
+    // A listing narrowed down to a category reads the very same catalog, with one join more - and skips a category set aside, whose page answers 404 anyway
+    public function testTheCatalogOfACategoryKeepsEveryRuleOfTheWholeCatalog(): void
+    {
+        $this->createRepository()->findPublishedByCategory('romans');
+
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+        $this->assertStringContainsString('b.newerVersion IS NULL', $this->dql);
+        $this->assertStringContainsString('category.slug = :categorySlug', $this->dql);
+        $this->assertStringContainsString('category.hidden = false', $this->dql);
+        // The rule the whole catalog reads: a book of a serie set aside is no more shown under a category than it is on the catalog's own index
+        $this->assertStringContainsString('serie.hidden = false', $this->dql);
     }
 
     public function testTheSitemapLeavesOutABookSetAside(): void
@@ -116,6 +135,72 @@ class BookRepositoryTest extends TestCase
         $this->assertStringContainsString('ORDER BY b.id ASC', $this->dql);
     }
 
+    // The exact complement of what the listings answer: the veto letting a block be cached at all hangs on it (see BookBlockCacheTagProvider), and a book dated ahead is the one case an entry would outlive
+    public function testAScheduledPublicationIsReadAsTheListingsReadTheirDate(): void
+    {
+        $this->createRepository()->hasScheduled();
+
+        $this->assertStringContainsString('b.published > :now', $this->dql);
+    }
+
+    // One row is enough to answer, where reading the whole catalog would cost a query per block
+    public function testAScheduledPublicationIsLookedForOnASingleRow(): void
+    {
+        $repository = $this->createRepository();
+
+        $this->assertFalse($repository->hasScheduled());
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+        $this->assertStringContainsString('b.isDeleted = false', $this->dql);
+    }
+
+    // An inverse one-to-one cannot be a lazy proxy - it has to be read to be known absent - so a listing built without it costs one query per book (see Book::$previousVersion). A to-one join, which multiplies no row and survives the setMaxResults() the catalog adds
+    public function testTheCatalogReadsTheBookItReplacesInTheSameQuery(): void
+    {
+        $this->createRepository()->findAllPublished(6);
+
+        $this->assertStringContainsString('LEFT JOIN b.previousVersion previousVersion', $this->dql);
+        $this->assertStringContainsString('SELECT b, previousVersion', $this->dql);
+    }
+
+    // The same on the block announcing what is coming, which lists books the same way
+    public function testTheBooksToComeReadTheBookTheyReplaceInTheSameQuery(): void
+    {
+        $this->createRepository()->findAllToBePublished();
+
+        $this->assertStringContainsString('LEFT JOIN b.previousVersion previousVersion', $this->dqls[0]);
+        $this->assertStringContainsString('SELECT b, previousVersion', $this->dqls[0]);
+    }
+
+    // The covers a listing of cards reads, in one query for the whole list: the collection cannot be joined into the listing itself, whose setMaxResults() would then cut rows and not books
+    public function testTheCoversOfAListingAreReadInOneQueryForTheWholeList(): void
+    {
+        $repository = $this->createRepository();
+        $this->results = [[$this->book(1), $this->book(2)]];
+
+        $repository->findAllPublished(6);
+
+        $this->assertCount(2, $this->dqls);
+        $this->assertStringContainsString('LEFT JOIN b.medias medias', $this->dql);
+        $this->assertStringContainsString('b.id IN (:ids)', $this->dql);
+    }
+
+    // Nothing listed, nothing to read: a page whose catalog is empty asks for no cover at all
+    public function testAnEmptyListingAsksForNoCoverAtAll(): void
+    {
+        $this->createRepository()->findAllPublished(6);
+
+        $this->assertCount(1, $this->dqls);
+    }
+
+    // A book as the listing hands it over: only its id is read, the covers query being built on that alone
+    private function book(int $id): Book
+    {
+        $book = new Book();
+        new \ReflectionProperty(Book::class, 'id')->setValue($book, $id);
+
+        return $book;
+    }
+
     // The query the repository builds is read back through the DQL the entity manager is handed, the rest of it being Doctrine's own
     private function createRepository(): BookRepository
     {
@@ -126,12 +211,13 @@ class BookRepositoryTest extends TestCase
         $entityManager->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($entityManager));
         $entityManager->method('createQuery')->willReturnCallback(function (string $dql): Query {
             $this->dql = $dql;
+            $this->dqls[] = $dql;
 
             $query = $this->createStub(Query::class);
             $query->method('setParameters')->willReturnSelf();
             $query->method('setFirstResult')->willReturnSelf();
             $query->method('setMaxResults')->willReturnSelf();
-            $query->method('getResult')->willReturn([]);
+            $query->method('getResult')->willReturn(array_shift($this->results) ?? []);
             $query->method('getOneOrNullResult')->willReturn(null);
 
             return $query;

@@ -6,9 +6,41 @@
                 <source>narration.books</source>
                 <target>« Livres » liste tout le catalogue : informations, auteur, illustrateur, éditions, liens de vente et blocks de contenu.</target>
             </trans-unit>
+            <trans-unit id="DNxHSeJ">
+                <source>narration.categories</source>
+                <target>« Catégories » découpe le catalogue par sujet : un livre en porte autant qu'il en mérite, et une catégorie a sa propre page si le site lui en donne une.</target>
+            </trans-unit>
             <trans-unit id="wVe4G1M">
                 <source>narration.contributors</source>
                 <target>« Auteurs et illustrateurs » tient les personnes créditées par le catalogue. Chacune a sa page, qui liste ce qu'elle a signé ; un livre ou une série les choisit dans cette liste plutôt que de retaper leur nom.</target>
+            </trans-unit>
+            <trans-unit id="N9kKVeh">
+                <source>narration.guided_step_book_category_creation_code</source>
+                <target>Si vous passez par un distributeur, indiquez ici le code du métier. Sinon, laissez vide.</target>
+            </trans-unit>
+            <trans-unit id="3cSe4af">
+                <source>narration.guided_step_book_category_creation_done</source>
+                <target>La catégorie est créée. Vous y classerez des livres depuis leur propre fiche.</target>
+            </trans-unit>
+            <trans-unit id="Ja9jXLJ">
+                <source>narration.guided_step_book_category_creation_new</source>
+                <target>Cliquez sur Créer.</target>
+            </trans-unit>
+            <trans-unit id="DLtInVg">
+                <source>narration.guided_step_book_category_creation_open</source>
+                <target>Voici vos catégories. Une catégorie dit de quoi parle un livre, là où la série dit à quoi il appartient.</target>
+            </trans-unit>
+            <trans-unit id="X037Ar9">
+                <source>narration.guided_step_book_category_creation_save</source>
+                <target>Enregistrez.</target>
+            </trans-unit>
+            <trans-unit id="qGYLvH4">
+                <source>narration.guided_step_book_category_creation_summary</source>
+                <target>Écrivez la phrase qui présentera cette catégorie en tête de sa page.</target>
+            </trans-unit>
+            <trans-unit id="tAZpoIt">
+                <source>narration.guided_step_book_category_creation_title</source>
+                <target>Donnez-lui son nom : Romans, Jeunesse, Carnets.</target>
             </trans-unit>
             <trans-unit id="exSRKHD">
                 <source>narration.guided_step_book_composition_add</source>
@@ -21,6 +53,14 @@
             <trans-unit id="RsowHNN">
                 <source>narration.guided_step_book_composition_edit</source>
                 <target>Ouvrez un livre avec le crayon, au bout de sa ligne.</target>
+            </trans-unit>
+            <trans-unit id="EBSgZy1">
+                <source>narration.guided_step_book_composition_heading</source>
+                <target>Écrivez le chapeau ici même, dans le block. Une listing porte son surtitre, son titre, son paragraphe et son aplat de couleur : il n’y a plus besoin de poser une section de texte au-dessus de la grille.</target>
+            </trans-unit>
+            <trans-unit id="5Lflca4">
+                <source>narration.guided_step_book_composition_listing</source>
+                <target>Choisissez une des listings du catalogue. Livres, séries, personnes, à paraître, planches : chacune tire sa grille du catalogue et se tient à jour toute seule, rien n’est à retaper quand un titre paraît.</target>
             </trans-unit>
             <trans-unit id=".76L87n">
                 <source>narration.guided_step_book_composition_open</source>
@@ -37,6 +77,10 @@
             <trans-unit id="ptppQQ4">
                 <source>narration.guided_step_book_contributor_creation_done</source>
                 <target>La personne est au catalogue : sa page est en ligne, encore vide de crédits. Une série ou un livre la choisit désormais dans ses champs d'auteur et d'illustrateur, et s'y affiche de lui-même.</target>
+            </trans-unit>
+            <trans-unit id="iRopJlo">
+                <source>narration.guided_step_book_contributor_creation_links</source>
+                <target>Ajoutez une ligne par plateforme où on trouve son travail. L’adresse est sa page à elle, celle qui liste tout ce qu’elle a signé, pas la page d’un livre en particulier.</target>
             </trans-unit>
             <trans-unit id="H2EMpXm">
                 <source>narration.guided_step_book_contributor_creation_name</source>
@@ -69,6 +113,14 @@
             <trans-unit id="wwIfTuU">
                 <source>narration.guided_step_book_creation_author</source>
                 <target>Créditez son auteur, dans la même liste que celle de la série. Laissé vide, un livre d'une série crédite qui la série crédite : ne le renseignez que pour un livre signé par quelqu'un d'autre.</target>
+            </trans-unit>
+            <trans-unit id="CWXe6p8">
+                <source>narration.guided_step_book_creation_categories</source>
+                <target>Indiquez de quoi parle ce livre, autant de catégories qu'il en mérite.</target>
+            </trans-unit>
+            <trans-unit id="kXa_xTG">
+                <source>narration.guided_step_book_creation_contributors</source>
+                <target>Créditez les autres participants : la voix qui a lu le livre, la plume qui l'a porté dans une autre langue, une ligne par personne et par rôle. L'auteur et l'illustrateur se saisissent plus haut.</target>
             </trans-unit>
             <trans-unit id="qq3vB.v">
                 <source>narration.guided_step_book_creation_done</source>

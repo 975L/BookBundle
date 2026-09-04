@@ -2,6 +2,111 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.8.0
+
+**The catalog can be cut by what its books are about**, in two tables of its own — `book_category` and the
+join table `book_category_link`. Run the migration:
+
+```bash
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
+```
+
+Nothing else to do, and nothing changes on the site until you ask for it: with no category created the
+catalog reads exactly as before, and the new **`book-route-categories`** setting ships *empty*, so no
+category page is served at all. Load the configuration to get the entry:
+
+```bash
+php bin/console c975l:config:load-all
+```
+
+Fill it in — `categories`, `genres`, `rayons` — the day you want the index and the category pages served.
+Left empty, the categories are still written and still printed on each book's sheet, as plain words: that
+is the site using them as tags rather than as rayons.
+
+The name is a matter of translation, not of storage. To read *Genres* or *Thèmes* rather than *Catégories*,
+override the `label.category`, `label.categories` and `label.categor*` keys of the `book` domain in the
+app's own catalog.
+
+## v2.6.0
+
+**`BookCustomizationProviderInterface` gained `getContributorRoles()`.** An app implementing the interface
+declares it, returning an empty array to keep the narrator and the translator the bundle names itself:
+
+```php
+// The parts someone takes in this site's books beyond signing or drawing them
+public function getContributorRoles(): array
+{
+    return [];
+}
+```
+
+**A book credits more than its author and its illustrator**, in a table of its own -
+`book_book_contributor`, one row per person and per part. Run the migration:
+
+```bash
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
+```
+
+Nothing to write for a catalog crediting nobody else: the fieldset is empty and the sheet prints no extra
+line. Author and illustrator are unchanged - they stay columns of the book, being the two it takes from its
+serie when it names none, and must not be declared as roles: an editor offered "Auteur" in the list beside
+the field holding it credits the same person twice.
+
+## v2.5.5
+
+**`|isbn` no longer hyphenates a number the site declares no root for.** It used to cut every ISBN
+3-2-5-2-1, which is only right under one prefix: where an ISBN is cut comes from the ranges the
+International ISBN Agency publishes, and a publisher holding `978-2-9598005` beside `978-2-488750` is cut
+at the eleventh digit on one and at the tenth on the other. Fill **`book-isbn-prefixes`** with the roots
+the publisher was granted, one per line and hyphenated as they are printed on the books:
+
+```
+978-2-9598005
+978-2-488750
+979-10-976661
+```
+
+Left empty, an ISBN prints as its bare digits - hyphens laid in the wrong place read as another
+publisher's number, which is worse than none.
+
+**A person now carries the platforms their books are bought at**, in a table of their own -
+`book_contributor_link`, one row per platform, the same shape a book's `book_link` has. Run the
+migration:
+
+```bash
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
+```
+
+The rows are written in the back office, under the "Buy" fieldset of a person's screen, and the page
+prints them in the very card a book's page prints, under `#shops` (see `Contributor:Shops`). A site that
+had composed that card by hand - a button block plus one card per store - replaces it with those rows and
+deletes the blocks.
+
+**The five listing kinds carry their own head**, and `book_to_be_published` no longer writes one of its
+own. `book_series`, `book_books`, `book_contributors`, `book_to_be_published` and `book_serie_strips` each
+take an anchor, an eyebrow, a title, a paragraph and a colored flat - the very fields a `text_section`
+offers - so the text block a page used to place above each listing is now typed on the listing itself.
+On every page composed before this version:
+
+- open each listing block, type its eyebrow, title and paragraph, then delete the `text_section` above it;
+- type the heading of the "to be published" section on its own block: it printed
+  `label.books_to_be_published` and `text.books_to_be_published` by itself, and prints nothing until it is
+  typed;
+- re-point any menu entry aiming at one of those sections: the anchor is now the block's own
+  (`#the-anchor-<block id>`), where the text block above it wrote `#the-anchor`.
+
+**`Book:ToBePublished`, `Book:BooksSection` and `Serie:SeriesSection` are gone**, and with them
+`label.books_to_be_published`, `text.books_to_be_published`, `text.books_to_be_published_social`,
+`label.books_latest` and `label.series_ours`: the three wrote a heading of their own over a grid the block
+kinds now draw under the one an editor types. A page still calling one of them composes that section in the
+back office instead.
+
+**`Contributor:Resume` is gone**, the sentences a person is introduced with being read inside
+`Contributor:Hero` since this version: a page or a stylesheet calling that component drops the call.
+
 ## v2.5
 
 **An author is now a row, not a string.** `Book` and `Serie` each lose `author`, `author_website`,

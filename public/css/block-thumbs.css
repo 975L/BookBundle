@@ -65,6 +65,22 @@
   display: none;
 }
 
+/* Words the catalog is cut by, not objects to be pictured: no cover at all, and short labels standing side by side the way the cards read */
+.ui-block-thumb--book_categories .ui-block-thumb__media {
+  display: none;
+}
+.ui-block-thumb--book_categories .ui-block-thumb__title,
+.ui-block-thumb--book_categories .ui-block-thumb__line {
+  height: 0.3125rem;
+  border-radius: 0.1875rem;
+  background-image: linear-gradient(to right, currentcolor 0 62%, transparent 62%);
+  background-size: 32% 100%;
+  background-color: transparent;
+}
+.ui-block-thumb--book_categories .ui-block-thumb__line + .ui-block-thumb__line {
+  opacity: 0.45;
+}
+
 /* Portraits side by side, square where a cover is upright - a shelf of faces rather than of books */
 .ui-block-thumb--book_contributors .ui-block-thumb__media {
   display: block;

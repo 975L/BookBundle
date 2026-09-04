@@ -15,10 +15,10 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
+use c975L\BookBundle\Enum\BookContributorRole;
+use c975L\UiBundle\Service\RatingSnippetBuilder;
 
-// Builds the schema.org graph a book's, a serie's or a strip's page publishes as JSON-LD, out of the fields those pages already show.
-// Assembled here rather than as microdata on the rendered elements, for the same reason as UiBundle's ContactSnippetBuilder: an itemprop pinned to an element leaves an empty node behind when the field is empty, where a graph simply drops what wasn't filled in - and it can carry what no template displays (the two ISBNs as two editions, the rank of a volume in its serie).
-// Price and availability are deliberately absent: they are an "offers" node, which belongs to whoever sells the book - emitted twice, they would diverge.
+// Builds the schema.org graph a book's, a serie's or a strip's page publishes as JSON-LD, out of the fields those pages already show. Assembled here rather than as microdata on the rendered elements, for the same reason as UiBundle's ContactSnippetBuilder: an itemprop pinned to an element leaves an empty node behind when the field is empty, where a graph simply drops what wasn't filled in - and it can carry what no template displays (the two ISBNs as two editions, the rank of a volume in its serie). Price and availability are deliberately absent: they are an "offers" node, which belongs to whoever sells the book - emitted twice, they would diverge.
 class BookSnippetBuilder
 {
     // What schema.org calls the edition a kind names. A kind is the site's own word (see c975L\BookBundle\Contract\BookCustomizationProviderInterface), so it is matched on rather than mapped: any kind holding "paper" is a paperback, one holding "audio" an audiobook, and anything else - an epub, a pdf, a web edition - an ebook
@@ -29,6 +29,7 @@ class BookSnippetBuilder
 
     public function __construct(
         private readonly BookPublicUrlResolver $publicUrlResolver,
+        private readonly RatingSnippetBuilder $ratingSnippetBuilder,
     ) {
     }
 
@@ -51,10 +52,14 @@ class BookSnippetBuilder
             'image' => trim((string) $imageUrl),
             'author' => $this->person($book->getEffectiveAuthor()),
             'illustrator' => $this->person($book->getEffectiveIllustrator()),
+            // The one part of a book's credits schema.org names on a CreativeWork: the voice reading it is "readBy", which belongs to an Audiobook and not to the Book node this is (see BookContributorRole), so it stays on the page and out of the graph
+            'translator' => $this->persons($book->getContributorsOf(BookContributorRole::Translator->value)),
             'inLanguage' => trim((string) $book->getLanguage()),
             'datePublished' => $book->getPublished()?->format('Y-m-d') ?? '',
             'bookFormat' => $this->bookFormat($book),
             'typicalAgeRange' => trim((string) $book->getAge()),
+            // What the book is about, said with the word schema.org has for it - the categories the site shows, a hidden one being off the site and out of the graph with it
+            'genre' => $this->genres($book),
             // One workExample per edition rather than a single "isbn": a paperback and an ebook are two editions of the same work, and schema.org has no way to say which of two ISBNs belongs to which
             'workExample' => $this->editions($book),
             // The same work in another language, said as a pair rather than as two unrelated books: a translation is not an edition, and carries neither the ISBNs nor the pages of the one it translates
@@ -64,6 +69,8 @@ class BookSnippetBuilder
             'isBasedOn' => $this->translation($book->getPreviousVersion()),
             'isPartOf' => $this->partOfSerie($book->getSerie()),
             'position' => $this->positionInSerie($book),
+            // The tally the page already shows above its title, said in the graph too - what puts the stars in a search result. Empty while nobody has voted, an AggregateRating over no vote being what Google rejects the whole rich result for (see UiBundle's RatingSnippetBuilder)
+            'aggregateRating' => $this->rating('book', $book->getId()),
         ]);
     }
 
@@ -123,6 +130,102 @@ class BookSnippetBuilder
         ]);
     }
 
+    // The person a page is about, as the entity a search engine files them under: what they signed is published by the books themselves, each naming its author, so their own page states who they are and where else they are found rather than repeating a catalog
+    public function buildContributor(Contributor $contributor, ?string $imageUrl = null, ?string $url = null): array
+    {
+        $name = trim((string) $contributor->getName());
+
+        if ('' === $name) {
+            return [];
+        }
+
+        return $this->clean([
+            '@context' => 'https://schema.org',
+            '@type' => 'Person',
+            'name' => $name,
+            'url' => trim((string) $url),
+            'description' => $this->plainText($contributor->getSummary()),
+            'image' => trim((string) $imageUrl),
+            // Their own site, which is what tells two people of the same name apart
+            'sameAs' => trim((string) $contributor->getWebsite()),
+        ]);
+    }
+
+    // The trail leading to the page, as the BreadcrumbList a search engine prints in place of the raw url: the levels are handed over already resolved, names translated and urls depending on prefixes a site may empty (see Breadcrumb.html.twig)
+    /** @param list<array{name: string, url: string}> $trail the levels in reading order, the page's own included */
+    public function buildBreadcrumb(array $trail): array
+    {
+        $elements = [];
+        $position = 0;
+
+        foreach ($trail as $level) {
+            $name = trim($level['name']);
+            $url = trim($level['url']);
+
+            // A level with nothing to show is dropped rather than numbered: a list whose positions skip one is a malformed breadcrumb
+            if ('' === $name || '' === $url) {
+                continue;
+            }
+
+            $elements[] = [
+                '@type' => 'ListItem',
+                'position' => ++$position,
+                'name' => $name,
+                'item' => $url,
+            ];
+        }
+
+        // A single level is the page itself: a trail leading nowhere says nothing a url does not already say
+        if (\count($elements) < 2) {
+            return [];
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $elements,
+        ];
+    }
+
+    // What a listing holds, as the ItemList a search engine reads a page of cards through.
+    /**
+     * @param list<array{name: string, url: string}> $items  the cards in reading order
+     * @param int                                    $offset how many the pages before this one already listed, a listing growing on scroll numbering its cards from where the last one stopped
+     */
+    public function buildItemList(array $items, int $offset = 0): array
+    {
+        $elements = [];
+        $position = max(0, $offset);
+
+        foreach ($items as $item) {
+            $name = trim($item['name']);
+            $url = trim($item['url']);
+
+            if ('' === $name || '' === $url) {
+                continue;
+            }
+
+            $elements[] = [
+                '@type' => 'ListItem',
+                'position' => ++$position,
+                'name' => $name,
+                'url' => $url,
+            ];
+        }
+
+        if ([] === $elements) {
+            return [];
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'ItemList',
+            // What this page holds and not what the whole catalog does: a count claiming more than the elements below it is what a validator refuses
+            'numberOfItems' => \count($elements),
+            'itemListElement' => $elements,
+        ];
+    }
+
     // The same graph, encoded for a <script type="application/ld+json">; empty string when there is nothing to publish
     public function buildJson(array $snippet): string
     {
@@ -132,6 +235,13 @@ class BookSnippetBuilder
 
         // JSON_HEX_TAG matters: it turns a "</script>" typed into any field into <, which no browser closes the tag on
         return json_encode($snippet, \JSON_HEX_TAG | \JSON_HEX_AMP | \JSON_HEX_APOS | \JSON_HEX_QUOT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+    }
+
+    // The votes cast on one item, as the node schema.org reads them - the tally the widget displays, through the builder UiBundle already owns so the two never disagree
+    /** @return array<string, mixed> */
+    private function rating(string $ownerType, ?int $ownerId): array
+    {
+        return null === $ownerId ? [] : $this->ratingSnippetBuilder->build($ownerType, $ownerId);
     }
 
     // The characters a strip puts on stage, each named and nothing more - the page linking to their strips says where to find them again
@@ -149,7 +259,24 @@ class BookSnippetBuilder
         return $characters;
     }
 
-    // A named person, with their site as their identity when they have one - a bare name would leave two authors called the same indistinguishable
+    // A named person, with their site as their identity when they have one - a bare name would leave two authors called the same indistinguishable. The categories the book carries, as plain names: schema.org's "genre" takes a text or an url, and a category page of ours is a listing rather than a thing to point at
+    /**
+     * @return list<string>
+     */
+    private function genres(Book $book): array
+    {
+        $genres = [];
+
+        foreach ($book->getShownCategories() as $category) {
+            $title = trim((string) $category->getTitle());
+            if ('' !== $title) {
+                $genres[] = $title;
+            }
+        }
+
+        return $genres;
+    }
+
     private function person(?Contributor $contributor): array
     {
         $name = trim((string) $contributor?->getName());
@@ -162,6 +289,26 @@ class BookSnippetBuilder
             'name' => $name,
             'url' => trim((string) $contributor?->getWebsite()),
         ]);
+    }
+
+    // Several named people, for a part more than one person can take - a book carried into another language by two hands is credited to both
+    /**
+     * @param list<Contributor> $contributors
+     *
+     * @return list<array<string, string>>
+     */
+    private function persons(array $contributors): array
+    {
+        $persons = [];
+
+        foreach ($contributors as $contributor) {
+            $person = $this->person($contributor);
+            if ([] !== $person) {
+                $persons[] = $person;
+            }
+        }
+
+        return $persons;
     }
 
     // One node per edition carrying an ISBN, each a Book of its own as schema.org expects of a workExample. An edition not out yet is left out: its ISBN names a book nobody can get

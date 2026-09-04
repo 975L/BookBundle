@@ -1,5 +1,4 @@
-{# <twig:c975LBook:Book:Hero book="{{ book }}" [sections="{{ book_sections(book) }}"] [cover="path/to/file.webp"] [coverBack="path/to/file.webp"] [background="path/to/file.webp"] [editUrl=""]>optional content, under the actions</twig:c975LBook:Book:Hero> #}
-{# The page's opening: cover, serie, title, the versions the book holds, and a way into the sections that matter most. Carries the page's only h1 - book/display.html.twig leaves the layout's own title block empty, so the title stands inside the container where the cover can sit beside it #}
+{# <twig:c975LBook:Book:Hero book="{{ book }}" [sections="{{ book_sections(book) }}"] [cover="path/to/file.webp"] [coverBack="path/to/file.webp"] [background="path/to/file.webp"] [editUrl=""]>optional content, under the actions</twig:c975LBook:Book:Hero>. The page's opening: cover, serie, title, the versions the book holds, and a way into the sections that matter most. Carries the page's only h1 - book/display.html.twig leaves the layout's own title block empty, so the title stands inside the container where the cover can sit beside it #}
 {% set sections = sections|default([]) %}
 {# The sections by their key, the only name that does not move: a site renames its card's anchor and label (see BookCustomizationProviderInterface::getSections()), and a button read on the anchor then vanished silently, its link pointing at an anchor the page no longer wrote #}
 {% set sectionsByKey = sections|reduce((map, section) => map|merge({(section.key|default('')): section}), {}) %}
@@ -70,9 +69,16 @@
             {% endif %}
         </p>
 
+        {# Offered on the books still to come only, and as a link rather than as a form: this html is handed to a shared cache per fragment, where a form needs a session and a csrf token (see BookReleaseAlertController) #}
+        {% if book.isToBePublished %}
+            <p>
+                <a href="{{ path('book_release_alert_new', {'id': book.id}) }}" rel="nofollow" class="btn btn-secondary">{{ 'label.release_alert_notify_me'|trans({}, 'book', book.language) }}</a>
+            </p>
+        {% endif %}
+
         {# Under the line that says who wrote it and when, which is where a reader looks for it. Off unless the site turned it on: a bundle update must not make every book page suddenly ask for a vote. The icon and the scale are UiBundle's own settings, this only says whether a book carries the widget at all #}
         {% if config('book-rating')|to_bool %}
-            <twig:c975LUi:Rating:Rating ownerType="book" ownerId="{{ book.id }}"/>
+            <twig:c975LUi:Rating:Rating ownerType="book" ownerId="{{ book.id }}" locale="{{ book.language }}"/>
         {% endif %}
 
         {# The gestures the page offers and nothing else: read, listen, watch, buy - the order the page lays them in below (see BookSectionsExtension::book()), a reader tasting the book before paying for it. Each carries the name of its section, so the button and the card title say the same verb. Buy keeps the full color wherever it sits in the row, and the row is only written when one of them exists #}

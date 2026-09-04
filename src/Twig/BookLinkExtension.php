@@ -2,6 +2,7 @@
 
 namespace c975L\BookBundle\Twig;
 
+use c975L\BookBundle\Contract\PlatformLinkInterface;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
@@ -24,9 +25,9 @@ class BookLinkExtension
 
     // The address to open, which is the one stored (see c975L\BookBundle\Entity\BookLink) plus, on a Google Play address only, the affiliate the site configured. Nothing is rebuilt from the book: the stored address opens the right page on its own, the identifier is only added on top of it, and never over one the address already carries
     #[AsTwigFunction('book_link_url')]
-    public function url(BookLink | string | null $link): string
+    public function url(PlatformLinkInterface | string | null $link): string
     {
-        $url = $link instanceof BookLink ? (string) $link->getUrl() : (string) $link;
+        $url = $link instanceof PlatformLinkInterface ? (string) $link->getUrl() : (string) $link;
         $affiliate = $this->configService->get(self::GPLAY_CONFIG);
 
         if (!\is_string($affiliate) || '' === $affiliate || self::GPLAY_HOST !== parse_url($url, \PHP_URL_HOST)) {
@@ -49,13 +50,13 @@ class BookLinkExtension
 
     // The platform's own brand, printed as it stands and never translated - a kind the vocabulary does not hold prints as it is stored
     #[AsTwigFunction('book_link_label')]
-    public function label(BookLink | string | null $link, ?string $locale = null): string
+    public function label(PlatformLinkInterface | string | null $link, ?string $locale = null): string
     {
         return $this->customizationRegistry->getLinkLabel($link, $locale);
     }
 
     #[AsTwigFunction('book_link_icon')]
-    public function icon(BookLink | string | null $link): ?string
+    public function icon(PlatformLinkInterface | string | null $link): ?string
     {
         return $this->customizationRegistry->getLinkIcon($link);
     }

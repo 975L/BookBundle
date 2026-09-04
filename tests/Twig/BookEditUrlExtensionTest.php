@@ -31,7 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 // The anchor a section is reached by on the public page and the property it is written in are two names nothing else keeps in step - a section renamed on one side alone loses its pencil, or lands the editor on a field it has nothing to do with
 class BookEditUrlExtensionTest extends TestCase
 {
-    // Every section of a book's page has somewhere to go, the sections holding files or platforms all leading to the editions the book is published in
+    // Every section of a book's page has somewhere to go: the files lead to the editions they are uploaded under, and each gesture's card to the collection its platforms are written in
     public function testEachSectionOfABookLeadsToTheFieldItIsWrittenIn(): void
     {
         $urls = $this->extension()->book($this->withId(new Book(), 7));
@@ -42,8 +42,8 @@ class BookEditUrlExtensionTest extends TestCase
             'apercu' => '/admin/7/videos',
             'extracts' => '/admin/7/editions',
             'editions' => '/admin/7/editions',
-            'shops' => '/admin/7/editions',
-            'podcasts' => '/admin/7/editions',
+            'shops' => '/admin/7/buyLinks',
+            'podcasts' => '/admin/7/listenLinks',
             'crowdfunding' => '/admin/7/crowdfunding',
             'presse' => '/admin/7/presses',
             'marketing' => '/admin/7/marketings',
@@ -64,14 +64,14 @@ class BookEditUrlExtensionTest extends TestCase
         ], $urls);
     }
 
-    // A person's page opens on their name and carries the sentences they are introduced with, and nothing else of it is written on their own screen
+    // A person's page opens on their name and the sentences they are introduced with, both inside the hero, and carries the card their books are bought from - what they signed being written on each book's own screen
     public function testEachSectionOfAPersonLeadsToTheFieldItIsWrittenIn(): void
     {
         $urls = $this->extension()->contributor($this->withId(new Contributor(), 5));
 
         $this->assertSame([
             'hero' => '/admin/5/name',
-            'resume' => '/admin/5/summary',
+            'shops' => '/admin/5/links',
         ], $urls);
     }
 

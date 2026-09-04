@@ -24,18 +24,10 @@ use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 // The catalog a demo site is seeded with, from the very data the block showcase renders (see BookSampleCatalog) - persisted here, where the showcase only ever builds entities it never writes
 class BookDemoFixtureProvider implements DemoFixtureProviderInterface
 {
-    /**
-     * What each declared picture of a book is, in the order they are declared - "le-fil-rouge-1-1.webp" being the
-     * cover, "-2" the fourth cover and "-3" the backdrop its page opens on. Three kinds and not three covers: a
-     * book's page reads them one by one (see book/display.html.twig), where a second picture filed as a cover would
-     * be one nothing ever prints.
-     */
+    // What each declared picture of a book is, in the order declared - "-1" the cover, "-2" the fourth cover, "-3" the backdrop its page opens on: three kinds and not three covers, a page reading them one by one (see book/display.html.twig)
     private const array KINDS = ['cover', 'cover_back', 'background'];
 
-    /**
-     * The same three, read off a serie: its cover, the emblem printed above its title and the picture its page opens
-     * on (see Serie::addCover(), addLogo() and addBackground(), the kind being what tells the three apart).
-     */
+    // The same three read off a serie: its cover, the emblem above its title, the picture its page opens on (see Serie::addCover(), addLogo() and addBackground(), the kind telling them apart)
     private const array SERIE_KINDS = ['cover', 'logo', 'background'];
 
     // The day both series were opened, written down like the rest of the dataset rather than taken from the clock
@@ -50,17 +42,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
     ) {
     }
 
-    /**
-     * The medias ride the ORM cascade off Book (see its "cascade: remove"/"orphanRemoval"), so a book taken back by
-     * a reload has VichUploader's removal listener fire on each, taking the stored file off the disk with the row.
-     *
-     * The serie is the other way round: Serie::$books is the inverse side and nothing cascades off it, so each book
-     * is yielded - and so recorded - on its own, the serie going first for the books to be able to name it.
-     *
-     * Unlike a gallery, a catalog with no picture to show is still a catalog: a book carries its title, its summary
-     * and a page of its own, and the card falls back on the bundle's "no-cover.webp". So nothing here depends on
-     * the site declaring any media at all.
-     */
+    // The medias ride the ORM cascade off Book, so a reload fires VichUploader's removal listener on each and takes the file off the disk with the row; the serie is the inverse side and cascades nothing, so each book is yielded on its own, the serie first for the books to name it. A catalog with no picture is still a catalog - the card falls back on "no-cover.webp" - so nothing here needs the site to declare a media
     public function getDemoFixtures(): iterable
     {
         // The two people the demo credits, yielded before anything naming them: a book pointing at a row not yet recorded has nothing to point at
@@ -120,7 +102,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
     }
 
     /**
-     * @param array{slug: string, title: string, summary: string, serie: string, published: ?string, creation: string, number: int, illustrated: bool} $spec
+     * @param array{slug: string, title: string, summary: string, serie: string, published: ?string, creation: string, number: int, illustrated: bool, age: string} $spec
      */
     private function book(array $spec, Serie $serie, Contributor $author, Contributor $illustrator): Book
     {
@@ -134,6 +116,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
             ->setLanguage($this->language())
             ->setSerie($serie)
             ->setNumber($spec['number'])
+            ->setAge($spec['age'])
             ->setPublished(null === $spec['published'] ? null : new \DateTime($spec['published']))
             ->setCreation($date)
             ->setModification($date);
@@ -160,14 +143,8 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
         return $book;
     }
 
-    /**
-     * The row's own pictures where the site declares them, keyed as "book/<slug>" or "serie/<slug>" (see
-     * PlaceholderMediaProviderInterface). Failing that, one of the generic pool, rotated: a shelf of covers that are
-     * all the same photograph says less than a shelf of different ones, and a stopgap it stays until a site declares
-     * covers of its own.
-     *
-     * @return list<string>
-     */
+    // The row's own pictures where the site declares them, keyed "book/<slug>" or "serie/<slug>" (see PlaceholderMediaProviderInterface), failing which one of the generic pool, rotated: a shelf of identical covers says less than a shelf of different ones
+    /** @return list<string> */
     private function pictures(string $owner, string $slug): array
     {
         $declared = $this->placeholderMediaRegistry->getImagesFor($owner . '/' . $slug);
@@ -186,11 +163,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
         return [$pool[crc32($slug) % \count($pool)]];
     }
 
-    /**
-     * The kind is set before the media joins its serie, and both before anything is written: SerieMedia builds the
-     * path it is stored under out of the two (see its getVichMediaPath()), and a media handed over the other way
-     * round lands in "cover-temp".
-     */
+    // The kind is set before the media joins its serie, and both before anything is written: SerieMedia builds its stored path out of the two (see getVichMediaPath()), and the other way round lands in "cover-temp"
     private function serieMedia(string $image, string $kind, int $position): ?SerieMedia
     {
         $file = $this->temporaryCopy($image);
@@ -223,13 +196,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
         return $media;
     }
 
-    /**
-     * VichUploader moves the file it is handed, so what it gets is a copy: the declared picture is read by every
-     * other showcase of the site, and would be gone after the first load.
-     *
-     * A ReplacingFile rather than a plain File, which UploadHandler::hasUploadedFile() leaves silently ignored -
-     * the row would be written with no file name and nothing would reach the disk.
-     */
+    // VichUploader moves the file it is handed, so it gets a copy - the declared picture is read by every other showcase and would be gone after the first load - and a ReplacingFile rather than a plain File, which UploadHandler::hasUploadedFile() ignores silently, writing the row with no file name
     private function temporaryCopy(string $publicPath): ?ReplacingFile
     {
         $source = $this->projectDir . '/public/' . $publicPath;

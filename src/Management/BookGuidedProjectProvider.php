@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Management;
 
+use c975L\BookBundle\Controller\Management\BookCategoryCrudController;
 use c975L\BookBundle\Controller\Management\BookCrudController;
 use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
@@ -19,8 +20,7 @@ use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 
-// This bundle's guided projects, running the 6000 block GuidedProjectProviderInterface reserves them - the same docblock stating every other bundle's, so a range is read there rather than recopied here. They follow the order a catalog is actually built in - the people are credited by the series and the books, the serie holds the books, so each comes before what names it. Only the opening step of each carries an url: from there the parcours walks the screen the user has been sent to, highlighting the button or the field they are meant to use next (see ConfigBundle's assets/js/guided-project.js)
-// A field is pointed at through the widget the user actually sees, which is not always the one carrying the id: a choice or an association stays a native select only below UiBundle's autocomplete threshold (ChoiceAutocompleteExtension, 10 options), TomSelect taking it over above and clipping the select away behind "ts-hidden-accessible" - so a field whose option count is the catalog's own is named through its row, ".form-group:has(#Entity_property)", the only form both regimes answer to. An association calling autocomplete() is always a TomSelect, its select printed by CrudAutocompleteType under an inner field named "autocomplete" - hence the "_autocomplete" suffix those steps carry, and the "+ .ts-wrapper" naming the widget drawn next to it. TrixEditorType hides its textarea behind "d-none", and a collection prints no field id at all, being marked on its own row instead (see the "data-*" markers of the CRUD controllers)
+// This bundle's guided projects, running the 6000 block GuidedProjectProviderInterface reserves them - the same docblock stating every other bundle's, so a range is read there rather than recopied here. They follow the order a catalog is actually built in - the people are credited by the series and the books, the serie holds the books, so each comes before what names it. Only the opening step of each carries an url: from there the parcours walks the screen the user has been sent to, highlighting the button or the field they are meant to use next (see ConfigBundle's assets/js/guided-project.js). A field is pointed at through the widget the user actually sees, which is not always the one carrying the id: a choice or an association stays a native select only below UiBundle's autocomplete threshold (ChoiceAutocompleteExtension, 10 options), TomSelect taking it over above and clipping the select away behind "ts-hidden-accessible" - so a field whose option count is the catalog's own is named through its row, ".form-group:has(#Entity_property)", the only form both regimes answer to. An association calling autocomplete() is always a TomSelect, its select printed by CrudAutocompleteType under an inner field named "autocomplete" - hence the "_autocomplete" suffix those steps carry, and the "+ .ts-wrapper" naming the widget drawn next to it. TrixEditorType hides its textarea behind "d-none", and a collection prints no field id at all, being marked on its own row instead (see the "data-*" markers of the CRUD controllers)
 class BookGuidedProjectProvider implements GuidedProjectProviderInterface
 {
     public function __construct(
@@ -34,6 +34,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
         return [
             $this->contributorCreationProject(),
             $this->serieCreationProject(),
+            $this->categoryCreationProject(),
             $this->bookCreationProject(),
             $this->mediaMoveProject(),
             $this->bookCompositionProject(),
@@ -96,6 +97,13 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'description' => 'description.guided_step_book_contributor_creation_portrait',
                     'narration' => 'narration.guided_step_book_contributor_creation_portrait',
                     'highlight' => '[data-contributor-portraits]',
+                ],
+                [
+                    // The same marker on the "Buy" collection, the person's own page at each store rather than one book's
+                    'label' => 'label.guided_step_book_contributor_creation_links',
+                    'description' => 'description.guided_step_book_contributor_creation_links',
+                    'narration' => 'narration.guided_step_book_contributor_creation_links',
+                    'highlight' => '[data-contributor-links]',
                 ],
                 [
                     'label' => 'label.guided_step_book_contributor_creation_save',
@@ -181,6 +189,62 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
         ];
     }
 
+    // The categories come before the books too, a book being filed under them from its own screen - and the whole parcours is worth nothing to a site that files its catalog by serie alone, which is why it says so on its very first step
+    private function categoryCreationProject(): array
+    {
+        return [
+            'slug' => 'book-category-creation',
+            'label' => 'label.guided_project_book_category_creation',
+            'description' => 'description.guided_project_book_category_creation',
+            'translation_domain' => 'book',
+            'order' => 6015,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_category_creation_open',
+                    'description' => 'description.guided_step_book_category_creation_open',
+                    'narration' => 'narration.guided_step_book_category_creation_open',
+                    'url' => $this->categoryIndexUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_category_creation_new',
+                    'description' => 'description.guided_step_book_category_creation_new',
+                    'narration' => 'narration.guided_step_book_category_creation_new',
+                    'highlight' => '.action-new',
+                ],
+                [
+                    'label' => 'label.guided_step_book_category_creation_title',
+                    'description' => 'description.guided_step_book_category_creation_title',
+                    'narration' => 'narration.guided_step_book_category_creation_title',
+                    'highlight' => '#BookCategory_title',
+                ],
+                [
+                    // The Trix editor, the textarea carrying the id being hidden behind it
+                    'label' => 'label.guided_step_book_category_creation_summary',
+                    'description' => 'description.guided_step_book_category_creation_summary',
+                    'narration' => 'narration.guided_step_book_category_creation_summary',
+                    'highlight' => 'trix-editor[input="BookCategory_summary"]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_category_creation_code',
+                    'description' => 'description.guided_step_book_category_creation_code',
+                    'narration' => 'narration.guided_step_book_category_creation_code',
+                    'highlight' => '#BookCategory_code',
+                ],
+                [
+                    'label' => 'label.guided_step_book_category_creation_save',
+                    'narration' => 'narration.guided_step_book_category_creation_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_category_creation_done',
+                    'description' => 'description.guided_step_book_category_creation_done',
+                    'narration' => 'narration.guided_step_book_category_creation_done',
+                ],
+            ],
+        ];
+    }
+
     // The book itself, up to the cover that makes its page look like something - the fields spread over tabs, which the parcours opens as it goes
     private function bookCreationProject(): array
     {
@@ -217,6 +281,13 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => '#Book_serie_autocomplete + .ts-wrapper',
                 ],
                 [
+                    // The same autocompleted association as the serie above, this one taking several at once (see BookCrudController)
+                    'label' => 'label.guided_step_book_creation_categories',
+                    'description' => 'description.guided_step_book_creation_categories',
+                    'narration' => 'narration.guided_step_book_creation_categories',
+                    'highlight' => '#Book_categories_autocomplete + .ts-wrapper',
+                ],
+                [
                     'label' => 'label.guided_step_book_creation_published',
                     'description' => 'description.guided_step_book_creation_published',
                     'narration' => 'narration.guided_step_book_creation_published',
@@ -228,6 +299,13 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'description' => 'description.guided_step_book_creation_author',
                     'narration' => 'narration.guided_step_book_creation_author',
                     'highlight' => '#Book_author_autocomplete + .ts-wrapper',
+                ],
+                [
+                    // Everyone else the book credits, one row per person and per part - the collection printing no field id, the row's own marker is what the tour points at (see BookCrudController)
+                    'label' => 'label.guided_step_book_creation_contributors',
+                    'description' => 'description.guided_step_book_creation_contributors',
+                    'narration' => 'narration.guided_step_book_creation_contributors',
+                    'highlight' => '[data-book-contributors]',
                 ],
                 [
                     // The second tab of the form, an ISBN belonging to an edition and no longer to the book itself (see BookCrudController)
@@ -347,12 +425,26 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => '.form-tabs-tablist .nav-item:last-child .nav-link',
                 ],
                 [
-                    // The sorting group UiBundle's BlockMoveRowAttrBuilder puts on the row, a collection printing no field id
+                    // The collection's add button in the active pane, adding a row opening the palette the step after this one points into (see UiBundle's block-collection.js)
                     'label' => 'label.guided_step_book_composition_add',
                     'description' => 'description.guided_step_book_composition_add',
                     'narration' => 'narration.guided_step_book_composition_add',
                     // Scoped to the tab the step before it opens: a book form carries three block collections, one per tab, and the first of them - the one an unscoped selector finds - sits on a tab nobody is looking at. Named by the pane Bootstrap marks active rather than by its id, which EasyAdmin slugs from the translated label - "tab-blocs" in French, "tab-blocks" in English, "tab-bloques" in Spanish
-                    'highlight' => '.tab-pane.active [data-ui-sort-group]',
+                    'highlight' => '.tab-pane.active .field-collection-add-button',
+                ],
+                [
+                    // The silhouette of one listing kind in the palette, each tile carrying the kind it stands for (see UiBundle's block-picker.js). "book_books" stands for the five of them, which all read the same way
+                    'label' => 'label.guided_step_book_composition_listing',
+                    'description' => 'description.guided_step_book_composition_listing',
+                    'narration' => 'narration.guided_step_book_composition_listing',
+                    'highlight' => '.ui-block-picker [data-kind="book_books"]',
+                ],
+                [
+                    // The heading a listing now carries of its own (see AbstractBookListingBlockType), which is what saves laying a "text_section" above the grid. Named by the row holding a "random" checkbox rather than by the title alone: every kind prints a "_data_title", where "random" is this bundle's listing kinds and nothing else - UiBundle's own collection block only offers it as a choice value
+                    'label' => 'label.guided_step_book_composition_heading',
+                    'description' => 'description.guided_step_book_composition_heading',
+                    'narration' => 'narration.guided_step_book_composition_heading',
+                    'highlight' => '.tab-pane.active [data-ui-sort-group]:has([id$="_data_random"]) [id$="_data_title"]',
                 ],
                 [
                     'label' => 'label.guided_step_book_composition_save',
@@ -426,10 +518,11 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => '.tab-pane.active [id$="_data_id"]',
                 ],
                 [
+                    // Reached through its prototype rather than through an id: EasyAdmin's collection_widget replaces form_widget_compound entirely and renders no id at all, so only the placeholder it carries tells this collection from the block's medias
                     'label' => 'label.guided_step_book_reader_cues',
                     'description' => 'description.guided_step_book_reader_cues',
                     'narration' => 'narration.guided_step_book_reader_cues',
-                    'highlight' => '.tab-pane.active [id$="_data_cues"]',
+                    'highlight' => '.tab-pane.active [data-ea-collection-field][data-prototype*="_data_cues_"]',
                 ],
                 [
                     'label' => 'label.guided_step_book_reader_auto_advance',
@@ -826,6 +919,11 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
     private function adminRoleNeeded(): string
     {
         return (string) $this->configService->get('site-role-admin');
+    }
+
+    private function categoryIndexUrl(): string
+    {
+        return $this->indexUrl(BookCategoryCrudController::class);
     }
 
     private function serieIndexUrl(): string

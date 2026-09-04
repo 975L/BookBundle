@@ -139,36 +139,60 @@ class SkillsTest extends TestCase
     // Whether a name this bundle doesn't declare itself is one the ecosystem does somewhere - a config slug of ConfigBundle's, a block context of UiBundle's, a Twig option a template passes. The installed vendor tree is what makes it visible, so a checkout without dependencies lets those through rather than failing on what it cannot see
     private function isDeclaredSomewhere(string $name): bool
     {
+        // Read once per process: the tree is thousands of files, and every name of every skill asks for it
         static $haystack = null;
+        static $read = false;
 
-        if (null === $haystack) {
-            // The package root is this bundle's own directory, unless it ships several of them (core-bundle), where the vendor tree and the sibling bundles both sit one level up
-            $package = is_file($this->root() . '/composer.json') ? $this->root() : \dirname($this->root());
-            $directories = array_filter(array_merge(
-                [$package . '/vendor/c975l'],
-                glob($package . '/*/src') ?: [],
-                glob($package . '/*/templates') ?: [],
-                glob($package . '/*/config') ?: [],
-                glob($package . '/*/tests') ?: [],
-                [$this->root() . '/src', $this->root() . '/templates', $this->root() . '/config', $this->root() . '/tests'],
-            ), is_dir(...));
+        if (!$read) {
+            $read = true;
+            $haystack = $this->ecosystemSources();
+        }
 
-            if ([] === $directories) {
-                return true;
-            }
+        return null === $haystack || str_contains($haystack, $name);
+    }
 
-            $haystack = '';
-            foreach (array_unique($directories) as $directory) {
-                $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory));
-                foreach ($files as $file) {
-                    if (\in_array($file->getExtension(), ['php', 'yaml', 'json', 'twig'], true)) {
-                        $haystack .= file_get_contents($file->getPathname());
-                    }
+    // Every source the ecosystem is read from, concatenated; null when nothing is installed to read
+    private function ecosystemSources(): ?string
+    {
+        $directories = $this->ecosystemDirectories();
+
+        if ([] === $directories) {
+            return null;
+        }
+
+        $sources = '';
+
+        foreach ($directories as $directory) {
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory));
+
+            foreach ($files as $file) {
+                if (\in_array($file->getExtension(), ['php', 'yaml', 'json', 'twig'], true)) {
+                    $sources .= file_get_contents($file->getPathname());
                 }
             }
         }
 
-        return str_contains($haystack, $name);
+        return $sources;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function ecosystemDirectories(): array
+    {
+        // The package root is this bundle's own directory, unless it ships several of them (core-bundle), where the vendor tree and the sibling bundles both sit one level up
+        $package = is_file($this->root() . '/composer.json') ? $this->root() : \dirname($this->root());
+
+        $directories = array_merge(
+            [$package . '/vendor/c975l'],
+            glob($package . '/*/src') ?: [],
+            glob($package . '/*/templates') ?: [],
+            glob($package . '/*/config') ?: [],
+            glob($package . '/*/tests') ?: [],
+            [$this->root() . '/src', $this->root() . '/templates', $this->root() . '/config', $this->root() . '/tests'],
+        );
+
+        return array_values(array_unique(array_filter($directories, is_dir(...))));
     }
 
     // The frontmatter is what makes a SKILL.md loadable by an agent, and the name what another package's skill refers it by, so it carries the vendor prefix and matches its own directory
@@ -286,8 +310,12 @@ class SkillsTest extends TestCase
                 }
 
                 $source = (string) file_get_contents($file);
-                $needle = str_ends_with($member, '()') ? 'function ' . substr($member, 0, -2) . '(' : 'const ' . $member;
-                $this->assertStringContainsString($needle, $source, sprintf('%s quotes "%s", which %s does not hold', $directory, $token, basename($file)));
+
+                // A constant is matched through a pattern rather than a literal needle: this bundle types them ("const string CACHE_TAG_CATALOG"), and "const CACHE_TAG_CATALOG" is then nowhere in the file
+                $pattern = str_ends_with($member, '()')
+                    ? '/function\s+' . preg_quote(substr($member, 0, -2), '/') . '\s*\(/'
+                    : '/const\s+(?:[\w\\\\|?]+\s+)?' . preg_quote($member, '/') . '\b/';
+                $this->assertMatchesRegularExpression($pattern, $source, sprintf('%s quotes "%s", which %s does not hold', $directory, $token, basename($file)));
             }
         }
     }

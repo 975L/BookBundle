@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
@@ -80,6 +81,18 @@ class BookExportProviderTest extends TestCase
         $this->assertSame('contes-du-soir', $item['serie']);
         $this->assertSame('Contes du Soir', $item['serieTitle']);
         $this->assertSame('evening-tales', $item['translationBook']);
+    }
+
+    // What the book is about, named by the slugs its categories answer at - the categories themselves travel under their own kind
+    public function testSerializeNamesTheCategoriesBySlug(): void
+    {
+        $book = $this->createBook();
+        $book->addCategory(new BookCategory()->setSlug('romans')->setTitle('Romans'));
+        $book->addCategory(new BookCategory()->setSlug('jeunesse')->setTitle('Jeunesse'));
+
+        $item = $this->createProvider(sys_get_temp_dir())->serialize([$book])['items'][0];
+
+        $this->assertSame(['romans', 'jeunesse'], $item['categories']);
     }
 
     public function testSerializeCarriesTheFormatsAndTheFilesAndPlatformsOfTheBook(): void

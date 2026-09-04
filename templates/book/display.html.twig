@@ -43,6 +43,8 @@
         {# Only mounted for a page actually holding an entrance effect - the blocks below mount it for their own, and two controllers watching the same scroll would do the same work twice #}
         {% set animated = sections|filter(section => section.animation|default(''))|length > 0 %}
         <div class="book-page__sections"{% if animated %} data-controller="animateScroll"{% endif %}>
+            {# Said in words at the top of the column, for a book declaring an age the informations section otherwise only prints as a figure. The sentence itself is the site's, written once for the whole of it (config "site-age-warning"), and read in the book's own language on a site that translated the setting: a book written in English is not read a sentence typed in French. The fragment carries the guards, so a book declaring no age, and a site leaving the setting empty, render nothing here #}
+            <twig:c975LUi:Alert:AgeWarning age="{{ book.age }}" locale="{{ book.language }}"/>
             {# First of the sections column: the summary is the sentence the book opens on, and it reads under the hero before any section #}
             <twig:c975LBook:Book:Resume book="{{ book }}" editUrl="{{ editUrls.resume|default('') }}"/>
             {# After the summary and outside any card: the flipbook shows the book, it is no section to be announced #}
@@ -61,8 +63,7 @@
             <twig:c975LUi:Blocks:Blocks blocks="{{ book.blocks }}"/>
         </div>
 
-        {# What readers wrote about this book, and the fold leading to the form. Nothing at all until the site enables "ui-enable-reviews": the function answers an empty string and the section does not show #}
-        {# Held in the very cache the blocks above are held in, tagged so that publishing a review empties it - nothing in it belongs to one visitor (see ReviewRuntime::section()) #}
+        {# What readers wrote about this book, and the fold leading to the form. Nothing at all until the site enables "ui-enable-reviews": the function answers an empty string and the section does not show. Held in the very cache the blocks above are held in, tagged so that publishing a review empties it - nothing in it belongs to one visitor (see ReviewRuntime::section()) #}
         {{ ui_reviews_section('book', book.id) }}
     </div>
 

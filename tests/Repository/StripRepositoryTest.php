@@ -114,6 +114,24 @@ class StripRepositoryTest extends TestCase
         $this->assertStringContainsString('s.published <= :now', $this->dql);
     }
 
+    // The exact complement of what the listings answer: the veto letting a block be cached at all hangs on it (see BookBlockCacheTagProvider), and a planche dated ahead is the one case an entry would outlive
+    public function testAScheduledPublicationIsReadAsTheListingsReadTheirDate(): void
+    {
+        $this->createRepository()->hasScheduled();
+
+        $this->assertStringContainsString('s.published > :now', $this->dql);
+    }
+
+    // One row is enough to answer, where reading the whole catalog would cost a query per block
+    public function testAScheduledPublicationIsLookedForOnASingleRow(): void
+    {
+        $repository = $this->createRepository();
+
+        $this->assertFalse($repository->hasScheduled());
+        $this->assertStringContainsString('s.hidden = false', $this->dql);
+        $this->assertStringContainsString('s.isDeleted = false', $this->dql);
+    }
+
     // The query the repository builds is read back through the DQL the entity manager is handed, the rest of it being Doctrine's own
     private function createRepository(): StripRepository
     {

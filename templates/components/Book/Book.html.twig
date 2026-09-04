@@ -1,9 +1,12 @@
 {# "editable": the pencil leading to the book's own edit screen, drawn by UiBundle's overlay over whatever carries the url. Only a listing rendered outside the block cache asks for it, that cache being shared by every visitor - the same condition the score goes by #}
 {% set editUrl = editable|default(false) and is_granted(config('site-role-editor')) ? book_edit_url(book) : null %}
 <article class="text-center width-150" lang="{{ book.language }}"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
-    {% set imageSrc = book_cover(book) ?: "bundles/c975lbook/images/no-cover.webp" %}
-    <twig:c975LUi:Image:Link src="{{ asset(imageSrc) }}" url="{{ path('book_display', {'slug': book.slug}) }}" class="img-thumbnail box-shadow" width="150"/>
-    <h3>{{ book.title|replace({' - ': '<br>'})|raw }}</h3>
+    {% set cover = book_cover(book) %}
+    {% set imageSrc = cover ?: "bundles/c975lbook/images/no-cover.webp" %}
+    {# The cover's own alternative text, the book's title when it carries none - the same reading as ShopBundle's product card. The title is printed again just below, so a screen reader says it twice: the cost of a cover a search engine can place, which on an illustrated catalog is a channel of its own #}
+    <twig:c975LUi:Image:Link alt="{{ cover.alt|default('') ?: book.title }}" src="{{ asset(imageSrc) }}" url="{{ path('book_display', {'slug': book.slug}) }}" class="img-thumbnail box-shadow" width="150"/>
+    {# The title breaks on its " - " so the serie and the episode read on two lines. The space is kept ahead of the break: whatever reads the text without rendering it - a search engine, a screen reader - joins the two lines with nothing in between, and "The Twins - Pool" becomes the word "TwinsPool", which matches no query anyone types #}
+    <h3>{{ book.title|replace({' - ': ' <br>'})|raw }}</h3>
     {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
     <p class="text text-center small bold">({{ languageLabels[book.language]|default('Français') }})</p>
 
@@ -19,6 +22,6 @@
 
     {# The score the catalog shows and lets the visitor set, without how many voted - a card is read at a glance, the book's own page is where the tally is spelled out (see Book:Hero) #}
     {% if rating|default(false) %}
-        <twig:c975LUi:Rating:Rating ownerType="book" ownerId="{{ book.id }}" compact="true" :aggregate="aggregate|default(null)"/>
+        <twig:c975LUi:Rating:Rating ownerType="book" ownerId="{{ book.id }}" compact="true" :aggregate="aggregate|default(null)" locale="{{ book.language }}"/>
     {% endif %}
 </article>

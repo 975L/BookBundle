@@ -1,0 +1,18 @@
+{% extends 'layout.html.twig' %}
+{% trans_default_domain 'book' %}
+
+{# Defines specific variables #}
+{% set title = 'label.release_alert_unsubscribe_title'|trans %}
+
+{# The page a link in an e-mail lands on, and nothing a search engine has any business indexing #}
+{% set robots = 'noindex, follow' %}
+
+{% block content %}
+    <p class="text lead">{{ 'text.release_alert_unsubscribe_confirm'|trans }}</p>
+
+    {# A form and not the link itself: a mail gateway walking the addresses of a message follows links, it does not submit forms #}
+    <form method="post" action="{{ path('book_release_alert_unsubscribe_confirm', {'token': releaseAlert.token}) }}" class="text-center">
+        <input type="hidden" name="_token" value="{{ csrf_token('release_alert_unsubscribe' ~ releaseAlert.token) }}">
+        <button type="submit" class="btn btn-primary">{{ 'label.release_alert_unsubscribe_submit'|trans }}</button>
+    </form>
+{% endblock %}

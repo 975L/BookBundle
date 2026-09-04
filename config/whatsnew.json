@@ -1,5 +1,120 @@
 [
     {
+        "date": "2026-09-04",
+        "description": [
+            {
+                "en": "Crediting the same person twice under the same part of a book is now refused with a message on the line at fault, where the screen used to break and lose everything typed.",
+                "fr": "Créditer deux fois la même personne sous le même rôle dans un livre est désormais refusé par un message sur la ligne fautive, là où l'écran plantait en perdant toute la saisie.",
+                "es": "Acreditar dos veces a la misma persona con la misma función en un libro se rechaza ahora con un mensaje en la línea afectada, donde antes la pantalla fallaba y se perdía lo escrito."
+            },
+            {
+                "en": "A category or a serie holding only books still to come no longer opens on an empty page: it waits until it has something to show.",
+                "fr": "Une catégorie ou une série ne contenant que des livres à paraître ne s'ouvre plus sur une page vide : elle attend d'avoir quelque chose à montrer.",
+                "es": "Una categoría o una serie que solo contiene libros por publicarse ya no se abre en una página vacía: espera a tener algo que mostrar."
+            },
+            {
+                "en": "The unsubscribe link of a release alert now opens a page with a button: readers were being taken off the list by their own mail service, minutes after they signed up.",
+                "fr": "Le lien de désinscription d'une alerte de parution ouvre désormais une page avec un bouton : des lecteurs étaient retirés de la liste par leur propre messagerie, quelques minutes après s'être inscrits.",
+                "es": "El enlace para darse de baja de una alerta de publicación abre ahora una página con un botón: algunos lectores eran retirados de la lista por su propio correo, minutos después de apuntarse."
+            },
+            {
+                "en": "The guided tours were brought up to date: the place a person is sold, and the heading a catalog listing now carries of its own instead of a text block laid above it.",
+                "fr": "Les visites guidées sont à jour : l'endroit où l'on vend une personne, et le chapeau qu'une listing du catalogue porte désormais elle-même au lieu d'un bloc de texte posé au-dessus.",
+                "es": "Las visitas guiadas están al día: dónde se vende una persona, y el encabezado que un listado del catálogo lleva ahora por sí mismo en lugar de un bloque de texto encima."
+            }
+        ]
+    },
+    {
+        "date": "2026-09-03",
+        "description": [
+            {
+                "en": "The catalog can now be cut by what its books are about: categories written in the back office, as many on a book as it deserves, and a page of their own where the site wants one.",
+                "fr": "Le catalogue se découpe désormais par sujet : des catégories saisies dans le back-office, autant sur un livre qu'il en mérite, et une page à elles si le site en veut une.",
+                "es": "El catálogo puede ahora dividirse por temas: categorías creadas en el back-office, tantas en un libro como merezca, y una página propia si el sitio la quiere."
+            },
+            {
+                "en": "Nothing changes until you ask for it: as long as no category is created, the site looks exactly as it did - and their pages stay off the site until you say under which word you want them served.",
+                "fr": "Rien ne change tant que vous ne le demandez pas : sans catégorie créée, le site reste exactement le même - et leurs pages ne sont servies qu'à partir du moment où vous dites sous quel mot vous les voulez.",
+                "es": "Nada cambia hasta que lo pida: sin ninguna categoría creada, el sitio queda exactamente igual, y sus páginas no se sirven hasta que indique bajo qué palabra las quiere."
+            }
+        ]
+    },
+    {
+        "date": "2026-09-03",
+        "description": [
+            {
+                "en": "A book still to come now takes the addresses of the readers waiting for it: they leave one on its page, and get a single e-mail the day it comes out.",
+                "fr": "Un livre à paraître recueille désormais l'adresse des lecteurs qui l'attendent : ils la laissent sur sa page et reçoivent un seul courriel, le jour de la parution.",
+                "es": "Un libro por publicarse recoge ahora la dirección de los lectores que lo esperan: la dejan en su página y reciben un solo correo, el día de la publicación."
+            },
+            {
+                "en": "Nothing else is ever sent to that address, and it is deleted the moment the announcement leaves - a confirmation reaches the reader right away, carrying the link to leave the list before then.",
+                "fr": "Rien d'autre n'est jamais envoyé à cette adresse, et elle est supprimée dès l'annonce partie - une confirmation parvient tout de suite au lecteur, avec le lien pour quitter la liste avant.",
+                "es": "Nunca se envía nada más a esa dirección, y se elimina en cuanto sale el anuncio: el lector recibe enseguida una confirmación con el enlace para salir de la lista antes."
+            }
+        ]
+    },
+    {
+        "date": "2026-09-03",
+        "description": [
+            {
+                "en": "A book credits more than its author and its illustrator: the voice that read it, the pen that carried it into another language, one line per person and per part on its own screen.",
+                "fr": "Un livre crédite plus que son auteur et son illustrateur : la voix qui l'a lu, la plume qui l'a porté dans une autre langue, une ligne par personne et par rôle sur son écran.",
+                "es": "Un libro acredita más que a su autor y su ilustrador: la voz que lo leyó, la pluma que lo llevó a otro idioma, una línea por persona y por función en su propia pantalla."
+            },
+            {
+                "en": "The sheet prints those parts under the author, each name leading to that person's page, which now lists what they only narrated or translated beside what they signed.",
+                "fr": "La fiche imprime ces rôles sous l'auteur, chaque nom menant à la page de la personne, qui liste désormais ce qu'elle a seulement raconté ou traduit à côté de ce qu'elle a signé.",
+                "es": "La ficha imprime esas funciones bajo el autor, y cada nombre lleva a la página de la persona, que ahora enumera lo que solo narró o tradujo junto a lo que firmó."
+            }
+        ]
+    },
+    {
+        "date": "2026-09-03",
+        "description": [
+            {
+                "en": "Every section listing books, series, authors or planches now carries its own title, eyebrow and paragraph: no more text block to place above each of them, and the two no longer have to be moved together.",
+                "fr": "Chaque section qui liste des livres, des séries, des auteurs ou des planches porte désormais son titre, son surtitre et son paragraphe : plus de bloc texte à placer au-dessus de chacune, et plus de couple à déplacer ensemble.",
+                "es": "Cada sección que enumera libros, series, autores o láminas lleva ahora su propio título, antetítulo y párrafo: ya no hace falta un bloque de texto encima de cada una, ni mover los dos juntos."
+            },
+            {
+                "en": "Those sections can draw what they show at random, renewing the selection at every visit.",
+                "fr": "Ces sections peuvent tirer au hasard ce qu'elles affichent, la sélection étant renouvelée à chaque visite.",
+                "es": "Esas secciones pueden seleccionar al azar lo que muestran, renovando la selección en cada visita."
+            },
+            {
+                "en": "The section of books to be published no longer writes its own heading: type the title and the words you want on the block itself, as on every other listing.",
+                "fr": "La section des livres à paraître n'écrit plus son titre elle-même : saisissez le titre et le texte voulus sur le bloc, comme sur toutes les autres listes.",
+                "es": "La sección de libros por publicarse ya no escribe su propio título: escriba el título y el texto que quiera en el bloque, como en las demás listas."
+            },
+            {
+                "en": "A book's sheet takes the age it is read at again, which its page states and its search-engine listing carries.",
+                "fr": "La fiche d'un livre reprend l'âge auquel il se lit, que sa page affiche et que son référencement porte.",
+                "es": "La ficha de un libro vuelve a admitir la edad a la que se lee, que su página muestra y que su posicionamiento incluye."
+            },
+            {
+                "en": "The pages posting a selection of the catalog are served from the cache, and refresh themselves as soon as a book, a serie or a planche is saved.",
+                "fr": "Les pages qui affichent une sélection du catalogue sont servies depuis le cache, et se rafraîchissent dès qu'un livre, une série ou une planche est enregistré.",
+                "es": "Las páginas que muestran una selección del catálogo se sirven desde la caché y se actualizan en cuanto se guarda un libro, una serie o una plancha."
+            },
+            {
+                "en": "The headings of the sections listing books and series are translated, where they were written in French for every site.",
+                "fr": "Les titres des sections qui listent les livres et les séries sont traduits, là où ils étaient écrits en français pour tous les sites.",
+                "es": "Los títulos de las secciones que listan libros y series están traducidos, donde estaban escritos en francés para todos los sitios."
+            },
+            {
+                "en": "The invitation to comment on a book still to come only offers its link where the page actually holds the social networks - it led nowhere until now.",
+                "fr": "L'invitation à commenter un livre à paraître ne propose son lien que là où la page contient vraiment les réseaux sociaux - il ne menait nulle part jusqu'ici.",
+                "es": "La invitación a comentar un libro por publicarse solo ofrece su enlace donde la página contiene realmente las redes sociales: hasta ahora no llevaba a ninguna parte."
+            },
+            {
+                "en": "The guided tour of the reader now points at the list of page cues on screen instead of highlighting nothing.",
+                "fr": "La visite guidée du lecteur pointe désormais la liste des repères de pages à l'écran, au lieu de ne rien surligner.",
+                "es": "La visita guiada del lector ahora señala la lista de marcas de páginas en pantalla, en lugar de no resaltar nada."
+            }
+        ]
+    },
+    {
         "date": "2026-09-02",
         "description": [
             {

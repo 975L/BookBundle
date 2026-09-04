@@ -19,9 +19,6 @@
         <twig:c975LBook:Contributor:Hero contributor="{{ contributor }}" editUrl="{{ editUrls.hero|default('') }}"/>
 
         <div class="book-page__sections">
-            {# First of the column: who they are is what the page opens on, and it reads under the hero before anything they signed #}
-            <twig:c975LBook:Contributor:Resume contributor="{{ contributor }}" editUrl="{{ editUrls.resume|default('') }}"/>
-
             {# No card around the items: what they signed is no section to be announced, it is what the page is read for #}
             {% if books|length %}
                 <section id="books" class="toc-target">
@@ -37,8 +34,17 @@
                 </section>
             {% endif %}
 
-            {# Where the site says the rest in its own words: the stores they are read on, a quote, a video - composed in the back office rather than written into this template #}
+            {# Where their books are bought, the very card a book's page prints under the same anchor (see Contributor:Shops): the shop of the site first, then the stores holding their own author page #}
+            <twig:c975LBook:Contributor:Shops contributor="{{ contributor }}" editUrl="{{ editUrls.shops|default('') }}"/>
+
+            {# Where the site says the rest in its own words: a quote, a video, a press review - composed in the back office rather than written into this template #}
             <twig:c975LUi:Blocks:Blocks blocks="{{ contributor.blocks }}"/>
         </div>
     </div>
+
+    {# The person as the entity a search engine files them under, built by BookSnippetBuilder; what they signed is published by the books themselves, each naming its author #}
+    {% set jsonLd = contributor_json_ld(contributor, ogImage, contributor_url(contributor)) %}
+    {% if jsonLd %}
+        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+    {% endif %}
 {% endblock %}

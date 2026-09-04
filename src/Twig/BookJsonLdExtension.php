@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Twig;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookSnippetBuilder;
@@ -35,6 +36,29 @@ class BookJsonLdExtension
     public function serieJsonLd(Serie $serie, ?string $imageUrl = null, ?string $url = null): string
     {
         return $this->snippetBuilder->buildJson($this->snippetBuilder->buildSerie($serie, $imageUrl, $url));
+    }
+
+    // Same for the page of a person the catalog credits, whose graph is the person themselves
+    #[AsTwigFunction('contributor_json_ld', isSafe: ['html'])]
+    public function contributorJsonLd(Contributor $contributor, ?string $imageUrl = null, ?string $url = null): string
+    {
+        return $this->snippetBuilder->buildJson($this->snippetBuilder->buildContributor($contributor, $imageUrl, $url));
+    }
+
+    // The trail of the page, published beside the one a reader follows (see Breadcrumb.html.twig) - empty for a page whose trail is itself alone.
+    /** @param list<array{name: string, url: string}> $trail */
+    #[AsTwigFunction('book_breadcrumb_json_ld', isSafe: ['html'])]
+    public function breadcrumbJsonLd(array $trail): string
+    {
+        return $this->snippetBuilder->buildJson($this->snippetBuilder->buildBreadcrumb($trail));
+    }
+
+    // What a listing page holds, in the order it prints it.
+    /** @param list<array{name: string, url: string}> $items */
+    #[AsTwigFunction('book_item_list_json_ld', isSafe: ['html'])]
+    public function itemListJsonLd(array $items, int $offset = 0): string
+    {
+        return $this->snippetBuilder->buildJson($this->snippetBuilder->buildItemList($items, $offset));
     }
 
     // Same for a strip's page, empty for one not published yet

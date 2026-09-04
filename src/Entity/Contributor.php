@@ -17,8 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-// The person a book or a serie credits, who used to be a name retyped on each of them along with the address of their site - a spelling apart made a fourth author out of the same one, and the site had nowhere to say who they are
-// One entity and not two: writing and illustrating are two roles, not two natures, and the same person often holds both. Which role is held is said by the relation - Book::$author and Book::$illustrator both point here - so a person exists once, with one page and one slug, however many hats they wear
+// The person a book or a serie credits, who used to be a name retyped on each of them along with the address of their site - a spelling apart made a fourth author out of the same one, and the site had nowhere to say who they are. One entity and not two: writing and illustrating are two roles, not two natures, and the same person often holds both. Which role is held is said by the relation - Book::$author and Book::$illustrator both point here, and every other part is a BookContributor row naming it - so a person exists once, with one page and one slug, however many hats they wear
 #[ORM\Entity(repositoryClass: ContributorRepository::class)]
 #[ORM\Table(name: 'book_contributor')]
 #[UniqueEntity('slug')]
@@ -79,10 +78,19 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $illustratedSeries;
 
+    // The books crediting them under a part the two columns above do not hold - narrating it, translating it (see BookContributor). Read only from here: a credit is written on the book's own screen, where the rest of what it says is written
+    #[ORM\OneToMany(targetEntity: BookContributor::class, mappedBy: 'contributor')]
+    private Collection $credits;
+
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: ContributorMedia::class, mappedBy: 'contributor', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $medias;
+
+    // Where their books are bought, the same mapping a book's own platforms have (see Book::$links): the order laid in the back office is the order the page prints them in
+    #[ORM\OneToMany(targetEntity: ContributorLink::class, mappedBy: 'contributor', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $links;
 
     #[ORM\ManyToOne]
     private ?UserInterface $user = null;
@@ -94,7 +102,9 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
         $this->illustratedBooks = new ArrayCollection();
         $this->authoredSeries = new ArrayCollection();
         $this->illustratedSeries = new ArrayCollection();
+        $this->credits = new ArrayCollection();
         $this->medias = new ArrayCollection();
+        $this->links = new ArrayCollection();
     }
 
     // The name and nothing else: a template printing "{{ book.author }}" wrote the string this entity replaces, and goes on printing the same thing without being touched
@@ -216,6 +226,12 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this->illustratedSeries;
     }
 
+    /** @return Collection<int, BookContributor> */
+    public function getCredits(): Collection
+    {
+        return $this->credits;
+    }
+
     // Every book they had a hand in, whichever hat they wore - what their page lists, an illustrated album belonging on it as much as a text. Written once here rather than merged again in each template, and deduplicated: the two collections overlap on a book they both wrote and drew
     /** @return list<Book> */
     public function getBooks(): array
@@ -223,6 +239,14 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
         $books = [];
         foreach ([...$this->authoredBooks, ...$this->illustratedBooks] as $book) {
             $books[spl_object_id($book)] = $book;
+        }
+
+        // The ones they only narrated or translated belong on their page just as much - a voice reading a story is credited on it, and their page would otherwise stand empty. Read here and not only in the query: the two collections above are filtered by the joins that fetch them (see ContributorRepository::findOneBySlugWithWorks()), where a credit is a row of its own whose book loads whatever its state - a book set aside or replaced would come back on their page through it
+        foreach ($this->credits as $credit) {
+            $book = $credit->getBook();
+            if (null !== $book && !$book->isHidden() && !$book->isDeleted() && null === $book->getNewerVersion()) {
+                $books[spl_object_id($book)] = $book;
+            }
         }
 
         return array_values($books);
@@ -260,6 +284,31 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
     {
         if ($this->medias->removeElement($media) && $media->getContributor() === $this) {
             $media->setContributor(null);
+        }
+
+        return $this;
+    }
+
+    /** @return Collection<int, ContributorLink> */
+    public function getLinks(): Collection
+    {
+        return $this->links;
+    }
+
+    public function addLink(ContributorLink $link): static
+    {
+        if (!$this->links->contains($link)) {
+            $this->links->add($link);
+            $link->setContributor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLink(ContributorLink $link): static
+    {
+        if ($this->links->removeElement($link) && $link->getContributor() === $this) {
+            $link->setContributor(null);
         }
 
         return $this;
@@ -313,13 +362,53 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this->removeMedia($media);
     }
 
+    // The parts they are credited under across the whole catalog, which is what their page and their card say under their name: nobody carries the word "author" on their row, it is read from what credits them. The two columns first, in the order a book's sheet prints them, then whatever the rows name - a person signing one book and reading another is both, and says so once each
+    /** @return list<string> */
+    public function getRoles(): array
+    {
+        $roles = [];
+
+        if ($this->hasShown($this->authoredBooks) || $this->hasShown($this->authoredSeries)) {
+            $roles[] = 'author';
+        }
+
+        if ($this->hasShown($this->illustratedBooks) || $this->hasShown($this->illustratedSeries)) {
+            $roles[] = 'illustrator';
+        }
+
+        foreach ($this->credits as $credit) {
+            $book = $credit->getBook();
+            $role = (string) $credit->getRole();
+            if (null !== $book && self::isShown($book) && '' !== $role && !\in_array($role, $roles, true)) {
+                $roles[] = $role;
+            }
+        }
+
+        return $roles;
+    }
+
+    // Whether any of a collection is still on the site, read by getRoles() so the word under their name answers to the same rule as the list it stands above
+    private function hasShown(Collection $entities): bool
+    {
+        return array_any($entities->toArray(), fn ($entity) => self::isShown($entity));
+    }
+
+    // What the catalog shows of a book or a serie - the rule getBooks() reads a credited book by, gathered here so both say it once
+    private static function isShown(Book | Serie $entity): bool
+    {
+        return !$entity->isHidden()
+            && !$entity->isDeleted()
+            && (!$entity instanceof Book || null === $entity->getNewerVersion());
+    }
+
     // Whether a book or a serie still credits them - what refuses them the trash, the same rule a serie holding a book answers to (see ContributorCrudController::deleteEntity()). Counts the rows already in the trash too: they name them just as much, and are what the foreign key would trip on the day the person is removed for good
     public function holdsContent(): bool
     {
         return !$this->authoredBooks->isEmpty()
             || !$this->illustratedBooks->isEmpty()
             || !$this->authoredSeries->isEmpty()
-            || !$this->illustratedSeries->isEmpty();
+            || !$this->illustratedSeries->isEmpty()
+            || !$this->credits->isEmpty();
     }
 
     // What the site still credits them on, which is what setting them aside would leave pointing at a page answering 404 (see ContributorCrudController::updateEntity). A book or a serie already hidden, or in the trash, is off the site too and holds nothing back

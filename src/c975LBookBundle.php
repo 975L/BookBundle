@@ -24,13 +24,20 @@ class c975LBookBundle extends AbstractBundle
         $containerConfigurator->import('../config/services.yaml');
     }
 
-    // The bundle's own Stimulus controllers, which importmap.php names as an entrypoint - a path the app cannot declare for it, the bundle living under vendor/
+    // The bundle's own Stimulus controllers, which importmap.php names as an entrypoint - a path the app cannot declare for it, the bundle living under vendor/ - and the limiter its one public form is served under
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $builder->prependExtensionConfig('framework', [
             'asset_mapper' => [
                 'paths' => [
                     __DIR__ . '/../assets' => '@c975l/book-bundle',
+                ],
+            ],
+            'rate_limiter' => [
+                'book_release_alert' => [
+                    'policy' => 'sliding_window',
+                    'limit' => 10,
+                    'interval' => '1 hour',
                 ],
             ],
         ]);

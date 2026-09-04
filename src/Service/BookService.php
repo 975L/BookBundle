@@ -39,6 +39,12 @@ class BookService implements BookServiceInterface
         return $this->bookRepository->findAllPublished($number, $language);
     }
 
+    // The catalog cut down to one category
+    public function findPublishedByCategory(string $slug, ?int $number = null): array
+    {
+        return $this->bookRepository->findPublishedByCategory($slug, $number);
+    }
+
     // Every book whose page answers, the ones a newer version replaces included
     public function findAllOnline(): array
     {
