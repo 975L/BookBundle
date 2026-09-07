@@ -1,5 +1,15 @@
 [
     {
+        "date": "2026-09-07",
+        "description": [
+            {
+                "en": "The pages listing the people your catalog credits open noticeably faster, the parts under each name being read all at once instead of person by person.",
+                "fr": "Les pages qui listent les personnes créditées par votre catalogue s'ouvrent nettement plus vite, les rôles sous chaque nom étant lus d'un coup au lieu d'être demandés personne par personne.",
+                "es": "Las páginas que listan a las personas acreditadas en su catálogo se abren bastante más rápido, ya que las funciones bajo cada nombre se leen de una vez en lugar de persona por persona."
+            }
+        ]
+    },
+    {
         "date": "2026-09-04",
         "description": [
             {

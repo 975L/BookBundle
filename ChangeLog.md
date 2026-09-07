@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.6.1
+
+A press file is recognised by its extension, not by a regular expression
+
+- `Book:Presse` and `Book:Marketing` read the file's extension with `ends with` rather than a regular expression whose escaped dot Twig 4 stops ignoring: the audio and video players are picked the same way, and the deprecation the templates logged on every render is gone (07/09/2026)
+- `ContributorRepository::findCredited()` fills the collections `Contributor::getRoles()` reads, one query each: the joins it already carried served the filter only, so a listing printing the parts under every name asked Doctrine for the same four collections person by person, plus one for each credited book and one for the version each of those books replaces (07/09/2026)
+- The home page of a catalog went from 45 queries to 18, the n+1 the dev profiler flagged included (07/09/2026)
+
 ## v2.6.0
 
 A catalog says what a book is about, who else made it, and when it comes out

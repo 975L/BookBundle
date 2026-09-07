@@ -4,6 +4,7 @@ namespace c975L\BookBundle\Repository;
 
 use c975L\BookBundle\Entity\Contributor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -64,7 +65,7 @@ class ContributorRepository extends ServiceEntityRepository
      */
     public function findCredited(): array
     {
-        return $this->createQueryBuilder('c')
+        $contributors = $this->createQueryBuilder('c')
             ->leftJoin('c.authoredBooks', 'ab', 'WITH', 'ab.isDeleted = false AND ab.hidden = false AND ab.newerVersion IS NULL')
             ->leftJoin('c.illustratedBooks', 'ib', 'WITH', 'ib.isDeleted = false AND ib.hidden = false AND ib.newerVersion IS NULL')
             ->leftJoin('c.authoredSeries', 'asr', 'WITH', 'asr.isDeleted = false AND asr.hidden = false')
@@ -83,6 +84,67 @@ class ContributorRepository extends ServiceEntityRepository
             ->addOrderBy('c.name', 'ASC')
             ->getQuery()
             ->getResult()
+        ;
+
+        $this->preloadRoles($contributors);
+
+        return $contributors;
+    }
+
+    // The collections Contributor::getRoles() reads, filled one query each instead of one query per person: the joins above only serve the filter, so a listing printing the parts under every name asked Doctrine for the same four collections again, person by person, and one more query for each credited book. Read whole and unfiltered, unlike those joins: a collection filled here has to say exactly what it says when it is read on its own, holdsContent() counting the very rows getRoles() sets aside - sorting out what the catalog shows stays where it was, in getRoles()
+    /**
+     * @param Contributor[] $contributors
+     */
+    private function preloadRoles(array $contributors): void
+    {
+        if ([] === $contributors) {
+            return;
+        }
+
+        // The books they signed or illustrated, each one's replaced version joined: an inverse one-to-one cannot be a lazy proxy - it has to be read to be known absent - so a book filled without it costs one more query, the very reason BookRepository::publishedQueryBuilder() joins it too (see Book::$previousVersion)
+        foreach (['authoredBooks', 'illustratedBooks'] as $association) {
+            $this->preloadQueryBuilder($contributors)
+                ->leftJoin('c.' . $association, 'books')
+                ->addSelect('books')
+                ->leftJoin('books.previousVersion', 'booksPreviousVersion')
+                ->addSelect('booksPreviousVersion')
+                ->getQuery()
+                ->getResult()
+            ;
+        }
+
+        // The series, which carry no such link and are read as they are
+        foreach (['authoredSeries', 'illustratedSeries'] as $association) {
+            $this->preloadQueryBuilder($contributors)
+                ->leftJoin('c.' . $association, 'series')
+                ->addSelect('series')
+                ->getQuery()
+                ->getResult()
+            ;
+        }
+
+        // The credited parts and the book each of them names, in the same query: getRoles() reads the book of every credit, and a book left as a proxy costs one query per row
+        $this->preloadQueryBuilder($contributors)
+            ->leftJoin('c.credits', 'credit')
+            ->addSelect('credit')
+            ->leftJoin('credit.book', 'creditedBook')
+            ->addSelect('creditedBook')
+            ->leftJoin('creditedBook.previousVersion', 'creditedBookPreviousVersion')
+            ->addSelect('creditedBookPreviousVersion')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    // The people every preload query reads on, the collection it fills being the only thing that changes from one to the next
+    /**
+     * @param Contributor[] $contributors
+     */
+    private function preloadQueryBuilder(array $contributors): QueryBuilder
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c IN (:contributors)')
+            ->setParameter('contributors', $contributors)
         ;
     }
 

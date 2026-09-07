@@ -23,6 +23,12 @@ class ContributorRepositoryTest extends TestCase
 {
     private string $dql = '';
 
+    /** @var string[] */
+    private array $dqls = [];
+
+    /** @var object[] */
+    private array $result = [];
+
     // The index holds whoever a reader can open something from: a book a newer version replaced credits nobody there, its own page being reached from the version replacing it
     public function testTheIndexLeavesOutSomeoneCreditedOnlyOnBooksAlreadyReplaced(): void
     {
@@ -59,6 +65,37 @@ class ContributorRepositoryTest extends TestCase
         $this->assertStringNotContainsString('c.isDeleted', $this->dql);
     }
 
+    // The parts printed under each name are read from four collections and from the credits: joined above for the filter only, they are filled here in one query each, where a listing otherwise asked for them person by person (see Contributor::getRoles())
+    public function testAListingFillsWhatThePartsUnderEachNameAreReadFrom(): void
+    {
+        $this->result = [new Contributor()];
+
+        $this->createRepository()->findCredited();
+
+        foreach (['c.authoredBooks books', 'c.illustratedBooks books', 'c.authoredSeries series', 'c.illustratedSeries series', 'c.credits credit'] as $join) {
+            $alias = substr($join, strrpos($join, ' ') + 1);
+            $this->assertTrue(
+                array_any($this->dqls, fn (string $dql): bool => str_contains($dql, 'LEFT JOIN ' . $join) && str_contains($dql, 'SELECT c, ' . $alias)),
+                $join . ' is joined without being selected, so the collection stays empty and is read one person at a time',
+            );
+        }
+    }
+
+    // A book filled without the version replacing it costs one more query, an inverse one-to-one having to be read to be known absent (see Book::$previousVersion)
+    public function testAListingBringsTheReplacedVersionOfEachBookAlong(): void
+    {
+        $this->result = [new Contributor()];
+
+        $this->createRepository()->findCredited();
+
+        foreach (['books.previousVersion booksPreviousVersion', 'creditedBook.previousVersion creditedBookPreviousVersion'] as $join) {
+            $this->assertTrue(
+                array_any($this->dqls, fn (string $dql): bool => str_contains($dql, 'LEFT JOIN ' . $join)),
+                $join . ' is left to Doctrine, which reads it book by book',
+            );
+        }
+    }
+
     // The query the repository builds is read back through the DQL the entity manager is handed, the rest of it being Doctrine's own
     private function createRepository(): ContributorRepository
     {
@@ -69,12 +106,13 @@ class ContributorRepositoryTest extends TestCase
         $entityManager->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($entityManager));
         $entityManager->method('createQuery')->willReturnCallback(function (string $dql): Query {
             $this->dql = $dql;
+            $this->dqls[] = $dql;
 
             $query = $this->createStub(Query::class);
             $query->method('setParameters')->willReturnSelf();
             $query->method('setFirstResult')->willReturnSelf();
             $query->method('setMaxResults')->willReturnSelf();
-            $query->method('getResult')->willReturn([]);
+            $query->method('getResult')->willReturn($this->result);
             $query->method('getOneOrNullResult')->willReturn(null);
 
             return $query;

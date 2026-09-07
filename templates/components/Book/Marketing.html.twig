@@ -1,4 +1,4 @@
-{% if marketing.name matches '/\.mp4$/' %}
+{% if marketing.name ends with '.mp4' %}
     <div class="text-center width-150">
         <twig:c975LUi:Video:Video src="{{ asset(marketing.name) }}" type="video/mp4" width="125"/>
         <p class="text-center">{{ marketing.title }}</p>
