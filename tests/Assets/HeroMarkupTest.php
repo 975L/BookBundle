@@ -24,16 +24,29 @@ class HeroMarkupTest extends TestCase
         $this->assertStringNotContainsString('book-hero__logo', $hero);
     }
 
-    // Both buttons read on the section's key and write its real anchor: a site renaming its "Shops" card anchor lost the button silently, the link pointing at an anchor the page no longer wrote
+    // Every button reads on the section's key and writes its real anchor: a site renaming its "Shops" card anchor lost the button silently, the link pointing at an anchor the page no longer wrote
     public function testTheButtonsGoByTheSectionKeyAndWriteItsOwnAnchor(): void
     {
         $hero = $this->hero();
 
-        $this->assertStringContainsString('sectionsByKey.shops is defined', $hero);
-        $this->assertStringContainsString('#{{ sectionsByKey.shops.anchor }}', $hero);
-        $this->assertStringContainsString('sectionsByKey.podcasts is defined', $hero);
-        $this->assertStringContainsString('#{{ sectionsByKey.podcasts.anchor }}', $hero);
+        $this->assertStringContainsString('sectionsByKey[key] is defined', $hero);
+        $this->assertStringContainsString('#{{ sectionsByKey[key].anchor }}', $hero);
         $this->assertStringNotContainsString("'shops' in anchors", $hero);
+    }
+
+    // What has been written and said about the book is reached from the hero like the four gestures above it: both sections were rendered lower down and nothing offered them, a reader having to scroll past every card to find out they existed
+    public function testThePressAndTheMarketingAreOfferedToo(): void
+    {
+        $hero = $this->hero();
+
+        $this->assertStringContainsString("'presse'", $hero);
+        $this->assertStringContainsString("'marketing'", $hero);
+    }
+
+    // Buy keeps the full color and every other gesture is stated quietly, whatever its place in the row - the primary button no longer being the last one written
+    public function testOnlyBuyIsPaintedInFull(): void
+    {
+        $this->assertStringContainsString("'shops' == key ? 'primary' : 'secondary'", $this->hero());
     }
 
     private function hero(): string

@@ -25,6 +25,7 @@
 
     /* The height the serie's emblem is printed at, above its title - its own page being the only place it is shown */
     /* --book-hero-logo-height: 96px; */
+    /* --book-hero-logo-max-width: min(100%, 320px); */
 
     /* The serie and the number above a title, set apart by size rather than by a color of their own */
     /* --book-eyebrow-size: 0.8rem; */

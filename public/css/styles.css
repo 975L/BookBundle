@@ -23,6 +23,8 @@
   --book-hero-actions-space: clamp(0.6rem, 1.6vw, 1.2rem);
   /* The height the serie's emblem is printed at, above its title - its own page being the only place it is shown, where it stands for the serie rather than saying where a book comes from */
   --book-hero-logo-height: 96px;
+  /* What a logo wider than tall is bounded by: without it, a height alone let an elongated file run the whole width of the hero */
+  --book-hero-logo-max-width: min(100%, 320px);
   /* The eyebrow above a title - the serie and the number, set apart from the title by size rather than by a color of its own */
   --book-eyebrow-size: 0.8rem;
   --book-eyebrow-spacing: 0.14em;
@@ -192,7 +194,7 @@
   gap: var(--book-grid-gap);
 }
 
-.book-page__sections .card,
+.book-page__sections .card:not(:where(.collection-grid *)),
 .book-page__grid > .card {
   width: 100%;
   margin: 0 auto;
@@ -211,7 +213,7 @@
   font-size: var(--book-lead-size);
   line-height: var(--book-lead-line-height);
   color: var(--book-lead-color);
-  text-align: center;
+  text-align: start;
   text-wrap: pretty;
 }
 
@@ -773,6 +775,7 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   align-self: start;
   height: var(--book-hero-logo-height);
   width: auto;
+  max-width: var(--book-hero-logo-max-width);
   object-fit: contain;
 }
 

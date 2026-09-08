@@ -60,9 +60,9 @@ class BookEmailTemplateProvider implements EmailTemplateProviderInterface
     {
         return [
             self::RELEASE_ALERT_CONFIRMATION => [
-                $this->text('label.release_alert_confirmation_intro', $locale, ['%book%' => '{{ book_title }}']),
+                $this->html('label.release_alert_confirmation_intro', $locale, ['%book%' => '<a href="{{ book_url }}">{{ book_title }}</a>']),
                 $this->text('label.release_alert_confirmation_once', $locale),
-                $this->text('label.release_alert_confirmation_unsubscribe', $locale, ['%url%' => '{{ unsubscribe_url }}']),
+                $this->html('label.release_alert_confirmation_unsubscribe', $locale, ['%url%' => '<a href="{{ unsubscribe_url }}">{{ unsubscribe_url }}</a>']),
             ],
             self::BOOK_RELEASED => [
                 $this->text('label.book_released_intro', $locale, ['%book%' => '{{ book_title }}']),
@@ -76,6 +76,13 @@ class BookEmailTemplateProvider implements EmailTemplateProviderInterface
     private function text(string $key, string $locale, array $parameters = []): array
     {
         return ['text', null, null, $this->trans($key, $locale, $parameters), null, null];
+    }
+
+    // Same sentence, kept as markup: the anchor comes from the parameter and not from the catalogue, so a translator writes prose and never html - and the placeholder values an html block carries are escaped at render time (see EmailTemplateRenderer::contentFor())
+    /** @return array{0: string, 1: ?string, 2: ?string, 3: ?string, 4: ?string, 5: ?string} */
+    private function html(string $key, string $locale, array $parameters = []): array
+    {
+        return ['html', null, null, $this->trans($key, $locale, $parameters), null, null];
     }
 
     // A catalogue parameter becomes the "{{ name }}" an EmailTemplate block substitutes: the two placeholder syntaxes have to meet somewhere, and an admin editing that sentence in the back-office sees the one the editor documents

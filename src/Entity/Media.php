@@ -60,7 +60,8 @@ abstract class Media implements \Stringable
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $kind = null;
 
-    #[ORM\Column(length: 100, nullable: true, unique: true)]
+    // 255 and no longer 100: the stored name is a path Vich builds from the media's own kind and its owner's slug (see the getVichMediaPath of each subclass), and the namer appends a uniqid and an extension to it - a book whose slug runs past fifty characters overflowed the column, the database turning the upload away mid-flush once the file had already been written to disk
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $name = null;
 
     #[ORM\Column(length: 100, nullable: true)]

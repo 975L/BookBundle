@@ -27,6 +27,9 @@
     /* The height the serie's emblem is printed at, above its title - its own page being the only place it is shown, where it stands for the serie rather than saying where a book comes from */
     --book-hero-logo-height: 96px;
 
+    /* What a logo wider than tall is bounded by: without it, a height alone let an elongated file run the whole width of the hero */
+    --book-hero-logo-max-width: min(100%, 320px);
+
     /* The eyebrow above a title - the serie and the number, set apart from the title by size rather than by a color of its own */
     --book-eyebrow-size: 0.8rem;
     --book-eyebrow-spacing: 0.14em;

@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Tests\Service;
 
+use c975L\BookBundle\Email\BookEmailTemplateProvider;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookReleaseAlert;
 use c975L\BookBundle\Entity\Serie;
@@ -34,6 +35,12 @@ class BookReleaseAlertServiceTest extends TestCase
     /** @var object[] */
     private array $removed = [];
 
+    /** @var object[] */
+    private array $persisted = [];
+
+    /** @var array<string, array<string, mixed>> */
+    private array $rendered = [];
+
     private bool $mailerAccepts = true;
 
     private ?string $bookUrl = 'https://example.org/livre/le-livre';
@@ -43,6 +50,9 @@ class BookReleaseAlertServiceTest extends TestCase
     private function createService(BookReleaseAlertRepository $repository): BookReleaseAlertService
     {
         $em = $this->createStub(EntityManagerInterface::class);
+        $em->method('persist')->willReturnCallback(function (object $entity): void {
+            $this->persisted[] = $entity;
+        });
         $em->method('remove')->willReturnCallback(function (object $entity): void {
             $this->removed[] = $entity;
         });
@@ -52,7 +62,11 @@ class BookReleaseAlertServiceTest extends TestCase
         $urlResolver->method('resolvePath')->willReturnCallback(fn (): ?string => $this->bookPath);
 
         $renderer = $this->createStub(EmailTemplateRenderer::class);
-        $renderer->method('renderNamed')->willReturn('<p>It is out</p>');
+        $renderer->method('renderNamed')->willReturnCallback(function (string $name, array $variables): string {
+            $this->rendered[$name] = $variables;
+
+            return '<p>It is out</p>';
+        });
 
         $emailService = $this->createStub(EmailService::class);
         $emailService->method('send')->willReturnCallback(function (EmailSendRequest $request): bool {
@@ -156,6 +170,44 @@ class BookReleaseAlertServiceTest extends TestCase
         $this->assertStringContainsString('Les Éditions', (string) $this->sent[0]->subject);
         // renderNamed() has already wrapped the body: wrapping it again would nest the site's layout inside itself
         $this->assertFalse($this->sent[0]->wrapLayout);
+    }
+
+    // The book's page travels with the acknowledgement too, and not only with the parution: the title is a link to the sheet the subscription was taken on
+    public function testTheAcknowledgementCarriesTheBooksAddress(): void
+    {
+        $service = $this->createService($this->repositoryReturning());
+
+        $service->subscribe($this->book('+2 months'), 'waiting@example.org', 'fr');
+
+        $variables = $this->rendered[BookEmailTemplateProvider::RELEASE_ALERT_CONFIRMATION];
+        $this->assertSame('https://example.org/livre/le-livre', $variables['book_url']);
+        $this->assertSame('Le livre', $variables['book_title']);
+        $this->assertStringContainsString('/unsubscribe', (string) $variables['unsubscribe_url']);
+    }
+
+    // Same missing setting as below, on the other send: an acknowledgement whose link points nowhere is worse than a loud failure, the sheet being all the subscriber is given back
+    public function testAnAcknowledgementWithoutAnAddressToPointAtRaises(): void
+    {
+        $this->bookUrl = null;
+        $service = $this->createService($this->repositoryReturning());
+
+        $this->expectException(\LogicException::class);
+
+        $service->subscribe($this->book('+2 months'), 'waiting@example.org', 'fr');
+    }
+
+    // Raising after the row was written down would leave the address subscribed with no acknowledgement and no way out: the next submission would find it already there and send nothing, while the form answered a success
+    public function testAnAddressIsNotWrittenDownWhenTheAcknowledgementCannotBeSent(): void
+    {
+        $this->bookUrl = null;
+        $service = $this->createService($this->repositoryReturning());
+
+        try {
+            $service->subscribe($this->book('+2 months'), 'waiting@example.org', 'fr');
+        } catch (\LogicException) {
+        }
+
+        $this->assertSame([], $this->persisted);
     }
 
     // The unique constraint on (book, email) leaves no second row to create, so subscribing again has to renew the one that exists. Sending it again on each submission would let the same form mail a stranger as often as the limiter allows

@@ -2,7 +2,41 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
-## v2.8.0
+## v2.8
+
+**`Media::$name` moves from 100 to 255 characters.** The column holds the path Vich builds from the media's
+kind and its owner's slug, plus a uniqid and an extension: a book whose slug ran past fifty characters
+overflowed it, the upload being turned away mid-flush once the file had already been written to disk. Run
+the migration:
+
+```bash
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
+```
+
+**`vich/uploader-bundle` moves to `^3.0` and `c975l/core-bundle` to `^1.25`.** CoreBundle overrides Vich's
+storage and namer, whose 3.0 signatures 2.x has no type for, so the whole ecosystem moves in one lot:
+
+```bash
+composer update c975l/core-bundle vich/uploader-bundle -W
+```
+
+**A site whose `book_release_alert_confirmation` rows are already seeded keeps its old blocks.** The
+acknowledgement now links the book's title and the unsubscribe url, both blocks moving from `text` to
+`html`. `FormSeeder` only backfills data blocks, and a restricted template's block type isn't the admin's
+to change, so delete those rows and seed them again:
+
+```bash
+php bin/console c975l:ui:email-templates:ensure
+```
+
+A site that never seeded them renders the declaration and has nothing to do.
+
+**A site declaring no `site-url` can no longer take a release alert.** `subscribe()` resolves the book's
+absolute address before writing the row and raises where it used to flush first — a failed acknowledgement
+left an address subscribed with no way out. Set `site-url` in the configuration.
+
+## v2.6.0
 
 **The catalog can be cut by what its books are about**, in two tables of its own — `book_category` and the
 join table `book_category_link`. Run the migration:
@@ -27,8 +61,6 @@ is the site using them as tags rather than as rayons.
 The name is a matter of translation, not of storage. To read *Genres* or *Thèmes* rather than *Catégories*,
 override the `label.category`, `label.categories` and `label.categor*` keys of the `book` domain in the
 app's own catalog.
-
-## v2.6.0
 
 **`BookCustomizationProviderInterface` gained `getContributorRoles()`.** An app implementing the interface
 declares it, returning an empty array to keep the narrator and the translator the bundle names itself:

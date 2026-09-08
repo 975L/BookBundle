@@ -81,22 +81,13 @@
             <twig:c975LUi:Rating:Rating ownerType="book" ownerId="{{ book.id }}" locale="{{ book.language }}"/>
         {% endif %}
 
-        {# The gestures the page offers and nothing else: read, listen, watch, buy - the order the page lays them in below (see BookSectionsExtension::book()), a reader tasting the book before paying for it. Each carries the name of its section, so the button and the card title say the same verb. Buy keeps the full color wherever it sits in the row, and the row is only written when one of them exists #}
-        {% set actionKeys = ['extracts', 'podcasts', 'apercu', 'shops']|filter(key => sectionsByKey[key] is defined) %}
+        {# The gestures the page offers and nothing else: read, listen, watch, buy, then what has been written and said about the book - the order the page lays them in below (see BookSectionsExtension::book()), a reader tasting the book before paying for it and reading the press after it. Each carries the name of its section, so the button and the card title say the same verb, and only the sections the page actually holds are offered. Buy keeps the full color wherever it sits in the row, and the row is only written when one of them exists #}
+        {% set actionKeys = ['extracts', 'podcasts', 'apercu', 'shops', 'presse', 'marketing']|filter(key => sectionsByKey[key] is defined) %}
         {% if actionKeys|length %}
         <div class="book-hero__actions">
-            {% if sectionsByKey.extracts is defined %}
-                <twig:c975LUi:Button:Button type="secondary" label="{{ sectionsByKey.extracts.label }}" url="#{{ sectionsByKey.extracts.anchor }}" inline="true"/>
-            {% endif %}
-            {% if sectionsByKey.podcasts is defined %}
-                <twig:c975LUi:Button:Button type="secondary" label="{{ sectionsByKey.podcasts.label }}" url="#{{ sectionsByKey.podcasts.anchor }}" inline="true"/>
-            {% endif %}
-            {% if sectionsByKey.apercu is defined %}
-                <twig:c975LUi:Button:Button type="secondary" label="{{ sectionsByKey.apercu.label }}" url="#{{ sectionsByKey.apercu.anchor }}" inline="true"/>
-            {% endif %}
-            {% if sectionsByKey.shops is defined %}
-                <twig:c975LUi:Button:Button label="{{ sectionsByKey.shops.label }}" url="#{{ sectionsByKey.shops.anchor }}" inline="true"/>
-            {% endif %}
+            {% for key in actionKeys %}
+                <twig:c975LUi:Button:Button type="{{ 'shops' == key ? 'primary' : 'secondary' }}" label="{{ sectionsByKey[key].label }}" url="#{{ sectionsByKey[key].anchor }}" inline="true"/>
+            {% endfor %}
         </div>
         {% endif %}
 

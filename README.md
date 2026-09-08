@@ -246,16 +246,20 @@ The summary is not one of those sections: it is the sentence a book opens on, pr
 the hero and outside the grid, with no title and no anchor — a summary is not a destination anyone jumps to.
 
 A book's and a serie's sections are named once, by `book_sections(book)` and `serie_sections(serie)`
-(`Twig\BookSectionsExtension`), and the page reads that list twice: once to build its summary of anchors
-(`<twig:c975LUi:Text:Toc>`, UiBundle), once to decide what to render. A section is therefore never offered
-in the summary without being on the page, nor rendered without an anchor pointing at it — `extracts`,
+(`Twig\BookSectionsExtension`), and the page reads that list twice: once by the hero, which offers the
+sections a reader comes for, once to decide what to render. A section is therefore never offered by a
+button without being on the page, nor rendered without an anchor pointing at it — `extracts`,
 `podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `informations` for a book, `books`
-and `strips` for a serie. Each section wears UiBundle's `toc-target`, which leaves the room the
-resting summary bar covers, so a jump doesn't land a title under it.
+and `strips` for a serie. Each section wears UiBundle's `toc-target`, which leaves the room a resting
+summary bar would cover, so a jump doesn't land a title under it.
 
-The summary is a bar of chips under the header on a phone and a column beside the sections from `1200px`
-on; the labels come from the `book` translation domain, in the book's own language rather than the
-visitor's. A planche gets the same skeleton with the one difference it asks for: no summary — it has one
+No page of this bundle carries a summary of anchors: the hero's own row of buttons opens what a reader
+looks for — `extracts`, `podcasts`, `apercu`, `shops`, `presse` and `marketing`, in the order the page
+lays them out and only those it actually holds — and the bar overflowed on a phone where that row wraps.
+Buy keeps the full color, every other button is stated quietly, and the labels come from the `book`
+translation domain, in the book's own language rather than the visitor's. The page therefore keeps its
+whole width; the second column is only opened for a site adding a summary of its own
+(`sass/_book.scss`, `.book-page:has(> .book-page__toc)`). A planche gets the same skeleton: it has one
 picture and a line or two around it. `Strip:Breadcrumb` opens the page with where the planche sits (the
 listing, its serie, itself), and `Strip:Previous`/`Strip:Next` lay the way to its neighbours over the
 planche itself, as GalleryBundle does over a photo: they fade out at rest where there is a pointer to bring
@@ -522,7 +526,10 @@ the hourly limiter every public form of the ecosystem is served under (`book_rel
 
 **One address, one e-mail, and then nothing.** The subscription is acknowledged straight away by a first
 message, which is the only thing sent before the parution and the only way out offered until then: it
-carries the unsubscribe link, so somebody whose address was typed by a third party leaves from there. That
+names the book as a link to its page and carries the unsubscribe link, so somebody whose address was typed
+by a third party leaves from there. A site declaring no `site-url` has no absolute address to write those
+links around: `subscribe()` raises before the row is written rather than recording an address with no
+acknowledgement anybody could act on. That
 link **opens a page carrying a button** rather than unsubscribing on sight: the mail gateways that walk
 every address of a message before it is read — Outlook's Safe Links, an antivirus — would otherwise take
 the reader off the list minutes after they asked to be on it. The
@@ -898,6 +905,16 @@ php bin/console c975l:health-check:run --kind=book-links
 Every book is checked, published or not — a book to be published shows its pre-order links, and those are the ones worth catching before its release day — and every person the catalog credits, their own page at a store rotting exactly as a book's does. Each row names what the address was declared on — a book by its title, a person by their name — and leads to the screen it is typed on, opened on the very collection holding it. A book and its author sending to the same address are one row, naming both.
 
 An address of the site itself — the site's own shop, written as the page reads it (`/shop/...`) — is probed under the address the site declares in `site-url`, and reported as nothing to probe when the site declares none.
+
+#### A file the database declares and the server no longer has
+
+`Management\BookFilesHealthCheckProvider` (kind `files-book`) reports, as an error, every file a row of this bundle names and the server no longer holds: the covers, videos, press and marketing files of a book, plus a serie's, a strip's and a contributor's own pictures. Everything it does is CoreBundle's `AbstractDeclaredFilesHealthCheckProvider`, this only names the rows to look at.
+
+```bash
+php bin/console c975l:health-check:run --kind=files-book
+```
+
+Four owners share the one media table, so each row links to the screen its own file is re-uploaded from — a book, a serie, a strip or a contributor — never merely the one it happens to be listed on.
 
 A platform answering `401`, `403`, `405` or `429` is reported **skipped**, not broken: most stores turn down a `HEAD` request carrying no browser behind it, and there is nothing there for an editor to fix. `404`/`410`, any other error code, and a host that never answered at all are reported as errors, the http code being kept in the row's details. The provider enumerates every link each run, so an address that is deleted or corrected drops off the dashboard instead of leaving its last red row behind.
 

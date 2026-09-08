@@ -17,7 +17,7 @@ use c975L\BookBundle\Service\BookCustomizationRegistry;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Attribute\AsTwigFunction;
 
-// Which sections a display page actually holds, in the order it lays them out. Read twice by each of those pages - once by the hero, which offers the ones a reader comes for, once to decide what to render - so a button is never offered for a section the page left out, and a section never rendered without a name of its own. A serie's page still draws its summary of anchors from this (<twig:c975LUi:Text:Toc>); a book's has none, its hero saying the same in four verbs
+// Which sections a display page actually holds, in the order it lays them out. Read twice by each of those pages - once by the hero, which offers the ones a reader comes for, once to decide what to render - so a button is never offered for a section the page left out, and a section never rendered without a name of its own. Neither page carries a summary of anchors any more: the hero offers the same sections as a row of buttons
 class BookSectionsExtension
 {
     // The sections this bundle prints itself, plus the two parts of the page that are no section (the hero and the summary). A site declaring any other key is naming a section of its own, which this bundle knows nothing about but the fragment rendering it

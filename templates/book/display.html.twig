@@ -27,7 +27,7 @@
 
         {# The two images the hero has to be handed: the fourth cover, given which it turns between the two, and the backdrop it opens on. The first cover is not among them - book_cover() reads the field it is uploaded on, which is also what the social card above is built from. A book given none of the three keeps the page it always had #}
         <twig:c975LBook:Book:Hero book="{{ book }}" sections="{{ sections }}" coverBack="{{ book_media(book, 'cover_back') }}" background="{{ book_media(book, 'background') }}" editUrl="{{ editUrls.hero|default('') }}"/>
-        {# No summary of anchors: the hero's four verbs already open the sections a reader looks for, and the bar overflowed on a phone where the row of buttons wraps. The page therefore keeps its whole width, its cards laid two by two on a wide screen (see sass/_book.scss, .book-page:has(> .book-page__toc)) #}
+        {# No summary of anchors: the hero's own row of buttons already opens the sections a reader looks for, and the bar overflowed on a phone where the row of buttons wraps. The page therefore keeps its whole width, its cards laid two by two on a wide screen (see sass/_book.scss, .book-page:has(> .book-page__toc)) #}
 
         {# Which component prints which section: the page's own business. What the site decides is the order, the words and the look of them (see BookCustomizationProviderInterface::getSections()), which is what book_sections() already laid out above #}
         {% set components = {

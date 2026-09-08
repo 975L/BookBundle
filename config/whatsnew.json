@@ -1,5 +1,30 @@
 [
     {
+        "date": "2026-09-08",
+        "description": [
+            {
+                "en": "The e-mail acknowledging a release alert now links what it names: the book's title opens its page, and the unsubscribe address is a link rather than a line to copy by hand.",
+                "fr": "Le courriel accusant réception d'une alerte de parution relie désormais ce qu'il nomme : le titre du livre ouvre sa page, et l'adresse de désinscription est un lien plutôt qu'une ligne à recopier à la main.",
+                "es": "El correo que acusa recibo de una alerta de publicación ahora enlaza lo que nombra: el título del libro abre su página, y la dirección para darse de baja es un enlace en lugar de una línea que copiar a mano."
+            },
+            {
+                "en": "A book's page now offers a button for the press and the marketing sections too: everything the page holds is reached from the top, without scrolling past every card to find out it exists.",
+                "fr": "La page d'un livre propose désormais un bouton vers les sections presse et marketing : tout ce que la page contient s'atteint depuis le haut, sans faire défiler toutes les cartes pour découvrir que ça existe.",
+                "es": "La página de un libro ahora ofrece también un botón hacia las secciones de prensa y marketing: todo lo que contiene la página se alcanza desde arriba, sin recorrer todas las fichas para descubrir que existe."
+            },
+            {
+                "en": "The dashboard now checks the files your catalog declares: every cover, video, press and marketing file, plus a serie's, a planche's and a contributor's pictures, is reported when the server no longer holds it — each line opening the screen the file is uploaded again from.",
+                "fr": "Le tableau de bord vérifie désormais les fichiers déclarés par votre catalogue : chaque couverture, vidéo, fichier de presse et de marketing, ainsi que les images d'une série, d'une planche et d'un contributeur, est signalé lorsque le serveur ne l'a plus — chaque ligne ouvrant l'écran depuis lequel le fichier se recharge.",
+                "es": "El panel ahora comprueba los archivos que declara su catálogo: cada portada, vídeo, archivo de prensa y de marketing, así como las imágenes de una serie, de una lámina y de un colaborador, se señala cuando el servidor ya no lo tiene — cada línea abre la pantalla desde la que se vuelve a subir el archivo."
+            },
+            {
+                "en": "A book with a long title no longer loses its uploads: the file was written to disk and then turned away, and the covers of such a book can now be added like any other.",
+                "fr": "Un livre au titre long ne perd plus ses envois de fichiers : le fichier était écrit sur le disque puis refusé, et les couvertures d'un tel livre s'ajoutent désormais comme celles des autres.",
+                "es": "Un libro con un título largo ya no pierde sus archivos: el archivo se escribía en el disco y luego se rechazaba, y las portadas de un libro así ahora se añaden como las de cualquier otro."
+            }
+        ]
+    },
+    {
         "date": "2026-09-07",
         "description": [
             {

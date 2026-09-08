@@ -50,6 +50,9 @@ class BookReleaseAlertService implements BookReleaseAlertServiceInterface
             return false;
         }
 
+        // Resolved before anything is read or written: raising once the row is flushed would leave an address subscribed with no acknowledgement and no way out, the next submission finding it already there and sending nothing
+        $bookUrl = $this->bookUrl($book);
+
         $releaseAlert = $this->releaseAlertRepository->findOneByBookAndEmail($book, $email);
 
         $subscribing = null === $releaseAlert;
@@ -70,7 +73,7 @@ class BookReleaseAlertService implements BookReleaseAlertServiceInterface
 
         // Only the first time that address is written down. It is the only way out offered before the parution - anybody whose address was typed by somebody else unsubscribes from here - but sending it again on each submission would let the same form mail a stranger as often as the limiter allows
         if ($subscribing) {
-            $this->sendConfirmation($releaseAlert);
+            $this->sendConfirmation($releaseAlert, $bookUrl);
         }
 
         return true;
@@ -97,12 +100,7 @@ class BookReleaseAlertService implements BookReleaseAlertServiceInterface
                 continue;
             }
 
-            $bookUrl = $this->bookPublicUrlResolver->resolve('book_display', ['slug' => $book->getSlug()]);
-
-            // The page is served and the site has no address of its own: raising says the installation is half-done, where dropping would take every waiting list away without a word (see BookPublicUrlResolver::resolve() - the two nulls do not mean the same thing)
-            if (null === $bookUrl) {
-                throw new \LogicException('No "site-url" is configured, so a release alert has no absolute address to send.');
-            }
+            $bookUrl = $this->bookUrl($book);
 
             // A send that failed leaves the row waiting rather than deleted: the next run tries again, which is the whole point of holding the queue in the database - but the refusal is counted, an address that never accepts anything being let go rather than retried for ever
             if (!$this->sendRelease($releaseAlert, $book, $bookUrl)) {
@@ -132,7 +130,7 @@ class BookReleaseAlertService implements BookReleaseAlertServiceInterface
     }
 
     // The acknowledgement, which carries the way out: the parution e-mail cannot: by then the row is gone and there is nothing left to unsubscribe from
-    private function sendConfirmation(BookReleaseAlert $releaseAlert): bool
+    private function sendConfirmation(BookReleaseAlert $releaseAlert, string $bookUrl): bool
     {
         $book = $releaseAlert->getBook();
 
@@ -146,6 +144,8 @@ class BookReleaseAlertService implements BookReleaseAlertServiceInterface
             'label.release_alert_confirmation_subject',
             [
                 'book_title' => (string) $book->getTitle(),
+                // The book's page, the title being a link to it: somebody acknowledging a subscription reads the sheet again far more often than they type its address
+                'book_url' => $bookUrl,
                 'unsubscribe_url' => $this->urlGenerator->generate(
                     'book_release_alert_unsubscribe',
                     ['token' => $releaseAlert->getToken()],
@@ -167,6 +167,13 @@ class BookReleaseAlertService implements BookReleaseAlertServiceInterface
                 'book_url' => $bookUrl,
             ],
         );
+    }
+
+    // The book's public address, which both e-mails are written around: the page is served and the site has no address of its own, so raising says the installation is half-done, where a blank link would take every waiting list to nowhere without a word (see BookPublicUrlResolver::resolve())
+    private function bookUrl(Book $book): string
+    {
+        return $this->bookPublicUrlResolver->resolve('book_display', ['slug' => $book->getSlug()])
+            ?? throw new \LogicException('No "site-url" is configured, so a release alert has no absolute address to send.');
     }
 
     // Composes from the EmailTemplate of that name, in the language the subscription was taken in - there is no order nor account here to read a locale from, which is why the row carries its own

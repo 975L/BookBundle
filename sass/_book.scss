@@ -21,7 +21,7 @@ $book-bp-row-3: 1025px;
     margin-inline: auto;
 }
 
-// UiBundle leaves room above every "toc-target" for the bar of chips resting over it (see its sass/_toc.scss). A book page has no bar - its hero says the same in four verbs - so a jump from one of those buttons landed 4rem below the title it aimed at, on the very phone the bar was dropped for. The serie page, which keeps its summary, keeps the room it needs
+// UiBundle leaves room above every "toc-target" for the bar of chips resting over it (see its sass/_toc.scss). No page of this bundle carries that bar any more - the hero offers the same sections as a row of buttons - so a jump from one of those buttons landed 4rem below the title it aimed at, on the very phone the bar was dropped for. The room is only kept for a site adding a summary of its own
 .book-page:not(:has(> .book-page__toc)) .toc-target {
     scroll-margin-top: var(--toc-sticky-top);
 }
@@ -42,16 +42,14 @@ $book-bp-row-3: 1025px;
     gap: var(--book-grid-gap);
 }
 
-// A section of a book page is a panel, not one tile of a row: --card-width is the measure of a card standing three abreast in a grid (380px), which left every section of the page as a narrow column floating in the middle of it
-// Centered rather than set left: the auto margin is what holds the card in the middle of the page once it has taken the measure of the book's informations, and a "margin: 0" crushed it from here
-.book-page__sections .card,
+// A section of a book page is a panel, not one tile of a row: --card-width (380px, a card standing three abreast) left every section as a narrow column floating in the middle, and the auto margin is what holds it centered. A collection's items are left out, being tiles of its own grid: they keep the measure their variant asks for (UiBundle, --card-width and its steps), and it is written as ":not()" rather than a rule of its own, which would have to name a width and so clobber whichever step the variant picked
+.book-page__sections .card:not(:where(.collection-grid *)),
 .book-page__grid > .card {
     width: 100%;
     margin: 0 auto;
 }
 
-// LEAD - the sentence a book opens on, under the hero and outside the sections grid: neither title nor anchor, a summary being no destination to jump to
-// It keeps the gap the sections have between them rather than being pulled up to the hero, against which it read as the end of the opening
+// LEAD - the sentence a book opens on, under the hero and outside the sections grid: neither title nor anchor, keeping the gap the sections have between them rather than being pulled up to the hero. Read flush rather than centered, "Serie:Resume" and "Book:Resume" both handing their summary to a Readmore: the lead is a paragraph, and a centered paragraph is followed line by line instead of at a glance
 .book-page__lead {
     max-width: var(--book-text-measure);
     margin-inline: auto;
@@ -65,7 +63,7 @@ $book-bp-row-3: 1025px;
     font-size: var(--book-lead-size);
     line-height: var(--book-lead-line-height);
     color: var(--book-lead-color);
-    text-align: center;
+    text-align: start;
     text-wrap: pretty;
 }
 
@@ -728,6 +726,8 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     // A height rather than a max-height: the tag carries a "height" attribute, a presentational hint no max-height overrides
     height: var(--book-hero-logo-height);
     width: auto;
+    // A logo wider than tall would otherwise run the whole width of the hero: the box is bounded, and "object-fit" below fits the file inside it rather than stretching it
+    max-width: var(--book-hero-logo-max-width);
     // Belt and braces, a site giving the logo a width of its own having no reason to distort it either
     object-fit: contain;
 }

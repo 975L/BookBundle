@@ -1,5 +1,31 @@
 # Changelog
 
+## v2.8.0
+
+A book's hero offers every section it holds
+
+- **`Media::$name` moves from 100 to 255 characters**: a book whose slug ran past fifty characters overflowed the path Vich builds (08/09/2026) **Needs db migration** see [UPGRADE.md](UPGRADE.md)
+- A book's hero offers the press and the marketing beside the four gestures, each section the page holds writing its own button (08/09/2026)
+- The summary under the hero reads flush left rather than centered (`.book-page__lead`) (08/09/2026)
+- The acknowledgement of a release alert links the book's title to its page and turns the unsubscribe url into an anchor (08/09/2026)
+- Both blocks move from `text` to `html`, the anchor coming from the declaration and not from the catalogue (08/09/2026)
+- **A site whose `book_release_alert_confirmation` rows are already seeded keeps its old blocks**: delete them and run `php bin/console c975l:ui:email-templates:ensure` again (08/09/2026)
+- **`subscribe()` now raises where it used to send**: a site with no `site-url` gets the `LogicException` the parution send already threw (08/09/2026)
+- It raises before the row is written, where it used to flush first: a failed acknowledgement left an address subscribed with no way out (08/09/2026)
+- `BookReleaseAlertService::bookUrl()` gathers what both sends were spelling apart (08/09/2026)
+- New `BookEmailTemplateProviderTest`, and three cases on `BookReleaseAlertServiceTest` (08/09/2026)
+- A collection's items keep the measure their variant asks for on a book's, a serie's or a category's page (08/09/2026)
+- The exclusion is written `:not(:where(...))`, so the rule keeps the specificity a site theme overrides it at (08/09/2026)
+- New `--book-hero-logo-max-width` token: a serie's logo wider than tall ran the whole width of the hero, its height alone bounding it (08/09/2026)
+
+### The package
+
+- **`vich/uploader-bundle` moves from `^2.9` to `^3.0`**, and `c975l/core-bundle` to `^1.25`: CoreBundle overrides Vich's storage and namer, whose 3.0 signatures 2.x has no type for (08/09/2026)
+- The upgrade itself changes nothing here: none of the Vich API this bundle uses moved in 3.0 (08/09/2026)
+- **New `BookFilesHealthCheckProvider` (kind `files-book`)**: the covers, videos, press and marketing files of a book, plus a serie's, a strip's and a contributor's own pictures, are checked against the disk (08/09/2026)
+- Each row links to the screen its file is re-uploaded from, the four owners behind the one table each having their own (08/09/2026)
+- New `MediaRepository::findWithFilename()` and `BookFilesHealthCheckProviderTest` (08/09/2026)
+
 ## v2.7.0
 
 A catalog says where it is sold, and how its series are drawn

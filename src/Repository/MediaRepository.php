@@ -16,6 +16,19 @@ class MediaRepository extends ServiceEntityRepository
         parent::__construct($registry, Media::class);
     }
 
+    // The rows naming a stored file, whatever the owner they hang off - what the declared-files health check walks (see UiBundle's AbstractDeclaredFilesHealthCheckProvider)
+    /** @return Media[] */
+    public function findWithFilename(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.name IS NOT NULL AND m.name != :empty')
+            ->setParameter('empty', '')
+            ->orderBy('m.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // Every document this bundle serves as a PDF, whatever the entity holding it - read by BookPdfDocumentSource, which hands them to UiBundle's thumbnail check. Matched on the stored name rather than on a column of its own: it is the very path the file is served under, and the only thing saying what the file is
     /** @return Media[] */
     public function findPdfs(): array

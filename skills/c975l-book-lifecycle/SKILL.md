@@ -1,6 +1,6 @@
 ---
 name: c975l-book-lifecycle
-description: "Use this skill when a row of a c975L BookBundle catalog is created, copied, replaced, hidden or moved between environments — publishing a new version of a book without losing its address, duplicating a book, a serie or a planche, the trash and the 410/301 answers that keep urls in order, what each repository read is allowed to answer, and the zip export/import that carries a whole catalog with its files. Triggers on: BookVersionPublisher, publishVersion, newerVersion, previousVersion, createPreviousVersion, moveEdition, moveMedias, BookDuplicator, duplicateBook, duplicateSerie, duplicateStrip, duplicateContributor, BookContributor, BookContributorType, BookTrashManager, moveToTrash, restore, deletePermanently, redirectSlugChange, TrashableInterface, TrashableTrait, TrashableCrudTrait, isDeleted, HideableTrait, isHidden, setHidden, hidden, GoneHttpException, 410, BookExportProvider, BookImportProvider, SerieExportProvider, SerieImportProvider, StripExportProvider, StripImportProvider, ContributorExportProvider, ContributorImportProvider, MediaArchiver, SerieResolver, ContributorResolver, BookCategory, BookCategoryResolver, BookCategoryExportProvider, BookCategoryImportProvider, duplicateCategory, findPublishedByCategory, findWithBooks, BookBackupPathProvider, BookSitemapProvider, BookLinkHealthCheckProvider, BookMediaMoveController, findAllPublished, findAllOnline, findPublishedByIds, findOneByNumber, publishedQueryBuilder, strip:import, strip:card, BookDemoFixtureProvider, BookSampleCatalog, DemoFixtureProviderInterface, getDemoFixtures, PlaceholderMediaRegistry, getImagesFor,  GalleryShowcaseProvider, BookReleaseAlert, BookReleaseAlertService, BookReleaseAlertRepository, BookReleaseAlertSend, BookMaintenanceTaskProvider, isToBePublished, findAllToBePublished, findReleased, purgeStale, isShownInCatalog, book_release_alert_unsubscribe, book_release_alert_unsubscribe_confirm, MAX_ATTEMPTS, attempts, BookEmailTemplateProvider."
+description: "Use this skill when a row of a c975L BookBundle catalog is created, copied, replaced, hidden or moved between environments — publishing a new version of a book without losing its address, duplicating a book, a serie or a planche, the trash and the 410/301 answers that keep urls in order, what each repository read is allowed to answer, and the zip export/import that carries a whole catalog with its files. Triggers on: BookVersionPublisher, publishVersion, newerVersion, previousVersion, createPreviousVersion, moveEdition, moveMedias, BookDuplicator, duplicateBook, duplicateSerie, duplicateStrip, duplicateContributor, BookContributor, BookContributorType, BookTrashManager, moveToTrash, restore, deletePermanently, redirectSlugChange, TrashableInterface, TrashableTrait, TrashableCrudTrait, isDeleted, HideableTrait, isHidden, setHidden, hidden, GoneHttpException, 410, BookExportProvider, BookImportProvider, SerieExportProvider, SerieImportProvider, StripExportProvider, StripImportProvider, ContributorExportProvider, ContributorImportProvider, MediaArchiver, SerieResolver, ContributorResolver, BookCategory, BookCategoryResolver, BookCategoryExportProvider, BookCategoryImportProvider, duplicateCategory, findPublishedByCategory, findWithBooks, BookBackupPathProvider, BookSitemapProvider, BookLinkHealthCheckProvider, BookMediaMoveController, findAllPublished, findAllOnline, findPublishedByIds, findOneByNumber, publishedQueryBuilder, strip:import, strip:card, BookDemoFixtureProvider, BookSampleCatalog, DemoFixtureProviderInterface, getDemoFixtures, PlaceholderMediaRegistry, getImagesFor,  GalleryShowcaseProvider, BookReleaseAlert, BookReleaseAlertService, BookReleaseAlertRepository, BookReleaseAlertSend, BookMaintenanceTaskProvider, isToBePublished, findAllToBePublished, findReleased, purgeStale, isShownInCatalog, book_release_alert_unsubscribe, book_release_alert_unsubscribe_confirm, MAX_ATTEMPTS, attempts, BookEmailTemplateProvider, BookFilesHealthCheckProvider, files-book, findWithFilename, AbstractDeclaredFilesHealthCheckProvider."
 ---
 
 # c975L BookBundle — a row's life
@@ -10,9 +10,9 @@ description: "Use this skill when a row of a c975L BookBundle catalog is created
 **Package:** `c975l/book-bundle` · **Bundle:** `c975L\BookBundle\` · **Translation domain:** `book`
 
 **Key source paths** (relative to the package root):
-`src/Service/BookVersionPublisher.php`, `src/Service/BookDuplicator.php`, `src/Service/BookTrashManager.php`, `src/Contract/TrashableInterface.php`, `src/Entity/Trait/TrashableTrait.php`, `src/Entity/Trait/HideableTrait.php`, `src/Controller/Management/Trait/TrashableCrudTrait.php`, `src/Controller/Management/BookCrudController.php`, `src/Controller/Management/BookMediaMoveController.php`, `src/Repository/BookRepository.php`, `src/Repository/SerieRepository.php`, `src/Repository/StripRepository.php`, `src/Repository/ContributorRepository.php`, `src/Repository/BookCategoryRepository.php`, `src/Management/BookExportProvider.php`, `src/Management/BookImportProvider.php`, `src/Management/ContributorExportProvider.php`, `src/Management/ContributorImportProvider.php`, `src/Management/ContributorResolver.php`, `src/Management/BookCategoryResolver.php`, `src/Management/BookCategoryExportProvider.php`, `src/Management/BookCategoryImportProvider.php`, `src/Management/MediaArchiver.php`, `src/Management/BookSitemapProvider.php`, `src/Management/BookLinkHealthCheckProvider.php`, `src/Command/StripImportCommand.php`, `src/Service/BookReleaseAlertService.php`, `src/Repository/BookReleaseAlertRepository.php`, `src/Command/BookReleaseAlertSend.php`, `src/Email/BookEmailTemplateProvider.php`, `src/Service/BookSampleCatalog.php`, `src/Service/BookDemoFixtureProvider.php`, `src/Service/GalleryShowcaseProvider.php`
+`src/Service/BookVersionPublisher.php`, `src/Service/BookDuplicator.php`, `src/Service/BookTrashManager.php`, `src/Contract/TrashableInterface.php`, `src/Entity/Trait/TrashableTrait.php`, `src/Entity/Trait/HideableTrait.php`, `src/Controller/Management/Trait/TrashableCrudTrait.php`, `src/Controller/Management/BookCrudController.php`, `src/Controller/Management/BookMediaMoveController.php`, `src/Repository/BookRepository.php`, `src/Repository/SerieRepository.php`, `src/Repository/StripRepository.php`, `src/Repository/ContributorRepository.php`, `src/Repository/BookCategoryRepository.php`, `src/Management/BookExportProvider.php`, `src/Management/BookImportProvider.php`, `src/Management/ContributorExportProvider.php`, `src/Management/ContributorImportProvider.php`, `src/Management/ContributorResolver.php`, `src/Management/BookCategoryResolver.php`, `src/Management/BookCategoryExportProvider.php`, `src/Management/BookCategoryImportProvider.php`, `src/Management/MediaArchiver.php`, `src/Management/BookSitemapProvider.php`, `src/Management/BookLinkHealthCheckProvider.php`, `src/Management/BookFilesHealthCheckProvider.php`, `src/Repository/MediaRepository.php`, `src/Command/StripImportCommand.php`, `src/Service/BookReleaseAlertService.php`, `src/Repository/BookReleaseAlertRepository.php`, `src/Command/BookReleaseAlertSend.php`, `src/Email/BookEmailTemplateProvider.php`, `src/Service/BookSampleCatalog.php`, `src/Service/BookDemoFixtureProvider.php`, `src/Service/GalleryShowcaseProvider.php`
 
-**Related skills:** `c975l-book-display-pages` and `c975l-book-customization` in this same bundle, and `c975l-config`, `c975l-media` in the core beside it.
+**Related skills:** `c975l-book-display-pages` and `c975l-book-customization` in this same bundle, and `c975l-config`, `c975l-media`, `c975l-operations` in the core beside it.
 
 ## An edition is not a version
 
@@ -139,8 +139,11 @@ address — a page of its own, the sheet's html being cached per fragment where 
 
 `BookReleaseAlert` holds one row per waiting visitor: the book, the address, the locale it was taken in, a
 token and the failed sends counted on it (`attempts`), and **nothing else**. Subscribing is acknowledged at
-once by `book_release_alert_confirmation`, which carries the unsubscribe link — the only way out offered
-before the parution, and what somebody whose address was typed by a third party leaves from. `BookReleaseAlertSend`,
+once by `book_release_alert_confirmation`, which names the book as a link to its page and carries the
+unsubscribe link — the only way out offered before the parution, and what somebody whose address was typed
+by a third party leaves from. Both are absolute addresses, so `subscribe()` resolves them **before** the row
+is written: raising after the flush would leave an address subscribed with no acknowledgement and no way
+out, the next submission finding it already there and sending nothing. `BookReleaseAlertSend`,
 scheduled nightly by `BookMaintenanceTaskProvider`, sends `book_released`
 to everyone whose book has come out and **deletes the row with it**: a book is published once, so the
 parution e-mail carries no unsubscribe link and the address is not kept past the purpose it was given for.
@@ -212,6 +215,22 @@ Its cards carry a cover too, read off the same declared keys, so a demo site and
 book. Failing one, it deals the generic pool **by rank** where the fixtures read it off the slug: a rail is
 seen side by side, and two cards sharing a photograph read as a bug. A cover is posed with `addCover()`, not
 `setName()` alone — `book_cover()` reads the kind before falling back on the first image.
+
+## The files the rows declare
+
+`BookFilesHealthCheckProvider` (kind `files-book`) reports every file a row of this bundle names and the
+server no longer holds — a book's covers, videos, press and marketing files, plus a serie's, a strip's and a
+contributor's own pictures. Everything it does is CoreBundle's `AbstractDeclaredFilesHealthCheckProvider`;
+this only names the rows, `MediaRepository::findWithFilename()` walking the media table whatever the owner.
+
+Four owners share that one table (`Media`'s single-table inheritance), so each row links to the screen its
+own file is re-uploaded from — a book, a serie, a strip or a contributor — never merely the one it happens to
+be listed on. A row implementing `VichPrivateFileInterface` is looked for under its own private directory,
+every other under `PUBLIC_DIRECTORY`.
+
+```bash
+php bin/console c975l:health-check:run --kind=files-book
+```
 
 ## Do not
 
