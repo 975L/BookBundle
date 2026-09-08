@@ -1,5 +1,33 @@
 # Changelog
 
+## v2.7.0
+
+A catalog says where it is sold, and how its series are drawn
+
+- New `BookPdfDocumentSource`: every `book_media` document is declared to UiBundle's thumbnail check (07/09/2026)
+- New `MediaRepository::findPdfs()`, matched on the stored name (07/09/2026)
+- Needs `c975l/core-bundle` ^1.24.1, which ships the contract (07/09/2026)
+- `BookPdfDocumentSourceTest` covers the declared path, the fallback label and the tab each collection's pencil opens (07/09/2026)
+
+- `composer qa` runs `mess` and `lizard`, `phpmd.xml.dist` drops `NPathComplexity` and `phpunit.xml.dist` fails on a notice (07/09/2026)
+- `book_serie_strips` draws from several series, named by slug, the maximum applying to each (07/09/2026)
+- Every listing kind may close its head on a link (`linkLabel`/`linkUrl`), where `displayMore` closes the grid instead (07/09/2026)
+- `book_books` offers a rail a phone scrolls sideways, the grid taking over from the two-column step (07/09/2026)
+- `book_stores` offers a wall of marks standing alone, beside the labelled tile a book's page prints (07/09/2026)
+- A serie vignette sits beside its title in a card from the two-column step, and the full-frame tiles bleed to the edges on a phone (07/09/2026)
+
+- New `book_stores` block kind: where the catalog is sold, one address per platform of the site's own vocabulary (07/09/2026)
+- `book_series` takes the series to show, named by slug and drawn in the order they were typed (07/09/2026)
+- `book_series` draws its series as cards, as full-frame tiles or as square vignettes (07/09/2026)
+- The tile and vignette variants print how many books a serie has out and the language it reads in (07/09/2026)
+- New `BookServiceInterface::countPublishedBySerie()` and `book_serie_book_counts()`, one query per row rather than one per serie (07/09/2026)
+- New `--book-serie-*` tokens, offered by the scaffolded `themes/book.css` (07/09/2026)
+- The block gallery shows the three ways `book_series` draws a serie, and its sample series carry the summary a tile prints (07/09/2026)
+- `book_series` in its tile and vignette variants declines its cache entry while a book is dated ahead, the count they print reading that date (07/09/2026)
+- `linkLabel` is declared `translatable` on the seven listing kinds (07/09/2026)
+- The block gallery names the series variants by their translated labels rather than by their stored value (07/09/2026)
+- New guided project `book-stores`, from the blocks tab to a first address (07/09/2026)
+
 ## v2.6.1
 
 A press file is recognised by its extension, not by a regular expression

@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
+use c975L\BookBundle\Entity\StripMedia;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
@@ -50,6 +51,15 @@ class MediaTest extends TestCase
     {
         $this->assertSame('application/octet-stream', new BookMedia()->setName('medias/book/archive.xyz')->getMimeType());
         $this->assertSame('application/octet-stream', new BookMedia()->getMimeType());
+    }
+
+    // A planche telling several kinds apart writes each under its own name, where a planche naming none would otherwise open its path on a dash the file carries for good
+    public function testAPlancheMediaOnlyPrefixesItsPathWithAKindItHas(): void
+    {
+        $strip = new Strip()->setSlug('planche-1');
+
+        $this->assertSame('medias/book/strips/planche-1', new StripMedia()->setStrip($strip)->getVichMediaPath());
+        $this->assertSame('medias/book/strips/crayonne-planche-1', new StripMedia()->setStrip($strip)->setKind('crayonne')->getVichMediaPath());
     }
 
     public function testTheTitleStandsAsTheAlternativeText(): void

@@ -37,6 +37,14 @@ interface BookServiceInterface
     /** @param string|null $language narrows the count to one language */
     public function countPublished(?string $language = null): int;
 
+    // How many books each of the given series has out, in one query for the whole listing rather than one per serie.
+    /**
+     * @param int[] $serieIds
+     *
+     * @return array<int, int> serie id => how many of its books are out, series holding none being absent
+     */
+    public function countPublishedBySerie(array $serieIds): array;
+
     // The languages the catalog is actually written in, so a list can be offered per language without a site declaring which ones it publishes.
     /** @return list<string> */
     public function findLanguages(): array;

@@ -1,11 +1,46 @@
+{# <twig:c975LBook:Serie:Serie serie="{{ serie }}" [:editable="false"] [variant=""] [:count="0"]/> #}
+{# The serie as a listing shows it. "variant": how the card is drawn - the thumbnail with the title under it the listing has always shown, a tile the cover fills behind the text, or a square vignette. "count": how many books it has out, asked once for the whole row by Serie:Series rather than per card #}
+{% props serie, editable = false, variant = '', count = 0 %}
 {# "editable": the pencil leading to the serie's screen, drawn by UiBundle's overlay above what carries the url - the same condition as a book's card, a listing rendered outside the blocks cache #}
 {% set editUrl = editable|default(false) and is_granted(config('site-role-editor')) ? serie_edit_url(serie) : null %}
-<article class="width-150"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
-    {% set cover = serie.covers|first %}
-    {% set imageSrc = cover != false ? cover : "bundles/c975lbook/images/no-cover.webp" %}
-    {# The cover's own alternative text, the serie's title when it carries none - same reading as a book's card #}
-    <twig:c975LUi:Image:Link alt="{{ cover.alt|default('') ?: serie.title }}" src="{{ asset(imageSrc) }}" url="{{ serie_path(serie) }}" class="img-thumbnail box-shadow" width="150"/>
-    <h3>{{ serie.title }}</h3>
-    {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
-    <p class="text text-center small bold">({{ languageLabels[serie.language]|default(serie.language) }})</p>
-</article>
+{# Matched, not interpolated: the value comes from stored block data and must not write any class name #}
+{% set variant = variant|default('') in ['tiles', 'thumbnails'] ? variant : '' %}
+{% set cover = serie.covers|first %}
+{% set imageSrc = cover != false ? cover : "bundles/c975lbook/images/no-cover.webp" %}
+{# The cover's own alternative text, the serie's title when it carries none - same reading as a book's card #}
+{% set imageAlt = cover.alt|default('') ?: serie.title %}
+{% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
+
+{% if variant %}
+{# The meta line the two variants share: how many books are out, then the language they read in - by the language's own code here rather than by its endonym, the line being read as a mark and not as a sentence. A serie with nothing out yet says only its language, never "0 livre" #}
+    {% set meta = count > 0 ? 'label.serie_books_count'|trans({'%count%': count}, 'book') : '' %}
+    {% set meta = meta ~ (meta and serie.language ? ' · ' : '') ~ serie.language|upper %}
+{# Both variants hang under the <h2> the listing's head prints, the same level as the card variant's own title #}
+{% endif %}
+
+{% if variant == 'tiles' %}
+    <a class="serie-tile" href="{{ serie_path(serie) }}"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+{# A real <img> and not a CSS background: a background-image needs a style attribute no CSP nonce covers, and the browser would not know the picture's size before it lands #}
+        <img class="serie-tile__img" src="{{ asset(imageSrc) }}" alt="{{ imageAlt }}" loading="lazy">
+        <div class="serie-tile__body">
+            {% if meta %}<p class="serie-tile__meta">{{ meta }}</p>{% endif %}
+            <h3 class="serie-tile__title">{{ serie.title }}</h3>
+{# The one line the client writes on the serie itself, reduced to plain text: the summary is stored as editor HTML, which a tile has no room to render #}
+            {% if serie.summary %}<p class="serie-tile__text">{{ serie.summary|plain_text }}</p>{% endif %}
+        </div>
+    </a>
+{% elseif variant == 'thumbnails' %}
+    <a class="serie-thumb" href="{{ serie_path(serie) }}"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+        <span class="serie-thumb__frame">
+            <img class="serie-thumb__img" src="{{ asset(imageSrc) }}" alt="{{ imageAlt }}" loading="lazy">
+        </span>
+        <h3 class="serie-thumb__title">{{ serie.title }}</h3>
+        {% if meta %}<p class="serie-thumb__meta">{{ meta }}</p>{% endif %}
+    </a>
+{% else %}
+    <article class="width-150"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+        <twig:c975LUi:Image:Link alt="{{ imageAlt }}" src="{{ asset(imageSrc) }}" url="{{ serie_path(serie) }}" class="img-thumbnail box-shadow" width="150"/>
+        <h3>{{ serie.title }}</h3>
+        <p class="text text-center small bold">({{ languageLabels[serie.language]|default(serie.language) }})</p>
+    </article>
+{% endif %}

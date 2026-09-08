@@ -94,6 +94,10 @@
                 <source>description.guided_project_book_sorting</source>
                 <target>Les séries et les personnes s'affichent sur le site dans l'ordre fixé ici en glissant leurs lignes — rien à l'écran ne le dit, et trier une colonne ne trie que ce que vous regardez.</target>
             </trans-unit>
+            <trans-unit id="JqgFpM5">
+                <source>description.guided_project_book_stores</source>
+                <target>Les plateformes où un livre s'achète se saisissent une fois, sur un block à elles : rien n'est interrogé, les adresses s'écrivent à la main.</target>
+            </trans-unit>
             <trans-unit id="0ebzwCX">
                 <source>description.guided_project_book_strip_creation</source>
                 <target>Une planche, la série qui la raconte, son rang et son dessin : de quoi la mettre en ligne.</target>
@@ -414,6 +418,34 @@
                 <source>description.guided_step_book_sorting_open</source>
                 <target>La liste des séries. Celle des auteurs et illustrateurs se trie exactement de la même façon.</target>
             </trans-unit>
+            <trans-unit id="gXsPAMk">
+                <source>description.guided_step_book_stores_add</source>
+                <target>Chaque block a son type et son propre formulaire, et ils s'empilent dans l'ordre de la page.</target>
+            </trans-unit>
+            <trans-unit id="rRzSYM3">
+                <source>description.guided_step_book_stores_done</source>
+                <target>Le block affiche les plateformes sur la page publique du livre, dans l'ordre où elles sont saisies.</target>
+            </trans-unit>
+            <trans-unit id="2HXzjHl">
+                <source>description.guided_step_book_stores_edit</source>
+                <target>Le crayon ouvre le formulaire d'un livre déjà créé.</target>
+            </trans-unit>
+            <trans-unit id="IF9SBJl">
+                <source>description.guided_step_book_stores_item</source>
+                <target>Une ligne par plateforme : la marque sous laquelle elle s'affiche, et l'adresse qu'elle ouvre.</target>
+            </trans-unit>
+            <trans-unit id="pwHzcd2">
+                <source>description.guided_step_book_stores_kind</source>
+                <target>Le block des liens de vente porte son propre contenu : aucun catalogue n'est interrogé, les plateformes se saisissent sur le block.</target>
+            </trans-unit>
+            <trans-unit id="PbWDjrp">
+                <source>description.guided_step_book_stores_open</source>
+                <target>L'écran des livres liste tout le catalogue.</target>
+            </trans-unit>
+            <trans-unit id="FOIOlq_">
+                <source>description.guided_step_book_stores_tab</source>
+                <target>Le dernier onglet du formulaire porte la composition de la page.</target>
+            </trans-unit>
             <trans-unit id="hualbfA">
                 <source>description.guided_step_book_strip_creation_characters</source>
                 <target>Les noms séparés par une virgule : ce sont eux que les pastilles de la série filtrent.</target>
@@ -638,6 +670,22 @@
                 <source>label.block_books_description</source>
                 <target>Met en avant une sélection de livres</target>
             </trans-unit>
+            <trans-unit id="9OUEqIr">
+                <source>label.block_books_variant</source>
+                <target>Présentation sur téléphone</target>
+            </trans-unit>
+            <trans-unit id="jq7_iQ.">
+                <source>label.block_books_variant_grid</source>
+                <target>Grille</target>
+            </trans-unit>
+            <trans-unit id=".WKGHr8">
+                <source>label.block_books_variant_help</source>
+                <target>Au-delà du téléphone, les deux présentations sont la même grille.</target>
+            </trans-unit>
+            <trans-unit id="mYRriul">
+                <source>label.block_books_variant_rail</source>
+                <target>Rail à faire défiler</target>
+            </trans-unit>
             <trans-unit id="8T9Q76Z">
                 <source>label.block_categories</source>
                 <target>Catégories</target>
@@ -686,6 +734,18 @@
                 <source>label.block_eyebrow</source>
                 <target>Surtitre</target>
             </trans-unit>
+            <trans-unit id="XvzdMRN">
+                <source>label.block_link_label</source>
+                <target>Libellé du lien de la section</target>
+            </trans-unit>
+            <trans-unit id="lUsV6nU">
+                <source>label.block_link_url</source>
+                <target>Adresse du lien de la section</target>
+            </trans-unit>
+            <trans-unit id="TbQrtiQ">
+                <source>label.block_link_url_help</source>
+                <target>Le lien se pose au bout de la ligne du titre. Les deux champs sont nécessaires : l'un sans l'autre n'affiche rien.</target>
+            </trans-unit>
             <trans-unit id="yNut8oi">
                 <source>label.block_max_books</source>
                 <target>Nombre de livres (vide = tous)</target>
@@ -730,6 +790,18 @@
                 <source>label.block_serie_slug</source>
                 <target>Slug de la série</target>
             </trans-unit>
+            <trans-unit id="LQ52FLt">
+                <source>label.block_serie_slug_help</source>
+                <target>Une série, ou plusieurs séparées par des virgules — le nombre de planches s’applique alors à chacune.</target>
+            </trans-unit>
+            <trans-unit id="3B_b.1f">
+                <source>label.block_serie_slugs</source>
+                <target>Séries à montrer (slugs séparés par des virgules)</target>
+            </trans-unit>
+            <trans-unit id="IyQ939Z">
+                <source>label.block_serie_slugs_help</source>
+                <target>Vide = tout le catalogue. Sinon, les séries nommées sont montrées dans l’ordre où elles sont écrites.</target>
+            </trans-unit>
             <trans-unit id="aVV8G4w">
                 <source>label.block_serie_strips</source>
                 <target>Strips d'une série</target>
@@ -745,6 +817,62 @@
             <trans-unit id="vb..Vuq">
                 <source>label.block_series_description</source>
                 <target>Met en avant une sélection de séries de livres</target>
+            </trans-unit>
+            <trans-unit id="GxCNpps">
+                <source>label.block_series_variant</source>
+                <target>Présentation</target>
+            </trans-unit>
+            <trans-unit id="AAnX1ww">
+                <source>label.block_series_variant_cards</source>
+                <target>Cartes (couverture et titre dessous)</target>
+            </trans-unit>
+            <trans-unit id="8ZjOfwb">
+                <source>label.block_series_variant_help</source>
+                <target>Les tuiles et les vignettes affichent aussi le nombre de livres parus et la langue.</target>
+            </trans-unit>
+            <trans-unit id="1pXr8c_">
+                <source>label.block_series_variant_thumbnails</source>
+                <target>Vignettes carrées</target>
+            </trans-unit>
+            <trans-unit id="KfUKmgL">
+                <source>label.block_series_variant_tiles</source>
+                <target>Tuiles (couverture en plein cadre)</target>
+            </trans-unit>
+            <trans-unit id="9obACr3">
+                <source>label.block_store_kind</source>
+                <target>Plateforme</target>
+            </trans-unit>
+            <trans-unit id="SW36XaS">
+                <source>label.block_store_url</source>
+                <target>Adresse</target>
+            </trans-unit>
+            <trans-unit id="GMbT1.5">
+                <source>label.block_store_url_help</source>
+                <target>La page de l’éditeur sur cette plateforme, pas celle d’un livre.</target>
+            </trans-unit>
+            <trans-unit id="kL5hO.q">
+                <source>label.block_stores</source>
+                <target>Où nous trouver</target>
+            </trans-unit>
+            <trans-unit id="uTS9bfx">
+                <source>label.block_stores_description</source>
+                <target>Les plateformes qui vendent le catalogue, avec le logo et le nom de chacune. Une adresse par plateforme, celle de l’éditeur et non celle d’un livre.</target>
+            </trans-unit>
+            <trans-unit id="6TNKPBV">
+                <source>label.block_stores_items</source>
+                <target>Plateformes</target>
+            </trans-unit>
+            <trans-unit id="JbPHC7Z">
+                <source>label.block_stores_variant</source>
+                <target>Présentation</target>
+            </trans-unit>
+            <trans-unit id="ODSHXrl">
+                <source>label.block_stores_variant_logos</source>
+                <target>Logos seuls, sur toute la largeur</target>
+            </trans-unit>
+            <trans-unit id="E1XTIqe">
+                <source>label.block_stores_variant_tiles</source>
+                <target>Tuiles avec le nom sous le logo</target>
             </trans-unit>
             <trans-unit id="t9d9.Qz">
                 <source>label.block_title</source>
@@ -1210,6 +1338,10 @@
                 <source>label.guided_project_book_sorting</source>
                 <target>Fixer l'ordre des listes</target>
             </trans-unit>
+            <trans-unit id="3bRzPjw">
+                <source>label.guided_project_book_stores</source>
+                <target>Dire où le catalogue est vendu</target>
+            </trans-unit>
             <trans-unit id="9Q84XCP">
                 <source>label.guided_project_book_strip_creation</source>
                 <target>Publier une planche</target>
@@ -1557,6 +1689,38 @@
             <trans-unit id="Yb79XfM">
                 <source>label.guided_step_book_sorting_open</source>
                 <target>Ouvrez « Séries »</target>
+            </trans-unit>
+            <trans-unit id="aLO9YcE">
+                <source>label.guided_step_book_stores_add</source>
+                <target>Ajouter un block</target>
+            </trans-unit>
+            <trans-unit id="k8yeB.h">
+                <source>label.guided_step_book_stores_done</source>
+                <target>Les liens sont en place</target>
+            </trans-unit>
+            <trans-unit id="ovM1MHQ">
+                <source>label.guided_step_book_stores_edit</source>
+                <target>Modifier un livre</target>
+            </trans-unit>
+            <trans-unit id="DZrlDMo">
+                <source>label.guided_step_book_stores_item</source>
+                <target>Ajouter une première adresse</target>
+            </trans-unit>
+            <trans-unit id="Nd030kd">
+                <source>label.guided_step_book_stores_kind</source>
+                <target>Choisir les liens de vente</target>
+            </trans-unit>
+            <trans-unit id="3bJ_O3q">
+                <source>label.guided_step_book_stores_open</source>
+                <target>Ouvrir les livres</target>
+            </trans-unit>
+            <trans-unit id="jyjYXEA">
+                <source>label.guided_step_book_stores_save</source>
+                <target>Enregistrer le livre</target>
+            </trans-unit>
+            <trans-unit id="z5oKJXj">
+                <source>label.guided_step_book_stores_tab</source>
+                <target>Ouvrir l'onglet Blocks</target>
             </trans-unit>
             <trans-unit id="0LQKKD8">
                 <source>label.guided_step_book_strip_creation_characters</source>
@@ -2029,6 +2193,10 @@
             <trans-unit id="PGie5WM">
                 <source>label.serie_books</source>
                 <target>Livres de la série</target>
+            </trans-unit>
+            <trans-unit id="ijfvvQh">
+                <source>label.serie_books_count</source>
+                <target>{1}1 livre|]1,Inf[%count% livres</target>
             </trans-unit>
             <trans-unit id="_9bIEnd">
                 <source>label.series</source>

@@ -350,6 +350,38 @@
                 <source>narration.guided_step_book_sorting_open</source>
                 <target>Le panneau vous emmène sur les séries. Celle des auteurs et illustrateurs se trie exactement de la même façon.</target>
             </trans-unit>
+            <trans-unit id="TUH4lRv">
+                <source>narration.guided_step_book_stores_add</source>
+                <target>Ajoutez un block. Chacun a son type et son propre formulaire, et ils s'empilent dans l'ordre de la page.</target>
+            </trans-unit>
+            <trans-unit id="FJPOTCH">
+                <source>narration.guided_step_book_stores_done</source>
+                <target>Les liens sont en place : le block affiche les plateformes sur la page publique du livre, dans l'ordre où elles sont saisies.</target>
+            </trans-unit>
+            <trans-unit id="0YjnbfQ">
+                <source>narration.guided_step_book_stores_edit</source>
+                <target>Ouvrez un livre avec le crayon, au bout de sa ligne.</target>
+            </trans-unit>
+            <trans-unit id="_dcAwef">
+                <source>narration.guided_step_book_stores_item</source>
+                <target>Ajoutez une première adresse. Une ligne par plateforme : choisissez la marque, puis collez l'adresse entière de la page qu'elle ouvre.</target>
+            </trans-unit>
+            <trans-unit id="eOi_NpB">
+                <source>narration.guided_step_book_stores_kind</source>
+                <target>Choisissez le block des liens de vente. À la différence des listings, il n'interroge rien : ce qu'il affiche est ce que vous y saisissez.</target>
+            </trans-unit>
+            <trans-unit id="W3Lt4D8">
+                <source>narration.guided_step_book_stores_open</source>
+                <target>Le panneau vous emmène sur les livres, où tout le catalogue est listé.</target>
+            </trans-unit>
+            <trans-unit id="c4FoMGh">
+                <source>narration.guided_step_book_stores_save</source>
+                <target>Enregistrez le livre.</target>
+            </trans-unit>
+            <trans-unit id="Ka5oG0l">
+                <source>narration.guided_step_book_stores_tab</source>
+                <target>Ouvrez le dernier onglet du formulaire, celui des blocks : il porte la composition de la page.</target>
+            </trans-unit>
             <trans-unit id="UVtNxpy">
                 <source>narration.guided_step_book_strip_creation_characters</source>
                 <target>Dites qui parle : les noms séparés par une virgule. Ce sont eux que les pastilles de la série filtrent.</target>

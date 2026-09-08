@@ -49,6 +49,16 @@ abstract class AbstractBookListingBlockType extends AbstractType
                 'label' => 'label.block_content',
                 'required' => false,
             ])
+            // The link closing the head, against its far edge - what a listing showing a cut of a catalog points at its whole. Both needed, either alone printing a broken link
+            ->add('linkLabel', TextType::class, [
+                'label' => 'label.block_link_label',
+                'required' => false,
+            ])
+            ->add('linkUrl', TextType::class, [
+                'label' => 'label.block_link_url',
+                'help' => 'label.block_link_url_help',
+                'required' => false,
+            ])
         ;
 
         $this->addBackgroundField($builder);

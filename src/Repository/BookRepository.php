@@ -136,6 +136,36 @@ class BookRepository extends ServiceEntityRepository
         ;
     }
 
+    // How many books each of the given series has out, in one query for the whole listing rather than one per card - what a rail of series prints under each title. Read through the same query builder as every other listing, so a book set aside, trashed, undated or replaced is counted by none of them
+    /**
+     * @param int[] $serieIds
+     *
+     * @return array<int, int> serie id => how many of its books are out, series holding none being absent
+     */
+    public function countPublishedBySerie(array $serieIds): array
+    {
+        if ([] === $serieIds) {
+            return [];
+        }
+
+        $rows = $this->publishedQueryBuilder()
+            ->select('IDENTITY(b.serie) AS serieId', 'COUNT(b.id) AS total')
+            ->andWhere('b.serie IN (:serieIds)')
+            ->setParameter('serieIds', $serieIds)
+            ->resetDQLPart('orderBy')
+            ->groupBy('b.serie')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        $counts = [];
+        foreach ($rows as $row) {
+            $counts[(int) $row['serieId']] = (int) $row['total'];
+        }
+
+        return $counts;
+    }
+
     // Whether a book waits for a date still ahead, which is what tells a listing moving on its own from one only ever changed by a save: the answer is what BookBlockCacheTagProvider caches or renders live on. A book left undated is not one of them - it comes out the day someone dates it, which is an event of its own
     public function hasScheduled(): bool
     {

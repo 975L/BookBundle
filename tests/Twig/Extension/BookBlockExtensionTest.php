@@ -30,6 +30,18 @@ class BookBlockExtensionTest extends TestCase
         return array_map(static fn (int $i) => new Book()->setTitle('Livre ' . $i)->setSlug('livre-' . $i), range(1, $count));
     }
 
+    /** @return list<Serie> */
+    private function series(string ...$slugs): array
+    {
+        return array_map(static fn (string $slug) => new Serie()->setTitle($slug)->setSlug($slug), $slugs);
+    }
+
+    // Doctrine assigns the identifier itself, which a row built here never goes through
+    private function setId(object $entity, int $id): void
+    {
+        new \ReflectionProperty($entity::class, 'id')->setValue($entity, $id);
+    }
+
     private function extension(
         ?BookServiceInterface $bookService = null,
         ?SerieServiceInterface $serieService = null,
@@ -108,6 +120,49 @@ class BookBlockExtensionTest extends TestCase
         $serieService->expects($this->once())->method('findAll')->with(null)->willReturn([new Serie(), new Serie()]);
 
         $this->assertCount(2, $this->extension(serieService: $serieService)->getSeries());
+    }
+
+    // Named series are read in the order they were typed and not the catalog's: every serie of a site commonly sits at position 0, where that order is arbitrary
+    public function testNamedSeriesAreReadInTheOrderTheyWereNamed(): void
+    {
+        $serieService = $this->createStub(SerieServiceInterface::class);
+        $serieService->method('findAll')->willReturn($this->series('mamie-vitevite', 'papa-calin', 'les-triados'));
+
+        $picked = $this->extension(serieService: $serieService)->getSeries(serieSlugs: 'papa-calin, les-triados');
+
+        $this->assertSame(['papa-calin', 'les-triados'], array_map(static fn (Serie $serie): ?string => $serie->getSlug(), $picked));
+    }
+
+    // A slug naming nothing is simply absent, which is what makes a typo visible - falling back on the whole catalog would print a row nobody asked for
+    public function testASlugNamingNoSerieIsLeftOutRatherThanWideningTheRow(): void
+    {
+        $serieService = $this->createStub(SerieServiceInterface::class);
+        $serieService->method('findAll')->willReturn($this->series('papa-calin', 'les-triados'));
+
+        $this->assertSame([], $this->extension(serieService: $serieService)->getSeries(serieSlugs: 'inconnue'));
+        $this->assertCount(1, $this->extension(serieService: $serieService)->getSeries(serieSlugs: 'inconnue, papa-calin'));
+    }
+
+    // An empty field is no selection at all: the block then shows the whole catalog, which is what every one stored before the field existed does
+    public function testAnEmptySelectionStillReadsTheWholeCatalog(): void
+    {
+        $serieService = $this->createMock(SerieServiceInterface::class);
+        $serieService->expects($this->once())->method('findAll')->with(null)->willReturn($this->series('papa-calin', 'les-triados'));
+
+        $this->assertCount(2, $this->extension(serieService: $serieService)->getSeries(serieSlugs: '  '));
+    }
+
+    // The count each card of a row prints, asked once for the whole row rather than per serie
+    public function testTheBookCountsOfARowAreAskedInOneGo(): void
+    {
+        $series = $this->series('papa-calin', 'les-triados');
+        $this->setId($series[0], 7);
+        $this->setId($series[1], 9);
+
+        $bookService = $this->createMock(BookServiceInterface::class);
+        $bookService->expects($this->once())->method('countPublishedBySerie')->with([7, 9])->willReturn([7 => 38, 9 => 2]);
+
+        $this->assertSame([7 => 38, 9 => 2], $this->extension(bookService: $bookService)->getSerieBookCounts($series));
     }
 
     // A serie no slug leads to draws nothing rather than falling back on the whole catalog of planches

@@ -45,6 +45,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->versionPublicationProject(),
             $this->hiddenProject(),
             $this->trashProject(),
+            $this->storesProject(),
             $this->exportProject(),
         ];
     }
@@ -845,6 +846,70 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_trash_done',
                     'description' => 'description.guided_step_book_trash_done',
                     'narration' => 'narration.guided_step_book_trash_done',
+                ],
+            ],
+        ];
+    }
+
+    // The one kind of this bundle filled by hand rather than picked from the catalog: where the site sells, said once and printed on every page carrying the block - so the parcours goes as far as the first address, which is what nothing else here teaches
+    private function storesProject(): array
+    {
+        return [
+            'slug' => 'book-stores',
+            'label' => 'label.guided_project_book_stores',
+            'description' => 'description.guided_project_book_stores',
+            'translation_domain' => 'book',
+            'order' => 6065,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_stores_open',
+                    'description' => 'description.guided_step_book_stores_open',
+                    'narration' => 'narration.guided_step_book_stores_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_stores_edit',
+                    'description' => 'description.guided_step_book_stores_edit',
+                    'narration' => 'narration.guided_step_book_stores_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    // The last tab of the form, the same one the composition parcours opens
+                    'label' => 'label.guided_step_book_stores_tab',
+                    'description' => 'description.guided_step_book_stores_tab',
+                    'narration' => 'narration.guided_step_book_stores_tab',
+                    'highlight' => '.form-tabs-tablist .nav-item:last-child .nav-link',
+                ],
+                [
+                    // Scoped to the tab the step before it opens, a book form carrying one block collection per tab - and to the tab's own collection, a block already holding one of its own printing its add button first
+                    'label' => 'label.guided_step_book_stores_add',
+                    'description' => 'description.guided_step_book_stores_add',
+                    'narration' => 'narration.guided_step_book_stores_add',
+                    'highlight' => '.tab-pane.active .field-collection-add-button:not([data-ui-sort-group] *)',
+                ],
+                [
+                    'label' => 'label.guided_step_book_stores_kind',
+                    'description' => 'description.guided_step_book_stores_kind',
+                    'narration' => 'narration.guided_step_book_stores_kind',
+                    'highlight' => '.ui-block-picker [data-kind="book_stores"]',
+                ],
+                [
+                    // The add button of the collection nested inside the block, which prints no id of its own: EasyAdmin marks the row it sits in "data-ea-collection-field", and a collection inside a block row is this kind's items and nothing else
+                    'label' => 'label.guided_step_book_stores_item',
+                    'description' => 'description.guided_step_book_stores_item',
+                    'narration' => 'narration.guided_step_book_stores_item',
+                    'highlight' => '.tab-pane.active [data-ui-sort-group] [data-ea-collection-field] .field-collection-add-button',
+                ],
+                [
+                    'label' => 'label.guided_step_book_stores_save',
+                    'narration' => 'narration.guided_step_book_stores_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_stores_done',
+                    'description' => 'description.guided_step_book_stores_done',
+                    'narration' => 'narration.guided_step_book_stores_done',
                 ],
             ],
         ];

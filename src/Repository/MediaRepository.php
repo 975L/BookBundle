@@ -16,6 +16,19 @@ class MediaRepository extends ServiceEntityRepository
         parent::__construct($registry, Media::class);
     }
 
+    // Every document this bundle serves as a PDF, whatever the entity holding it - read by BookPdfDocumentSource, which hands them to UiBundle's thumbnail check. Matched on the stored name rather than on a column of its own: it is the very path the file is served under, and the only thing saying what the file is
+    /** @return Media[] */
+    public function findPdfs(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.name LIKE :pdf')
+            ->setParameter('pdf', '%.pdf')
+            ->orderBy('m.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /*     public function findByEntity(string $entityType, int $entityId): array
         {
             return $this->createQueryBuilder('m')

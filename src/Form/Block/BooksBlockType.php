@@ -9,6 +9,7 @@
 
 namespace c975L\BookBundle\Form\Block;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -25,6 +26,21 @@ class BooksBlockType extends AbstractBookListingBlockType
                 'label' => 'label.block_category_slug',
                 'help' => 'label.block_category_slug_help',
                 'required' => false,
+            ])
+        ;
+
+        // How the covers are laid out on a phone: stacked in the grid the listing has always shown, or scrolled sideways as one rail. From the two-column step on both are that same grid, a rail across a wide page being a row nobody scrolls
+        $builder
+            ->add('variant', ChoiceType::class, [
+                'label' => 'label.block_books_variant',
+                'help' => 'label.block_books_variant_help',
+                'required' => false,
+                'choices' => [
+                    'label.block_books_variant_grid' => '',
+                    'label.block_books_variant_rail' => 'rail',
+                ],
+                // No placeholder: the stored empty value is the grid itself, not the absence of a choice
+                'placeholder' => false,
             ])
         ;
 

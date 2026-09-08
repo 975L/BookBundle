@@ -350,6 +350,38 @@
                 <source>narration.guided_step_book_sorting_open</source>
                 <target>The panel takes you to the series. The authors and illustrators one is sorted exactly the same way.</target>
             </trans-unit>
+            <trans-unit id="TUH4lRv">
+                <source>narration.guided_step_book_stores_add</source>
+                <target>Add a block. Each has its kind and its own form, and they stack in the order of the page.</target>
+            </trans-unit>
+            <trans-unit id="FJPOTCH">
+                <source>narration.guided_step_book_stores_done</source>
+                <target>The links are in place: the block prints the platforms on the book's public page, in the order they are typed in.</target>
+            </trans-unit>
+            <trans-unit id="0YjnbfQ">
+                <source>narration.guided_step_book_stores_edit</source>
+                <target>Open a book with the pencil, at the end of its row.</target>
+            </trans-unit>
+            <trans-unit id="_dcAwef">
+                <source>narration.guided_step_book_stores_item</source>
+                <target>Add a first address. One row per platform: pick the brand, then paste the whole address of the page it opens.</target>
+            </trans-unit>
+            <trans-unit id="eOi_NpB">
+                <source>narration.guided_step_book_stores_kind</source>
+                <target>Choose the sales links block. Unlike the listings, it queries nothing: what it shows is what you type on it.</target>
+            </trans-unit>
+            <trans-unit id="W3Lt4D8">
+                <source>narration.guided_step_book_stores_open</source>
+                <target>The panel takes you to the books, where the whole catalog is listed.</target>
+            </trans-unit>
+            <trans-unit id="c4FoMGh">
+                <source>narration.guided_step_book_stores_save</source>
+                <target>Save the book.</target>
+            </trans-unit>
+            <trans-unit id="Ka5oG0l">
+                <source>narration.guided_step_book_stores_tab</source>
+                <target>Open the last tab of the form, the blocks one: it carries the composition of the page.</target>
+            </trans-unit>
             <trans-unit id="UVtNxpy">
                 <source>narration.guided_step_book_strip_creation_characters</source>
                 <target>Say who speaks: the names separated by a comma. They are what the serie's badges filter on.</target>

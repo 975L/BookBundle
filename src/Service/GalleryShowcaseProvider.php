@@ -38,7 +38,12 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
             $this->translator->trans('label.gallery_showcase_book_series', [], 'book') => [
                 'description' => $this->translator->trans('label.gallery_showcase_book_series_description', [], 'book'),
                 'kind' => 'book_series',
-                'variants' => ['' => $this->seriesVariant()],
+                // Keyed by the label the showcase prints under each panel, not by the stored value: the interface reads that key as a name (see GalleryShowcaseProviderInterface), and the three are already written in every locale, the form choosing among them
+                'variants' => [
+                    $this->trans('label.block_series_variant_cards') => $this->seriesVariant(),
+                    $this->trans('label.block_series_variant_tiles') => $this->seriesVariant('tiles'),
+                    $this->trans('label.block_series_variant_thumbnails') => $this->seriesVariant('thumbnails'),
+                ],
             ],
             $this->translator->trans('label.gallery_showcase_book_categories', [], 'book') => [
                 'description' => $this->translator->trans('label.gallery_showcase_book_categories_description', [], 'book'),
@@ -63,8 +68,8 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
         ];
     }
 
-    // A rail of series is read for its covers: each sample carries one, Serie/Serie.html.twig otherwise falling back on the bundle's "no-cover.webp" - which is what an app declaring no picture at all still gets
-    private function seriesVariant(): string
+    // A rail of series is read for its covers: each sample carries one, Serie/Serie.html.twig otherwise falling back on the bundle's "no-cover.webp" - which is what an app declaring no picture at all still gets. The samples are never persisted, so they carry no id: the counts the tile and vignette variants print are asked for none of them, and both show their language alone
+    private function seriesVariant(string $variant = ''): string
     {
         $series = [];
 
@@ -72,6 +77,8 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
             $serie = new Serie()
                 ->setTitle($this->trans($spec['title']))
                 ->setSlug($spec['slug'])
+                // Only the tile variant prints it, and it is what shows that variant's own shape
+                ->setSummary($this->trans($spec['summary']))
                 ->setLanguage($this->trans(BookSampleCatalog::LANGUAGE_KEY));
 
             $picture = $this->picture('serie', $spec['slug'], $rank);
@@ -85,7 +92,9 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
 
         return $this->twig->render('@c975LBook/components/Serie/Series.html.twig', [
             'series' => $series,
-            'displayMore' => 'true',
+            // The card leading to the whole catalog belongs to the card variant alone (see Serie/Series.html.twig)
+            'displayMore' => '' === $variant ? 'true' : 'false',
+            'variant' => $variant,
         ]);
     }
 

@@ -27,11 +27,29 @@ class BookBlockExtension
     ) {
     }
 
-    // Shuffling happens before the maximum applies, so "4 series at random" draws from the whole catalog and not from its first four - the maximum is then applied here rather than by the query, which would have cut the catalog down before the draw. A block asking for it declines its own cache entry (see BookBlockCacheTagProvider), so a new draw is made at every render
+    // Shuffling happens before the maximum applies, so "4 series at random" draws from the whole catalog and not from its first four - the maximum is then applied here rather than by the query, which would have cut the catalog down before the draw. A block asking for it declines its own cache entry (see BookBlockCacheTagProvider), so a new draw is made at every render, and named series are read in the very order they were typed rather than the catalog's own (see SeriesBlockType)
     #[AsTwigFunction('book_block_series')]
-    public function getSeries(?int $max = null, bool $random = false): array
+    public function getSeries(?int $max = null, bool $random = false, ?string $serieSlugs = null): array
     {
+        $slugs = $this->slugs($serieSlugs);
+
+        if ([] !== $slugs) {
+            return $this->draw($this->pick($this->serieService->findAll(), $slugs), $max, $random);
+        }
+
         return $random ? $this->draw($this->serieService->findAll(), $max) : $this->serieService->findAll($max);
+    }
+
+    // How many books each serie of a listing has out, asked once for the whole row - a card asking for its own would cost one query per serie. Only the tile and thumbnail variants print it (see Serie/Serie.html.twig)
+    /**
+     * @param object[] $series
+     *
+     * @return array<int, int> serie id => how many of its books are out
+     */
+    #[AsTwigFunction('book_serie_book_counts')]
+    public function getSerieBookCounts(array $series): array
+    {
+        return $this->bookService->countPublishedBySerie(array_values(array_filter(array_map(static fn (object $serie): ?int => $serie->getId(), $series))));
     }
 
     // Only the categories holding a book the site shows, as their own index lists them: an empty one would head a card saying "0"
@@ -69,17 +87,59 @@ class BookBlockExtension
         return $this->draw($this->bookService->findAllToBePublished(), $max, $random);
     }
 
+    // One serie, or several separated by commas - the maximum then applies to each of them rather than to the row, so a block naming two series shows as many planches of one as of the other (see SerieStripsBlockType)
     #[AsTwigFunction('book_block_serie_strips')]
     public function getSerieStrips(string $serieSlug, ?int $max = null, bool $random = false): array
     {
-        $serie = $this->serieService->findOneBySlugWithSortedBooks($serieSlug);
-        if (!$serie) {
+        $strips = [];
+
+        foreach ($this->slugs($serieSlug) as $slug) {
+            $serie = $this->serieService->findOneBySlugWithSortedBooks($slug);
+
+            if (!$serie) {
+                continue;
+            }
+
+            $strips = [...$strips, ...($random
+                ? $this->draw($this->stripService->findAllPublishedBySerie($serie), $max)
+                : $this->stripService->findAllPublishedBySerie($serie, $max))];
+        }
+
+        return $strips;
+    }
+
+    // The slugs a block names, read off the one text field holding them - the same shape as the single slug the other kinds store, block data being JSON and holding no entity (see SerieStripsBlockType, BooksBlockType)
+    /** @return string[] */
+    private function slugs(?string $value): array
+    {
+        if (null === $value || '' === trim($value)) {
             return [];
         }
 
-        return $random
-            ? $this->draw($this->stripService->findAllPublishedBySerie($serie), $max)
-            : $this->stripService->findAllPublishedBySerie($serie, $max);
+        return array_values(array_unique(array_filter(array_map(trim(...), explode(',', $value)), static fn (string $slug): bool => '' !== $slug)));
+    }
+
+    // The named rows, in the order they were named and not the one the catalog hands them back in - every serie of this site sits at position 0, so that order is arbitrary. A slug naming nothing is simply absent, which is what makes a typo visible rather than silently showing the whole catalog
+    /**
+     * @param string[] $slugs
+     *
+     * @return object[]
+     */
+    private function pick(array $rows, array $slugs): array
+    {
+        $bySlug = [];
+        foreach ($rows as $row) {
+            $bySlug[(string) $row->getSlug()] = $row;
+        }
+
+        $picked = [];
+        foreach ($slugs as $slug) {
+            if (isset($bySlug[$slug])) {
+                $picked[] = $bySlug[$slug];
+            }
+        }
+
+        return $picked;
     }
 
     // The rows a listing keeps out of the list it was handed: drawn at random when the block asks for it, taken in the catalog's own order otherwise

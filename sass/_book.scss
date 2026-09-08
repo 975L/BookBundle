@@ -4,6 +4,10 @@ $book-bp-wide: 768px;
 // The step the summary of anchors leaves the top of the page for a column of its own - the same one UiBundle's own .toc switches at, the two being one layout
 $book-bp-column: 1200px;
 
+// The two steps a row of series widens at. Restated here rather than imported: UiBundle's $page-section-bp-sm/-lg live in its own sheet, which sass cannot reach across a package - and the values must be those, so every block of a page reflows at the same width (see UiBundle's sass/_page-sections.scss)
+$book-bp-row-2: 621px;
+$book-bp-row-3: 1025px;
+
 // PAGE
 
 // Mobile first: one column, the hero, then the sections - which is also the source order, so nothing is reordered for a phone
@@ -171,6 +175,238 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     padding-bottom: var(--section-space, clamp(48px, 8vw, 84px));
 }
 
+/* SERIE ROWS - the two variants a "book_series" block draws its series with, beside the thumbnail card it has always shown (see templates/components/Serie/Serie.html.twig) */
+
+// Mobile first: one tile per row, which is also the source order. Two from the step below, three from the one after - the very widths every other block of the page reflows at
+.serie-tiles {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--book-serie-grid-gap);
+}
+
+// Three from the phone up: a serie shown beside the full-frame ones is a vignette, and three of them fit a 390px screen at the size the row is read at
+.serie-thumbnails {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--book-serie-grid-gap);
+}
+
+// The tile is the link: the whole picture answers, not the title over it
+.serie-tile {
+    position: relative;
+    display: block;
+    height: var(--book-serie-tile-height);
+    border-radius: var(--book-serie-tile-radius);
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.serie-tile__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    // The cover fills the tile whatever its own proportions, the alternative being letterboxed bands the veil would run across
+    object-fit: cover;
+}
+
+// The text hangs from the foot of the tile, over the veil that makes it readable - clear at the top so the cover is still seen, opaque enough at the bottom for a title to hold on a pale picture
+.serie-tile__body {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: var(--book-serie-tile-padding);
+    background: var(--book-serie-tile-veil);
+    color: var(--book-serie-tile-color);
+    // The page centers every heading (see UiBundle's own h1-h6 rule): a tile reads from its left edge, title and mark on the same line of type
+    text-align: start;
+}
+
+.serie-tile__title {
+    margin: 0;
+    font-family: var(--font-family-title);
+    font-size: var(--book-serie-tile-title-size);
+    line-height: 1.08;
+    color: var(--book-serie-tile-color);
+    text-align: start;
+}
+
+.serie-tile__text {
+    // Two lines and no more: a tile is entered on its title, the sentence under it only saying what the serie is about - and a long summary would otherwise push the title out of the tile. A height ceiling and not a line clamp, the same idiom as the platform tiles' label below: this text is a flex item, and a flex container blockifies its children's display, which is the one thing -webkit-line-clamp cannot do without
+    max-height: calc(var(--book-serie-tile-text-lines) * var(--book-serie-tile-text-line-height) * 1em);
+    overflow: hidden;
+    margin: 0;
+    font-size: var(--book-serie-tile-text-size);
+    line-height: var(--book-serie-tile-text-line-height);
+    // Stated rather than inherited from the tile: the page sets its ink through a universal selector, which every descendant matches directly
+    color: var(--book-serie-tile-text-color);
+}
+
+.serie-thumb {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+}
+
+// A square whatever the cover's own shape, so a row of vignettes reads as a row rather than as pictures of assorted heights
+.serie-thumb__frame {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: var(--book-serie-thumb-radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.serie-thumb__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.serie-thumb__title {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-family-title);
+    font-size: var(--book-serie-thumb-title-size);
+    line-height: 1.25;
+    color: var(--section-text, var(--text));
+    text-align: start;
+}
+
+// The mark the two variants share - how many books are out, and the language. Set in the accent face, which is what every eyebrow of a page is drawn with
+.serie-tile__meta,
+.serie-thumb__meta {
+    margin: 0;
+    font-family: var(--font-family-accent);
+    font-size: var(--book-serie-meta-size);
+    letter-spacing: var(--book-serie-meta-spacing);
+    text-transform: uppercase;
+}
+
+.serie-tile__meta {
+    color: var(--book-serie-tile-meta-color);
+}
+
+.serie-thumb__meta {
+    margin-block-start: 0.25rem;
+    color: var(--text-muted, var(--text));
+}
+
+// A phone reads the tiles edge to edge: they are pictures, and the page's gutters around them make three stamps of what the design gives the whole width to. Broken out of the wrap the listing lays them in, and their corners squared off with it - there is no card left to round once the tile touches both edges
+@media (max-width: #{$book-bp-row-2 - 1px}) {
+    .serie-tiles {
+        margin-inline: calc(-1 * var(--section-wrap-gutter, clamp(20px, 5vw, 64px)));
+    }
+
+    .serie-tile {
+        border-radius: 0;
+    }
+}
+
+// From the two-column step on, a vignette sits beside its title in a card rather than over it
+@media (min-width: $book-bp-row-2) {
+    .serie-thumb {
+        display: flex;
+        align-items: center;
+        gap: var(--book-serie-thumb-card-gap);
+        padding: var(--book-serie-thumb-card-padding);
+        background: var(--book-serie-thumb-card-background);
+        border: 1px solid var(--border-color);
+        border-radius: var(--book-serie-tile-radius);
+    }
+
+    // Neither growing nor shrinking with the card: every vignette of the row is the same square whatever the title beside it runs to
+    .serie-thumb__frame {
+        flex: 0 0 var(--book-serie-thumb-frame-size);
+    }
+
+    .serie-thumb__title {
+        margin-block-start: 0;
+    }
+}
+
+// The row of tiles widens with the page, at the two steps every other block reflows at. The vignettes stay three across at every width: they are the quiet half of the row, and a fourth column would make them a listing of their own
+@media (min-width: $book-bp-row-2) {
+    .serie-tiles {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: $book-bp-row-3) {
+    .serie-tiles {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+// The head of a listing that closes on a link: the name and the link on one line, the link against the far edge
+.book-listing__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--book-listing-head-gap);
+}
+
+// The head's own bottom margin is what parts it from the grid: inside the row it would part it from the link beside it
+.book-listing__head .section-head {
+    margin-bottom: 0;
+}
+
+.book-listing__head + .book-listing__intro,
+.book-listing__head + * {
+    margin-block-start: 1.5rem;
+}
+
+// A rail of covers: only on a phone, where a grid of them is a column nobody scrolls to the end of. The row scrolls sideways instead, each card a share of the screen so the next one shows at the edge
+@media (max-width: #{$book-bp-row-2 - 1px}) {
+    .book-cards--rail {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: var(--book-cards-rail-gap);
+        // The gutter the listing lays it in, given back to the rail: a card must be able to scroll to the very edge
+        margin-inline-end: calc(-1 * var(--section-wrap-gutter, clamp(20px, 5vw, 64px)));
+        padding-inline-end: var(--section-wrap-gutter, clamp(20px, 5vw, 64px));
+        scroll-snap-type: x proximity;
+    }
+
+    .book-cards--rail > * {
+        flex: 0 0 var(--book-cards-rail-width);
+        max-width: var(--book-cards-rail-width);
+        scroll-snap-align: start;
+    }
+}
+
+// The logo wall: the same platforms as the tile above, each mark alone on a plate wide enough to be read as a brand rather than as a button. The name is dropped, not hidden, staying the link's accessible name, and the row lays out the paragraph Image:Link wraps each tile in, not the tile itself: the share of the row is asked of that paragraph, and the plate inside it then takes all of it
+.book-stores--logos p {
+    flex: 1 1 var(--book-link-plate-min-width);
+}
+
+.book-stores--logos p > a {
+    width: 100%;
+    min-width: var(--book-link-plate-min-width);
+    height: var(--book-link-plate-height);
+    justify-content: center;
+}
+
+.book-stores--logos p .img {
+    width: auto;
+    height: var(--book-link-plate-mark-height);
+    object-fit: contain;
+}
+
+.book-stores--logos p .img-below,
+.book-stores--logos p .img-above {
+    // Off the plate but not out of the document: it is what names the link to whoever listens to the page
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
 // The paragraph opening a listing: on the measure the head above it is laid on, so the two read as one block of text over the grid, and in the quieter color a section's body copy takes inside a colored flat
 .book-listing__intro {
     max-width: var(--section-head-max-width, 640px);
@@ -260,7 +496,7 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
 // LINKS - a row of platforms, wrapping rather than stretching: four icons never justify a panel the height of a screen
 // The tiles are aligned on their top and bottom edges rather than on their middles, so a label wrapping onto a
 // second line raises its whole row instead of leaving the row staggered
-.book-section .flex-center {
+:is(.book-section .flex-center, .book-stores) {
     display: flex;
     flex-wrap: wrap;
     align-items: stretch;
@@ -289,13 +525,13 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
 // than as logos of assorted heights. The paragraph Image:Link wraps each one in is only a carrier from here
 // on, the link itself being the tile. The content hangs from the top edge rather than sitting in the middle:
 // centered, a name running onto a second line pushed its own mark up, and the row's logos stopped lining up
-.book-section .flex-center p {
+:is(.book-section .flex-center, .book-stores) p {
     display: flex;
     margin: 0;
 }
 
-.book-section .flex-center p > a,
-.book-section .flex-center p > span {
+:is(.book-section .flex-center, .book-stores) p > a,
+:is(.book-section .flex-center, .book-stores) p > span {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -312,44 +548,44 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     text-decoration: none;
 }
 
-.book-section .flex-center p > a:hover,
-.book-section .flex-center p > a:focus-visible {
+:is(.book-section .flex-center, .book-stores) p > a:hover,
+:is(.book-section .flex-center, .book-stores) p > a:focus-visible {
     background: var(--book-link-tile-background-hover);
     color: var(--book-link-tile-color);
 }
 
 // The site's own shop among the bookshops: the same tile, filled with the site color rather than the pale plate of the others. The container is only there to name it - erased from the layout, its paragraph is what the row aligns
-.book-section .flex-center .book-tile--own {
+:is(.book-section .flex-center, .book-stores) .book-tile--own {
     display: contents;
 }
 
 // A little air behind it, so it reads as the publisher's shop and not as the first of the bookshops - a margin and not a place apart, the tile staying in the row and wrapping with it
-.book-section .flex-center .book-tile--own > p {
+:is(.book-section .flex-center, .book-stores) .book-tile--own > p {
     margin-inline-end: var(--book-link-tile-own-space);
 }
 
-.book-section .flex-center .book-tile--own a,
-.book-section .flex-center .book-tile--own a:hover,
-.book-section .flex-center .book-tile--own a:focus-visible {
+:is(.book-section .flex-center, .book-stores) .book-tile--own a,
+:is(.book-section .flex-center, .book-stores) .book-tile--own a:hover,
+:is(.book-section .flex-center, .book-stores) .book-tile--own a:focus-visible {
     background: var(--book-link-tile-own-background);
     border-color: var(--book-link-tile-own-border-color);
     color: var(--book-link-tile-own-color);
 }
 
 // The shop's mark is an <img>: it does not follow its link's ink, and would stay black on the fill
-.book-section .flex-center .book-tile--own img {
+:is(.book-section .flex-center, .book-stores) .book-tile--own img {
     filter: var(--book-link-tile-own-mark-filter);
 }
 
 // Image:Link parts its mark from its label with a line break, which the flex column now does - left in place
 // it would only be one more empty item for the gap to space out
-.book-section .flex-center p br {
+:is(.book-section .flex-center, .book-stores) p br {
     display: none;
 }
 
 // The mark is given a square of its own rather than its natural height: a wide logo and a tall one would
 // otherwise make two tiles of two different sizes out of the same rule above
-.book-section .flex-center p .img {
+:is(.book-section .flex-center, .book-stores) p .img {
     width: var(--book-link-tile-icon-size);
     height: var(--book-link-tile-icon-size);
     object-fit: contain;
@@ -359,8 +595,8 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
 // The label's own margin is dropped: UiBundle sets 20px under an image, which is the room a caption needs on a
 // page and half the height of a tile here - the gap above is the tile's, and that margin was also what pushed
 // the longest name past the bottom edge. Capped at the lines the token allows, at the line-height set just below
-.book-section .flex-center p .img-below,
-.book-section .flex-center p .img-above {
+:is(.book-section .flex-center, .book-stores) p .img-below,
+:is(.book-section .flex-center, .book-stores) p .img-above {
     flex: none;
     margin: 0;
     max-height: calc(var(--book-link-tile-label-lines) * 1.2em);

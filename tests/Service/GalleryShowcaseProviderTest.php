@@ -88,13 +88,44 @@ class GalleryShowcaseProviderTest extends TestCase
         );
     }
 
-    // Every showcase is single-variant (no style choice to compare, unlike alert/button in UiBundle)
-    public function testEveryShowcaseHasASingleUnlabelledVariant(): void
+    // Only the series listing offers a style to compare - the way it draws each serie, which is a field of its form. Every other kind draws one way and shows a single unlabelled variant
+    public function testOnlyTheSeriesShowcaseOffersAStyleToCompare(): void
     {
         $showcases = $this->createProvider()->getShowcases();
+        $seriesLabel = 'label.gallery_showcase_book_series';
+
+        $this->assertSame(
+            ['label.block_series_variant_cards', 'label.block_series_variant_tiles', 'label.block_series_variant_thumbnails'],
+            array_keys($showcases[$seriesLabel]['variants'])
+        );
 
         foreach ($showcases as $label => $showcase) {
+            if ($seriesLabel === $label) {
+                continue;
+            }
+
             $this->assertSame([''], array_keys($showcase['variants']), "Showcase \"{$label}\" should have a single unlabelled variant");
+        }
+    }
+
+    // The three calls must really differ: drawn from the same samples on the same template, they would otherwise show the gallery three identical cards
+    public function testTheSeriesVariantsAreDrawnDifferently(): void
+    {
+        $this->createProvider()->getShowcases();
+        $calls = $this->rendered['@c975LBook/components/Serie/Series.html.twig'];
+
+        $this->assertSame(['', 'tiles', 'thumbnails'], array_column($calls, 'variant'));
+        // The card closing the grid belongs to the card variant alone, the two others being a hand-picked row
+        $this->assertSame(['true', 'false', 'false'], array_column($calls, 'displayMore'));
+    }
+
+    // Only the tile variant prints it, and a sample with none would show that variant short of its own shape
+    public function testTheSampleSeriesCarryTheSummaryATilePrints(): void
+    {
+        $this->createProvider()->getShowcases();
+
+        foreach ($this->renderedSeries() as $serie) {
+            $this->assertNotEmpty($serie->getSummary());
         }
     }
 

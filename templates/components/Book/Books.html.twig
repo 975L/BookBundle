@@ -1,11 +1,13 @@
 {# The block interpolates "1"/"" where the pages pass "true"/"false" spelled out, and any non-empty string is true in Twig: the value is brought down to a boolean once here rather than tested at each call #}
 {% set displayMore = displayMore|default(false)|to_bool %}
+{# Matched, not interpolated: the value comes from stored block data and must not write any class name. Only a phone reads it as a rail, the grid taking over from the two-column step (see sass/_book.scss) #}
+{% set variant = variant|default('') == 'rail' ? ' book-cards--rail' : '' %}
 {# "rating": the score under each cover, and the icons to set it - only a listing rendered outside the block cache asks for it, the html of a cached block being shared by every visitor and its averages frozen with it, and only where the site rates its catalog at all (the setting the book's own page reads, see Book:Hero) #}
 {% set rating = rating|default(false) and config('book-rating')|to_bool %}
 {# One query for the whole page rather than one per cover: each card is handed the tally already read for it (see ui_ratings()) #}
 {% set ratings = rating ? ui_ratings('book', books|map(b => b.id)) : [] %}
 {# "infinite" marks the list for UiBundle's infiniteScroll controller, which reads the page it fetches through this very attribute - only the listing that grows carries it, another listing sitting on the same page would otherwise answer in its place #}
-<div class="cards book-cards"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
+<div class="cards book-cards{{ variant }}"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
     {% for book in books %}
         <twig:c975LBook:Book:Book book="{{ book }}" :rating="rating" :aggregate="rating ? ratings[book.id] : null" :editable="editable|default(false)"/>
     {% endfor %}

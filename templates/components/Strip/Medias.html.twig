@@ -4,6 +4,7 @@
         {# The planche is the page: it takes the width it is given, nothing crops it, and it is the image worth loading first #}
         <twig:c975LUi:Image:Image src="{{ asset(media.name) }}" alt="{{ strip.title }}" class="strip-media" priority="true"/>
     {% else %}
-        <twig:c975LUi:Slider:Slider slides="{{ strip.medias }}" id="strip-{{ strip.slug }}"/>
+        {# "media" and not "slides": the rich form expects a list of {image: media, title, text, url} and would read ".image" off each planche's media. The medias themselves are what this gallery shows, the planche's title standing in wherever one carries no alternative text of its own #}
+        <twig:c975LUi:Slider:Slider media="{{ strip.medias }}" id="strip-{{ strip.slug }}" fallbackAlt="{{ strip.title }}"/>
     {% endif %}
 {% endif %}

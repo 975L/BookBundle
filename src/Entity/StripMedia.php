@@ -26,8 +26,11 @@ class StripMedia extends Media implements VichMediaNamableInterface
         return $this;
     }
 
+    // The kind only counts where a planche tells several apart: without it the path would open on a dash, which the file would then carry for good
     public function getVichMediaPath(): string
     {
-        return self::MEDIA_DIRECTORY . '/strips/' . $this->getKind() . '-' . ($this->strip?->getSlug() ?? 'temp');
+        $kind = (string) $this->getKind();
+
+        return self::MEDIA_DIRECTORY . '/strips/' . ('' !== $kind ? $kind . '-' : '') . ($this->strip?->getSlug() ?? 'temp');
     }
 }

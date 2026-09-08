@@ -121,6 +121,52 @@
     /* --book-breadcrumb-font-size: 1.1rem; */
     /* --book-breadcrumb-color: color-mix(in srgb, var(--text) 60%, var(--background)); */
 
+    /* The tile a serie is entered through on a listing showing it full-frame (Serie:Serie's "tiles" variant): its cover fills the whole tile and the text is laid over the foot, so the veil below is what keeps that text readable whatever the picture */
+    /* --book-serie-tile-height: clamp(220px, 34vw, 420px); */
+    /* --book-serie-tile-radius: var(--block-radius-medium, 14px); */
+    /* --book-serie-tile-padding: clamp(1.25rem, 3vw, 1.9rem); */
+    /* --book-serie-tile-veil: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.72)); */
+
+    /* The only fixed colors of this group, and for the same reason as the platform tiles below: the text sits on a picture and not on the page, so the site's own ink says nothing about whether it can be read there. Stated on each part rather than left to inherit from the tile: UiBundle sets the page's ink through a universal selector, which no inherited value ever reaches past */
+    /* --book-serie-tile-color: #fff; */
+    /* --book-serie-tile-meta-color: rgba(255, 255, 255, 0.82); */
+    /* --book-serie-tile-text-color: rgba(255, 255, 255, 0.86); */
+    /* --book-serie-tile-title-size: clamp(1.5rem, 3.2vw, 2rem); */
+    /* --book-serie-tile-text-size: clamp(0.875rem, 1.1vw, 1rem); */
+
+    /* The lines the sentence under a title is given before it is cut short - a height ceiling rather than a line clamp, the text being a flex item of the tile */
+    /* --book-serie-tile-text-lines: 2; */
+    /* --book-serie-tile-text-line-height: 1.35; */
+
+    /* The square vignette of a serie shown beside the full-frame ones (Serie:Serie's "thumbnails" variant) - the same row, said quietly */
+    /* --book-serie-thumb-radius: var(--block-radius-medium, 14px); */
+    /* --book-serie-thumb-title-size: clamp(0.8rem, 1.4vw, 1.05rem); */
+
+    /* From the two-column step on, the vignette stops standing over its title and sits beside it, in a card of its own */
+    /* --book-serie-thumb-card-padding: 16px; */
+    /* --book-serie-thumb-card-gap: 18px; */
+    /* --book-serie-thumb-frame-size: 92px; */
+    /* --book-serie-thumb-card-background: var(--card-background); */
+
+    /* The mark above a tile's title and under a vignette's - how many books are out and the language they read in, set in the site's accent face like every other eyebrow */
+    /* --book-serie-meta-size: 0.72rem; */
+    /* --book-serie-meta-spacing: 0.12em; */
+
+    /* What parts two series of a row, at the site's own horizontal step */
+    /* --book-serie-grid-gap: clamp(0.75rem, 2vw, 1.5rem); */
+
+    /* The head's own line when it closes on a link: the name on the left, the link against the far edge */
+    /* --book-listing-head-gap: clamp(1rem, 3vw, 2rem); */
+
+    /* A rail of covers on a phone (Book:Books' "rail" variant): each card a fixed share of the screen */
+    /* --book-cards-rail-width: 45vw; */
+    /* --book-cards-rail-gap: 12px; */
+
+    /* The wide plate a mark stands in alone (Store:Stores' "logos" variant) */
+    /* --book-link-plate-height: 72px; */
+    /* --book-link-plate-min-width: 140px; */
+    /* --book-link-plate-mark-height: 24px; */
+
     /* The tile a platform is reached through - a shop, a podcast app, any button of the Links card. All one size whatever the mark inside, so a row reads as a row of buttons rather than as logos of assorted heights */
     /* --book-link-tile-width: 104px; */
     /* --book-link-tile-height: 96px; */

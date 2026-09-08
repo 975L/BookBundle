@@ -22,6 +22,7 @@ class SerieStripsBlockType extends AbstractBookListingBlockType
         $builder
             ->add('serieSlug', TextType::class, [
                 'label' => 'label.block_serie_slug',
+                'help' => 'label.block_serie_slug_help',
                 'required' => true,
                 'constraints' => [new NotBlank()],
             ])

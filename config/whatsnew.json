@@ -3,6 +3,41 @@
         "date": "2026-09-07",
         "description": [
             {
+                "en": "A planches block can now name several series at once, a books block can be scrolled sideways on a phone, and any listing can close its title line on a link to the whole catalog.",
+                "fr": "Un block de planches peut désormais nommer plusieurs séries à la fois, un block de livres se fait défiler latéralement sur téléphone, et tout listing peut terminer sa ligne de titre par un lien vers le catalogue entier.",
+                "es": "Un bloque de láminas ahora puede nombrar varias series a la vez, un bloque de libros se desplaza lateralmente en el teléfono, y cualquier listado puede cerrar su línea de título con un enlace al catálogo completo."
+            },
+            {
+                "en": "A guided project now walks you through saying where your catalog is sold, from the blocks tab to the first address.",
+                "fr": "Un projet guidé vous accompagne désormais pour dire où votre catalogue est vendu, de l'onglet des blocks à la première adresse.",
+                "es": "Un proyecto guiado le acompaña ahora para indicar dónde se vende su catálogo, desde la pestaña de bloques hasta la primera dirección."
+            },
+            {
+                "en": "The label of a listing's closing link can now be translated, like the rest of a block's wording.",
+                "fr": "Le libellé du lien fermant un listing se traduit désormais, comme le reste des textes d'un block.",
+                "es": "La etiqueta del enlace que cierra un listado ya se puede traducir, como el resto de los textos de un bloque."
+            }
+        ]
+    },
+    {
+        "date": "2026-09-07",
+        "description": [
+            {
+                "en": "A series block now shows the series you name, in the order you name them, and draws them as cards, as full-frame tiles or as square vignettes - the last two also saying how many books each serie has out.",
+                "fr": "Un block de séries montre désormais les séries que vous nommez, dans l'ordre où vous les nommez, et les présente en cartes, en tuiles plein cadre ou en vignettes carrées - les deux dernières indiquant aussi combien de livres chaque série compte.",
+                "es": "Un bloque de series ahora muestra las series que usted nombra, en el orden en que las nombra, y las presenta como tarjetas, mosaicos a pantalla completa o viñetas cuadradas; las dos últimas indican además cuántos libros tiene cada serie."
+            },
+            {
+                "en": "A new block says where your catalog is sold: pick the platforms and give the address of your own page on each, and they are shown with the same marks as on a book's page.",
+                "fr": "Un nouveau block indique où votre catalogue est vendu : choisissez les plateformes et donnez l'adresse de votre propre page sur chacune, elles s'affichent avec les mêmes logos que sur la page d'un livre.",
+                "es": "Un nuevo bloque indica dónde se vende su catálogo: elija las plataformas e indique la dirección de su propia página en cada una, y se muestran con los mismos logotipos que en la página de un libro."
+            }
+        ]
+    },
+    {
+        "date": "2026-09-07",
+        "description": [
+            {
                 "en": "The pages listing the people your catalog credits open noticeably faster, the parts under each name being read all at once instead of person by person.",
                 "fr": "Les pages qui listent les personnes créditées par votre catalogue s'ouvrent nettement plus vite, les rôles sous chaque nom étant lus d'un coup au lieu d'être demandés personne par personne.",
                 "es": "Las páginas que listan a las personas acreditadas en su catálogo se abren bastante más rápido, ya que las funciones bajo cada nombre se leen de una vez en lugar de persona por persona."

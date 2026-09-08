@@ -42,6 +42,17 @@ class BookBlockCacheTagProviderTest extends TestCase
         }
     }
 
+    // The tile and vignette variants print how many books a serie has out, a count read off the date: they are asked the question the book listings are asked, where the card variant prints none and stays cached
+    public function testTheSerieVariantsPrintingACountFollowTheScheduledBooks(): void
+    {
+        foreach (['tiles', 'thumbnails'] as $variant) {
+            $block = new Block()->setData(['variant' => $variant]);
+
+            $this->assertNull($this->resolvers(true)['book_series']($block), $variant);
+            $this->assertSame([BookBlockCacheInvalidator::CACHE_TAG_CATALOG], $this->resolvers()['book_series']($block), $variant);
+        }
+    }
+
     // Nothing dated ahead, nothing to go stale: the two listings are cached like the rest
     public function testTheBookListingsAreCachedWhenNothingIsScheduled(): void
     {

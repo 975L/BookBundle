@@ -57,6 +57,12 @@ class BookService implements BookServiceInterface
         return $this->bookRepository->countPublished($language);
     }
 
+    // How many books each of the given series has out
+    public function countPublishedBySerie(array $serieIds): array
+    {
+        return $this->bookRepository->countPublishedBySerie($serieIds);
+    }
+
     // The languages the catalog is written in
     public function findLanguages(): array
     {

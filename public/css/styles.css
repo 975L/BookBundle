@@ -107,6 +107,42 @@
   --book-hero-margin-block-start: var(--book-column-gap);
   --book-breadcrumb-font-size: 1.1rem;
   --book-breadcrumb-color: color-mix(in srgb, var(--text) 60%, var(--background));
+  /* The tile a serie is entered through on a listing showing it full-frame (Serie:Serie's "tiles" variant): its cover fills the whole tile and the text is laid over the foot, so the veil below is what keeps that text readable whatever the picture */
+  --book-serie-tile-height: clamp(220px, 34vw, 420px);
+  --book-serie-tile-radius: var(--block-radius-medium, 14px);
+  --book-serie-tile-padding: clamp(1.25rem, 3vw, 1.9rem);
+  --book-serie-tile-veil: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.72));
+  /* The only fixed colors of this group, and for the same reason as the platform tiles below: the text sits on a picture and not on the page, so the site's own ink says nothing about whether it can be read there. Stated on each part rather than left to inherit from the tile: UiBundle sets the page's ink through a universal selector, which no inherited value ever reaches past */
+  --book-serie-tile-color: #fff;
+  --book-serie-tile-meta-color: rgba(255, 255, 255, 0.82);
+  --book-serie-tile-text-color: rgba(255, 255, 255, 0.86);
+  --book-serie-tile-title-size: clamp(1.5rem, 3.2vw, 2rem);
+  --book-serie-tile-text-size: clamp(0.875rem, 1.1vw, 1rem);
+  /* The lines the sentence under a title is given before it is cut short - the same idiom as the platform tiles' label below, a height ceiling rather than a line clamp: the text is a flex item of the tile, and a flex container blockifies its children's display, which is exactly what -webkit-line-clamp needs left alone */
+  --book-serie-tile-text-lines: 2;
+  --book-serie-tile-text-line-height: 1.35;
+  /* The square vignette of a serie shown beside the full-frame ones (Serie:Serie's "thumbnails" variant) - the same row, said quietly */
+  --book-serie-thumb-radius: var(--block-radius-medium, 14px);
+  --book-serie-thumb-title-size: clamp(0.8rem, 1.4vw, 1.05rem);
+  /* From the two-column step on, the vignette stops standing over its title and sits beside it, in a card of its own: a row of three squares under a row of three full-frame tiles read as a second, smaller listing, where the card reads as the quiet half of one row */
+  --book-serie-thumb-card-padding: 16px;
+  --book-serie-thumb-card-gap: 18px;
+  --book-serie-thumb-frame-size: 92px;
+  --book-serie-thumb-card-background: var(--card-background);
+  /* The mark above a tile's title and under a vignette's - how many books are out and the language they read in, set in the site's accent face like every other eyebrow */
+  --book-serie-meta-size: 0.72rem;
+  --book-serie-meta-spacing: 0.12em;
+  /* What parts two series of a row, at the site's own horizontal step */
+  --book-serie-grid-gap: clamp(0.75rem, 2vw, 1.5rem);
+  /* The head's own line when it closes on a link: the name on the left, the link against the far edge */
+  --book-listing-head-gap: clamp(1rem, 3vw, 2rem);
+  /* A rail of covers on a phone (Book:Books' "rail" variant): each card a fixed share of the screen, so the next one shows at the edge and says the row scrolls */
+  --book-cards-rail-width: 45vw;
+  --book-cards-rail-gap: 12px;
+  /* The wide plate a mark stands in alone (Store:Stores' "logos" variant), where the labelled tile beside it is sized for its name */
+  --book-link-plate-height: 72px;
+  --book-link-plate-min-width: 140px;
+  --book-link-plate-mark-height: 24px;
   /* The tile a platform is reached through - a shop, a podcast app, any of the Links card's buttons. All one size whatever the mark inside, so a row reads as a row of buttons rather than as logos of assorted heights */
   --book-link-tile-width: 104px;
   --book-link-tile-height: 96px;
@@ -267,6 +303,208 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   padding-bottom: var(--section-space, clamp(48px, 8vw, 84px));
 }
 
+/* SERIE ROWS - the two variants a "book_series" block draws its series with, beside the thumbnail card it has always shown (see templates/components/Serie/Serie.html.twig) */
+.serie-tiles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--book-serie-grid-gap);
+}
+
+.serie-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--book-serie-grid-gap);
+}
+
+.serie-tile {
+  position: relative;
+  display: block;
+  height: var(--book-serie-tile-height);
+  border-radius: var(--book-serie-tile-radius);
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.serie-tile__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.serie-tile__body {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: var(--book-serie-tile-padding);
+  background: var(--book-serie-tile-veil);
+  color: var(--book-serie-tile-color);
+  text-align: start;
+}
+
+.serie-tile__title {
+  margin: 0;
+  font-family: var(--font-family-title);
+  font-size: var(--book-serie-tile-title-size);
+  line-height: 1.08;
+  color: var(--book-serie-tile-color);
+  text-align: start;
+}
+
+.serie-tile__text {
+  max-height: calc(var(--book-serie-tile-text-lines) * var(--book-serie-tile-text-line-height) * 1em);
+  overflow: hidden;
+  margin: 0;
+  font-size: var(--book-serie-tile-text-size);
+  line-height: var(--book-serie-tile-text-line-height);
+  color: var(--book-serie-tile-text-color);
+}
+
+.serie-thumb {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.serie-thumb__frame {
+  display: block;
+  aspect-ratio: 1;
+  border-radius: var(--book-serie-thumb-radius);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.serie-thumb__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.serie-thumb__title {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-family-title);
+  font-size: var(--book-serie-thumb-title-size);
+  line-height: 1.25;
+  color: var(--section-text, var(--text));
+  text-align: start;
+}
+
+.serie-tile__meta,
+.serie-thumb__meta {
+  margin: 0;
+  font-family: var(--font-family-accent);
+  font-size: var(--book-serie-meta-size);
+  letter-spacing: var(--book-serie-meta-spacing);
+  text-transform: uppercase;
+}
+
+.serie-tile__meta {
+  color: var(--book-serie-tile-meta-color);
+}
+
+.serie-thumb__meta {
+  margin-block-start: 0.25rem;
+  color: var(--text-muted, var(--text));
+}
+
+@media (max-width: 620px) {
+  .serie-tiles {
+    margin-inline: calc(-1 * var(--section-wrap-gutter, clamp(20px, 5vw, 64px)));
+  }
+  .serie-tile {
+    border-radius: 0;
+  }
+}
+@media (min-width: 621px) {
+  .serie-thumb {
+    display: flex;
+    align-items: center;
+    gap: var(--book-serie-thumb-card-gap);
+    padding: var(--book-serie-thumb-card-padding);
+    background: var(--book-serie-thumb-card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--book-serie-tile-radius);
+  }
+  .serie-thumb__frame {
+    flex: 0 0 var(--book-serie-thumb-frame-size);
+  }
+  .serie-thumb__title {
+    margin-block-start: 0;
+  }
+}
+@media (min-width: 621px) {
+  .serie-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1025px) {
+  .serie-tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.book-listing__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--book-listing-head-gap);
+}
+
+.book-listing__head .section-head {
+  margin-bottom: 0;
+}
+
+.book-listing__head + .book-listing__intro,
+.book-listing__head + * {
+  margin-block-start: 1.5rem;
+}
+
+@media (max-width: 620px) {
+  .book-cards--rail {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: var(--book-cards-rail-gap);
+    margin-inline-end: calc(-1 * var(--section-wrap-gutter, clamp(20px, 5vw, 64px)));
+    padding-inline-end: var(--section-wrap-gutter, clamp(20px, 5vw, 64px));
+    scroll-snap-type: x proximity;
+  }
+  .book-cards--rail > * {
+    flex: 0 0 var(--book-cards-rail-width);
+    max-width: var(--book-cards-rail-width);
+    scroll-snap-align: start;
+  }
+}
+.book-stores--logos p {
+  flex: 1 1 var(--book-link-plate-min-width);
+}
+
+.book-stores--logos p > a {
+  width: 100%;
+  min-width: var(--book-link-plate-min-width);
+  height: var(--book-link-plate-height);
+  justify-content: center;
+}
+
+.book-stores--logos p .img {
+  width: auto;
+  height: var(--book-link-plate-mark-height);
+  object-fit: contain;
+}
+
+.book-stores--logos p .img-below,
+.book-stores--logos p .img-above {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .book-listing__intro {
   max-width: var(--section-head-max-width, 640px);
   margin: 0 0 1.5rem;
@@ -341,7 +579,7 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   gap: 1rem;
 }
 
-.book-section .flex-center {
+:is(.book-section .flex-center, .book-stores) {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
@@ -365,13 +603,13 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   gap: 0.5rem;
 }
 
-.book-section .flex-center p {
+:is(.book-section .flex-center, .book-stores) p {
   display: flex;
   margin: 0;
 }
 
-.book-section .flex-center p > a,
-.book-section .flex-center p > span {
+:is(.book-section .flex-center, .book-stores) p > a,
+:is(.book-section .flex-center, .book-stores) p > span {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -388,45 +626,45 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   text-decoration: none;
 }
 
-.book-section .flex-center p > a:hover,
-.book-section .flex-center p > a:focus-visible {
+:is(.book-section .flex-center, .book-stores) p > a:hover,
+:is(.book-section .flex-center, .book-stores) p > a:focus-visible {
   background: var(--book-link-tile-background-hover);
   color: var(--book-link-tile-color);
 }
 
-.book-section .flex-center .book-tile--own {
+:is(.book-section .flex-center, .book-stores) .book-tile--own {
   display: contents;
 }
 
-.book-section .flex-center .book-tile--own > p {
+:is(.book-section .flex-center, .book-stores) .book-tile--own > p {
   margin-inline-end: var(--book-link-tile-own-space);
 }
 
-.book-section .flex-center .book-tile--own a,
-.book-section .flex-center .book-tile--own a:hover,
-.book-section .flex-center .book-tile--own a:focus-visible {
+:is(.book-section .flex-center, .book-stores) .book-tile--own a,
+:is(.book-section .flex-center, .book-stores) .book-tile--own a:hover,
+:is(.book-section .flex-center, .book-stores) .book-tile--own a:focus-visible {
   background: var(--book-link-tile-own-background);
   border-color: var(--book-link-tile-own-border-color);
   color: var(--book-link-tile-own-color);
 }
 
-.book-section .flex-center .book-tile--own img {
+:is(.book-section .flex-center, .book-stores) .book-tile--own img {
   filter: var(--book-link-tile-own-mark-filter);
 }
 
-.book-section .flex-center p br {
+:is(.book-section .flex-center, .book-stores) p br {
   display: none;
 }
 
-.book-section .flex-center p .img {
+:is(.book-section .flex-center, .book-stores) p .img {
   width: var(--book-link-tile-icon-size);
   height: var(--book-link-tile-icon-size);
   object-fit: contain;
   margin: 0;
 }
 
-.book-section .flex-center p .img-below,
-.book-section .flex-center p .img-above {
+:is(.book-section .flex-center, .book-stores) p .img-below,
+:is(.book-section .flex-center, .book-stores) p .img-above {
   flex: none;
   margin: 0;
   max-height: calc(var(--book-link-tile-label-lines) * 1.2em);
