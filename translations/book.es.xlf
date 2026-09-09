@@ -98,10 +98,6 @@
                 <source>description.guided_project_book_sorting</source>
                 <target>Las series y las personas se muestran en el sitio en el orden fijado aquí arrastrando sus filas: nada en la pantalla lo dice, y ordenar una columna solo ordena lo que está mirando.</target>
             </trans-unit>
-            <trans-unit id="JqgFpM5">
-                <source>description.guided_project_book_stores</source>
-                <target>Las plataformas donde se compra un libro se escriben una sola vez, en un bloque propio: no se consulta nada, las direcciones se escriben a mano.</target>
-            </trans-unit>
             <trans-unit id="0ebzwCX">
                 <source>description.guided_project_book_strip_creation</source>
                 <target>Una página, la serie que la cuenta, su lugar y su dibujo: lo necesario para publicarla.</target>
@@ -457,34 +453,6 @@
             <trans-unit id="tmNeMsJ">
                 <source>description.guided_step_book_sorting_open</source>
                 <target>La lista de las series. La de los autores e ilustradores se ordena exactamente igual.</target>
-            </trans-unit>
-            <trans-unit id="gXsPAMk">
-                <source>description.guided_step_book_stores_add</source>
-                <target>Cada bloque tiene su tipo y su propio formulario, y se apilan en el orden de la página.</target>
-            </trans-unit>
-            <trans-unit id="rRzSYM3">
-                <source>description.guided_step_book_stores_done</source>
-                <target>El bloque muestra las plataformas en la página pública del libro, en el orden en que se escriben.</target>
-            </trans-unit>
-            <trans-unit id="2HXzjHl">
-                <source>description.guided_step_book_stores_edit</source>
-                <target>El lápiz abre el formulario de un libro ya creado.</target>
-            </trans-unit>
-            <trans-unit id="IF9SBJl">
-                <source>description.guided_step_book_stores_item</source>
-                <target>Una fila por plataforma: la marca bajo la que se muestra y la dirección que abre.</target>
-            </trans-unit>
-            <trans-unit id="pwHzcd2">
-                <source>description.guided_step_book_stores_kind</source>
-                <target>El bloque de enlaces de venta lleva su propio contenido: no se consulta ningún catálogo, las plataformas se escriben en el bloque.</target>
-            </trans-unit>
-            <trans-unit id="PbWDjrp">
-                <source>description.guided_step_book_stores_open</source>
-                <target>La pantalla de libros lista todo el catálogo.</target>
-            </trans-unit>
-            <trans-unit id="FOIOlq_">
-                <source>description.guided_step_book_stores_tab</source>
-                <target>La última pestaña del formulario lleva la composición de la página.</target>
             </trans-unit>
             <trans-unit id="hualbfA">
                 <source>description.guided_step_book_strip_creation_characters</source>
@@ -877,42 +845,6 @@
             <trans-unit id="KfUKmgL">
                 <source>label.block_series_variant_tiles</source>
                 <target>Mosaicos (portada a pantalla completa)</target>
-            </trans-unit>
-            <trans-unit id="9obACr3">
-                <source>label.block_store_kind</source>
-                <target>Plataforma</target>
-            </trans-unit>
-            <trans-unit id="SW36XaS">
-                <source>label.block_store_url</source>
-                <target>Dirección</target>
-            </trans-unit>
-            <trans-unit id="GMbT1.5">
-                <source>label.block_store_url_help</source>
-                <target>La página de la editorial en esa plataforma, no la de un libro.</target>
-            </trans-unit>
-            <trans-unit id="kL5hO.q">
-                <source>label.block_stores</source>
-                <target>Dónde encontrarnos</target>
-            </trans-unit>
-            <trans-unit id="uTS9bfx">
-                <source>label.block_stores_description</source>
-                <target>Las plataformas que venden el catálogo, con el logotipo y el nombre de cada una. Una dirección por plataforma, la de la editorial y no la de un libro.</target>
-            </trans-unit>
-            <trans-unit id="6TNKPBV">
-                <source>label.block_stores_items</source>
-                <target>Plataformas</target>
-            </trans-unit>
-            <trans-unit id="JbPHC7Z">
-                <source>label.block_stores_variant</source>
-                <target>Presentación</target>
-            </trans-unit>
-            <trans-unit id="ODSHXrl">
-                <source>label.block_stores_variant_logos</source>
-                <target>Solo logotipos, a todo lo ancho</target>
-            </trans-unit>
-            <trans-unit id="E1XTIqe">
-                <source>label.block_stores_variant_tiles</source>
-                <target>Mosaicos con el nombre bajo el logotipo</target>
             </trans-unit>
             <trans-unit id="t9d9.Qz">
                 <source>label.block_title</source>
@@ -1402,10 +1334,6 @@
                 <source>label.guided_project_book_sorting</source>
                 <target>Fijar el orden de las listas</target>
             </trans-unit>
-            <trans-unit id="3bRzPjw">
-                <source>label.guided_project_book_stores</source>
-                <target>Indicar dónde se vende el catálogo</target>
-            </trans-unit>
             <trans-unit id="9Q84XCP">
                 <source>label.guided_project_book_strip_creation</source>
                 <target>Publicar una página</target>
@@ -1793,38 +1721,6 @@
             <trans-unit id="Yb79XfM">
                 <source>label.guided_step_book_sorting_open</source>
                 <target>Abra «Series»</target>
-            </trans-unit>
-            <trans-unit id="aLO9YcE">
-                <source>label.guided_step_book_stores_add</source>
-                <target>Añadir un bloque</target>
-            </trans-unit>
-            <trans-unit id="k8yeB.h">
-                <source>label.guided_step_book_stores_done</source>
-                <target>Los enlaces están listos</target>
-            </trans-unit>
-            <trans-unit id="ovM1MHQ">
-                <source>label.guided_step_book_stores_edit</source>
-                <target>Modificar un libro</target>
-            </trans-unit>
-            <trans-unit id="DZrlDMo">
-                <source>label.guided_step_book_stores_item</source>
-                <target>Añadir una primera dirección</target>
-            </trans-unit>
-            <trans-unit id="Nd030kd">
-                <source>label.guided_step_book_stores_kind</source>
-                <target>Elegir los enlaces de venta</target>
-            </trans-unit>
-            <trans-unit id="3bJ_O3q">
-                <source>label.guided_step_book_stores_open</source>
-                <target>Abrir los libros</target>
-            </trans-unit>
-            <trans-unit id="jyjYXEA">
-                <source>label.guided_step_book_stores_save</source>
-                <target>Guardar el libro</target>
-            </trans-unit>
-            <trans-unit id="z5oKJXj">
-                <source>label.guided_step_book_stores_tab</source>
-                <target>Abrir la pestaña Bloques</target>
             </trans-unit>
             <trans-unit id="0LQKKD8">
                 <source>label.guided_step_book_strip_creation_characters</source>
@@ -2305,10 +2201,6 @@
             <trans-unit id="PGie5WM">
                 <source>label.serie_books</source>
                 <target>Libros de la serie</target>
-            </trans-unit>
-            <trans-unit id="ijfvvQh">
-                <source>label.serie_books_count</source>
-                <target>{1}1 libro|]1,Inf[%count% libros</target>
             </trans-unit>
             <trans-unit id="_9bIEnd">
                 <source>label.series</source>

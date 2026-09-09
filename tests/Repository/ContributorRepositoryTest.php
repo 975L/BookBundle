@@ -41,28 +41,57 @@ class ContributorRepositoryTest extends TestCase
     // A person's page lists the series it lists the books: one trashed or set aside leaves it, its link answering 410 or 404
     public function testAPersonPageLeavesOutTheSeriesTrashedOrSetAside(): void
     {
+        $this->result = [new Contributor()];
+
         $this->createRepository()->findOneBySlugWithWorks('laurent-marquet');
 
-        $this->assertStringContainsString('asr.isDeleted = false AND asr.hidden = false', $this->dql);
-        $this->assertStringContainsString('isr.isDeleted = false AND isr.hidden = false', $this->dql);
+        foreach (['c.authoredSeries', 'c.illustratedSeries'] as $association) {
+            $this->assertTrue(
+                array_any($this->dqls, fn (string $dql): bool => str_contains($dql, 'LEFT JOIN ' . $association . ' series WITH series.isDeleted = false AND series.hidden = false')),
+                $association . ' is joined without the filter that keeps a trashed or set-aside serie off the page',
+            );
+        }
     }
 
     // Each serie card shows its cover, so the medias travel with the series rather than a query per card (see Serie:Serie)
     public function testAPersonPageBringsTheCoversOfTheSeriesAlong(): void
     {
+        $this->result = [new Contributor()];
+
         $this->createRepository()->findOneBySlugWithWorks('laurent-marquet');
 
-        $this->assertStringContainsString('LEFT JOIN asr.medias asrm', $this->dql);
-        $this->assertStringContainsString('LEFT JOIN isr.medias isrm', $this->dql);
+        $this->assertSame(
+            2,
+            count(array_filter($this->dqls, fn (string $dql): bool => str_contains($dql, 'LEFT JOIN series.medias seriesMedias'))),
+            'the covers are read serie by serie instead of travelling with the series they cover',
+        );
     }
 
     // The person is looked up whatever their state - their page answers 410 out of the trash and 404 set aside, which both need the row - where what credits them leaves them
     public function testThePersonThemselfIsLookedUpWhateverTheirState(): void
     {
+        $this->result = [new Contributor()];
+
         $this->createRepository()->findOneBySlugWithWorks('laurent-marquet');
 
-        $this->assertStringNotContainsString('c.hidden', $this->dql);
-        $this->assertStringNotContainsString('c.isDeleted', $this->dql);
+        foreach ($this->dqls as $dql) {
+            $this->assertStringNotContainsString('c.hidden', $dql);
+            $this->assertStringNotContainsString('c.isDeleted', $dql);
+        }
+    }
+
+    // The bug this page was rebuilt for: five collections joined into one query crossed one another row by row, sixty books and six hundred covers turning into billions of rows MariaDB gave up writing. Each is filled on its own, so none ever multiplies another
+    public function testAPersonPageNeverCrossesTwoCollectionsInOneQuery(): void
+    {
+        $this->result = [new Contributor()];
+
+        $this->createRepository()->findOneBySlugWithWorks('laurent-marquet');
+
+        $collections = ['c.authoredBooks', 'c.illustratedBooks', 'c.authoredSeries', 'c.illustratedSeries', 'c.credits'];
+        foreach ($this->dqls as $dql) {
+            $joined = array_filter($collections, fn (string $collection): bool => str_contains($dql, 'LEFT JOIN ' . $collection . ' '));
+            $this->assertLessThan(2, count($joined), 'crossed in one query: ' . implode(', ', $joined));
+        }
     }
 
     // The parts printed under each name are read from four collections and from the credits: joined above for the filter only, they are filled here in one query each, where a listing otherwise asked for them person by person (see Contributor::getRoles())
@@ -113,7 +142,7 @@ class ContributorRepositoryTest extends TestCase
             $query->method('setFirstResult')->willReturnSelf();
             $query->method('setMaxResults')->willReturnSelf();
             $query->method('getResult')->willReturn($this->result);
-            $query->method('getOneOrNullResult')->willReturn(null);
+            $query->method('getOneOrNullResult')->willReturn($this->result[0] ?? null);
 
             return $query;
         });

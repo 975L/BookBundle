@@ -25,8 +25,9 @@ class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, Reset
         'book_to_be_published',
     ];
 
-    // The kinds reading no date at all: a category is listed as long as it holds a book the site shows, a person as long as they are credited on something (see BookCategoryRepository::findWithBooks and ContributorRepository::findCredited). Their entry only ever goes stale on a row being saved, which the tag covers - the draw at random set aside, see resolveCatalog()
+    // The kinds reading no date at all: a serie is listed whatever the hour, a category as long as it holds a book the site shows, a person as long as they are credited on something (see BookCategoryRepository::findWithBooks and ContributorRepository::findCredited). Their entry only ever goes stale on a row being saved, which the tag covers - the draw at random set aside, see resolveCatalog()
     private const array DATELESS_KINDS = [
+        'book_series',
         'book_categories',
         'book_contributors',
     ];
@@ -44,8 +45,7 @@ class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, Reset
 
     public function getCacheTagResolvers(): array
     {
-        // Posed before the loops so the keys keep the order the kinds are declared in
-        $resolvers = ['book_series' => $this->resolveSeries(...)];
+        $resolvers = [];
 
         foreach (self::DATELESS_KINDS as $kind) {
             $resolvers[$kind] = $this->resolveCatalog(...);
@@ -65,17 +65,6 @@ class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, Reset
     {
         $this->scheduledBook = null;
         $this->scheduledStrip = null;
-    }
-
-    // A serie is listed whatever the hour, but the tile and vignette variants print how many books it has out - a count read off the date the card variant never asks for, which is the very question resolveBooks() answers. The "?? ''" covers the blocks composed before the field existed
-    /**
-     * @return string[]|null
-     */
-    private function resolveSeries(Block $block): ?array
-    {
-        return '' === ($block->getData()['variant'] ?? '')
-            ? $this->resolveCatalog($block)
-            : $this->resolveBooks($block);
     }
 
     // The kinds reading no date: nothing but the draw can make their entry go stale

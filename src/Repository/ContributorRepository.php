@@ -157,27 +157,77 @@ class ContributorRepository extends ServiceEntityRepository
         ;
     }
 
-    // A person with everything they are credited on, their books' own covers joined. Looked up whatever their state - someone in the trash has to be found for their page to answer 410 rather than a plain 404 (see ContributorController::display()) - where what they are credited on leaves them as soon as it is trashed or set aside. A book replaced by a newer version leaves their page as it left the catalog: it keeps its own page, reached from the search or from the version replacing it (see Book::$newerVersion)
+    // A person with everything they are credited on. Looked up whatever their state - someone in the trash has to be found for their page to answer 410 rather than a plain 404 (see ContributorController::display()) - where what they are credited on leaves them as soon as it is trashed or set aside. A book replaced by a newer version leaves their page as it left the catalog: it keeps its own page, reached from the search or from the version replacing it (see Book::$newerVersion)
     public function findOneBySlugWithWorks(string $slug): ?Contributor
     {
-        return $this->createQueryBuilder('c')
-            ->select('c', 'ab', 'ib', 'abm', 'ibm', 'asr', 'isr', 'asrm', 'isrm', 'cr', 'cb', 'cbm')
-            ->leftJoin('c.authoredBooks', 'ab', 'WITH', 'ab.isDeleted = false AND ab.hidden = false AND ab.newerVersion IS NULL')
-            ->leftJoin('ab.medias', 'abm')
-            ->leftJoin('c.illustratedBooks', 'ib', 'WITH', 'ib.isDeleted = false AND ib.hidden = false AND ib.newerVersion IS NULL')
-            ->leftJoin('ib.medias', 'ibm')
-            ->leftJoin('c.authoredSeries', 'asr', 'WITH', 'asr.isDeleted = false AND asr.hidden = false')
-            ->leftJoin('asr.medias', 'asrm')
-            ->leftJoin('c.illustratedSeries', 'isr', 'WITH', 'isr.isDeleted = false AND isr.hidden = false')
-            ->leftJoin('isr.medias', 'isrm')
-            // What they narrated or translated, read under the same conditions as what they signed - Contributor::getBooks() merges the three
-            ->leftJoin('c.credits', 'cr')
-            ->leftJoin('cr.book', 'cb', 'WITH', 'cb.isDeleted = false AND cb.hidden = false AND cb.newerVersion IS NULL')
-            ->leftJoin('cb.medias', 'cbm')
+        // The person and their portrait, the one collection this query carries: what the page prints around them - blocks, books, series, credits - is filled below, one query each
+        $contributor = $this->createQueryBuilder('c')
+            ->leftJoin('c.medias', 'm')
+            ->addSelect('m')
             ->andWhere('c.slug = :slug')
             ->setParameter('slug', $slug)
             ->getQuery()
             ->getOneOrNullResult()
+        ;
+
+        if (null === $contributor) {
+            return null;
+        }
+
+        $this->preloadWorks($contributor);
+
+        return $contributor;
+    }
+
+    // What a person's page is made of, filled one collection at a time rather than in the single query this used to be: the five collections crossed one another row by row, and someone signing sixty books turned six hundred covers into billions of rows - a temporary table MariaDB gave up writing after a hundred seconds. The same lesson findCredited() drew from its own five joins, and the same remedy; unlike preloadRoles() though, each collection is filtered here, a page showing only what the catalog still shows
+    private function preloadWorks(Contributor $contributor): void
+    {
+        // Where the site says the rest in its own words, read by the template as contributor.blocks
+        $this->preloadQueryBuilder([$contributor])
+            ->leftJoin('c.blocks', 'blocks')
+            ->addSelect('blocks')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        // The books they signed or illustrated and the covers their cards print, each one's replaced version joined for the reason preloadRoles() joins it: an inverse one-to-one cannot be a lazy proxy, so a book filled without it costs one more query (see Book::$previousVersion)
+        foreach (['authoredBooks', 'illustratedBooks'] as $association) {
+            $this->preloadQueryBuilder([$contributor])
+                ->leftJoin('c.' . $association, 'books', 'WITH', 'books.isDeleted = false AND books.hidden = false AND books.newerVersion IS NULL')
+                ->addSelect('books')
+                ->leftJoin('books.medias', 'booksMedias')
+                ->addSelect('booksMedias')
+                ->leftJoin('books.previousVersion', 'booksPreviousVersion')
+                ->addSelect('booksPreviousVersion')
+                ->getQuery()
+                ->getResult()
+            ;
+        }
+
+        // The series, which carry no such link and are read as they are
+        foreach (['authoredSeries', 'illustratedSeries'] as $association) {
+            $this->preloadQueryBuilder([$contributor])
+                ->leftJoin('c.' . $association, 'series', 'WITH', 'series.isDeleted = false AND series.hidden = false')
+                ->addSelect('series')
+                ->leftJoin('series.medias', 'seriesMedias')
+                ->addSelect('seriesMedias')
+                ->getQuery()
+                ->getResult()
+            ;
+        }
+
+        // What they narrated or translated, read under the same conditions as what they signed - Contributor::getBooks() merges the three
+        $this->preloadQueryBuilder([$contributor])
+            ->leftJoin('c.credits', 'credit')
+            ->addSelect('credit')
+            ->leftJoin('credit.book', 'creditedBook', 'WITH', 'creditedBook.isDeleted = false AND creditedBook.hidden = false AND creditedBook.newerVersion IS NULL')
+            ->addSelect('creditedBook')
+            ->leftJoin('creditedBook.medias', 'creditedBookMedias')
+            ->addSelect('creditedBookMedias')
+            ->leftJoin('creditedBook.previousVersion', 'creditedBookPreviousVersion')
+            ->addSelect('creditedBookPreviousVersion')
+            ->getQuery()
+            ->getResult()
         ;
     }
 

@@ -2,6 +2,19 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.10
+
+**The `book_stores` block kind is removed.** It named a platform and one address per platform, meant to be
+the publisher's page on that platform — but none of the four platforms indexes a publisher's name, so the
+address could only ever be a search leading anywhere. What a book is sold through is already said where it
+holds: each book's own links (`BookLink`), drawn on its page by `Book:Shops`, which are untouched.
+
+A page still holding a `book_stores` block goes on rendering without it — a block whose kind is no longer
+registered is skipped, not fatal (see UiBundle's `BlockExtension`) — so nothing breaks; delete the row from
+the back office at your convenience. Gone with the kind: `StoresBlockType`, `StoreItemType`, the
+`Store:Stores` component, the `.book-stores` rules, the three `--book-link-plate-*` tokens, the gallery
+fixture and the "book-stores" guided project.
+
 ## v2.9
 
 **CoreBundle 1.26 is required.** A planche's whole page opens over the page through `<twig:c975LUi:Image:Zoom>`,

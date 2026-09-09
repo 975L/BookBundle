@@ -1,6 +1,6 @@
 ---
 name: c975l-book-display-pages
-description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie, of a planche and of a person the catalog credits, their hero and the row of buttons it offers, their sections and the order they come in, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, contributor_display, contributor_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Contributor:Hero, Contributor:Shops, Contributor:Contributor, Contributor:Contributors, Strip:Card, Strip:Cards, Serie:Characters, Strip:Medias, Strip:Summary, StripMediaKind, getMediasByKind, getThumbnailMedia, strip_highres, BookHighresExtension, Image:Zoom, Book:Books, Serie:Series, infinite, infiniteScroll, displayMore, label.books_more, label.series_more, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_role_label, getRoles, book_alternates, book_versions, contributor_path, contributor_url, contributor_edit_url, contributor_edit_urls, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css, block-thumbs, ui-block-thumb, ui.management_stylesheet, getManagementStylesheets, BundleStylesheetManagementProviderInterface, StylesheetProvider, BookBlockCacheTagProvider, BookBlockCacheInvalidator, BookCacheInvalidationListener, book_catalog, hasScheduled, cacheable, book_stores, StoresBlockType, StoreItemType, Store:Stores, linkLabel, linkUrl, AbstractBookListingBlockType, BookSnippetBuilder, BookJsonLdExtension, book_json_ld, serie_json_ld, strip_json_ld, contributor_json_ld, book_breadcrumb_json_ld, book_item_list_json_ld, BreadcrumbList, ItemList, Person."
+description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie, of a planche and of a person the catalog credits, their hero and the row of buttons it offers, their sections and the order they come in, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, contributor_display, contributor_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Contributor:Hero, Contributor:Shops, Contributor:Contributor, Contributor:Contributors, Strip:Card, Strip:Cards, Serie:Characters, Strip:Medias, Strip:Summary, StripMediaKind, getMediasByKind, getThumbnailMedia, strip_highres, BookHighresExtension, Image:Zoom, Book:Books, Serie:Series, infinite, infiniteScroll, displayMore, label.books_more, label.series_more, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_role_label, getRoles, book_alternates, book_versions, contributor_path, contributor_url, contributor_edit_url, contributor_edit_urls, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css, block-thumbs, ui-block-thumb, ui.management_stylesheet, getManagementStylesheets, BundleStylesheetManagementProviderInterface, StylesheetProvider, BookBlockCacheTagProvider, BookBlockCacheInvalidator, BookCacheInvalidationListener, book_catalog, hasScheduled, cacheable, book_reader, ReaderBlockType, ReaderCueType, cues, linkLabel, linkUrl, AbstractBookListingBlockType, BookSnippetBuilder, BookJsonLdExtension, book_json_ld, serie_json_ld, strip_json_ld, contributor_json_ld, book_breadcrumb_json_ld, book_item_list_json_ld, BreadcrumbList, ItemList, Person."
 ---
 
 # c975L BookBundle — display pages
@@ -279,8 +279,9 @@ dropping it whenever a book, a serie, a category, a planche, a contributor or on
 Their resolver therefore answers `null` — render live, store nothing — for as long as
 `BookRepository::hasScheduled()` or `StripRepository::hasScheduled()` says something is dated ahead: an entry
 never expires, and nothing is saved the day that date comes round. Both answers are read once per request and
-dropped by `reset()`. `book_series` answers on its variant: the card one reads no date and is cached under the
-tag alone, where the tile and vignette ones print how many books a serie has out and follow the scheduled books.
+dropped by `reset()`. `book_series` reads no date in any of its three variants and is cached under the tag alone,
+as `book_categories` and `book_contributors` are - the tile and the vignette printed how many books a serie had
+out until that line was dropped, which is what used to make them follow the scheduled books.
 A listing whose `random` is set answers `null` too, whatever the calendar: a cached entry
 would freeze one single draw until the catalog itself changed.
 
@@ -288,12 +289,14 @@ would freeze one single draw until the catalog itself changed.
 and not an entity, block data being stored as JSON, the same way `book_serie_strips` names its series and
 `book_series` its own, both reading a comma-separated list and drawing the rows in the order they were typed.
 
-An eighth kind, `book_stores`, holds its own content instead of querying anything: `Form\Block\StoresBlockType`
-stores one `items` row per platform (`Form\Block\StoreItemType` — the platform of the site's vocabulary and the
-whole address it opens), so its entry goes stale on a Block event alone and it needs no resolver at all.
+A seventh kind, `book_reader`, holds its own content instead of querying anything: `Form\Block\ReaderBlockType`
+stores the album's pages in order then its recording, and a `cues` row for each page the voice turns
+(`Form\Block\ReaderCueType` — the second of the recording it is turned at), none where the pages are turned by
+hand, so its entry goes stale on a Block event alone and it needs no resolver at all. It drives UiBundle's
+`slider` through the slider's own dots, the two staying independent.
 
-The seven listing kinds — the six above and `book_stores` — each carry their own head: anchor, eyebrow, title,
-paragraph, colored flat and a link closing it (`linkLabel` and `linkUrl`, both needed), shared through
+The six listing kinds each carry their own head: anchor, eyebrow, title, paragraph, colored flat and a link
+closing it (`linkLabel` and `linkUrl`, both needed), shared through
 `Form\Block\AbstractBookListingBlockType` and drawn by the `Listing:Section` component, which wraps the grid
 in `.book-listing` and includes UiBundle's `Section/_head.html.twig`. Do not compose a listing by placing a
 `text_section` above it: the two were one section on the page and two rows in the back office. `eyebrow`,

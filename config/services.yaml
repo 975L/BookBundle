@@ -33,7 +33,7 @@ services:
         tags:
             - { name: 'ui.script', priority: 100 }
 
-    # The block kinds this bundle registers in UiBundle: they call book_block_*() (BookBlockExtension), which queries Book/Serie/Strip live at render time - entities BlockCacheInvalidationListener does not watch. They are cached all the same, under the catalog tag BookBlockCacheTagProvider applies and BookCacheInvalidationListener drops; the kinds reading a date - the two book listings, the planches, and the serie variants printing a count - decline their entry for as long as a book or a planche is dated ahead, nothing firing the day that date comes round (see BookBlockCacheTagProvider)
+    # The block kinds this bundle registers in UiBundle: they call book_block_*() (BookBlockExtension), which queries Book/Serie/Strip live at render time - entities BlockCacheInvalidationListener does not watch. They are cached all the same, under the catalog tag BookBlockCacheTagProvider applies and BookCacheInvalidationListener drops; the kinds reading a date - the two book listings and the planches - decline their entry for as long as a book or a planche is dated ahead, nothing firing the day that date comes round (see BookBlockCacheTagProvider)
     book.block.series:
         class: stdClass
         tags:
@@ -127,22 +127,6 @@ services:
               media_required: true
               media_multi_upload: true
               media_help: 'label.block_reader_media_help'
-
-    # The one kind of this bundle holding its own content rather than querying the catalog: the platforms it names and the address each of them opens are stored on the block, so its entry goes stale on a Block event alone and it needs no resolver in BookBlockCacheTagProvider - the same reading as "book_reader"
-    book.block.stores:
-        class: stdClass
-        tags:
-            - name: ui.block
-              kind: book_stores
-              label: 'label.block_stores'
-              description: 'label.block_stores_description'
-              translation_domain: 'book'
-              category: 'label.category_books'
-              form: 'c975L\BookBundle\Form\Block\StoresBlockType'
-              translatable: 'eyebrow, title, content, linkLabel'
-              template: '@c975LBook/blocks/Stores.html.twig'
-              pickable: true
-              cacheable: true
 
     book.block.serie_strips:
         class: stdClass

@@ -1,7 +1,0 @@
-{# Adapter for the dynamic Block system - the only kind of this bundle whose content is its own stored data rather than a live query, so nothing is resolved here #}
-{% set items = items|default([]) %}
-{% if items is not empty %}
-    <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" linkLabel="{{ linkLabel|default('') }}" linkUrl="{{ linkUrl|default('') }}" id="{{ anchor_id }}">
-        <twig:c975LBook:Store:Stores :items="items" variant="{{ variant|default('') }}"/>
-    </twig:c975LBook:Listing:Section>
-{% endif %}

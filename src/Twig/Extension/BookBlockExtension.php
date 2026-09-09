@@ -41,18 +41,6 @@ class BookBlockExtension
         return $random ? $this->draw($this->serieService->findAll(), $max) : $this->serieService->findAll($max);
     }
 
-    // How many books each serie of a listing has out, asked once for the whole row - a card asking for its own would cost one query per serie. Only the tile and thumbnail variants print it (see Serie/Serie.html.twig)
-    /**
-     * @param object[] $series
-     *
-     * @return array<int, int> serie id => how many of its books are out
-     */
-    #[AsTwigFunction('book_serie_book_counts')]
-    public function getSerieBookCounts(array $series): array
-    {
-        return $this->bookService->countPublishedBySerie(array_values(array_filter(array_map(static fn (object $serie): ?int => $serie->getId(), $series))));
-    }
-
     // Only the categories holding a book the site shows, as their own index lists them: an empty one would head a card saying "0"
     #[AsTwigFunction('book_block_categories')]
     public function getCategories(?int $max = null, bool $random = false): array

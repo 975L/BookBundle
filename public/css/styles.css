@@ -123,11 +123,10 @@
   --book-serie-tile-veil: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.72));
   /* The only fixed colors of this group, and for the same reason as the platform tiles below: the text sits on a picture and not on the page, so the site's own ink says nothing about whether it can be read there. Stated on each part rather than left to inherit from the tile: UiBundle sets the page's ink through a universal selector, which no inherited value ever reaches past */
   --book-serie-tile-color: #fff;
-  --book-serie-tile-meta-color: rgba(255, 255, 255, 0.82);
   --book-serie-tile-text-color: rgba(255, 255, 255, 0.86);
   --book-serie-tile-title-size: clamp(1.5rem, 3.2vw, 2rem);
   --book-serie-tile-text-size: clamp(0.875rem, 1.1vw, 1rem);
-  /* The lines the sentence under a title is given before it is cut short - the same idiom as the platform tiles' label below, a height ceiling rather than a line clamp: the text is a flex item of the tile, and a flex container blockifies its children's display, which is exactly what -webkit-line-clamp needs left alone */
+  /* The lines the sentence under a title is given before it is cut short, ellipsis included - the count is read by the line clamp and by the height ceiling under it alike (see sass/_book.scss, .serie-tile__text) */
   --book-serie-tile-text-lines: 2;
   --book-serie-tile-text-line-height: 1.35;
   /* The square vignette of a serie shown beside the full-frame ones (Serie:Serie's "thumbnails" variant) - the same row, said quietly */
@@ -138,9 +137,6 @@
   --book-serie-thumb-card-gap: 18px;
   --book-serie-thumb-frame-size: 92px;
   --book-serie-thumb-card-background: var(--card-background);
-  /* The mark above a tile's title and under a vignette's - how many books are out and the language they read in, set in the site's accent face like every other eyebrow */
-  --book-serie-meta-size: 0.72rem;
-  --book-serie-meta-spacing: 0.12em;
   /* What parts two series of a row, at the site's own horizontal step */
   --book-serie-grid-gap: clamp(0.75rem, 2vw, 1.5rem);
   /* The head's own line when it closes on a link: the name on the left, the link against the far edge */
@@ -148,10 +144,6 @@
   /* A rail of covers on a phone (Book:Books' "rail" variant): each card a fixed share of the screen, so the next one shows at the edge and says the row scrolls */
   --book-cards-rail-width: 45vw;
   --book-cards-rail-gap: 12px;
-  /* The wide plate a mark stands in alone (Store:Stores' "logos" variant), where the labelled tile beside it is sized for its name */
-  --book-link-plate-height: 72px;
-  --book-link-plate-min-width: 140px;
-  --book-link-plate-mark-height: 24px;
   /* The tile a platform is reached through - a shop, a podcast app, any of the Links card's buttons. All one size whatever the mark inside, so a row reads as a row of buttons rather than as logos of assorted heights */
   --book-link-tile-width: 104px;
   --book-link-tile-height: 96px;
@@ -194,6 +186,16 @@
   flex-direction: column;
   gap: var(--book-column-flow-gap);
   min-width: 0;
+}
+
+.book-page__sections > .blocks {
+  display: block;
+}
+
+.book-page__sections > section:not(.book-section) {
+  box-sizing: border-box;
+  margin-inline: 0;
+  padding-inline: var(--section-wrap-gutter, clamp(20px, 5vw, 64px));
 }
 
 .book-page__grid {
@@ -286,10 +288,23 @@
 }
 
 .book-cards {
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+  gap: 12px;
+}
+
+@media (min-width: 621px) {
+  .book-cards {
+    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+    gap: 20px;
+  }
+}
+.book-cards img {
+  width: 100%;
 }
 
 .book-cards--centered {
+  display: flex;
   justify-content: center;
 }
 
@@ -365,6 +380,10 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
 }
 
 .serie-tile__text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--book-serie-tile-text-lines);
+  line-clamp: var(--book-serie-tile-text-lines);
   max-height: calc(var(--book-serie-tile-text-lines) * var(--book-serie-tile-text-line-height) * 1em);
   overflow: hidden;
   margin: 0;
@@ -401,24 +420,6 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   line-height: 1.25;
   color: var(--section-text, var(--text));
   text-align: start;
-}
-
-.serie-tile__meta,
-.serie-thumb__meta {
-  margin: 0;
-  font-family: var(--font-family-accent);
-  font-size: var(--book-serie-meta-size);
-  letter-spacing: var(--book-serie-meta-spacing);
-  text-transform: uppercase;
-}
-
-.serie-tile__meta {
-  color: var(--book-serie-tile-meta-color);
-}
-
-.serie-thumb__meta {
-  margin-block-start: 0.25rem;
-  color: var(--text-muted, var(--text));
 }
 
 @media (max-width: 620px) {
@@ -474,6 +475,7 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
 
 @media (max-width: 620px) {
   .book-cards--rail {
+    display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     gap: var(--book-cards-rail-gap);
@@ -487,33 +489,6 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     scroll-snap-align: start;
   }
 }
-.book-stores--logos p {
-  flex: 1 1 var(--book-link-plate-min-width);
-}
-
-.book-stores--logos p > a {
-  width: 100%;
-  min-width: var(--book-link-plate-min-width);
-  height: var(--book-link-plate-height);
-  justify-content: center;
-}
-
-.book-stores--logos p .img {
-  width: auto;
-  height: var(--book-link-plate-mark-height);
-  object-fit: contain;
-}
-
-.book-stores--logos p .img-below,
-.book-stores--logos p .img-above {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 .book-listing__intro {
   max-width: var(--section-head-max-width, 640px);
   margin: 0 0 1.5rem;
@@ -588,7 +563,7 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   gap: 1rem;
 }
 
-:is(.book-section .flex-center, .book-stores) {
+.book-section .flex-center {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
@@ -612,13 +587,13 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   gap: 0.5rem;
 }
 
-:is(.book-section .flex-center, .book-stores) p {
+.book-section .flex-center p {
   display: flex;
   margin: 0;
 }
 
-:is(.book-section .flex-center, .book-stores) p > a,
-:is(.book-section .flex-center, .book-stores) p > span {
+.book-section .flex-center p > a,
+.book-section .flex-center p > span {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -635,45 +610,45 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   text-decoration: none;
 }
 
-:is(.book-section .flex-center, .book-stores) p > a:hover,
-:is(.book-section .flex-center, .book-stores) p > a:focus-visible {
+.book-section .flex-center p > a:hover,
+.book-section .flex-center p > a:focus-visible {
   background: var(--book-link-tile-background-hover);
   color: var(--book-link-tile-color);
 }
 
-:is(.book-section .flex-center, .book-stores) .book-tile--own {
+.book-section .flex-center .book-tile--own {
   display: contents;
 }
 
-:is(.book-section .flex-center, .book-stores) .book-tile--own > p {
+.book-section .flex-center .book-tile--own > p {
   margin-inline-end: var(--book-link-tile-own-space);
 }
 
-:is(.book-section .flex-center, .book-stores) .book-tile--own a,
-:is(.book-section .flex-center, .book-stores) .book-tile--own a:hover,
-:is(.book-section .flex-center, .book-stores) .book-tile--own a:focus-visible {
+.book-section .flex-center .book-tile--own a,
+.book-section .flex-center .book-tile--own a:hover,
+.book-section .flex-center .book-tile--own a:focus-visible {
   background: var(--book-link-tile-own-background);
   border-color: var(--book-link-tile-own-border-color);
   color: var(--book-link-tile-own-color);
 }
 
-:is(.book-section .flex-center, .book-stores) .book-tile--own img {
+.book-section .flex-center .book-tile--own img {
   filter: var(--book-link-tile-own-mark-filter);
 }
 
-:is(.book-section .flex-center, .book-stores) p br {
+.book-section .flex-center p br {
   display: none;
 }
 
-:is(.book-section .flex-center, .book-stores) p .img {
+.book-section .flex-center p .img {
   width: var(--book-link-tile-icon-size);
   height: var(--book-link-tile-icon-size);
   object-fit: contain;
   margin: 0;
 }
 
-:is(.book-section .flex-center, .book-stores) p .img-below,
-:is(.book-section .flex-center, .book-stores) p .img-above {
+.book-section .flex-center p .img-below,
+.book-section .flex-center p .img-above {
   flex: none;
   margin: 0;
   max-height: calc(var(--book-link-tile-label-lines) * 1.2em);

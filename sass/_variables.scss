@@ -159,12 +159,11 @@
 
     /* The only fixed colors of this group, and for the same reason as the platform tiles below: the text sits on a picture and not on the page, so the site's own ink says nothing about whether it can be read there. Stated on each part rather than left to inherit from the tile: UiBundle sets the page's ink through a universal selector, which no inherited value ever reaches past */
     --book-serie-tile-color: #fff;
-    --book-serie-tile-meta-color: rgba(255, 255, 255, 0.82);
     --book-serie-tile-text-color: rgba(255, 255, 255, 0.86);
     --book-serie-tile-title-size: clamp(1.5rem, 3.2vw, 2rem);
     --book-serie-tile-text-size: clamp(0.875rem, 1.1vw, 1rem);
 
-    /* The lines the sentence under a title is given before it is cut short - the same idiom as the platform tiles' label below, a height ceiling rather than a line clamp: the text is a flex item of the tile, and a flex container blockifies its children's display, which is exactly what -webkit-line-clamp needs left alone */
+    /* The lines the sentence under a title is given before it is cut short, ellipsis included - the count is read by the line clamp and by the height ceiling under it alike (see sass/_book.scss, .serie-tile__text) */
     --book-serie-tile-text-lines: 2;
     --book-serie-tile-text-line-height: 1.35;
 
@@ -178,10 +177,6 @@
     --book-serie-thumb-frame-size: 92px;
     --book-serie-thumb-card-background: var(--card-background);
 
-    /* The mark above a tile's title and under a vignette's - how many books are out and the language they read in, set in the site's accent face like every other eyebrow */
-    --book-serie-meta-size: 0.72rem;
-    --book-serie-meta-spacing: 0.12em;
-
     /* What parts two series of a row, at the site's own horizontal step */
     --book-serie-grid-gap: clamp(0.75rem, 2vw, 1.5rem);
 
@@ -191,11 +186,6 @@
     /* A rail of covers on a phone (Book:Books' "rail" variant): each card a fixed share of the screen, so the next one shows at the edge and says the row scrolls */
     --book-cards-rail-width: 45vw;
     --book-cards-rail-gap: 12px;
-
-    /* The wide plate a mark stands in alone (Store:Stores' "logos" variant), where the labelled tile beside it is sized for its name */
-    --book-link-plate-height: 72px;
-    --book-link-plate-min-width: 140px;
-    --book-link-plate-mark-height: 24px;
 
     /* The tile a platform is reached through - a shop, a podcast app, any of the Links card's buttons. All one size whatever the mark inside, so a row reads as a row of buttons rather than as logos of assorted heights */
     --book-link-tile-width: 104px;

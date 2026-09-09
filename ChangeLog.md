@@ -1,5 +1,24 @@
 # Changelog
 
+## v2.10.0
+
+Where a catalog is sold is said by each book alone
+
+- **A serie tile and a serie vignette drop their meta line**: how many books the serie had out and its language code, two marks nobody reads on a cover they are already looking at (09/09/2026)
+- The card variant keeps the language it writes out under its title (09/09/2026)
+- `book_serie_book_counts()` and the query behind it are gone with that line - one query per row, and the only reason `book_series` had a cache resolver of its own (09/09/2026)
+- `BookService::countPublishedBySerie()` and its repository method stay, both public contracts a site may call (09/09/2026)
+- `book_series` is a dateless kind now, cached under the catalog tag whatever its variant and whatever is scheduled: the count was the one thing a serie read a publication date for (09/09/2026)
+- `--book-serie-meta-size`, `--book-serie-meta-spacing` and `--book-serie-tile-meta-color` are dropped from the tokens and from the scaffolded theme, nothing reading them any more (09/09/2026)
+- The `book_stores` block kind is removed: no platform indexes a publisher's name, so its addresses could only ever be searches leading anywhere, where each book's own links already say where it is sold (09/09/2026)
+- `--book-link-plate-height`, `--book-link-plate-min-width` and `--book-link-plate-mark-height` leave the tokens and the scaffolded theme with the plate that read them (09/09/2026)
+- **A person's page no longer times out**: `ContributorRepository::findOneBySlugWithWorks()` fills each collection with its own query, where five joined collections crossed one another row by row (09/09/2026)
+- **A grid of blocks fills the column it sits in**: the run of composed blocks is put back in a block flow, where a flex item's auto margin ate the free space and left every block centered on its own content (09/09/2026)
+- The listings this bundle writes itself are laid in the same gutters as the blocks below them, a shelf of covers starting on the same left edge as a grid of pictures (09/09/2026)
+- `.book-cards` is a grid rather than a flex row, and a cover fills the column it is given instead of being pinned at 150px (09/09/2026)
+- A serie tile's summary is cut on an ellipsis by a line clamp, where a bare height ceiling stopped it mid-word (09/09/2026)
+- The catalog section of the back-office menu carries its own icon (09/09/2026)
+
 ## v2.9.0
 
 Who peoples a serie is a row of its own

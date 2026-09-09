@@ -26,6 +26,26 @@
                 "en": "Restoring a catalog from an archive brings back the characters whole — their portraits, their groups and the sentences presenting them.",
                 "fr": "Restaurer un catalogue depuis une archive ramène les personnages entiers — leurs portraits, leurs groupes et les phrases qui les présentent.",
                 "es": "Restaurar un catálogo desde un archivo devuelve los personajes completos: sus retratos, sus grupos y las frases que los presentan."
+            },
+            {
+                "en": "A person's page now opens straight away, however many books and series credit them.",
+                "fr": "La page d'une personne s'ouvre désormais immédiatement, quel que soit le nombre de livres et de séries à son crédit.",
+                "es": "La página de una persona ahora se abre de inmediato, sea cual sea el número de libros y series en su haber."
+            },
+            {
+                "en": "Listings and grids of covers now fill the width of the page instead of huddling in its middle.",
+                "fr": "Les listes et les grilles de couvertures occupent désormais toute la largeur de la page au lieu de se tasser en son milieu.",
+                "es": "Las listas y las cuadrículas de portadas ahora ocupan todo el ancho de la página en lugar de agruparse en el centro."
+            },
+            {
+                "en": "The \"Where to find us\" block is gone: each book already says where it is sold, on its own page.",
+                "fr": "Le block « Où nous trouver » disparaît : chaque livre dit déjà où il est vendu, sur sa propre page.",
+                "es": "El bloque «Dónde encontrarnos» desaparece: cada libro ya indica dónde se vende, en su propia página."
+            },
+            {
+                "en": "A serie shown as a tile or a vignette no longer prints its book count and its language over the cover.",
+                "fr": "Une série présentée en tuile ou en vignette n'affiche plus son nombre de livres ni sa langue par-dessus la couverture.",
+                "es": "Una serie mostrada como mosaico o miniatura ya no muestra su número de libros ni su idioma sobre la portada."
             }
         ]
     },

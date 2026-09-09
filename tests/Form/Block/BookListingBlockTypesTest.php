@@ -16,18 +16,13 @@ use c975L\BookBundle\Form\Block\CategoriesBlockType;
 use c975L\BookBundle\Form\Block\ContributorsBlockType;
 use c975L\BookBundle\Form\Block\SeriesBlockType;
 use c975L\BookBundle\Form\Block\SerieStripsBlockType;
-use c975L\BookBundle\Form\Block\StoreItemType;
-use c975L\BookBundle\Form\Block\StoresBlockType;
-use c975L\BookBundle\Service\BookCustomizationRegistry;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockAnchorSlugger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -62,15 +57,14 @@ class BookListingBlockTypesTest extends TestCase
             [CategoriesBlockType::class],
             [ContributorsBlockType::class],
             [SerieStripsBlockType::class],
-            [StoresBlockType::class],
         ];
     }
 
-    // Every listing but the one querying nothing: a rail of platforms holds its own items, so it has no catalog to cut into
+    // Every listing of the bundle cuts into the catalog, since the one kind holding its own items was dropped
     /** @return list<array{0: string}> */
     public static function catalogListingKinds(): array
     {
-        return array_values(array_filter(self::listingKinds(), static fn (array $case): bool => StoresBlockType::class !== $case[0]));
+        return self::listingKinds();
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('listingKinds')]
@@ -115,7 +109,7 @@ class BookListingBlockTypesTest extends TestCase
             $this->assertArrayHasKey('displayMore', $this->build($class), $class);
         }
 
-        foreach ([BooksToBePublishedBlockType::class, SerieStripsBlockType::class, StoresBlockType::class] as $class) {
+        foreach ([BooksToBePublishedBlockType::class, SerieStripsBlockType::class] as $class) {
             $this->assertArrayNotHasKey('displayMore', $this->build($class), $class);
         }
     }
@@ -148,41 +142,6 @@ class BookListingBlockTypesTest extends TestCase
         $this->assertSame(['', 'tiles', 'thumbnails'], array_values($added['variant']['options']['choices']));
     }
 
-    // The rail holds its platforms rather than querying them, so its one field is the collection naming them
-    public function testTheStoresRailHoldsItsOwnPlatforms(): void
-    {
-        $added = $this->build(StoresBlockType::class);
-
-        $this->assertSame(CollectionType::class, $added['items']['type']);
-        $this->assertSame(StoreItemType::class, $added['items']['options']['entry_type']);
-        $this->assertTrue($added['items']['options']['allow_add']);
-        $this->assertTrue($added['items']['options']['allow_delete']);
-    }
-
-    // Both required: a platform with no address prints a tile leading nowhere, an address with no platform has no mark to draw
-    public function testAPlatformIsNamedAndReachable(): void
-    {
-        $registry = $this->createStub(BookCustomizationRegistry::class);
-        $registry->method('getLinkKinds')->willReturn(['epub_fnac' => ['label' => 'Fnac', 'group' => 'epub', 'icon' => 'fnac.svg']]);
-
-        $added = [];
-        $builder = $this->createStub(FormBuilderInterface::class);
-        $builder->method('add')->willReturnCallback(function (string $name, ?string $type = null, array $options = []) use (&$added, $builder) {
-            $added[$name] = ['type' => $type, 'options' => $options];
-
-            return $builder;
-        });
-
-        new StoreItemType($registry)->buildForm($builder, []);
-
-        $this->assertSame(ChoiceType::class, $added['kind']['type']);
-        // Read off the registry and not off the enum, so a site declaring platforms of its own offers them here too
-        $this->assertSame(['Fnac' => 'epub_fnac'], $added['kind']['options']['choices']);
-        $this->assertInstanceOf(NotBlank::class, $added['kind']['options']['constraints'][0]);
-        $this->assertSame(UrlType::class, $added['url']['type']);
-        $this->assertInstanceOf(NotBlank::class, $added['url']['options']['constraints'][0]);
-    }
-
     // The link closing a head belongs to every listing of the bundle, so it is asserted on all of them
     #[\PHPUnit\Framework\Attributes\DataProvider('listingKinds')]
     public function testEveryListingMayCloseItsHeadOnALink(string $class): void
@@ -195,17 +154,13 @@ class BookListingBlockTypesTest extends TestCase
         $this->assertFalse($added['linkUrl']['options']['required']);
     }
 
-    // The two kinds whose layout a phone changes - the covers scrolled rather than stacked, the marks standing alone
-    public function testTheTwoLaidOutKindsOfferTheirVariants(): void
+    // The kind whose layout a phone changes - the covers scrolled rather than stacked
+    public function testTheLaidOutKindOffersItsVariant(): void
     {
         $books = $this->build(BooksBlockType::class);
         $this->assertSame(ChoiceType::class, $books['variant']['type']);
         $this->assertSame(['', 'rail'], array_values($books['variant']['options']['choices']));
         $this->assertFalse($books['variant']['options']['placeholder']);
-
-        $stores = $this->build(StoresBlockType::class);
-        $this->assertSame(ChoiceType::class, $stores['variant']['type']);
-        $this->assertSame(['', 'logos'], array_values($stores['variant']['options']['choices']));
     }
 
     // BlockType translates the embedded data form in the "ui" domain, where every label above would then render raw

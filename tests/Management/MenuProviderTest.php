@@ -24,7 +24,7 @@ class MenuProviderTest extends TestCase
     public function testTheSectionIsThisBundlesOwnCatalogOne(): void
     {
         $this->assertSame(
-            ['label' => 'label.catalog', 'translation_domain' => 'book'],
+            ['label' => 'label.catalog', 'translation_domain' => 'book', 'icon' => 'fas fa-book'],
             $this->createProvider()->getMenuSection(),
         );
     }

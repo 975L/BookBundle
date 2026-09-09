@@ -153,19 +153,6 @@ class BookBlockExtensionTest extends TestCase
         $this->assertCount(2, $this->extension(serieService: $serieService)->getSeries(serieSlugs: '  '));
     }
 
-    // The count each card of a row prints, asked once for the whole row rather than per serie
-    public function testTheBookCountsOfARowAreAskedInOneGo(): void
-    {
-        $series = $this->series('papa-calin', 'les-triados');
-        $this->setId($series[0], 7);
-        $this->setId($series[1], 9);
-
-        $bookService = $this->createMock(BookServiceInterface::class);
-        $bookService->expects($this->once())->method('countPublishedBySerie')->with([7, 9])->willReturn([7 => 38, 9 => 2]);
-
-        $this->assertSame([7 => 38, 9 => 2], $this->extension(bookService: $bookService)->getSerieBookCounts($series));
-    }
-
     // A serie no slug leads to draws nothing rather than falling back on the whole catalog of planches
     public function testABlockNamingNoExistingSerieDrawsNothing(): void
     {

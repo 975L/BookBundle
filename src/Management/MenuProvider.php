@@ -31,6 +31,7 @@ class MenuProvider implements MenuProviderInterface
         return [
             'label' => 'label.catalog',
             'translation_domain' => 'book',
+            'icon' => 'fas fa-book',
         ];
     }
 

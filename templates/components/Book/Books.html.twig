@@ -12,7 +12,7 @@
         <twig:c975LBook:Book:Book book="{{ book }}" :rating="rating" :aggregate="rating ? ratings[book.id] : null" :editable="editable|default(false)"/>
     {% endfor %}
     {% if displayMore %}
-        <article class="text-center width-150">
+        <article class="text-center">
             <h3 class="card-title">{{ 'label.books_more'|trans({}, 'book') }}</h3>
             <twig:c975LUi:Button:Button label="{{ 'label.books'|trans({}, 'book') }}" url="{{ path('book_index') }}" />
         </article>

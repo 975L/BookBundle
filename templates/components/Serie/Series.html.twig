@@ -2,13 +2,11 @@
 {% set displayMore = displayMore|default(false)|to_bool %}
 {# Matched, not interpolated: the value comes from stored block data and must not write any class name. Anything else is the card the listing has always shown, which is what every block stored before the field existed renders as #}
 {% set variant = variant|default('') in ['tiles', 'thumbnails'] ? variant : '' %}
-{# Asked once for the whole row rather than per card, and only where a variant prints it: the count costs one query, a card asking for its own would cost one per serie #}
-{% set counts = variant ? book_serie_book_counts(series) : {} %}
 {# "displayMore" is the card variant's own: the tiles and the vignettes are a hand-picked row (see SeriesBlockType's "serieSlugs"), which a card leading to the whole catalog would close on a promise the row never made #}
 {% if variant %}
     <div class="serie-{{ variant }}">
         {% for serie in series %}
-            <twig:c975LBook:Serie:Serie serie="{{ serie }}" :editable="editable|default(false)" variant="{{ variant }}" :count="counts[serie.id]|default(0)"/>
+            <twig:c975LBook:Serie:Serie serie="{{ serie }}" :editable="editable|default(false)" variant="{{ variant }}"/>
         {% endfor %}
     </div>
 {% else %}
@@ -18,7 +16,7 @@
             <twig:c975LBook:Serie:Serie serie="{{ serie }}" :editable="editable|default(false)"/>
         {% endfor %}
         {% if displayMore %}
-            <article class="text-center width-150">
+            <article class="text-center">
                 <h3 class="card-title">{{ 'label.series_more'|trans({}, 'book') }}</h3>
                 <twig:c975LUi:Button:Button label="{{ 'label.series'|trans({}, 'book') }}" url="{{ path('serie_index') }}" />
             </article>

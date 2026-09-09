@@ -121,21 +121,4 @@
   display: none;
 }
 
-/* A row of marks, all the same size: what tells a rail of platforms from a shelf of covers is that its tiles are square and wear no title of their own */
-.ui-block-thumb--book_stores {
-  justify-content: center;
-  gap: 0.25rem;
-}
-.ui-block-thumb--book_stores .ui-block-thumb__media {
-  display: block;
-  height: 45%;
-  background-image: linear-gradient(to right, currentcolor 0 72%, transparent 72%);
-  background-size: 25% 100%;
-  background-color: transparent;
-}
-.ui-block-thumb--book_stores .ui-block-thumb__title,
-.ui-block-thumb--book_stores .ui-block-thumb__line {
-  display: none;
-}
-
 /*# sourceMappingURL=block-thumbs.css.map */

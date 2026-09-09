@@ -15,26 +15,13 @@ use PHPUnit\Framework\TestCase;
 
 class BlockFixtureProviderTest extends TestCase
 {
-    // Only the two kinds holding their own content: every other one queries the catalog live and is shown through GalleryShowcaseProvider instead
-    public function testFixturesCoverTheKindsHoldingTheirOwnContent(): void
+    // Only the one kind holding its own content: every other one queries the catalog live and is shown through GalleryShowcaseProvider instead
+    public function testFixturesCoverTheKindHoldingItsOwnContent(): void
     {
         $fixtures = new BlockFixtureProvider()->getFixtures();
 
-        $this->assertSame(['book_stores', 'book_reader'], array_keys($fixtures));
+        $this->assertSame(['book_reader'], array_keys($fixtures));
         $this->assertArrayHasKey('', $fixtures['book_reader']);
-        $this->assertArrayHasKey('', $fixtures['book_stores']);
-    }
-
-    // A gallery entry is a sample an admin overwrites: it must name no real shelf, so every address stays an anchor going nowhere
-    public function testStoreFixtureLeadsNowhere(): void
-    {
-        $items = new BlockFixtureProvider()->getFixtures()['book_stores']['']['items'];
-
-        $this->assertNotEmpty($items);
-        foreach ($items as $item) {
-            $this->assertStringStartsWith('#', $item['url']);
-            $this->assertNotSame('', $item['kind']);
-        }
     }
 
     // The gallery turns pages from these, so a cue out of order would read as a bug in the reader itself
