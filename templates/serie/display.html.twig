@@ -22,9 +22,22 @@
         <twig:c975LBook:Serie:Hero serie="{{ serie }}" sections="{{ sections }}" editUrl="{{ editUrls.hero|default('') }}"/>
         {# No summary of anchors, as on a book's page: a serie holds a summary and the listing of what it tells, and the bar overflowed on a phone. The page therefore keeps its whole width (see sass/_book.scss, .book-page:has(> .book-page__toc)) #}
 
+        {# Where the composed blocks read, the site's own call (setting "book-serie-blocks"): under the listing, which is what a serie of books wants, or above it - a serie of planches often opens on who peoples it, and that presentation belongs before the sixty planches it explains, not after them #}
+        {% set blocksFirst = 'before' == config('book-serie-blocks')|default('after') %}
+
         <div class="book-page__sections">
             {# First of the column: the summary is the sentence the serie opens on, and it reads under the hero before any section #}
             <twig:c975LBook:Serie:Resume serie="{{ serie }}" editUrl="{{ editUrls.resume|default('') }}"/>
+            {% if blocksFirst %}
+                <twig:c975LUi:Blocks:Blocks blocks="{{ serie.blocks }}"/>
+            {% endif %}
+            {# Who peoples the serie, above what it holds: the presentation explains the books and the planches listed under it #}
+            {% if 'characters' in anchors %}
+                <section id="characters" class="toc-target" lang="{{ serie.language }}">
+                    <h2>{{ 'label.characters_section'|trans({}, 'book', serie.language) }}</h2>
+                    <twig:c975LBook:Serie:Characters serie="{{ serie }}"/>
+                </section>
+            {% endif %}
             {# No card around the items: what the serie holds is no section to be announced, it is what the page is read for - a title, the field searching in it, and the cards themselves #}
             {% if 'books' in anchors %}
                 <section id="books" class="toc-target" lang="{{ serie.language }}">
@@ -62,7 +75,9 @@
                     </div>
                 </section>
             {% endif %}
-            <twig:c975LUi:Blocks:Blocks blocks="{{ serie.blocks }}"/>
+            {% if not blocksFirst %}
+                <twig:c975LUi:Blocks:Blocks blocks="{{ serie.blocks }}"/>
+            {% endif %}
         </div>
     </div>
 

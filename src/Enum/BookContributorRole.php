@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Enum;
 
 // The parts someone takes in a book beyond signing or drawing it, used as the default vocabulary when no site declares its own (see c975L\BookBundle\Contract\BookCustomizationProviderInterface). A role is stored as a plain string on c975L\BookBundle\Entity\BookContributor, so a catalog crediting a colourist, a letterer or a preface writer names it without the bundle having to know it. Neither author nor illustrator: those two are the book's own columns, inherited from its serie when it names none (see Book::getEffectiveAuthor()), and a list offering them beside the fields holding them would have an editor credit the same person twice

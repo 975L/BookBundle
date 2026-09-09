@@ -1,8 +1,19 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Repository;
 
+use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\Serie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -66,20 +77,18 @@ class ContributorRepository extends ServiceEntityRepository
     public function findCredited(): array
     {
         $contributors = $this->createQueryBuilder('c')
-            ->leftJoin('c.authoredBooks', 'ab', 'WITH', 'ab.isDeleted = false AND ab.hidden = false AND ab.newerVersion IS NULL')
-            ->leftJoin('c.illustratedBooks', 'ib', 'WITH', 'ib.isDeleted = false AND ib.hidden = false AND ib.newerVersion IS NULL')
-            ->leftJoin('c.authoredSeries', 'asr', 'WITH', 'asr.isDeleted = false AND asr.hidden = false')
-            ->leftJoin('c.illustratedSeries', 'isr', 'WITH', 'isr.isDeleted = false AND isr.hidden = false')
-            // The parts held by a row rather than by a column count as much: a narrator or a translator is credited nowhere else, and the index would list nobody it did not also record as an author
-            ->leftJoin('c.credits', 'cr')
-            ->leftJoin('cr.book', 'cb', 'WITH', 'cb.isDeleted = false AND cb.hidden = false AND cb.newerVersion IS NULL')
             ->leftJoin('c.medias', 'm')
             ->addSelect('m')
             ->andWhere('c.isDeleted = false')
             ->andWhere('c.hidden = false')
-            ->andWhere('ab.id IS NOT NULL OR ib.id IS NOT NULL OR asr.id IS NOT NULL OR isr.id IS NOT NULL OR cb.id IS NOT NULL')
-            ->groupBy('c.id')
-            ->addGroupBy('m.id')
+            // What credits them, asked as five existence tests rather than five joins: joined, the five collections of one person crossed one another row by row before a GROUP BY threw the crossing away, thirteen people costing five million rows and forty-five seconds. Nothing here is read, only answered yes or no, so a test says it at the price of a lookup. The parts held by a row count as much as the two columns: a narrator or a translator is credited nowhere else, and the index would list nobody it did not also record as an author
+            ->andWhere(
+                'EXISTS (SELECT ab.id FROM ' . Book::class . ' ab WHERE ab.author = c AND ab.isDeleted = false AND ab.hidden = false AND ab.newerVersion IS NULL)'
+                . ' OR EXISTS (SELECT ib.id FROM ' . Book::class . ' ib WHERE ib.illustrator = c AND ib.isDeleted = false AND ib.hidden = false AND ib.newerVersion IS NULL)'
+                . ' OR EXISTS (SELECT asr.id FROM ' . Serie::class . ' asr WHERE asr.author = c AND asr.isDeleted = false AND asr.hidden = false)'
+                . ' OR EXISTS (SELECT isr.id FROM ' . Serie::class . ' isr WHERE isr.illustrator = c AND isr.isDeleted = false AND isr.hidden = false)'
+                . ' OR EXISTS (SELECT cr.id FROM ' . BookContributor::class . ' cr JOIN cr.book cb WHERE cr.contributor = c AND cb.isDeleted = false AND cb.hidden = false AND cb.newerVersion IS NULL)'
+            )
             ->orderBy('c.position', 'ASC')
             ->addOrderBy('c.name', 'ASC')
             ->getQuery()
@@ -91,7 +100,7 @@ class ContributorRepository extends ServiceEntityRepository
         return $contributors;
     }
 
-    // The collections Contributor::getRoles() reads, filled one query each instead of one query per person: the joins above only serve the filter, so a listing printing the parts under every name asked Doctrine for the same four collections again, person by person, and one more query for each credited book. Read whole and unfiltered, unlike those joins: a collection filled here has to say exactly what it says when it is read on its own, holdsContent() counting the very rows getRoles() sets aside - sorting out what the catalog shows stays where it was, in getRoles()
+    // The collections Contributor::getRoles() reads, filled one query each instead of one query per person: the existence tests above read nothing, so a listing printing the parts under every name asked Doctrine for the same four collections again, person by person, and one more query for each credited book. Read whole and unfiltered, unlike what those tests match on: a collection filled here has to say exactly what it says when it is read on its own, holdsContent() counting the very rows getRoles() sets aside - sorting out what the catalog shows stays where it was, in getRoles()
     /**
      * @param Contributor[] $contributors
      */

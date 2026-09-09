@@ -62,9 +62,13 @@
                 <source>description.book_route_strips</source>
                 <target>First segment of the url listing the strip series, e.g. "strips", and of each serie's own page below it (/strips/my-serie). A strip is read inside its serie, never here. Left empty, the pages are not served at all.</target>
             </trans-unit>
+            <trans-unit id="sM83c.J">
+                <source>description.book_serie_blocks</source>
+                <target>Where the blocks composed in the back-office read on a serie's page: "after" below the listing of what it holds, "before" above it.</target>
+            </trans-unit>
             <trans-unit id="50YtJwJ">
                 <source>description.book_strip_card</source>
-                <target>What a strip's card shows in the listing: "image" its drawing, "text" its summary, "both" of them.</target>
+                <target>What a planche's card shows in the listing: "image" its drawing, "text" its summary, "both" of them, "thumbnail" the planche as a linked thumbnail with its title, with no card around it.</target>
             </trans-unit>
             <trans-unit id="V3_94QE">
                 <source>description.book_strip_card_icon</source>
@@ -133,6 +137,10 @@
             <trans-unit id="hLojFlN">
                 <source>label.book_route_strips</source>
                 <target>Strip series list url prefix</target>
+            </trans-unit>
+            <trans-unit id="MiScnGM">
+                <source>label.book_serie_blocks</source>
+                <target>Blocks of a serie</target>
             </trans-unit>
             <trans-unit id="V.QanLq">
                 <source>label.book_strip_card</source>

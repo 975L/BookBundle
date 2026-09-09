@@ -110,6 +110,21 @@
         "description": "description.book_route_strip_shortcut"
     },
     {
+        "label": "label.book_serie_blocks",
+        "slug": "book-serie-blocks",
+        "sensitive": false,
+        "restricted": false,
+        "value": "after",
+        "kind": "choice",
+        "choices": [
+            "after",
+            "before"
+        ],
+        "group": "book",
+        "severity": null,
+        "description": "description.book_serie_blocks"
+    },
+    {
         "label": "label.book_strip_card",
         "slug": "book-strip-card",
         "sensitive": false,
@@ -119,7 +134,8 @@
         "choices": [
             "image",
             "text",
-            "both"
+            "both",
+            "thumbnail"
         ],
         "group": "book",
         "severity": null,

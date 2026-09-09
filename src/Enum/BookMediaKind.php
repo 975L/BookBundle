@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Enum;
 
 // What a book's files are, used as the default vocabulary when no site declares its own (see c975L\BookBundle\Contract\BookCustomizationProviderInterface). A kind is stored as a plain string on c975L\BookBundle\Entity\Media, so a site holding a file this bundle never heard of names it without the bundle having to know it - the same move the editions and the platforms made

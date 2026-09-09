@@ -18,6 +18,13 @@ return (new PhpCsFixer\Config())
         // Same reason for the union types of a catch and for the arguments of an anonymous class, which PHP_CodeSniffer reads as operators
         'types_spaces' => ['space' => 'single'],
         'class_definition' => ['space_before_parenthesis' => true],
+
+        // The MIT notice every file of the bundle carries, laid and kept by the tool rather than by whoever remembers it
+        'header_comment' => [
+            'header' => "(c) 2026: 975L <contact@975l.com>\n(c) 2026: Laurent Marquet <laurent.marquet@laposte.net>\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE.",
+            'location' => 'after_open',
+            'separate' => 'both',
+        ],
     ])
     // The tool has not declared PHP 8.5 support yet, while it runs fine on it
     ->setUnsupportedPhpVersionAllowed(true)

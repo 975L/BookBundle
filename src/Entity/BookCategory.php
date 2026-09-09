@@ -63,10 +63,12 @@ class BookCategory implements HasBlocksInterface, TrashableInterface, \Stringabl
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $modification = null;
 
+    // The id breaks the ties on every collection below: a position is typed in the back-office and a date is shared by two rows, so nothing here is unique on its own and the database was free to order the rows sharing one as it liked
+
     // What the category page says beyond the books it lists - composed in the back office with UiBundle's kinds, the same way a serie's page is
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinTable(name: 'book_category_block')]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $blocks;
 
     #[ORM\ManyToMany(targetEntity: Book::class, mappedBy: 'categories')]

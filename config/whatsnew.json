@@ -1,5 +1,35 @@
 [
     {
+        "date": "2026-09-09",
+        "description": [
+            {
+                "en": "Characters now have a screen of their own: name a character once for the whole serie, give them a face and a sentence, and every planche they speak in wears that portrait.",
+                "fr": "Les personnages ont désormais leur propre écran : nommez un personnage une fois pour toute la série, donnez-lui un visage et une phrase, et chaque planche où il parle porte ce portrait.",
+                "es": "Los personajes ahora tienen su propia pantalla: nombre un personaje una vez para toda la serie, dele un rostro y una frase, y cada página donde habla lleva ese retrato."
+            },
+            {
+                "en": "A planche says who speaks by picking from the serie's characters instead of typing their names, so a name can no longer be misspelled into somebody new.",
+                "fr": "Une planche dit qui parle en choisissant parmi les personnages de la série au lieu de taper leurs noms : un nom ne peut plus devenir quelqu'un d'autre par une faute de frappe.",
+                "es": "Una página dice quién habla eligiendo entre los personajes de la serie en lugar de escribir sus nombres, así un nombre ya no puede convertirse en otra persona por una errata."
+            },
+            {
+                "en": "A guided tour walks you through creating a character, before the one showing how to publish a planche.",
+                "fr": "Une visite guidée vous accompagne dans la création d'un personnage, avant celle qui montre comment publier une planche.",
+                "es": "Una visita guiada le acompaña en la creación de un personaje, antes de la que muestra cómo publicar una página."
+            },
+            {
+                "en": "A wall of planches now shows the picture meant to stand for each one rather than whichever was added first.",
+                "fr": "Un mur de planches montre désormais l'image censée représenter chacune plutôt que celle ajoutée en premier.",
+                "es": "Un muro de páginas ahora muestra la imagen destinada a representar cada una en lugar de la que se añadió primero."
+            },
+            {
+                "en": "Restoring a catalog from an archive brings back the characters whole — their portraits, their groups and the sentences presenting them.",
+                "fr": "Restaurer un catalogue depuis une archive ramène les personnages entiers — leurs portraits, leurs groupes et les phrases qui les présentent.",
+                "es": "Restaurar un catálogo desde un archivo devuelve los personajes completos: sus retratos, sus grupos y las frases que los presentan."
+            }
+        ]
+    },
+    {
         "date": "2026-09-08",
         "description": [
             {

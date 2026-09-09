@@ -1,0 +1,33 @@
+{# <twig:c975LBook:Serie:Characters serie="{{ serie }}"/> - who peoples the serie, presented as portraits #}
+{# The very markup UiBundle's "collection" block draws in its "portrait" variant (see blocks/CollectionItem.html.twig): the face opens the card, the name comes under it, the presentation under the name. Written out rather than drawn by the Card component for the reason stated there - the Card's title lives in a band that is a sibling of the whole body, and a name between the picture and the text is an order no class can put back. Sites that composed these cards by hand keep the styling they already had #}
+{# One row where the serie tells all its people apart the same way, several where it names them ("heroes", "villains") - the group's own name titles its row (see Character::$groupName) #}
+{% set isStripSerie = serie.stripSerie %}
+{# One pencil per portrait rather than one over the whole row: a character has a screen of its own, so the pencil leads to that very character and not to the list holding them (see BookEditUrlExtension::characterEditUrl()) #}
+{% set editable = is_granted(config('site-role-editor')) %}
+
+<div class="collection-grid">
+    <div class="section-wrap">
+        {% for groupName, characters in serie.characterGroups %}
+            {% if groupName is not empty %}<h3 class="section-title">{{ groupName }}</h3>{% endif %}
+            <div class="cards">
+                {% for character in characters %}
+                    {# Where a portrait leads: the planches that character speaks in, on a serie that tells planches - a serie of books has no such listing, and the card is then read without being a link #}
+                    {% set href = isStripSerie ? serie_path(serie, {'character': character.slug}) ~ '#strips' : '' %}
+                    {% set media = character.media %}
+                    {% set characterEditUrl = editable ? character_edit_url(character) : null %}
+                    <article class="card card--portrait box-shadow" id="character-{{ character.slug }}"{% if characterEditUrl %} data-block-edit-url="{{ characterEditUrl }}"{% endif %}>
+                        <div class="card-body">
+                            {% if media and media.name %}
+                                {# Linked to the card's own destination when it has one, so the portrait is not a dead zone above a name that is a link #}
+                                <twig:c975LUi:Image:Link src="{{ media.name }}" url="{{ href }}" alt="{{ character.name }}" width="{{ media.width }}" height="{{ media.height }}"/>
+                            {% endif %}
+                            <h4 class="card-title">{% if href %}<a href="{{ href }}">{{ character.name }}</a>{% else %}{{ character.name }}{% endif %}</h4>
+                            {# A <div>, not a <p>: the presentation is markup already block-level, and a <p> would be split #}
+                            {% if character.presentation %}<div>{{ character.presentation|raw|nl2br }}</div>{% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</div>

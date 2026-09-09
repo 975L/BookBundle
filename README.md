@@ -20,7 +20,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 ## Contents
 
 - **Setup** — [requirements](#requirements) · [installation](#installation) · [configuration](#load-the-configuration) · [routes](#enable-routes) · [assets](#install-assets)
-- **Using it** — [public routes](#routes) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
+- **Using it** — [public routes](#routes) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
 
 ## Features
 
@@ -34,6 +34,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - What a single site adds to a book — its own fields, its own media and edition vocabulary — declared rather than coded into an overridden CRUD
 - The people the catalog credits recorded once, with a page of their own listing everything they signed — a book picks its author and its illustrator from that list rather than retyping a name
 - The other parts someone takes in a book — narrating it, translating it — one row per part rather than one column per role, so a catalog crediting a colourist names it in its own vocabulary
+- Who peoples a serie said once for the whole serie — a name, a face, a presentation — rather than retyped on every planche that character speaks in, and a planche picks who speaks from that list
 - Admin CRUD via EasyAdmin for books, series and the people crediting them
 - A book, a serie or a strip duplicated in one click, with its files, its editions, its platforms and its blocks
 - A new version of a book published in one click: the book keeps its address and its readers, a twin carries what came out so far
@@ -60,7 +61,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 ## Requirements
 
 - PHP >= 8.4
-- [c975L/CoreBundle](https://github.com/975L/CoreBundle)
+- [c975L/CoreBundle](https://github.com/975L/CoreBundle) >= 1.26 — a planche's whole page opens over the page through its `Image:Zoom` component
 - Doctrine ORM
 - EasyAdmin
 - symfony/ux-live-component
@@ -170,7 +171,6 @@ showcase — contributes the same file through its own stylesheet provider.
 | `strip_display` | `/strip/{slug}` | `book-route-strip` | Strip detail page |
 | `book_shortcut` | `/b{number}` | `book-route-book-shortcut` | Short link to a book, 301 |
 | `strip_shortcut` | `/s{number}` | `book-route-strip-shortcut` | Short link to a strip, 301 |
-| `strip_card` | `/strip-card/{slug}` | — | The planche's card alone in a square frame, for a headless browser to photograph — `noindex` |
 | `book_release_alert_new` | `/book/release-alert/{id}` | — | Where an address is left to be told a book is out — `noindex` |
 | `book_release_alert_unsubscribe` | `/book/release-alert/{token}/unsubscribe` | — | The link the acknowledgement e-mail carries, opening a page with a button — `noindex` |
 | `book_release_alert_unsubscribe_confirm` | `/book/release-alert/{token}/unsubscribe` | — | That button, in `POST` — what actually drops the subscription |
@@ -274,102 +274,6 @@ takes back the square shape it wears in the listing (`--book-strip-card-full-siz
 are the page's `og:image` and its structured data's `image`, and they stay editable from the planche's own
 back-office screen.
 
-#### Photographing a planche's card
-
-Which raises the question of what a reply is *shared* as, once the drawing that used to answer it is off the
-page. The answer is the card itself: `strip_card` (`/strip-card/{slug}`) serves it alone, centred in a square
-frame on the site's own background, with no navbar, footer, cookie banner or scroll buttons around it —
-UiBundle's layout with its body written whole, so the head, the fonts and the stylesheets are the page's own.
-It is `noindex`, and gated exactly as `strip_display` is: what is not served there is not photographed here.
-
-A headless browser takes the picture, and `strip:card` hands it over:
-
-```bash
-# One webp per slug, photographed off the running site
-StripsCards.sh /strips/repliques-de-contes-du-soir /tmp/cards http://127.0.0.1:8000 1200
-
-# Handed to the media each planche already carries
-php bin/console strip:card --dir=/tmp/cards --serie=repliques-de-contes-du-soir --dry-run
-php bin/console strip:card --dir=/tmp/cards --serie=repliques-de-contes-du-soir
-```
-
-The command writes nothing itself: it sets the file on the `StripMedia` and lets **Vich** do the naming, the
-storing and the deleting of the file it replaces (mapping `block_media`, `delete_on_update`) — which is what
-keeps the media editable from the back office exactly as an uploaded one. A planche the capture skipped keeps
-what it carries and is named in the report; one carrying no media at all is given one. The role is written as
-`card`, so the stored file says what it holds.
-
-Vich names each new file with a fresh `uniqid`, so **the same run against two databases produces two
-different names**: run the command where the catalog is the source of truth, and bring the result back — not
-the other way round.
-
-No edition opens a section of its own: an edition says what the book comes out under, and the pages a
-reader leafs through belong to the book. `Book:Extracts` shows them all, in UiBundle's slider, and the
-flipbook turning them (`Book:Flipbook`) sits under the hero outside any card — it shows the book, it is no
-section to be announced. Every edition a book holds is named on one line of `Book:Informations` instead,
-under `book_edition_label()` — the site's own word for it.
-
-A book holding a recording is listened to on `Book:Podcasts`, a section like any other: the first of those
-recordings in an `<twig:c975LUi:Audio:Audio>`, then the files it is downloaded as, then the audio stores and
-podcast applications it is published on. The player no longer follows the reader down the page — one card
-holding the three ways of listening, where the player used to trail at the end of the page.
-
-The language switch is `book_translations(book)` (`Twig\BookTranslationExtension`), which reads the family
-from whichever end the visitor arrived at: `Book::getTranslation()` walks a book's children alone, so it
-answers from the original and answers nothing from a translation — the page in the other language offered
-no way back. Each one is named by `book_language_label()`, its own endonym rather than the word the current
-book's language uses for it, and a language this bundle holds no word for prints as its code.
-
-The same family is declared to search engines by `book_alternates(book)` (`Twig\BookUrlExtension`), the
-`alternates` map `display.html.twig` hands the layout, which writes one `<link rel="alternate" hreflang>`
-per language beside the canonical. Every version names the whole group, itself included — a page leaving
-itself out declares a group it is not part of — in absolute urls built from `site-url`, since a hreflang
-group is read from another site than the one serving it. A book no one has translated declares nothing:
-its canonical has already said everything there is to say about it.
-
-A book carries three images as a whole rather than as one of its versions, each uploaded on a field of its
-own under the **Page** tab of its screen: its **first cover**, its **fourth**, and the **backdrop** its
-page opens on (`Book::getCovers()`, `getBackCovers()`, `getBackgrounds()`, rows of `Form\BookCoverType`).
-The field a file is dropped on is what says which of the three it is — the kind is set by `addCover()` and
-its two siblings — so a site never has to name any of them in the vocabulary it declares
-(`getMediaKinds()`), and an editor is never asked to pick the right word from a list.
-
-What tells them from the pages, the recordings and the flipbooks the book also holds is their **kind**,
-which those three fields set themselves. A site already storing a `cover` of its own — a 712x400 still
-built for social cards — keeps it under the kind it gave it, and stays out of these three fields.
-
-`book_media(book, kind)` reads one of them, and `book_cover(book)` is what stands for the book wherever it
-is named — its page, its card, the social card built on it: the cover uploaded on that field first, then,
-for a book given none, the first *image* the book holds and not its first file — a catalog storing a
-recording or a flipbook before its cover would otherwise put an `mp3` in an `<img>`. A site knowing better
-which of its files stands for the book still hands it to `Book:Hero` as `cover`.
-
-Given a fourth cover, the hero **turns the cover over on a click**, front and back, rather than stacking the
-two: `Book:Hero` renders UiBundle's flip card — its `flip-card` classes and its `flipCard` Stimulus
-controller, not its component, which reads `Media` entities where a hero is handed plain paths. The face's
-own outline, padding and paper are undone in `sass/_book.scss`: a cover is printed to its own edge, and the
-corners and the shadow belong to the image. A book with no fourth cover keeps the plain `<img>` it always
-had. Given a backdrop, the hero paints it behind a veil (`book-hero--has-bg`) as a real `<img>` and never as
-a CSS `background-image`, a nonce-based `style-src` covering no style attribute.
-
-Which versions a book holds is read off its editions rather than ticked by hand: `Book:Hero` prints one
-badge per `BookEdition`, filled for one already out and outlined for one only announced, the word carrying
-the information and the shape only repeating it. A version the book does not hold yet stays on the page:
-for a reader that is an answer, not a gap.
-
-A book's page carries **what its readers wrote about it**, under the blocks composed at its foot: the
-reviews left on it and the fold leading to the form (UiBundle's own `ui_reviews_section()`, filed under
-the `book` owner type). Nothing shows until the site enables `ui-enable-reviews` — the function answers
-an empty string and the section stays away. It is held in the very cache the blocks above it are held in,
-tagged so that publishing a review empties it: nothing in it belongs to one visitor. None of the six
-public pages sets a browser cache header of its own all the same.
-
-`Service\BookFavoriteItemProvider` is what names a book wherever UiBundle holds nothing but an owner type
-and an id — the heading of the page a review is left from, an entry of a reader's wishlist. It answers
-through `BookRepository::findPublishedByIds()`, so an id a visitor may not reach — a book in the trash,
-one not published yet — is simply absent rather than named. A book removed for good takes its reviews
-along with its ratings (`Service\BookTrashManager`).
-
 #### Editing a section from the page itself
 
 Whoever the back-office lets in (`site-role-editor`, the role the three CRUD screens now sit behind —
@@ -438,6 +342,35 @@ is filed from its own screen, in an autocomplete field beside the serie.
 
 On a page composed in blocks, `book_categories` prints the categories holding at least one shown book, and
 `book_books` narrowed down to a category slug prints that shelf alone (see [Blocks](#blocks)).
+
+### Who peoples a serie
+
+A serie of planches has characters, and they used to be said in two places at once: a comma-separated list
+of names typed on every planche, which could name a character without being able to draw one, and a block of
+cards a site composed by hand to present them. `Character` replaces both. It is held by its serie — two
+series may people themselves with a *Papa* who is not the same person, so a slug is unique inside a serie and
+not across the site — and carries the name, the slug the urls are built on, the presentation and the faces.
+
+A face uploaded once is worn by the chip of every planche that character speaks in, and the presentation read
+on the serie's page is the very row the planches point at. `Character::$groupName` parts one serie's people
+into more than one row — *heroes* and *villains* of the same books, told apart on the page without being two
+series; left empty, they are presented as one.
+
+The screen sits under **Catalogue**, like the series' one, and a planche picks who speaks from it rather than
+typing names. `Serie:Characters` draws the section on the serie's own page, in UiBundle's `portrait` variant,
+so a site that composed those cards by hand keeps the styling it already had and can then drop the block.
+
+Upgrading a catalog whose planches carried the names as text, `c975l:book:characters:from-strips` writes one
+character per distinct name and the links to them — see [`UPGRADE.md`](UPGRADE.md), which names the two
+migrations it runs between:
+
+```bash
+php bin/console c975l:book:characters:from-strips --dry-run
+php bin/console c975l:book:characters:from-strips
+```
+
+A serie's archive carries its people whole, portraits included, so a restore puts back the rows an editor
+wrote rather than bare names (see [Export / import the catalog](#export--import-the-catalog)).
 
 ### Editions
 

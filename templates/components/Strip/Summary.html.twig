@@ -1,5 +1,15 @@
+{# <twig:c975LBook:Strip:Summary summary="{{ strip.summary }}" [heading="h2"] [label] [language] [editUrl]/> #}
+{# What a planche says in words: the transcription of a drawn page, the reply itself where the planche is the words. "heading" names the section - left out, the text reads bare, which is what a card holding it already announces #}
 {% if summary is not null %}
-    <div class="text text-left"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
-        {{ summary|raw }}
-    </div>
+    {% set heading = heading|default('') %}
+    {% set language = language|default(null) %}
+    <section class="strip-transcription"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
+        {% if heading %}
+            <{{ heading }}>{{ label|default('label.strip_transcription'|trans({}, 'book', language)) }}</{{ heading }}>
+        {% endif %}
+        {# Left-aligned inside a page that centres its planche: it is prose, and centred prose is unreadable past a line or two #}
+        <div class="text text-left">
+            {{ summary|raw }}
+        </div>
+    </section>
 {% endif %}

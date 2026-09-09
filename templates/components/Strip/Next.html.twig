@@ -1,8 +1,10 @@
-{# <twig:c975LBook:Strip:Next previousNext="{{ previousNext }}" language="{{ language }}"/> - see Strip:Previous, the same arrow on the other side #}
+{# <twig:c975LBook:Strip:Next previousNext="{{ previousNext }}" language="{{ language }}"/> - see Strip:Previous, the same link on the other side of the row #}
 {% if previousNext.next is not null %}
     <a href="{{ path('strip_display', {'slug': previousNext.next.slug}) }}"
         rel="next"
         class="strip-nav strip-nav--next"
-        title="{{ previousNext.next.title }}"
-        aria-label="{{ 'label.next_strip'|trans({}, 'book', language|default(null)) }} - {{ previousNext.next.title }}">&rsaquo;</a>
+        aria-label="{{ 'label.next_strip'|trans({}, 'book', language|default(null)) }} - {{ previousNext.next.title }}">
+        <span class="strip-nav__title">{{ previousNext.next.title }}</span>
+        <span class="strip-nav__glyph" aria-hidden="true">&rsaquo;</span>
+    </a>
 {% endif %}

@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Contract;
 
 // What a site adds to the catalog the bundle ships, declared once rather than by overriding BookCrudController: the vocabulary its medias and its editions use, and the fields its own books carry. Implemented by the consuming app, collected through the "book.customization_provider" tag

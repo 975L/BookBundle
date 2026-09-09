@@ -1,8 +1,61 @@
 # Changelog
 
+## v2.9.0
+
+Who peoples a serie is a row of its own
+
+- A contributor's site is offered as a button in their hero, where a line of text under the summary went unseen (09/09/2026)
+- **BookBundle now requires CoreBundle 1.26**: a planche's whole page opens over the page through its `Image:Zoom` component, which 1.25 does not ship (09/09/2026)
+- A guided project walks the characters screen, `book-character-creation`, before the one creating a planche - a planche cannot say who speaks until the character exists (09/09/2026)
+- `CharacterCrudController` states the editor's role on its own rows, and opens its three screens on `label.info_character` like the five CRUD beside it (09/09/2026)
+- A second character bearing one slug inside a serie reads as a message under the field rather than as a 500 (`#[UniqueEntity]`) (09/09/2026)
+- **A serie's archive carries its people whole** - slug, name, group, presentation, position and portraits - so a restore puts back the rows an editor wrote rather than bare names (09/09/2026)
+- An archive written before a character was a row of its own is read as the comma-separated names it carries, each slugified, instead of raising on the string (09/09/2026)
+- `strip:import --dry-run` no longer persists the characters it would create (09/09/2026)
+- New `Strip::getThumbnailMedia()`, read by `Strip:Card`: a wall of thumbnails shows the planche and no longer whichever media comes first (09/09/2026)
+- The characters section of a planche's page is drawn only where the planche names somebody (09/09/2026)
+- The guided step naming who speaks outlines the field's row, the widget being a TomSelect since the field became multiple, and its three descriptions no longer speak of a comma-separated list (09/09/2026)
+- The three sections of a planche's page are parted by `--book-strip-section-gap`, and the dead `--book-strip-capture-padding` leaves the scaffold theme (09/09/2026)
+- `header_comment` is enabled in `.php-cs-fixer.dist.php`, the MIT notice now laid and kept by the tool on every file of the bundle (09/09/2026)
+- **The contributors index answers in a quarter of a second rather than in forty-five**: `ContributorRepository::findCredited()` asks what credits a person as five `EXISTS` tests instead of five joins that crossed one another row by row (09/09/2026)
+- **Who peoples a serie is a row of its own** [BC-Break]: `Character`, held by its serie, carrying the name, the slug, the presentation and the face - one entity in place of the names a planche typed and the cards a site composed by hand (08/09/2026) **Needs db migration** see [UPGRADE.md](UPGRADE.md)
+- `Strip::$characters` becomes a `ManyToMany<Character>` and `$charactersSlug` is dropped, the listing's filter becoming a join rather than a `LIKE` over a comma-separated field (08/09/2026)
+- `Strip::getCharactersList()` still answers the `[{name, slug}]` the chips and the structured data read (08/09/2026)
+- **A serie of drawn pages can be browsed as a wall of thumbnails**: `book-strip-card` takes a fourth value, `thumbnail` - the planche as a linked picture with its title under it and no card around it (08/09/2026)
+- A serie presents its people as a section of its own, above what it holds - `Serie:Characters`, drawing the very portraits UiBundle's "collection" block draws in its `portrait` variant, so a site that composed those cards by hand keeps the styling it already had. Parted into rows by `Character::$groupName` where a serie names "heroes" and "villains" of the same books, and the composed block can then be dropped (08/09/2026)
+- New `c975l:book:characters:from-strips`, the upgrade step: one character per distinct name the planches carried as text, and the links to them. Reads the former column in SQL, so it runs between the two migrations, and says there is nothing to do once the column is gone (08/09/2026)
+- Characters carry a screen of their own (`CharacterCrudController`, its own menu entry), which is what gives each of them an address the portrait's pencil leads to - a row nested in the serie's form had none. The name a chip wears reads right under the face rather than a line away (`--book-strip-character-label-line-height`), the archive carries their slugs, and an import writes a bare character for a slug the serie does not hold - so an archive from a site that never presented its characters comes in whole (08/09/2026)
+- **`StripMedia` implements `VichMultiSizeImageInterface`**: an upload now leaves a thumbnail and a high resolution beside the stored file, UiBundle's `VichImageResizeListener` doing the resizing (08/09/2026)
+- Medium 600, highres capped at 1600 and at what the source carries, thumbnail 300 - one set of measures for a planche and for the panels cut from it, a panel being squarer than the page rather than smaller (08/09/2026)
+- `getHighresFilename()`/`getThumbnailFilename()` read the derivatives off the stored name, as GalleryBundle's own media does - no column, no migration (08/09/2026)
+- **The whole page a planche shows opens over the page** through the new `<twig:c975LUi:Image:Zoom>`, in place of the slider a lone picture was run through (08/09/2026)
+- New `strip_highres()` guards it: the derivative's name can be spelled for every media, but the file only exists for what was uploaded since - a planche predating this is shown without a zoom rather than with one leading to a 404. Re-upload its page to give it one (08/09/2026)
+- **A planche shows its panels, then the whole page they were cut from**: `Strip:Medias` now places each media by the role it carries - the panels in a slider under "Panel by panel", the page under "Whole page", the printable file as a button. A planche whose medias carry no role keeps the single gallery of before, so nothing moves on a site whose planches are one picture, a reply or a gag (08/09/2026)
+- New `StripMediaKind` enum (`case`, `page`, `thumbnail`, `card`) and `Strip::getMediasByKind()`, read by the template rather than filtering the collection by hand (08/09/2026)
+- `Strip` offers a collection per role - `getPageMedias()`, `getCaseMedias()` and `getOtherMedias()` for whatever neither of the two claims, the card and the thumbnail included - each adder writing the role its own field stands for, the way a book's links are split by group. What the back-office binds a field to, `getMediasByKind()` taking an argument no form can bind (08/09/2026)
+- **A planche's medias are ordered on their position and then on their id**: the position is typed in the back-office, so nothing makes it unique, and the database was free to order the rows sharing one as it liked - a planche whose panels shared a position read in one order on a page load and in another on the next (08/09/2026)
+- The collection holding what neither role claims is named *Medias* and no longer after the absence of a role: on a site whose planches are a single picture - a reply, a gag - it is the only one that ever holds anything, and it is the very field that screen carried before the roles existed. Nothing to migrate there, a media already carrying `card` or no kind at all falling into it on its own (08/09/2026)
+- **A planche media's form carries its role at last**: `StripMediaType` offered only the position and the file, so the back-office could not say what an upload showed - an optional `kind` choice is added under a `kind_editable` option, empty standing for the single gallery (08/09/2026)
+- **The card capture is gone**: `strip:card`, the `strip_card` route (`/strip-card/{slug}`), its template and its tests are removed - every reply already carries its share image, no new one is planned, and a media uploaded from the back-office serves as `og:image` all the same **Breaking change** (08/09/2026)
+- The command took the planche's first media and overwrote it, which since the roles could destroy the whole page a planche was cut from (08/09/2026)
+- **A planche's medias are filed under three headings on the edit screen**: one collection for the panels, one for the whole page, and one for what neither claims - the heading a file is added under is what writes its role (08/09/2026)
+- The role is offered as a choice on that last view only: the three named after a role write their own, and a choice there would let a file filed under one heading claim another (08/09/2026)
+- Each pencil of a planche's page opens the collection its own section is drawn from: `STRIP_FIELDS` gains `cases` and `page`, which `Strip:Medias` lays on its two sections, `medias` still opening the collection the single gallery is read from (08/09/2026)
+- **Every collection of the bundle breaks its ties on the id**: twenty-two `OrderBy` ordered on a position, a date or a number, none of them unique, so the database was free to order the rows sharing one as it liked (08/09/2026)
+- New `StripMediaTypeTest`, and `EditPencilMarkupTest` now checks that every field the maps name is one its entity answers to (08/09/2026)
+- **The neighbouring planches are reached from a row under the one being read**, and no longer from two arrows laid over it: an arrow flanking a drawing had no room to name where it led, and over a planche that is only words it sat across them. Each side now names its neighbour, the row centred under the planche as the planche is centred in the page. `--book-strip-nav-offset` becomes `--book-strip-nav-gap`, and the hover-reveal rules are gone (08/09/2026)
+- A planche's transcript leaves the listing's card: `Strip:Summary`, written but called nowhere until now, becomes the page's "Transcript" section and takes a `heading`. A card summarizes a planche the visitor has yet to open, where this section is the text of the one being read (08/09/2026)
+- New `book-serie-blocks` setting: where the blocks composed in the back-office read on a serie's page, under the listing of what it holds (`after`, the behaviour of before, and the default) or above it (`before`). A serie of planches often opens on who peoples it, and that presentation reads before the sixty planches it explains (08/09/2026)
+- **A planche's share image is read by role and no longer by rank**: `og:image` took `medias|first`, and the back-office numbers each collection apart, so the first media of the whole set was no longer the one meant to stand for the planche - the whole page now, the card where the planche is words, and only failing both whatever it carries first (08/09/2026)
+
 ## v2.8.0
 
 A book's hero offers every section it holds
+
+- **A book's press documents are no longer deleted every time the book is saved**: `Book::setPresses()` replaced the collection where it now merges into it, and `orphanRemoval` read that replacement as every row removed - deleting the whole press file of the book on each save from the back-office (08/09/2026)
+- The setter is what the form falls back to for this one collection: Symfony's inflector singularizes "presses" into "press", so `addPresse()`/`removePresse()` are never found where every other collection of the entity is written through its own adder and remover (08/09/2026)
+- **An archive saying nothing of a media family no longer empties it**: `BookImportProvider::syncMedias()` read an absent family and an empty one alike, so importing an archive written before a family existed deleted every row of it - which is how the press documents were lost the first time (08/09/2026)
+- New `OrphanRemovalCollectionSetterTest`: every collection mapped with `orphanRemoval` is writable by a form, on the four entities holding one, and the setter the presses fall back to merges rather than replaces (08/09/2026)
 
 - **`Media::$name` moves from 100 to 255 characters**: a book whose slug ran past fifty characters overflowed the path Vich builds (08/09/2026) **Needs db migration** see [UPGRADE.md](UPGRADE.md)
 - A book's hero offers the press and the marketing beside the four gestures, each section the page holds writing its own button (08/09/2026)

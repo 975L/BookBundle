@@ -1,4 +1,41 @@
-{% if strip.medias|length > 0 %}
+{# <twig:c975LBook:Strip:Medias strip="{{ strip }}" [editUrl] [casesEditUrl] [pageEditUrl]/> #}
+{# What a planche shows, each media placed by the role it carries (see StripMediaKind): the panels read one by one, then the whole page they were cut from, then the file to print. A planche whose medias tell no role apart falls back on the single gallery this component has always drawn - which is what a site whose planches are one picture, a reply or a gag, keeps getting #}
+{% set cases = strip.getMediasByKind('case') %}
+{% set pages = strip.getMediasByKind('page') %}
+{% set language = strip.serie ? strip.serie.language : null %}
+{# One pencil per collection the picture area is drawn from, and not one for the whole of it: the panels and the whole page are two collections on the edit screen (see StripCrudController), so a section leads to the very one it shows #}
+{% set editUrl = editUrl|default('') %}
+{% set casesEditUrl = casesEditUrl|default('') %}
+{% set pageEditUrl = pageEditUrl|default('') %}
+
+{% if cases|length > 0 or pages|length > 0 %}
+    {# The panels first: a planche is read one case at a time, and on a phone the whole page is a thumbnail nobody can follow #}
+    {% if cases|length > 0 %}
+        <section class="strip-cases"{% if casesEditUrl %} data-block-edit-url="{{ casesEditUrl }}"{% endif %}>
+            <h2>{{ 'label.strip_cases'|trans({}, 'book', language) }}</h2>
+            <twig:c975LUi:Slider:Slider media="{{ cases }}" id="strip-cases-{{ strip.slug }}" fallbackAlt="{{ strip.title }}"/>
+        </section>
+    {% endif %}
+
+    {# Under them, the page whole - what the panels were cut from, and what a reader coming back to the planche looks for #}
+    {% if pages|length > 0 %}
+        {# The high resolution the picture opens over the page, when the upload left one beside the stored file - a planche uploaded before this bundle asked for the derivatives has none, and is shown without a zoom rather than with one leading to a 404 #}
+        {% set highres = pages|length == 1 ? strip_highres(pages|first) : null %}
+        <section class="strip-page"{% if pageEditUrl %} data-block-edit-url="{{ pageEditUrl }}"{% endif %}>
+            <h2>{{ 'label.strip_page'|trans({}, 'book', language) }}</h2>
+            {# A single page carrying its high resolution is shown on its own rather than run through a slider: the slider is what carries several, and it is the zoom that a reader of one planche reaches for #}
+            {% if highres %}
+                {% set page = pages|first %}
+                <twig:c975LUi:Image:Zoom src="{{ page.name }}" highres="{{ highres }}" alt="{{ page.alt ?: strip.title }}" class="strip-media"/>
+            {% else %}
+                <twig:c975LUi:Slider:Slider media="{{ pages }}" id="strip-page-{{ strip.slug }}" fallbackAlt="{{ strip.title }}"/>
+            {% endif %}
+        </section>
+    {% endif %}
+
+{% elseif strip.medias|length > 0 %}
+    {# Neither an image nor a slider is this bundle's own markup to write an attribute on, so the single gallery's pencil goes on a wrapper, transparent to the layout (see UiBundle's sass/_block-edit-overlay.scss) #}
+    {% if editUrl %}<div class="block-editable" data-block-edit-url="{{ editUrl }}">{% endif %}
     {% if strip.medias|length == 1 %}
         {% set media = strip.medias.first %}
         {# The planche is the page: it takes the width it is given, nothing crops it, and it is the image worth loading first #}
@@ -7,4 +44,5 @@
         {# "media" and not "slides": the rich form expects a list of {image: media, title, text, url} and would read ".image" off each planche's media. The medias themselves are what this gallery shows, the planche's title standing in wherever one carries no alternative text of its own #}
         <twig:c975LUi:Slider:Slider media="{{ strip.medias }}" id="strip-{{ strip.slug }}" fallbackAlt="{{ strip.title }}"/>
     {% endif %}
+    {% if editUrl %}</div>{% endif %}
 {% endif %}

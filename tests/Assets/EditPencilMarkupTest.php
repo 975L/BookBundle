@@ -10,6 +10,9 @@
 
 namespace c975L\BookBundle\Tests\Assets;
 
+use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Twig\BookEditUrlExtension;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -61,6 +64,28 @@ class EditPencilMarkupTest extends TestCase
             $page,
             $constant
         ));
+    }
+
+    /** @return iterable<string, array{string, class-string}> */
+    public static function maps(): iterable
+    {
+        yield 'book' => ['BOOK_FIELDS', Book::class];
+        yield 'serie' => ['SERIE_FIELDS', Serie::class];
+        yield 'strip' => ['STRIP_FIELDS', Strip::class];
+    }
+
+    // A field renamed on the entity, or misspelled in the map, leaves a pencil landing at the top of the form and says nothing about it - the url is built all the same, only nothing on the screen answers to the name it carries
+    #[DataProvider('maps')]
+    public function testEveryFieldTheMapNamesIsOneItsEntityAnswersTo(string $constant, string $entityFqcn): void
+    {
+        $fields = new \ReflectionClassConstant(BookEditUrlExtension::class, $constant)->getValue();
+
+        foreach ($fields as $anchor => $field) {
+            $this->assertTrue(
+                property_exists($entityFqcn, $field) || method_exists($entityFqcn, 'get' . ucfirst($field)),
+                sprintf('%s["%s"] names "%s", which %s has neither as a property nor as a getter.', $constant, $anchor, $field, $entityFqcn)
+            );
+        }
     }
 
     private function template(string $page): string

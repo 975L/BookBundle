@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Entity;
 
 use c975L\BookBundle\Contract\TrashableInterface;
@@ -64,22 +72,28 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $modification = null;
 
+    // The id breaks the ties on every collection below: a position is typed in the back-office and a date is shared by two rows, so nothing here is unique on its own and the database was free to order the rows sharing one as it liked
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinTable(name: 'book_serie_block')]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $blocks;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'serie')]
-    #[ORM\OrderBy(['number' => 'ASC', 'published' => 'ASC'])]
+    #[ORM\OrderBy(['number' => 'ASC', 'published' => 'ASC', 'id' => 'ASC'])]
     private Collection $books;
 
     #[ORM\OneToMany(targetEntity: Strip::class, mappedBy: 'serie')]
-    #[ORM\OrderBy(['number' => 'ASC', 'published' => 'ASC'])]
+    #[ORM\OrderBy(['number' => 'ASC', 'published' => 'ASC', 'id' => 'ASC'])]
     private Collection $strips;
+
+    // Who peoples the serie, presented on its page and picked from on a planche's screen (see Character)
+    #[ORM\OneToMany(targetEntity: Character::class, mappedBy: 'serie', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    private Collection $characters;
 
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: SerieMedia::class, mappedBy: 'serie', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $medias;
 
     #[ORM\ManyToOne]
@@ -90,6 +104,7 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
         $this->blocks = new ArrayCollection();
         $this->books = new ArrayCollection();
         $this->strips = new ArrayCollection();
+        $this->characters = new ArrayCollection();
         $this->medias = new ArrayCollection();
     }
 
@@ -251,6 +266,59 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
         }
 
         return $this;
+    }
+
+    /** @return Collection<int, Character> */
+    public function getCharacters(): Collection
+    {
+        return $this->characters;
+    }
+
+    public function addCharacter(Character $character): static
+    {
+        if (!$this->characters->contains($character)) {
+            $this->characters->add($character);
+            $character->setSerie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCharacter(Character $character): static
+    {
+        if ($this->characters->removeElement($character) && $character->getSerie() === $this) {
+            $character->setSerie(null);
+        }
+
+        return $this;
+    }
+
+    // The one a slug names, or null where the serie people themselves with no such name - what a planche's chip is matched on where the planche names who speaks
+    public function getCharacter(string $slug): ?Character
+    {
+        foreach ($this->characters as $character) {
+            if ($character->getSlug() === $slug) {
+                return $character;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Who peoples the serie, parted into the rows its page presents - one row named by nothing where a serie tells them all apart the same way, several where it says "heroes" and "villains" of the same books.
+     *
+     * @return array<string, list<Character>>
+     */
+    public function getCharacterGroups(): array
+    {
+        $groups = [];
+
+        foreach ($this->characters as $character) {
+            $groups[(string) $character->getGroupName()][] = $character;
+        }
+
+        return $groups;
     }
 
     /** @return Collection<int, SerieMedia> */

@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Controller\Management\BookCategoryCrudController;
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\CharacterCrudController;
 use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
@@ -40,6 +41,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->bookCompositionProject(),
             $this->bookReaderProject(),
             $this->sortingProject(),
+            $this->characterCreationProject(),
             $this->stripCreationProject(),
             $this->duplicationProject(),
             $this->versionPublicationProject(),
@@ -586,6 +588,81 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
         ];
     }
 
+    // Before the planches and not after them: a planche says who speaks by picking among the serie's own people, so a catalog with no character yet sends the editor back here mid-form
+    private function characterCreationProject(): array
+    {
+        return [
+            'slug' => 'book-character-creation',
+            'label' => 'label.guided_project_book_character_creation',
+            'description' => 'description.guided_project_book_character_creation',
+            'translation_domain' => 'book',
+            'order' => 6037,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_character_creation_open',
+                    'description' => 'description.guided_step_book_character_creation_open',
+                    'narration' => 'narration.guided_step_book_character_creation_open',
+                    'url' => $this->characterIndexUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_character_creation_new',
+                    'description' => 'description.guided_step_book_character_creation_new',
+                    'narration' => 'narration.guided_step_book_character_creation_new',
+                    'highlight' => '.action-new',
+                ],
+                [
+                    // A plain association with no autocomplete(), so it stays a native select below the threshold and becomes a TomSelect above it: its row is what both regimes answer to
+                    'label' => 'label.guided_step_book_character_creation_serie',
+                    'description' => 'description.guided_step_book_character_creation_serie',
+                    'narration' => 'narration.guided_step_book_character_creation_serie',
+                    'highlight' => '.form-group:has(#Character_serie)',
+                ],
+                [
+                    'label' => 'label.guided_step_book_character_creation_name',
+                    'description' => 'description.guided_step_book_character_creation_name',
+                    'narration' => 'narration.guided_step_book_character_creation_name',
+                    'highlight' => '#Character_name',
+                ],
+                [
+                    'label' => 'label.guided_step_book_character_creation_slug',
+                    'description' => 'description.guided_step_book_character_creation_slug',
+                    'narration' => 'narration.guided_step_book_character_creation_slug',
+                    'highlight' => '#Character_slug',
+                ],
+                [
+                    'label' => 'label.guided_step_book_character_creation_group',
+                    'description' => 'description.guided_step_book_character_creation_group',
+                    'narration' => 'narration.guided_step_book_character_creation_group',
+                    'highlight' => '#Character_groupName',
+                ],
+                [
+                    // TrixEditorType hides its textarea behind "d-none", so the row is what carries the outline
+                    'label' => 'label.guided_step_book_character_creation_presentation',
+                    'description' => 'description.guided_step_book_character_creation_presentation',
+                    'narration' => 'narration.guided_step_book_character_creation_presentation',
+                    'highlight' => '.form-group:has(#Character_presentation)',
+                ],
+                [
+                    'label' => 'label.guided_step_book_character_creation_portrait',
+                    'description' => 'description.guided_step_book_character_creation_portrait',
+                    'narration' => 'narration.guided_step_book_character_creation_portrait',
+                    'highlight' => '[data-character-portraits]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_character_creation_save',
+                    'narration' => 'narration.guided_step_book_character_creation_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_character_creation_done',
+                    'description' => 'description.guided_step_book_character_creation_done',
+                    'narration' => 'narration.guided_step_book_character_creation_done',
+                ],
+            ],
+        ];
+    }
+
     // A strip is read inside the serie that tells it, and numbered within it: the parcours walks what places it there, then the drawing itself
     private function stripCreationProject(): array
     {
@@ -631,7 +708,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_strip_creation_characters',
                     'description' => 'description.guided_step_book_strip_creation_characters',
                     'narration' => 'narration.guided_step_book_strip_creation_characters',
-                    'highlight' => '#Strip_characters',
+                    'highlight' => '.form-group:has(#Strip_characters)',
                 ],
                 [
                     // The second tab of the form, where the drawing itself is attached (see StripCrudController)
@@ -999,6 +1076,11 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
     private function bookIndexUrl(): string
     {
         return $this->indexUrl(BookCrudController::class);
+    }
+
+    private function characterIndexUrl(): string
+    {
+        return $this->indexUrl(CharacterCrudController::class);
     }
 
     private function stripIndexUrl(): string

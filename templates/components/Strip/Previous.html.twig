@@ -1,9 +1,11 @@
-{# <twig:c975LBook:Strip:Previous previousNext="{{ previousNext }}" language="{{ language }}"/> - the arrow laid over what the page shows (see Strip:Next for the other side) #}
-{# The planche it leads to is named by the label and by the tooltip rather than printed beside the glyph: an arrow over a drawing has no room for a title, and a reader still has to know where the click lands #}
+{# <twig:c975LBook:Strip:Previous previousNext="{{ previousNext }}" language="{{ language }}"/> - one half of the row under the planche (see Strip:Next for the other) #}
+{# The neighbour is named beside the glyph rather than by the label alone: the row reads under the planche and no longer over it, so there is room to say where the click lands - and a planche that is only words, a reply or a gag, no longer carries an arrow laid across them #}
 {% if previousNext.previous is not null %}
     <a href="{{ path('strip_display', {'slug': previousNext.previous.slug}) }}"
         rel="prev"
         class="strip-nav strip-nav--previous"
-        title="{{ previousNext.previous.title }}"
-        aria-label="{{ 'label.previous_strip'|trans({}, 'book', language|default(null)) }} - {{ previousNext.previous.title }}">&lsaquo;</a>
+        aria-label="{{ 'label.previous_strip'|trans({}, 'book', language|default(null)) }} - {{ previousNext.previous.title }}">
+        <span class="strip-nav__glyph" aria-hidden="true">&lsaquo;</span>
+        <span class="strip-nav__title">{{ previousNext.previous.title }}</span>
+    </a>
 {% endif %}

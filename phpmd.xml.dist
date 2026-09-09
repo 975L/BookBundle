@@ -21,6 +21,7 @@
         <exclude name="ExcessiveParameterList"/>
         <exclude name="CyclomaticComplexity"/>
         <exclude name="NPathComplexity"/>
+        <exclude name="ExcessiveClassLength"/>
     </rule>
 
     <!-- NPath multiplies where CyclomaticComplexity adds, so the ?? and ?: PHP 8 makes concise cost it a factor each: a method Lizard and Codacy both read as simple reaches 800 here, and no threshold separates that from a real tangle -->
@@ -29,6 +30,13 @@
     <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
         <properties>
             <property name="reportLevel" value="15"/>
+        </properties>
+    </rule>
+
+    <!-- A provider of guided projects is declarative: sixteen parcours, each a literal array of steps, and its length measures how many screens the bundle walks rather than how tangled it is -->
+    <rule ref="rulesets/codesize.xml/ExcessiveClassLength">
+        <properties>
+            <property name="minimum" value="1500"/>
         </properties>
     </rule>
 

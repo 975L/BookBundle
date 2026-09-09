@@ -60,7 +60,8 @@ class StripImportCommandTest extends TestCase
         $this->assertSame('Planche 1', $strip->getTitle());
         $this->assertSame('planche-1', $strip->getSlug());
         $this->assertSame(1, $strip->getNumber());
-        $this->assertSame('Papa,Alwin', $strip->getCharacters());
+        // The comma-separated column of the former site, resolved into the serie's own people
+        $this->assertSame(['papa', 'alwin'], array_column($strip->getCharactersList(), 'slug'));
         $this->assertSame('La tribu, planche 1', $strip->getSummary());
         $this->assertSame('02/01/2026', $strip->getPublished()?->format('d/m/Y'));
     }
@@ -154,6 +155,18 @@ class StripImportCommandTest extends TestCase
         $this->assertSame([], $this->persisted);
         $this->assertFalse($this->flushed);
         $this->assertStringContainsString('1 strips would be created', $this->squash($tester->getDisplay()));
+    }
+
+    // The characters a row names are built like everything else, so a simulation must not write them either
+    public function testADryRunWritesNoCharacterEither(): void
+    {
+        $this->file('001/001-page001.jpg');
+
+        $tester = $this->import([['id' => 1, 'slug' => 'planche-1', 'title' => 'Planche 1', 'characters' => 'Papa, Alwin']], ['--dry-run' => true]);
+
+        $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
+        $this->assertSame([], $this->persisted);
+        $this->assertFalse($this->flushed);
     }
 
     // An option left out is null, which no string function is to be handed

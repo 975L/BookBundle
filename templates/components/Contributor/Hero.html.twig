@@ -7,7 +7,8 @@
         <div class="book-hero__veil" aria-hidden="true"></div>
     {% endif %}
 
-    {% set portraitSrc = contributor.portraits|first != false ? contributor.portraits|first : "bundles/c975lbook/images/no-cover.webp" %}
+    {# The same silhouette the listing falls back on (see Contributor:Contributor), a book's cover standing for nobody #}
+    {% set portraitSrc = contributor.portraits|first != false ? contributor.portraits|first : "bundles/c975lbook/images/no-portrait.webp" %}
     <img class="book-hero__cover" src="{{ asset(portraitSrc) }}" alt="{{ contributor.name }}" width="240" fetchpriority="high">
 
     <div class="book-hero__body">
@@ -23,10 +24,11 @@
             <div class="book-hero__summary">{{ contributor.summary|raw }}</div>
         {% endif %}
 
+        {# The only gesture the page offers, laid out as a book's are: a line of text under a summary went unseen, where a button reads as the thing to click #}
         {% if contributor.website %}
-            <p class="book-hero__meta">
-                <a href="{{ contributor.website }}" target="_blank" rel="noopener">{{ 'label.website'|trans({}, 'book') }}</a>
-            </p>
+            <div class="book-hero__actions">
+                <twig:c975LUi:Button:Button type="primary" label="{{ 'label.website'|trans({}, 'book') }}" url="{{ contributor.website }}" target="_blank" inline="true"/>
+            </div>
         {% endif %}
     </div>
 </header>

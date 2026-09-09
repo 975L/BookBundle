@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\ContributorLink;
 use c975L\BookBundle\Entity\Serie;
@@ -162,7 +163,7 @@ class BookDuplicatorTest extends TestCase
             ->setTitle('Le tournoi')
             ->setSlug('le-tournoi')
             ->setNumber(3)
-            ->setCharacters('Hardy, Kaandreï');
+            ->addCharacter(new Character()->setName('Hardy')->setSlug('hardy'));
         $strip->addMedia(new StripMedia()->setName('medias/book/strips/planche-1.webp'));
         $strip->addBlock(new Block()->setKind('article'));
 
@@ -171,7 +172,8 @@ class BookDuplicatorTest extends TestCase
         $this->assertSame('Le tournoi (copie)', $copy->getTitle());
         $this->assertSame('le-tournoi-copie', $copy->getSlug());
         $this->assertSame(3, $copy->getNumber());
-        $this->assertSame('Hardy, Kaandreï', $copy->getCharacters());
+        // Pointed at and not cloned: a character belongs to the serie the copy stays in
+        $this->assertSame([['name' => 'Hardy', 'slug' => 'hardy']], $copy->getCharactersList());
         $this->assertCount(1, $copy->getMedias());
         $this->assertCount(1, $copy->getBlocks());
         $this->assertNull($copy->getMedias()->first()->getName());

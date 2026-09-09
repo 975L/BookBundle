@@ -62,9 +62,13 @@
                 <source>description.book_route_strips</source>
                 <target>Premier segment de l'URL listant les séries de planches, ex. "strips", et de la page de chaque série en dessous (/strips/ma-serie). Une planche se lit dans sa série, jamais ici. Vide, les pages ne sont plus servies du tout.</target>
             </trans-unit>
+            <trans-unit id="sM83c.J">
+                <source>description.book_serie_blocks</source>
+                <target>Où les blocks composés au back-office se lisent sur la page d'une série : "after" sous la liste de ce qu'elle contient, "before" au-dessus.</target>
+            </trans-unit>
             <trans-unit id="50YtJwJ">
                 <source>description.book_strip_card</source>
-                <target>Ce que montre la carte d'une planche dans la liste : "image" son dessin, "text" son résumé, "both" les deux.</target>
+                <target>Ce que montre la carte d'une planche dans la liste : "image" son dessin, "text" son résumé, "both" les deux, "thumbnail" la planche en vignette cliquable avec son titre, sans carte autour.</target>
             </trans-unit>
             <trans-unit id="V3_94QE">
                 <source>description.book_strip_card_icon</source>
@@ -133,6 +137,10 @@
             <trans-unit id="hLojFlN">
                 <source>label.book_route_strips</source>
                 <target>Préfixe URL de la liste des séries de planches</target>
+            </trans-unit>
+            <trans-unit id="MiScnGM">
+                <source>label.book_serie_blocks</source>
+                <target>Blocks d'une série</target>
             </trans-unit>
             <trans-unit id="V.QanLq">
                 <source>label.book_strip_card</source>

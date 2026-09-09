@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Controller\Management;
 
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
@@ -16,6 +24,7 @@ use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Form\BlockType;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
+use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
@@ -82,6 +91,8 @@ class StripCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $entity = $this->adminContextProvider->getContext()?->getEntity()?->getInstance();
+        // The planche being edited, null on the creation screen: its serie is who the characters are picked among
+        $strip = $entity instanceof Strip ? $entity : null;
 
         return [
             // Informations
@@ -109,9 +120,17 @@ class StripCrudController extends AbstractCrudController
                 ->setHelp(t('label.hidden-help', [], 'book')),
             DateField::new('published')
                 ->setLabel(t('label.published', [], 'book')),
-            TextField::new('characters')
+            // Who speaks in the planche, picked among the people its serie is peopled with rather than typed (see Entity\Character). Narrowed to that serie once the planche is filed under one: on the creation screen there is no serie yet, so the whole catalog's people are offered and who speaks is picked back on the edit screen
+            // No autocomplete() here, but the field is multiple, so ChoiceAutocompleteExtension turns it into a TomSelect all the same: the guided tour outlines its row and not the clipped select (see BookGuidedProjectProvider)
+            AssociationField::new('characters')
                 ->setLabel(t('label.characters', [], 'book'))
-                ->hideOnIndex(),
+                ->hideOnIndex()
+                ->setFormTypeOption('by_reference', false)
+                ->setQueryBuilder(
+                    static fn (QueryBuilder $qb): QueryBuilder => null === $strip?->getSerie()
+                        ? $qb
+                        : $qb->andWhere('entity.serie = :serie')->setParameter('serie', $strip->getSerie())
+                ),
             // TrixEditorType rather than EasyAdmin's own TextEditorField: its widget is where the rephrase button is wired, EasyAdmin's own rendering through a different form block
             TextareaField::new('summary')
                 ->setLabel(t('label.summary', [], 'book'))
@@ -134,14 +153,14 @@ class StripCrudController extends AbstractCrudController
             // Media
             FormField::addTab(t('label.media', [], 'book'))
                 ->hideOnIndex(),
-            // The marker laid on the row is what BookGuidedProjectProvider's tour points at, a collection printing no field id of its own
-            CollectionField::new('medias')
-                ->hideOnIndex()
-                ->setEntryType(StripMediaType::class)
-                ->allowAdd()
-                ->allowDelete()
-                ->setFormTypeOption('by_reference', false)
+            // One collection per role rather than one holding them all: the heading a file is filed under is what writes its role (see Strip::addCaseMedia()), so the page a planche was cut from is never mixed with the panels cut from it, and each pencil of the public page opens the collection its own section is drawn from (see BookEditUrlExtension)
+            // The marker laid on the row is what BookGuidedProjectProvider's tour points at, a collection printing no field id of its own - it stays on the panels, which is what the tour asks the editor to attach
+            $this->mediaCollection('caseMedias', 'label.strip_cases')
                 ->setFormTypeOption('row_attr', ['data-strip-medias' => '1']),
+            $this->mediaCollection('pageMedias', 'label.strip_page'),
+            // What neither heading above claims (see Strip::getOtherMedias()). Named "Medias" and not after a role: on a site whose planches are a single picture - a reply, a gag - this is the only collection that ever holds anything, and it is the very field that screen carried before the roles existed. The only view offering the role as a choice, since it is the only one whose heading does not say it
+            $this->mediaCollection('otherMedias', 'label.media', true)
+                ->setHelp(t('label.strip_media_gallery-help', [], 'book')),
 
             // Blocks
             FormField::addTab(t('label.blocks', [], 'book'))
@@ -156,6 +175,21 @@ class StripCrudController extends AbstractCrudController
                 ->setFormTypeOption('by_reference', false)
                 ->setFormTypeOption('row_attr', $this->blockMoveRowAttrBuilder->build(BookBlockOwnerResolver::TYPE_STRIP, $entity instanceof Strip ? $entity->getId() : null)),
         ];
+    }
+
+    // The shape the three media collections of the screen share, only the role each is named after telling them apart
+    private function mediaCollection(string $property, string $label, bool $kindEditable = false): CollectionField
+    {
+        return CollectionField::new($property)
+            ->setLabel(t($label, [], 'book'))
+            ->hideOnIndex()
+            ->setEntryType(StripMediaType::class)
+            // The dotted form and not the whole array: EasyAdmin's own configurator writes entry_options.label, .empty_data and .entityDto into it, and replacing it would drop whichever of them was set first (see CollectionConfigurator)
+            ->setFormTypeOption('entry_options.kind_editable', $kindEditable)
+            ->allowAdd()
+            ->allowDelete()
+            ->setFormTypeOption('by_reference', false)
+        ;
     }
 
     public function configureCrud(Crud $crud): Crud

@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Repository;
 
 use c975L\BookBundle\Entity\Serie;
@@ -86,9 +94,11 @@ class StripRepository extends ServiceEntityRepository
         ;
 
         if (null !== $character && '' !== $character) {
+            // A join and no longer a LIKE over a comma-separated field: who speaks is a relation, so the slug is matched against a column rather than found inside a string
             $query
-                ->andWhere("CONCAT(',', s.charactersSlug, ',') LIKE :character")
-                ->setParameter('character', '%,' . $character . ',%')
+                ->innerJoin('s.characters', 'c')
+                ->andWhere('c.slug = :character')
+                ->setParameter('character', $character)
             ;
         }
 
@@ -103,7 +113,8 @@ class StripRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('s')
             ->leftJoin('s.serie', 'serie')
-            ->andWhere("CONCAT(',', s.charactersSlug, ',') LIKE :character")
+            ->innerJoin('s.characters', 'c')
+            ->andWhere('c.slug = :character')
             ->andWhere('s.isDeleted = false')
             ->andWhere('s.hidden = false')
             ->andWhere('serie IS NULL OR serie.hidden = false')
@@ -111,7 +122,7 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.published <= :now')
             ->orderBy('s.published', 'DESC')
             ->addOrderBy('s.id', 'DESC')
-            ->setParameter('character', '%,' . $character . ',%')
+            ->setParameter('character', $character)
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult()
@@ -219,35 +230,29 @@ class StripRepository extends ServiceEntityRepository
         return $end === $strip ? null : $end;
     }
 
-    // The characters speaking in one serie, each named once - what its own listing offers to filter on, read off the field rather than by loading every planche.
+    // The characters speaking in one serie, each named once - the ones its own listing offers to filter on, which is who actually speaks in a published planche and not everyone the serie declares.
     /** @return array<int, array{name: string, slug: string}> */
     public function findCharactersBySerie(Serie $serie): array
     {
         $rows = $this->createQueryBuilder('s')
-            ->select('DISTINCT s.characters')
+            ->select('DISTINCT c.name, c.slug')
+            ->innerJoin('s.characters', 'c')
             ->andWhere('s.serie = :serie')
             ->andWhere('s.isDeleted = false')
             ->andWhere('s.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
+            ->orderBy('c.name', 'ASC')
             ->setParameter('serie', $serie)
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getScalarResult()
         ;
 
-        $characters = [];
-
-        foreach ($rows as $row) {
-            foreach (Strip::splitCharacters($row['characters'] ?? null) as $character) {
-                // Keyed by slug: the same name spelled with another case or another accent leads to the same page, and two chips for it would read as two characters
-                $characters[$character['slug']] = $character;
-            }
-        }
-
-        uasort($characters, static fn (array $a, array $b): int => $a['name'] <=> $b['name']);
-
-        return array_values($characters);
+        return array_map(
+            static fn (array $row): array => ['name' => (string) $row['name'], 'slug' => (string) $row['slug']],
+            $rows
+        );
     }
 
     // "$serieId": the search a serie's own page carries, which looks inside that serie alone - the same field asks the whole site elsewhere (see strip/index.html.twig)

@@ -58,6 +58,8 @@ class BookEditUrlExtensionTest extends TestCase
         $this->assertSame([
             'hero' => '/admin/3/title',
             'medias' => '/admin/3/medias',
+            'cases' => '/admin/3/caseMedias',
+            'page' => '/admin/3/pageMedias',
             'summary' => '/admin/3/summary',
             'characters' => '/admin/3/characters',
             'sourceUrl' => '/admin/3/sourceUrl',
@@ -82,12 +84,12 @@ class BookEditUrlExtensionTest extends TestCase
         $this->assertNull($this->extension()->contributorEditUrl(new Contributor()));
     }
 
-    // A serie's list of books is written on each book's own screen, so that section is deliberately left without a pencil rather than given one leading nowhere
+    // A serie's list of books is written on each book's own screen, so that section is deliberately left without a pencil rather than given one leading nowhere - unlike who peoples the serie, written on its own screen
     public function testASectionWrittenOnAnotherScreenGetsNoPencil(): void
     {
         $urls = $this->extension()->serie($this->withId(new Serie(), 2));
 
-        $this->assertSame(['hero', 'resume'], array_keys($urls));
+        $this->assertSame(['hero', 'resume', 'characters'], array_keys($urls));
     }
 
     // Nothing to edit yet: an entity being rendered before it is saved has no edit screen to point at

@@ -89,11 +89,11 @@
     /* A card showing words rather than a drawing is given a shape, square, so a listing reads as a grid. The lift is what it rises by under the pointer */
     /* --book-strip-card-min-height: 320px; */
 
-    /* The same square, larger, for the card standing alone on a planche's own page and for the frame it is photographed in - the picture a reply is shared as */
+    /* The same square, larger, for the card standing alone on a planche's own page */
     /* --book-strip-card-full-size: 480px; */
 
-    /* What parts that card from the edge of the picture */
-    /* --book-strip-capture-padding: 40px; */
+    /* What parts the sections of a planche's page - the panels, the whole page they were cut from, and the transcription under them */
+    /* --book-strip-section-gap: 1.5rem; */
 
     /* --book-strip-card-icon-size: 72px; */
     /* --book-strip-card-title-size: 0.95rem; */
@@ -106,9 +106,21 @@
     /* --book-strip-card-text-space: 0.75em; */
 
 
-    /* The arrows a planche is browsed with, laid over what the page shows rather than waiting under it */
+    /* A wall of planches browsed as thumbnails, where a card would say more than the visitor is looking for */
+    /* --book-strip-thumbnail-width: 150px; */
+    /* --book-strip-thumbnail-gap: 0.4rem; */
+    /* --book-strip-thumbnail-title-size: 1rem; */
+
+    /* The face a character wears in the row a planche carries, where the serie uploaded one */
+    /* --book-strip-character-size: 100px; */
+    /* --book-strip-character-radius: 50%; */
+    /* --book-strip-character-selected: var(--primary, currentColor); */
+    /* --book-strip-character-label-gap: 10px; */
+    /* --book-strip-character-label-line-height: 1.3; */
+
+    /* The row a planche is browsed from, under the one being read, each side naming the neighbour it leads to */
     /* --book-strip-nav-size: 2.5rem; */
-    /* --book-strip-nav-offset: 4px; */
+    /* --book-strip-nav-gap: 0.5rem; */
     /* --book-strip-nav-radius: 5px; */
     /* --book-strip-nav-color: #fff; */
     /* --book-strip-nav-background: rgba(0, 0, 0, 0.55); */

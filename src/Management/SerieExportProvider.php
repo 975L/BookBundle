@@ -83,6 +83,37 @@ class SerieExportProvider implements ExportProviderInterface
             // The serie's editorial page, carried the same way PageExportProvider carries a Page's, its own medias joining the archive
             'blocks' => $this->blockDataExporter->exportBlocks($serie->getBlocks(), $files),
             'medias' => $medias,
+            // Who peoples the serie, faces included: a planche's own archive names them by slug alone (see StripExportProvider), so without this the round-trip would rebuild them bare
+            'characters' => $this->exportCharacters($serie, $files),
         ];
+    }
+
+    // Each of them with the fields their own screen holds and the portraits they wear, so a restore puts back the row an editor wrote rather than a name
+    private function exportCharacters(Serie $serie, array &$files): array
+    {
+        $characters = [];
+
+        foreach ($serie->getCharacters() as $character) {
+            $medias = [];
+
+            foreach ($character->getMedias() as $media) {
+                $mediaData = $this->mediaArchiver->export($media, $files);
+
+                if (null !== $mediaData) {
+                    $medias[] = $mediaData;
+                }
+            }
+
+            $characters[] = [
+                'slug' => $character->getSlug(),
+                'name' => $character->getName(),
+                'groupName' => $character->getGroupName(),
+                'presentation' => $character->getPresentation(),
+                'position' => $character->getPosition(),
+                'medias' => $medias,
+            ];
+        }
+
+        return $characters;
     }
 }

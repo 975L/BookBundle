@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Enum;
 
 // What a serie tells, which decides where it is listed: a serie of books answers to the books' index, a serie of planches to the planches' one (see SerieController::index() and StripController::index()). The two indexes share no serie, so no listing repeats another

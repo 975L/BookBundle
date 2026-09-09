@@ -69,8 +69,8 @@ class StripExportProvider implements ExportProviderInterface
             'slug' => $strip->getSlug(),
             'title' => $strip->getTitle(),
             'number' => $strip->getNumber(),
-            // Nothing about charactersSlug, and nothing to say: it is derived from this very line on the way back in (see Strip::setCharacters)
-            'characters' => $strip->getCharacters(),
+            // The slugs and not the names: what a character is called can be retyped in the back-office, its slug is what the planche is filed under and what the import matches on
+            'characters' => array_column($strip->getCharactersList(), 'slug'),
             'summary' => $strip->getSummary(),
             'sourceUrl' => $strip->getSourceUrl(),
             'published' => $strip->getPublished()?->format(\DateTimeInterface::ATOM),

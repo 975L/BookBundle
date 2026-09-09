@@ -54,27 +54,25 @@ class BookPageStyleTest extends TestCase
         $this->assertStringNotContainsString('.book-hero__cover{object-fit:cover', $css, sprintf('"%s" crops the cover to fill its box.', $file));
     }
 
-    // Going to the next planche is what a reader does on a strip page: the arrows are laid over what the page shows, where the eye already is
+    // Going to the next planche is what a reader does on a strip page: the row reads under it, each side naming where it leads
     #[\PHPUnit\Framework\Attributes\DataProvider('stylesheetProvider')]
-    public function testTheArrowsAreLaidOverThePlancheTheyBrowse(string $file): void
+    public function testTheNeighbouringPlanchesAreReachedFromARowUnderTheOneBeingRead(string $file): void
     {
         $css = $this->normalize($file);
 
-        $this->assertStringContainsString('.strip-viewer{position:relative', $css, sprintf('"%s" no longer holds the arrows against the planche they browse.', $file));
-        $this->assertStringContainsString('.strip-nav{position:absolute', $css, sprintf('"%s" drops the arrows back into the flow, under the planche.', $file));
-        $this->assertStringContainsString('.strip-nav--previous{left:var(--book-strip-nav-offset)', $css);
-        $this->assertStringContainsString('.strip-nav--next{right:var(--book-strip-nav-offset)', $css);
+        $this->assertStringContainsString('.strip-nav-row{display:flex', $css, sprintf('"%s" no longer lays the two neighbours out as a row.', $file));
+        $this->assertStringContainsString('justify-content:center', $css, sprintf('"%s" no longer centres the row under the planche it browses.', $file));
+        $this->assertStringNotContainsString('.strip-nav{position:absolute', $css, sprintf('"%s" lays the arrows back over the planche, where they sat across a reply that is only words.', $file));
     }
 
-    // A touch screen has no hover to reveal them with, so hiding them at rest is held inside "hover: hover" - on a phone they simply stay on, or a planche could not be left at all
+    // The title beside the glyph is what the row is for, and a planche whose title runs long must not turn it into a paragraph
     #[\PHPUnit\Framework\Attributes\DataProvider('stylesheetProvider')]
-    public function testTheArrowsOnlyFadeOutWhereThereIsAPointerToBringThemBack(string $file): void
+    public function testALongNeighbourTitleIsCutRatherThanWrapped(string $file): void
     {
         $css = $this->normalize($file);
-        $faded = strpos($css, '.strip-nav{opacity:0;pointer-events:none');
 
-        $this->assertNotFalse($faded, sprintf('"%s" no longer keeps the arrows out of the way until the visitor points at the planche.', $file));
-        $this->assertStringContainsString('@media(hover:hover){', substr($css, 0, $faded), sprintf('"%s" hides the arrows on a touch screen, which has no hover to bring them back with.', $file));
+        $this->assertStringContainsString('.strip-nav__title{overflow:hidden', $css, sprintf('"%s" no longer cuts a neighbour title that runs long.', $file));
+        $this->assertStringContainsString('white-space:nowrap', $css, sprintf('"%s" lets the row wrap into a paragraph.', $file));
     }
 
     // A platform's mark is drawn in the brand's colors on a light ground: without a plate of its own it is read against whatever the site happens to be, and a dark one swallows it

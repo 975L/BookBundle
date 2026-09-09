@@ -83,10 +83,7 @@
   --book-strip-card-image-width: 150px;
   /* A card showing words rather than a drawing has no shape of its own: it is given one, square, so a listing reads as a grid. A card showing the drawing keeps the shape of what it shows */
   --book-strip-card-min-height: 320px;
-  /* The same square, larger, for the card standing alone on a planche's own page and for the frame it is photographed in (see sass/_book.scss, ".strip-card--full" and ".strip-capture") */
   --book-strip-card-full-size: 480px;
-  /* What parts the card from the edge of the picture it is photographed in - the image a reply is shared as */
-  --book-strip-capture-padding: 40px;
   --book-strip-card-icon-size: 72px;
   --book-strip-card-title-size: 0.95rem;
   --book-strip-card-lift: -3px;
@@ -95,9 +92,19 @@
   --book-strip-card-text-gap: 0.75em;
   /* What parts the summary from the mark above it. A measure and not a centring: every card of a row opens its text at the same height, whether it holds two lines or six */
   --book-strip-card-text-space: 0.75em;
+  /* What parts the sections a planche's page is read in turn: the panels, the whole page they were cut from, and the transcription under them - each announced by its own heading, so they need a real space between them rather than the ambient one */
+  --book-strip-section-gap: 1.5rem;
   /* The arrows a planche is browsed with, laid over what the page shows rather than waiting under it */
+  --book-strip-thumbnail-width: 150px;
+  --book-strip-thumbnail-gap: 0.4rem;
+  --book-strip-thumbnail-title-size: 1rem;
+  --book-strip-character-size: 100px;
+  --book-strip-character-radius: 50%;
+  --book-strip-character-selected: var(--primary, currentColor);
+  --book-strip-character-label-gap: 10px;
+  --book-strip-character-label-line-height: 1.3;
   --book-strip-nav-size: 2.5rem;
-  --book-strip-nav-offset: 4px;
+  --book-strip-nav-gap: 0.5rem;
   --book-strip-nav-radius: 5px;
   --book-strip-nav-color: #fff;
   --book-strip-nav-background: rgba(0, 0, 0, 0.55);
@@ -927,33 +934,6 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   min-height: var(--book-strip-card-full-size);
 }
 
-.strip-capture {
-  margin: 0;
-  /* Larger than on the page, the picture being read at the size a social network shows it rather than at arm's length - retuned by a site through these very tokens */
-  --book-strip-card-icon-size: 120px;
-  --book-strip-card-text-size: 1.35rem;
-}
-
-.strip-capture .strip-capture__frame {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
-  padding: var(--book-strip-capture-padding);
-  background: var(--background);
-}
-
-.strip-capture .strip-card {
-  flex: 1;
-  align-self: stretch;
-  margin: 0;
-}
-
-.strip-capture .strip-card .card-body {
-  justify-content: safe center;
-}
-
 .strip-card__mark {
   width: var(--book-strip-card-icon-size);
   height: auto;
@@ -989,20 +969,76 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   margin-block-start: var(--book-strip-card-text-gap);
 }
 
+.strip-cases,
+.strip-page,
+.strip-transcription {
+  margin-block-start: var(--book-strip-section-gap);
+}
+
+.strip-thumbnail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--book-strip-thumbnail-width);
+  gap: var(--book-strip-thumbnail-gap);
+}
+
+.strip-thumbnail__title {
+  margin: 0;
+  font-size: var(--book-strip-thumbnail-title-size);
+  text-align: center;
+}
+
+.strip-character {
+  display: block;
+  width: var(--book-strip-character-size);
+  height: auto;
+  margin-inline: auto;
+  margin-block-end: var(--book-strip-character-label-gap);
+  border-radius: var(--book-strip-character-radius);
+}
+
+.img-below.strip-character__name {
+  margin-top: var(--book-strip-character-label-gap);
+  line-height: var(--book-strip-character-label-line-height);
+}
+
+.strip-character + br {
+  display: none;
+}
+
+.flex-center > p:has(.strip-character) {
+  margin-block: 0;
+  line-height: 0;
+}
+
+.strip-character--selected {
+  outline: 3px solid var(--book-strip-character-selected);
+  outline-offset: 2px;
+}
+
 .strip-viewer {
   position: relative;
 }
 
+.strip-nav-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--book-strip-nav-gap);
+  justify-content: center;
+  margin-block-start: var(--book-strip-nav-gap);
+}
+
 .strip-nav {
-  position: absolute;
-  top: 50%;
-  z-index: 2;
-  transform: translateY(-50%);
-  padding: 0.3em 0.2em;
+  display: inline-flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3em 0.7em;
   border-radius: var(--book-strip-nav-radius);
   background: var(--book-strip-nav-background);
   font-family: var(--font-family-title);
-  font-size: var(--book-strip-nav-size);
   line-height: 1.4;
   color: var(--book-strip-nav-color);
   text-decoration: none;
@@ -1017,29 +1053,17 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   opacity: 1;
 }
 
-.strip-nav--previous {
-  left: var(--book-strip-nav-offset);
+.strip-nav__glyph {
+  font-size: var(--book-strip-nav-size);
+  line-height: 1;
 }
 
-.strip-nav--next {
-  right: var(--book-strip-nav-offset);
+.strip-nav__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-@media (hover: hover) {
-  .strip-nav {
-    opacity: 0;
-    pointer-events: none;
-  }
-  .strip-viewer:hover .strip-nav,
-  .strip-nav:focus-visible {
-    opacity: var(--book-strip-nav-opacity);
-    pointer-events: auto;
-  }
-  .strip-viewer .strip-nav:hover,
-  .strip-viewer .strip-nav:focus-visible {
-    opacity: 1;
-  }
-}
 .book-breadcrumb {
   margin-block-start: var(--book-breadcrumb-margin-block-start);
   margin-block-end: 1rem;

@@ -1,7 +1,16 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Command;
 
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
@@ -15,6 +24,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[AsCommand(
     name: 'strip:import',
@@ -205,7 +215,7 @@ class StripImportCommand extends Command
             $numFormatted = sprintf('%03d', $number);
             $stripDir = $options['mediaRootFs'] . '/' . $numFormatted;
 
-            $strip = $this->buildStrip($row, $serie, $number, $now);
+            $strip = $this->buildStrip($row, $serie, $number, $now, $options['dryRun']);
             $strip
                 ->setSummary($this->transcription($stripDir, $numFormatted))
                 ->setSourceUrl($this->sourceUrl($options['urlTemplate'], $number, $options['urlMax']));
@@ -236,14 +246,14 @@ class StripImportCommand extends Command
     }
 
     // The strip a source row describes, its summary and its source url written by the caller from the files beside it
-    private function buildStrip(array $row, Serie $serie, int $number, \DateTime $now): Strip
+    private function buildStrip(array $row, Serie $serie, int $number, \DateTime $now, bool $dryRun): Strip
     {
         $strip = new Strip();
         $strip->setSerie($serie);
         $strip->setTitle($row['title']);
         $strip->setSlug($row['slug']);
         $strip->setNumber($number);
-        $strip->setCharacters($row['characters'] ?? null);
+        $this->fillCharacters($strip, $serie, (string) ($row['characters'] ?? ''), $dryRun);
         $strip->setCreation($now);
         $strip->setModification($now);
 
@@ -252,6 +262,34 @@ class StripImportCommand extends Command
         }
 
         return $strip;
+    }
+
+    // The comma-separated column of the source table, resolved against the serie's own people and creating whoever it does not yet hold - the former site named its characters as text, this one points at them
+    private function fillCharacters(Strip $strip, Serie $serie, string $characters, bool $dryRun): void
+    {
+        $slugger = new AsciiSlugger();
+
+        foreach (explode(',', $characters) as $name) {
+            $name = trim($name);
+
+            if ('' === $name) {
+                continue;
+            }
+
+            $slug = $slugger->slug($name)->lower()->toString();
+            $character = $serie->getCharacter($slug);
+
+            if (null === $character) {
+                $character = new Character()->setName($name)->setSlug($slug);
+                $serie->addCharacter($character);
+
+                if (!$dryRun) {
+                    $this->em->persist($character);
+                }
+            }
+
+            $strip->addCharacter($character);
+        }
     }
 
     // Transcription from .txt file → summary

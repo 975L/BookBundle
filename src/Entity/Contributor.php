@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Entity;
 
 use c975L\BookBundle\Contract\TrashableInterface;
@@ -57,25 +65,26 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $modification = null;
 
+    // The id breaks the ties on every collection below: a position is typed in the back-office and a date is shared by two rows, so nothing here is unique on its own and the database was free to order the rows sharing one as it liked
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinTable(name: 'book_contributor_block')]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $blocks;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'author')]
-    #[ORM\OrderBy(['published' => 'DESC'])]
+    #[ORM\OrderBy(['published' => 'DESC', 'id' => 'DESC'])]
     private Collection $authoredBooks;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'illustrator')]
-    #[ORM\OrderBy(['published' => 'DESC'])]
+    #[ORM\OrderBy(['published' => 'DESC', 'id' => 'DESC'])]
     private Collection $illustratedBooks;
 
     #[ORM\OneToMany(targetEntity: Serie::class, mappedBy: 'author')]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $authoredSeries;
 
     #[ORM\OneToMany(targetEntity: Serie::class, mappedBy: 'illustrator')]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $illustratedSeries;
 
     // The books crediting them under a part the two columns above do not hold - narrating it, translating it (see BookContributor). Read only from here: a credit is written on the book's own screen, where the rest of what it says is written
@@ -84,12 +93,12 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
 
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: ContributorMedia::class, mappedBy: 'contributor', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $medias;
 
     // Where their books are bought, the same mapping a book's own platforms have (see Book::$links): the order laid in the back office is the order the page prints them in
     #[ORM\OneToMany(targetEntity: ContributorLink::class, mappedBy: 'contributor', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $links;
 
     #[ORM\ManyToOne]

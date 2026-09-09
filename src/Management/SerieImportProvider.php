@@ -10,6 +10,8 @@
 
 namespace c975L\BookBundle\Management;
 
+use c975L\BookBundle\Entity\Character;
+use c975L\BookBundle\Entity\CharacterMedia;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
 use c975L\BookBundle\Repository\SerieRepository;
@@ -61,6 +63,8 @@ class SerieImportProvider implements ImportProviderInterface
                 $serie->removeMedia(...),
             )];
 
+            $written = [...$written, ...$this->fillCharacters($serie, $item['characters'] ?? [])];
+
             $this->em->persist($serie);
             $isNew ? $created++ : $updated++;
         }
@@ -107,6 +111,51 @@ class SerieImportProvider implements ImportProviderInterface
             ->setIsDeleted($item['isDeleted'] ?? false)
             // Absent from an archive written before the flag existed, and read there as "shown"
             ->setHidden($item['hidden'] ?? false);
+    }
+
+    // Who peoples the serie, matched by slug - the one key a character keeps between two environments (see SerieExportProvider::exportCharacters()). Absent from an archive written before they were rows of their own, which then leaves whatever the site already holds
+    private function fillCharacters(Serie $serie, array $charactersData): array
+    {
+        $written = [];
+
+        foreach ($charactersData as $characterData) {
+            $slug = (string) ($characterData['slug'] ?? '');
+
+            if ('' === $slug) {
+                continue;
+            }
+
+            $character = $serie->getCharacter($slug);
+
+            if (null === $character) {
+                $character = new Character()->setSlug($slug);
+                $serie->addCharacter($character);
+            }
+
+            $written = [...$written, ...$this->fillCharacter($character, $characterData, $slug)];
+        }
+
+        return $written;
+    }
+
+    // The fields their own screen holds and the portraits they wear, the slug standing in for a name an archive was written without. Returns the medias the files still have to be restored beside
+    private function fillCharacter(Character $character, array $characterData, string $slug): array
+    {
+        $character
+            ->setName($characterData['name'] ?? $slug)
+            ->setGroupName($characterData['groupName'] ?? null)
+            ->setPresentation($characterData['presentation'] ?? null)
+            ->setPosition($characterData['position'] ?? 0);
+
+        $this->em->persist($character);
+
+        return $this->mediaArchiver->sync(
+            $character->getMedias(),
+            $characterData['medias'] ?? [],
+            static fn (): CharacterMedia => new CharacterMedia(),
+            $character->addMedia(...),
+            $character->removeMedia(...),
+        );
     }
 
     // Existing Blocks have no natural key to match the imported ones against, so the whole collection is replaced - BlockRemovalListener removes the orphaned rows (and their Medias) on flush, same as PageImportProvider

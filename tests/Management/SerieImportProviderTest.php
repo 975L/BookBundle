@@ -10,6 +10,8 @@
 
 namespace c975L\BookBundle\Tests\Management;
 
+use c975L\BookBundle\Entity\Character;
+use c975L\BookBundle\Entity\CharacterMedia;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
@@ -70,6 +72,48 @@ class SerieImportProviderTest extends TestCase
         $this->assertSame('Laurent Marquet', $imported->getAuthor()?->getName());
         $this->assertCount(1, $imported->getCovers());
         $this->assertSame('cover-bytes', file_get_contents($targetDir . '/public/medias/book/series/cover-la-compagnie/c.webp'));
+
+        $this->removeDir($sourceDir);
+        $this->removeDir($filesDir);
+        $this->removeDir($targetDir);
+    }
+
+    // Who peoples the serie travels whole: without them a restore would rebuild the characters bare, out of the slugs a planche's own archive carries (see StripImportProvider)
+    public function testRoundTripRebuildsTheSeriePeopleWithTheirPortraits(): void
+    {
+        $sourceDir = $this->createProjectDir(['medias/book/characters/portrait-alwin/p.webp' => 'portrait-bytes']);
+        $serie = new Serie()
+            ->setSlug('la-compagnie')
+            ->setTitle('La Compagnie des Ombres')
+            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
+            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+        $character = new Character()
+            ->setName('Alwin')
+            ->setSlug('alwin')
+            ->setGroupName('Héros')
+            ->setPresentation('Le cadet de la compagnie')
+            ->setPosition(3);
+        $character->addMedia(new CharacterMedia()->setName('medias/book/characters/portrait-alwin/p.webp')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable('2026-02-01 09:00:00')));
+        $serie->addCharacter($character);
+
+        $export = new SerieExportProvider($this->createStub(SerieRepository::class), new BlockDataExporter($sourceDir), new MediaArchiver($this->createStub(EntityManagerInterface::class), $sourceDir))
+            ->serialize([$serie]);
+
+        $filesDir = $this->extractArchive($export['files']);
+        $targetDir = $this->createProjectDir([]);
+        $persisted = [];
+
+        $this->createProvider($targetDir, persisted: $persisted)->import($export['items'], $filesDir);
+
+        $imported = array_values(array_filter($persisted, static fn (object $e) => $e instanceof Serie))[0];
+        $rebuilt = $imported->getCharacter('alwin');
+
+        $this->assertSame('Alwin', $rebuilt?->getName());
+        $this->assertSame('Héros', $rebuilt?->getGroupName());
+        $this->assertSame('Le cadet de la compagnie', $rebuilt?->getPresentation());
+        $this->assertSame(3, $rebuilt?->getPosition());
+        $this->assertCount(1, $rebuilt?->getMedias());
+        $this->assertSame('portrait-bytes', file_get_contents($targetDir . '/public/medias/book/characters/portrait-alwin/p.webp'));
 
         $this->removeDir($sourceDir);
         $this->removeDir($filesDir);

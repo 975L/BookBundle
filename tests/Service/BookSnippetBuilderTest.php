@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
@@ -240,7 +241,7 @@ class BookSnippetBuilderTest extends TestCase
 
     public function testAStripCarriesTheCharactersItPutsOnStage(): void
     {
-        $snippet = $this->builder->buildStrip($this->strip()->setCharacters('Alwin, Brann'));
+        $snippet = $this->builder->buildStrip($this->strip()->addCharacter(new Character()->setName('Alwin')->setSlug('alwin'))->addCharacter(new Character()->setName('Brann')->setSlug('brann')));
 
         $this->assertSame([
             ['@type' => 'Person', 'name' => 'Alwin'],

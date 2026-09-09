@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Tests\Management;
 
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
@@ -39,9 +40,8 @@ class StripExportProviderTest extends TestCase
         $item = $this->createProvider(sys_get_temp_dir(), $stripRepository)->exportAll()['items'][0];
 
         $this->assertSame('la-tuile', $item['slug']);
-        $this->assertSame('Le Seigneur, Alwin', $item['characters']);
-        // Derived from the characters on the way back in, so it is not carried
-        $this->assertArrayNotHasKey('charactersSlug', $item);
+        // The slugs and not the names: what the import matches on (see StripImportProvider::fillStripCharacters())
+        $this->assertSame(['le-seigneur', 'alwin'], $item['characters']);
     }
 
     // What the index's "Export selection" batch action hands to ContentExporter (see TrashableCrudTrait::exportSelection())
@@ -76,7 +76,8 @@ class StripExportProviderTest extends TestCase
         return new Strip()
             ->setSlug('la-tuile')
             ->setTitle('La tuile')
-            ->setCharacters('Le Seigneur, Alwin')
+            ->addCharacter(new Character()->setName('Le Seigneur')->setSlug('le-seigneur'))
+            ->addCharacter(new Character()->setName('Alwin')->setSlug('alwin'))
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'));
     }

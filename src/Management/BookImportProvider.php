@@ -298,20 +298,26 @@ class BookImportProvider implements ImportProviderInterface
      */
     private function syncMedias(Book $book, array $item): array
     {
-        $written = $this->mediaArchiver->sync(
-            $book->getMedias(),
-            $item['medias'] ?? [],
-            static fn (): BookMedia => new BookMedia(),
-            $book->addMedia(...),
-            $book->removeMedia(...),
-        );
+        // An archive saying nothing of a family leaves it alone where one carrying it empty empties it, the two reading the same through a "?? []" - and each family is written out rather than looped over, the collections being of four different types one array would flatten past the generics
+        $written = [];
 
-        return [
-            ...$written,
-            ...$this->mediaArchiver->sync($book->getVideos(), $item['videos'] ?? [], static fn (): BookVideo => new BookVideo(), $book->addVideo(...), $book->removeVideo(...)),
-            ...$this->mediaArchiver->sync($book->getPresses(), $item['presses'] ?? [], static fn (): BookPresse => new BookPresse(), $book->addPresse(...), $book->removePresse(...)),
-            ...$this->mediaArchiver->sync($book->getMarketings(), $item['marketings'] ?? [], static fn (): BookMarketing => new BookMarketing(), $book->addMarketing(...), $book->removeMarketing(...)),
-        ];
+        if (array_key_exists('medias', $item)) {
+            $written = [...$written, ...$this->mediaArchiver->sync($book->getMedias(), $item['medias'], static fn (): BookMedia => new BookMedia(), $book->addMedia(...), $book->removeMedia(...))];
+        }
+
+        if (array_key_exists('videos', $item)) {
+            $written = [...$written, ...$this->mediaArchiver->sync($book->getVideos(), $item['videos'], static fn (): BookVideo => new BookVideo(), $book->addVideo(...), $book->removeVideo(...))];
+        }
+
+        if (array_key_exists('presses', $item)) {
+            $written = [...$written, ...$this->mediaArchiver->sync($book->getPresses(), $item['presses'], static fn (): BookPresse => new BookPresse(), $book->addPresse(...), $book->removePresse(...))];
+        }
+
+        if (array_key_exists('marketings', $item)) {
+            $written = [...$written, ...$this->mediaArchiver->sync($book->getMarketings(), $item['marketings'], static fn (): BookMarketing => new BookMarketing(), $book->addMarketing(...), $book->removeMarketing(...))];
+        }
+
+        return $written;
     }
 
     // The platforms overwritten on their kind, a book having one address per platform - what the archive no longer holds is detached, orphanRemoval deleting the row on flush

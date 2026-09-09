@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Tests\Management;
 
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
@@ -25,6 +26,7 @@ use c975L\UiBundle\Management\BlockDataImporter;
 use c975L\UiBundle\Registry\FormBlockDependencyRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class StripImportProviderTest extends TestCase
 {
@@ -45,12 +47,13 @@ class StripImportProviderTest extends TestCase
             ->setSlug('la-tuile')
             ->setTitle('La tuile')
             ->setNumber(12)
-            ->setCharacters('Le Seigneur, Alwin')
             ->setSummary('Une planche')
             ->setPublished(new \DateTime('2026-03-04'))
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'))
             ->setSerie(new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie des Ombres'));
+        $strip->addCharacter(new Character()->setName('Le Seigneur')->setSlug('le-seigneur'));
+        $strip->addCharacter(new Character()->setName('Alwin')->setSlug('alwin'));
         $strip->addMedia(new StripMedia()->setName('medias/book/strips/plate-la-tuile/p.webp')->setKind('plate')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable('2026-02-01 09:00:00')));
 
         $export = new StripExportProvider($this->createStub(StripRepository::class), new BlockDataExporter($sourceDir), new MediaArchiver($this->createStub(EntityManagerInterface::class), $sourceDir))
@@ -66,9 +69,8 @@ class StripImportProviderTest extends TestCase
 
         $imported = array_values(array_filter($persisted, static fn (object $e) => $e instanceof Strip))[0];
         $this->assertSame(12, $imported->getNumber());
-        $this->assertSame('Le Seigneur, Alwin', $imported->getCharacters());
-        // Derived from the characters rather than carried, so it comes back on its own
-        $this->assertSame('le-seigneur,alwin', $imported->getCharactersSlug());
+        // Written as bare characters on the serie the import creates: the archive carries the slugs, and the name is the slug until an editor types a better one
+        $this->assertSame(['le-seigneur', 'alwin'], array_column($imported->getCharactersList(), 'slug'));
         $this->assertSame('2026-03-04', $imported->getPublished()?->format('Y-m-d'));
         // The serie this environment doesn't hold yet, created on the fly rather than dropped
         $this->assertSame('la-compagnie', $imported->getSerie()?->getSlug());
@@ -77,6 +79,20 @@ class StripImportProviderTest extends TestCase
         $this->removeDir($sourceDir);
         $this->removeDir($filesDir);
         $this->removeDir($targetDir);
+    }
+
+    // An archive written before a character was a row of its own carries the comma-separated names a planche typed: read as names, slugified, and not as slugs
+    public function testAnArchivePredatingTheCharacterRowsIsReadAsNames(): void
+    {
+        $persisted = [];
+        $this->createProvider(sys_get_temp_dir(), persisted: $persisted)->import([
+            ['slug' => 'la-tuile', 'title' => 'La tuile', 'serie' => 'la-compagnie', 'characters' => 'Le Seigneur, Alwin'],
+        ]);
+
+        $imported = array_values(array_filter($persisted, static fn (object $e) => $e instanceof Strip))[0];
+
+        $this->assertSame(['Le Seigneur', 'Alwin'], array_column($imported->getCharactersList(), 'name'));
+        $this->assertSame(['le-seigneur', 'alwin'], array_column($imported->getCharactersList(), 'slug'));
     }
 
     // Two strips of the same absent serie get the one shell, findOneBy() not seeing a serie persisted but not yet flushed
@@ -110,6 +126,7 @@ class StripImportProviderTest extends TestCase
             new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class)),
             new MediaArchiver($em, $projectDir),
             new SerieResolver($em, $this->createStub(SerieRepository::class)),
+            new AsciiSlugger(),
         );
     }
 }

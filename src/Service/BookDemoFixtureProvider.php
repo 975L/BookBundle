@@ -3,6 +3,7 @@
 /*
  * (c) 2026: 975L <contact@975l.com>
  * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
@@ -90,7 +91,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
         }
     }
 
-    // A made-up person, dated like the rest of the dataset rather than from the clock. No portrait: a demo catalog reads whole without one, and the card falls back on the bundle's "no-cover.webp" as a book's does
+    // A made-up person, dated like the rest of the dataset rather than from the clock. No portrait: a demo catalog reads whole without one, and the card falls back on the bundle's "no-portrait.webp", the silhouette standing where a book falls back on its "no-cover.webp"
     private function contributor(string $name, string $slug, int $position): Contributor
     {
         return new Contributor()

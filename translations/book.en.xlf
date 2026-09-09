@@ -54,6 +54,10 @@
                 <source>description.guided_project_book_category_creation</source>
                 <target>Filing the catalog by subject: a category, the sentence introducing it, and the books filed under it afterwards from their own screen. Of no use to a catalog filed by serie alone.</target>
             </trans-unit>
+            <trans-unit id="g4K6Jac">
+                <source>description.guided_project_book_character_creation</source>
+                <target>Who speaks in the planches: a character, their portrait and the sentence introducing them.</target>
+            </trans-unit>
             <trans-unit id="YT.YFdA">
                 <source>description.guided_project_book_composition</source>
                 <target>Beyond its own fields, a book's page is composed in blocks: banner, text, gallery, call to action.</target>
@@ -133,6 +137,42 @@
             <trans-unit id="e8YAjV3">
                 <source>description.guided_step_book_category_creation_title</source>
                 <target>The word readers will find those books under: "Novels", "Children", "Notebooks". The address of its page follows from it.</target>
+            </trans-unit>
+            <trans-unit id="ZOKSiW4">
+                <source>description.guided_step_book_character_creation_done</source>
+                <target>The planches can now say who speaks by picking from this list.</target>
+            </trans-unit>
+            <trans-unit id="FcCmxJl">
+                <source>description.guided_step_book_character_creation_group</source>
+                <target>"Heroes", "Villains": what parts the serie's page into several rows. Left empty, everyone fits on one.</target>
+            </trans-unit>
+            <trans-unit id="MpAo1.W">
+                <source>description.guided_step_book_character_creation_name</source>
+                <target>The name the planches say: it is what the badges wear.</target>
+            </trans-unit>
+            <trans-unit id="nkDuwic">
+                <source>description.guided_step_book_character_creation_new</source>
+                <target>The button opens a character's blank sheet.</target>
+            </trans-unit>
+            <trans-unit id="YyikeqZ">
+                <source>description.guided_step_book_character_creation_open</source>
+                <target>"Characters" lists those of every serie, each filed under its own.</target>
+            </trans-unit>
+            <trans-unit id="R4qHwEG">
+                <source>description.guided_step_book_character_creation_portrait</source>
+                <target>The portrait every planche they speak in will wear, uploaded once.</target>
+            </trans-unit>
+            <trans-unit id="xSCoGJX">
+                <source>description.guided_step_book_character_creation_presentation</source>
+                <target>The sentence read under their portrait, on the serie's page.</target>
+            </trans-unit>
+            <trans-unit id="BhLOSNP">
+                <source>description.guided_step_book_character_creation_serie</source>
+                <target>A character belongs to one serie: two series may each have their own "Papa".</target>
+            </trans-unit>
+            <trans-unit id="v6XO8dt">
+                <source>description.guided_step_book_character_creation_slug</source>
+                <target>Derived from the name, it is what filters the listing of planches. Change it before the first publication, not after.</target>
             </trans-unit>
             <trans-unit id="QmMk4WE">
                 <source>description.guided_step_book_composition_add</source>
@@ -448,7 +488,7 @@
             </trans-unit>
             <trans-unit id="hualbfA">
                 <source>description.guided_step_book_strip_creation_characters</source>
-                <target>The names separated by a comma: they are what the serie's badges filter on.</target>
+                <target>Pick them among the serie's characters: on the creation screen the list offers every serie's, narrowed once the planche is saved and reopened.</target>
             </trans-unit>
             <trans-unit id="i_zWQS3">
                 <source>description.guided_step_book_strip_creation_done</source>
@@ -1078,9 +1118,29 @@
                 <source>label.category_summary-help</source>
                 <target>The sentence introducing the category, at the top of its page and in search results.</target>
             </trans-unit>
+            <trans-unit id="OcWTEKZ">
+                <source>label.character</source>
+                <target>Character</target>
+            </trans-unit>
+            <trans-unit id="T.DlcMr">
+                <source>label.character_group</source>
+                <target>Group</target>
+            </trans-unit>
+            <trans-unit id="hufLBdF">
+                <source>label.character_slug-help</source>
+                <target>What the planches and the urls carry: renaming it moves every link naming this character.</target>
+            </trans-unit>
             <trans-unit id="J2ePCOx">
                 <source>label.characters</source>
                 <target>Characters</target>
+            </trans-unit>
+            <trans-unit id="qkNRraw">
+                <source>label.characters-help</source>
+                <target>One picture per character, named by the character it draws: the search chip then wears that face instead of the name alone.</target>
+            </trans-unit>
+            <trans-unit id="Hoz1eZl">
+                <source>label.characters_section</source>
+                <target>Who are they?</target>
             </trans-unit>
             <trans-unit id="fBgQMYT">
                 <source>label.contributor</source>
@@ -1298,6 +1358,10 @@
                 <source>label.guided_project_book_category_creation</source>
                 <target>Create a category</target>
             </trans-unit>
+            <trans-unit id="aTTwAAP">
+                <source>label.guided_project_book_character_creation</source>
+                <target>People a serie</target>
+            </trans-unit>
             <trans-unit id="xHGOxRr">
                 <source>label.guided_project_book_composition</source>
                 <target>Enrich a book's page</target>
@@ -1381,6 +1445,46 @@
             <trans-unit id="XfYYiRM">
                 <source>label.guided_step_book_category_creation_title</source>
                 <target>The name</target>
+            </trans-unit>
+            <trans-unit id="98hgU5A">
+                <source>label.guided_step_book_character_creation_done</source>
+                <target>The serie is peopled</target>
+            </trans-unit>
+            <trans-unit id="jRhfcsm">
+                <source>label.guided_step_book_character_creation_group</source>
+                <target>Sort them, if needed</target>
+            </trans-unit>
+            <trans-unit id="T3y7829">
+                <source>label.guided_step_book_character_creation_name</source>
+                <target>Name them</target>
+            </trans-unit>
+            <trans-unit id="16jqOCM">
+                <source>label.guided_step_book_character_creation_new</source>
+                <target>Create one</target>
+            </trans-unit>
+            <trans-unit id="FaVl9Mo">
+                <source>label.guided_step_book_character_creation_open</source>
+                <target>Open the characters</target>
+            </trans-unit>
+            <trans-unit id="EHfTCTO">
+                <source>label.guided_step_book_character_creation_portrait</source>
+                <target>Give them a face</target>
+            </trans-unit>
+            <trans-unit id="Ie2Pt6y">
+                <source>label.guided_step_book_character_creation_presentation</source>
+                <target>Introduce them</target>
+            </trans-unit>
+            <trans-unit id="D7KTHA7">
+                <source>label.guided_step_book_character_creation_save</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="LmEfPv4">
+                <source>label.guided_step_book_character_creation_serie</source>
+                <target>File them under their serie</target>
+            </trans-unit>
+            <trans-unit id="rJJeM9m">
+                <source>label.guided_step_book_character_creation_slug</source>
+                <target>Check their address</target>
             </trans-unit>
             <trans-unit id="8EtrFFM">
                 <source>label.guided_step_book_composition_add</source>
@@ -1862,6 +1966,10 @@
                 <source>label.info_category</source>
                 <target>List of all the catalog categories. Create, edit or delete a category; the content blocks of its page are also managed here. A book is given as many as needed from its own screen.</target>
             </trans-unit>
+            <trans-unit id="_GRvq0D">
+                <source>label.info_character</source>
+                <target>Who peoples your series: a character carries their face, their presentation and the slug their planches are filtered on.</target>
+            </trans-unit>
             <trans-unit id="nD1o3ug">
                 <source>label.info_contributor</source>
                 <target>The catalog's authors and illustrators. Each has their own page listing what they signed. A book or a serie picks them from this list rather than retyping their name.</target>
@@ -2050,6 +2158,10 @@
                 <source>label.position</source>
                 <target>Position</target>
             </trans-unit>
+            <trans-unit id="Q1eLOqX">
+                <source>label.presentation</source>
+                <target>Presentation</target>
+            </trans-unit>
             <trans-unit id="Sf1AIVC">
                 <source>label.presse</source>
                 <target>Press</target>
@@ -2234,9 +2346,45 @@
                 <source>label.strip</source>
                 <target>Strip</target>
             </trans-unit>
+            <trans-unit id="pXlAsPE">
+                <source>label.strip_cases</source>
+                <target>Panel by panel</target>
+            </trans-unit>
+            <trans-unit id="JtBKS58">
+                <source>label.strip_media_card</source>
+                <target>Card</target>
+            </trans-unit>
+            <trans-unit id=".wVoLZE">
+                <source>label.strip_media_case</source>
+                <target>Panel</target>
+            </trans-unit>
+            <trans-unit id="axhBYPd">
+                <source>label.strip_media_gallery</source>
+                <target>No role (gallery)</target>
+            </trans-unit>
+            <trans-unit id=".weY5CM">
+                <source>label.strip_media_gallery-help</source>
+                <target>What neither heading above claims: a planche whose pictures are read as one, and the pictures the commands write. With no role, they are drawn as a single gallery.</target>
+            </trans-unit>
+            <trans-unit id="oo4oP63">
+                <source>label.strip_media_page</source>
+                <target>Whole page</target>
+            </trans-unit>
+            <trans-unit id="VEcCTny">
+                <source>label.strip_media_thumbnail</source>
+                <target>Thumbnail</target>
+            </trans-unit>
+            <trans-unit id="EEBE_JH">
+                <source>label.strip_page</source>
+                <target>Whole page</target>
+            </trans-unit>
             <trans-unit id="DSj269.">
                 <source>label.strip_search</source>
                 <target>Search for a strip</target>
+            </trans-unit>
+            <trans-unit id="D88P91q">
+                <source>label.strip_transcription</source>
+                <target>Transcript</target>
             </trans-unit>
             <trans-unit id="3ORIptn">
                 <source>label.strips</source>

@@ -221,7 +221,6 @@ class BookDuplicator
             ->setTitle($this->copyTitle($source->getTitle(), 100))
             ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->stripRepository->findOneBy(['slug' => $candidate])))
             ->setNumber($source->getNumber())
-            ->setCharacters($source->getCharacters())
             ->setSummary($source->getSummary())
             ->setSourceUrl($source->getSourceUrl())
             ->setPublished($source->getPublished())
@@ -229,6 +228,11 @@ class BookDuplicator
             ->setCreation($now)
             ->setModification($now)
             ->setUser($this->currentUser());
+
+        // Pointed at and not cloned: who speaks belongs to the serie the copy stays in, so both planches name the same people
+        foreach ($source->getCharacters() as $character) {
+            $copy->addCharacter($character);
+        }
 
         foreach ($source->getMedias() as $media) {
             $copy->addMedia($this->cloneMedia($media));

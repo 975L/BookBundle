@@ -3,6 +3,7 @@
 /*
  * (c) 2026: 975L <contact@975l.com>
  * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
@@ -10,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Entity;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Enum\SerieKind;
@@ -71,5 +73,31 @@ class SerieTest extends TestCase
     public function testASerieDeclaringNothingAndHoldingNoPlancheIsNotOneOfPlanches(): void
     {
         $this->assertFalse(new Serie()->isStripSerie());
+    }
+
+    // The face a planche's chip wears, held by the character the serie peoples itself with
+    public function testACharacterIsFoundBySlugInsideItsSerie(): void
+    {
+        $serie = new Serie();
+        $matteo = new Character()->setName('Mattéo')->setSlug('matteo');
+        $serie->addCharacter($matteo);
+
+        $this->assertSame($serie, $matteo->getSerie());
+        $this->assertSame($matteo, $serie->getCharacter('matteo'));
+        $this->assertNull($serie->getCharacter('leia'));
+    }
+
+    // What parts one serie's people into more than one row of cards, and what gathers them all under one where it names none
+    public function testTheCharactersArePartedIntoTheRowsThePagePresents(): void
+    {
+        $serie = new Serie();
+        $serie->addCharacter(new Character()->setName('Kady')->setSlug('kady')->setGroupName('Les Héros'));
+        $serie->addCharacter(new Character()->setName('Manolo')->setSlug('manolo')->setGroupName('Les méchants'));
+        $serie->addCharacter(new Character()->setName('Zoé')->setSlug('zoe'));
+
+        $groups = $serie->getCharacterGroups();
+
+        $this->assertSame(['Les Héros', 'Les méchants', ''], array_keys($groups));
+        $this->assertCount(1, $groups['']);
     }
 }

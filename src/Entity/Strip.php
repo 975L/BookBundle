@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * (c) 2026: 975L <contact@975l.com>
+ * (c) 2026: Laurent Marquet <laurent.marquet@laposte.net>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace c975L\BookBundle\Entity;
 
 use c975L\BookBundle\Contract\TrashableInterface;
 use c975L\BookBundle\Entity\Trait\HideableTrait;
 use c975L\BookBundle\Entity\Trait\TrashableTrait;
+use c975L\BookBundle\Enum\StripMediaKind;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use c975L\UiBundle\Contract\HasBlocksInterface;
@@ -15,7 +24,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: StripRepository::class)]
@@ -26,6 +34,12 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     use HasBlocksTrait;
     use HideableTrait;
     use TrashableTrait;
+
+    // The roles the back-office gives a field of their own (see getPageMedias() and getCaseMedias()). Everything else falls to getOtherMedias(), which is what keeps a media editable whatever role it carries - so a role with no field of its own, the card and the thumbnail among them, is still reachable and can still be given from there
+    private const array OWN_COLLECTION_KINDS = [
+        StripMediaKind::Page->value,
+        StripMediaKind::Panel->value,
+    ];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -41,11 +55,11 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\Column(nullable: true)]
     private ?int $number = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $characters = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $charactersSlug = null;
+    // Who speaks in the planche, pointing at the serie's own people rather than naming them again as text - a name could not be misspelled into a second character, and renaming one renames it on every planche at once (see Character)
+    #[ORM\ManyToMany(targetEntity: Character::class, inversedBy: 'strips')]
+    #[ORM\JoinTable(name: 'book_strip_character')]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    private Collection $characters;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $summary = null;
@@ -71,17 +85,19 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
 
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinTable(name: 'book_strip_block')]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $blocks;
 
     #[Assert\Valid]
+    // The id breaks the ties: the position is typed in the back-office, so nothing makes it unique, and on the rows sharing one the database is free to order as it likes - a planche whose panels shared a position was read in one order on a page load and in another on the next
     #[ORM\OneToMany(targetEntity: StripMedia::class, mappedBy: 'strip', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
     private Collection $medias;
 
     public function __construct()
     {
         $this->blocks = new ArrayCollection();
+        $this->characters = new ArrayCollection();
         $this->medias = new ArrayCollection();
     }
 
@@ -131,57 +147,39 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getCharacters(): ?string
+    /** @return Collection<int, Character> */
+    public function getCharacters(): Collection
     {
         return $this->characters;
     }
 
-    public function setCharacters(?string $characters): static
+    public function addCharacter(Character $character): static
     {
-        $this->characters = $characters;
-        $this->charactersSlug = null === $characters ? null : implode(',', array_map(
-            static fn (array $character): string => $character['slug'],
-            $this->getCharactersList()
-        ));
+        if (!$this->characters->contains($character)) {
+            $this->characters->add($character);
+        }
 
         return $this;
     }
 
-    public function getCharactersSlug(): ?string
+    public function removeCharacter(Character $character): static
     {
-        return $this->charactersSlug;
+        $this->characters->removeElement($character);
+
+        return $this;
     }
 
     /**
-     * The characters as pairs of displayed name and url slug, for the links to the character's strips.
+     * The characters as pairs of displayed name and url slug - the shape the row of chips and the structured data have always read, kept so the relation could replace the text field under them without either being rewritten.
      *
      * @return array<int, array{name: string, slug: string}>
      */
     public function getCharactersList(): array
     {
-        return self::splitCharacters($this->characters);
-    }
-
-    /**
-     * The names held by one comma-separated field, each with the slug its own page is reached by - static so a listing can name the characters of a whole serie without loading every planche of it (see StripRepository::findCharactersBySerie()).
-     *
-     * @return array<int, array{name: string, slug: string}>
-     */
-    public static function splitCharacters(?string $characters): array
-    {
-        if (null === $characters) {
-            return [];
-        }
-
-        $slugger = new AsciiSlugger();
         $list = [];
 
-        foreach (explode(',', $characters) as $character) {
-            $character = trim($character);
-
-            if ('' !== $character) {
-                $list[] = ['name' => $character, 'slug' => $slugger->slug($character)->lower()->toString()];
-            }
+        foreach ($this->characters as $character) {
+            $list[] = ['name' => (string) $character->getName(), 'slug' => (string) $character->getSlug()];
         }
 
         return $list;
@@ -275,6 +273,90 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     public function getMedias(): Collection
     {
         return $this->medias;
+    }
+
+    /**
+     * The medias playing one role, in the order they are shown - what the page reads to tell the panels from the page they were cut from (see StripMediaKind and Strip:Medias).
+     *
+     * @return Collection<int, StripMedia>
+     */
+    public function getMediasByKind(string $kind): Collection
+    {
+        return $this->medias->filter(
+            static fn (StripMedia $media): bool => $kind === $media->getKind()
+        );
+    }
+
+    // What stands for the planche in a listing, read by role and not by rank: since the roles, the first media of the collection is no longer the one meant to represent it, and a wall of thumbnails would show a panel instead of the planche. A different order from the one the share image goes by (see strip/display.html.twig), which reaches for the whole page first
+    public function getThumbnailMedia(): ?StripMedia
+    {
+        foreach ([StripMediaKind::Thumbnail->value, StripMediaKind::Card->value] as $kind) {
+            $media = $this->getMediasByKind($kind)->first();
+
+            if ($media instanceof StripMedia) {
+                return $media;
+            }
+        }
+
+        $media = $this->medias->first();
+
+        return $media instanceof StripMedia ? $media : null;
+    }
+
+    // The four views below are what the back-office binds a field to, one per role, the way a book's links are split by group (see Book::getBuyLinks()): getMediasByKind() takes an argument, so a form cannot bind it. Each adder writes the role its own field stands for - an editor picks the collection, never the value - and every one of them delegates to addMedia(), which is what owns the relation
+
+    /** @return Collection<int, StripMedia> */
+    public function getPageMedias(): Collection
+    {
+        return $this->getMediasByKind(StripMediaKind::Page->value);
+    }
+
+    public function addPageMedia(StripMedia $media): static
+    {
+        return $this->addMedia($media->setKind(StripMediaKind::Page->value));
+    }
+
+    public function removePageMedia(StripMedia $media): static
+    {
+        return $this->removeMedia($media);
+    }
+
+    /** @return Collection<int, StripMedia> */
+    public function getCaseMedias(): Collection
+    {
+        return $this->getMediasByKind(StripMediaKind::Panel->value);
+    }
+
+    public function addCaseMedia(StripMedia $media): static
+    {
+        return $this->addMedia($media->setKind(StripMediaKind::Panel->value));
+    }
+
+    public function removeCaseMedia(StripMedia $media): static
+    {
+        return $this->removeMedia($media);
+    }
+
+    /**
+     * What none of the three collections above claims: a planche imported before the roles existed and carrying none, and the roles no field of its own shows - the square card a listing is given and the thumbnail an import writes. Read against the three and not against the enum: a role the back-office does not split out is a valid one all the same, and one left out of here would be editable from nowhere at all.
+     *
+     * @return Collection<int, StripMedia>
+     */
+    public function getOtherMedias(): Collection
+    {
+        return $this->medias->filter(
+            static fn (StripMedia $media): bool => !in_array((string) $media->getKind(), self::OWN_COLLECTION_KINDS, true)
+        );
+    }
+
+    public function addOtherMedia(StripMedia $media): static
+    {
+        return $this->addMedia($media);
+    }
+
+    public function removeOtherMedia(StripMedia $media): static
+    {
+        return $this->removeMedia($media);
     }
 
     public function addMedia(StripMedia $media): static

@@ -910,39 +910,6 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     width: min(100%, var(--book-strip-card-full-size));
     min-height: var(--book-strip-card-full-size);
 }
-
-// The square a card is photographed in, the picture a reply is shared as (see strip/card.html.twig). The frame is the picture's own edge: the viewport is set square by the capture script, and the card is centred in it on the site's background
-.strip-capture {
-    margin: 0;
-
-    /* Larger than on the page, the picture being read at the size a social network shows it rather than at arm's length - retuned by a site through these very tokens */
-    --book-strip-card-icon-size: 120px;
-    --book-strip-card-text-size: 1.35rem;
-}
-
-.strip-capture .strip-capture__frame {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    padding: var(--book-strip-capture-padding);
-    background: var(--background);
-}
-
-// The whole of the frame, minus its edge: the card is the picture, not an object sitting in it - so it is stretched to the frame rather than taking the shape a listing gives it
-.strip-capture .strip-card {
-    flex: 1;
-    align-self: stretch;
-    margin: 0;
-}
-
-// Centred here, where a listing opens every card's dialogue on the same line (see ".strip-card .card-body"): a picture has no row to line up with, and its subject sits in the middle of it
-// "safe": a long dialogue fills the card and would otherwise be centred on what no longer fits, its mark climbing over the header - past that point it starts from the top like any other
-.strip-capture .strip-card .card-body {
-    justify-content: safe center;
-}
-
 .strip-card__mark {
     width: var(--book-strip-card-icon-size);
     height: auto;
@@ -983,22 +950,88 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     margin-block-start: var(--book-strip-card-text-gap);
 }
 
-// What a planche is browsed from: the card and the drawing held together, the arrows laid over them - the eye is already there, and so is the thumb on a phone
+// The sections a planche is read in turn, each opening on its own heading: the panels, the whole page they were cut from, and the transcription under them (see Strip/Medias.html.twig and Strip/Summary.html.twig)
+.strip-cases,
+.strip-page,
+.strip-transcription {
+    margin-block-start: var(--book-strip-section-gap);
+}
+
+// A wall of planches browsed as thumbnails, where a card would say more than the visitor is looking for (setting "book-strip-card" set to "thumbnail")
+.strip-thumbnail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: var(--book-strip-thumbnail-width);
+    gap: var(--book-strip-thumbnail-gap);
+}
+
+.strip-thumbnail__title {
+    margin: 0;
+    font-size: var(--book-strip-thumbnail-title-size);
+    text-align: center;
+}
+
+// The face a character wears in the row a planche carries, where a serie uploaded one - sized here rather than by the markup, the uploaded file being of whatever size it was drawn at
+// Block and not inline: the picture sat on a text baseline, whose descender space parted it from the name under it by more than the gap declared here
+.strip-character {
+    display: block;
+    width: var(--book-strip-character-size);
+    height: auto;
+    margin-inline: auto;
+    margin-block-end: var(--book-strip-character-label-gap);
+    border-radius: var(--book-strip-character-radius);
+}
+
+// The name reads right under the face rather than a line away: the label a linked picture carries is spaced by UiBundle's own "span.img-below", whose 20px is what parted them - restated here on both classes, so the rule wins on specificity rather than on the order the stylesheets happen to load in
+.img-below.strip-character__name {
+    margin-top: var(--book-strip-character-label-gap);
+    // Its own, the paragraph's having been zeroed just below
+    line-height: var(--book-strip-character-label-line-height);
+}
+
+// The break the markup writes between a picture and its label (see UiBundle's Image/Link.html.twig): it parts an inline picture from its name, but the face above is a block of its own, so all it adds here is an empty line between the two
+.strip-character + br {
+    display: none;
+}
+
+// The paragraph the picture and its name sit in adds its own band above and below the pair - and its line box, which the face and the name are laid inside of as blocks, still reserved the height of a line of text between them
+.flex-center > p:has(.strip-character) {
+    margin-block: 0;
+    line-height: 0;
+}
+
+// The character the listing is filtered on, told apart the way the plain chip is by its "primary" variant
+.strip-character--selected {
+    outline: 3px solid var(--book-strip-character-selected);
+    outline-offset: 2px;
+}
+
+// What a planche is browsed from: the card and the drawing held together
 .strip-viewer {
     position: relative;
 }
 
-// The same object as the gallery's arrows, and drawn the same way: a glyph on a disc, the neighbour's own title being carried by the label rather than printed beside it
+// Under the planche and no longer over it: an arrow laid across a drawing had no room to name where it led, and across a planche that is only words it sat on them. Centred rather than pushed to the edges: the planche above is centred too, and a lone link then keeps the same place as a pair
+.strip-nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--book-strip-nav-gap);
+    justify-content: center;
+    margin-block-start: var(--book-strip-nav-gap);
+}
+
+// The same object as the gallery's arrows, drawn the same way and now carrying the neighbour's title beside the glyph
 .strip-nav {
-    position: absolute;
-    top: 50%;
-    z-index: 2;
-    transform: translateY(-50%);
-    padding: 0.3em 0.2em;
+    display: inline-flex;
+    flex: 0 1 auto;
+    min-width: 0;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.3em 0.7em;
     border-radius: var(--book-strip-nav-radius);
     background: var(--book-strip-nav-background);
     font-family: var(--font-family-title);
-    font-size: var(--book-strip-nav-size);
     line-height: 1.4;
     color: var(--book-strip-nav-color);
     text-decoration: none;
@@ -1006,7 +1039,7 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     transition: opacity 0.2s ease;
 }
 
-// Restated: a site's own "a:hover" would underline the arrow and repaint it, these being links and not buttons
+// Restated: a site's own "a:hover" would underline the link and repaint it, these being links and not buttons
 .strip-nav:hover,
 .strip-nav:focus-visible {
     color: var(--book-strip-nav-color);
@@ -1014,32 +1047,16 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     opacity: 1;
 }
 
-.strip-nav--previous {
-    left: var(--book-strip-nav-offset);
+.strip-nav__glyph {
+    font-size: var(--book-strip-nav-size);
+    line-height: 1;
 }
 
-.strip-nav--next {
-    right: var(--book-strip-nav-offset);
-}
-
-// Out of the way until the visitor points at the planche, which is what the page is for. Held inside "hover: hover" on purpose: a touch screen has none to reveal them with, so on a phone they simply stay on.
-// Hidden with pointer-events rather than with visibility: an invisible link still takes the clicks meant for what is under it, and one taken out of the layout would leave the focus order with it - the keyboard being the other way to reach them
-@media (hover: hover) {
-    .strip-nav {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .strip-viewer:hover .strip-nav,
-    .strip-nav:focus-visible {
-        opacity: var(--book-strip-nav-opacity);
-        pointer-events: auto;
-    }
-
-    .strip-viewer .strip-nav:hover,
-    .strip-viewer .strip-nav:focus-visible {
-        opacity: 1;
-    }
+// Cut rather than wrapped: a planche whose title runs long would otherwise turn the row into a paragraph
+.strip-nav__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 // The trail above the planche: where it sits, and the two ways back out

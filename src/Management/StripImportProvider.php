@@ -10,12 +10,14 @@
 
 namespace c975L\BookBundle\Management;
 
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\ConfigBundle\Management\ImportProviderInterface;
 use c975L\UiBundle\Management\BlockDataImporter;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 // Imports a "book_strip" content export (see StripExportProvider) - matches by slug, which is what a strip answers at, and never by the exported id
 class StripImportProvider implements ImportProviderInterface
@@ -28,6 +30,7 @@ class StripImportProvider implements ImportProviderInterface
         private readonly BlockDataImporter $blockDataImporter,
         private readonly MediaArchiver $mediaArchiver,
         private readonly SerieResolver $serieResolver,
+        private readonly SluggerInterface $slugger,
     ) {
     }
 
@@ -79,14 +82,69 @@ class StripImportProvider implements ImportProviderInterface
             ->setSlug($item['slug'])
             ->setTitle($item['title'])
             ->setNumber($item['number'] ?? null)
-            // charactersSlug follows from it, so nothing to import beside it (see Strip::setCharacters)
-            ->setCharacters($item['characters'] ?? null)
             ->setSummary($item['summary'] ?? null)
             ->setSourceUrl($item['sourceUrl'] ?? null);
 
         $this->fillStripPublication($strip, $item);
 
         $strip->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
+
+        // After the serie, which is who the characters are looked for in
+        $this->fillStripCharacters($strip, $item);
+    }
+
+    // Who speaks, matched by slug against the serie's own people - and written as a bare character where the serie carries no such slug, so an archive from a site that never presented its characters comes in whole rather than losing who spoke in it. The name is the slug until an editor types a better one
+    private function fillStripCharacters(Strip $strip, array $item): void
+    {
+        foreach ($strip->getCharacters() as $character) {
+            $strip->removeCharacter($character);
+        }
+
+        $serie = $strip->getSerie();
+
+        if (null === $serie) {
+            return;
+        }
+
+        foreach ($this->charactersRead($item) as $slug => $name) {
+            $character = $serie->getCharacter($slug);
+
+            if (null === $character) {
+                $character = new Character()->setName($name)->setSlug($slug);
+                $serie->addCharacter($character);
+            }
+
+            $strip->addCharacter($character);
+        }
+    }
+
+    // Slug pointing at the name to fall back on: an archive written before a character was a row of its own carries the comma-separated names a planche typed, a current one the serie's own slugs
+    private function charactersRead(array $item): array
+    {
+        $characters = $item['characters'] ?? [];
+        $names = [];
+
+        if (\is_string($characters)) {
+            foreach (explode(',', $characters) as $name) {
+                $name = trim($name);
+
+                if ('' !== $name) {
+                    $names[$this->slugger->slug($name)->lower()->toString()] = $name;
+                }
+            }
+
+            return $names;
+        }
+
+        foreach ($characters as $slug) {
+            $slug = trim((string) $slug);
+
+            if ('' !== $slug) {
+                $names[$slug] = $slug;
+            }
+        }
+
+        return $names;
     }
 
     // The dates and the two flags, read back for the reason they are exported: a round-trip must not put back on the site what an admin had taken off it

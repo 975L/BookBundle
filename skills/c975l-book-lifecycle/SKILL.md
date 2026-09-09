@@ -1,6 +1,6 @@
 ---
 name: c975l-book-lifecycle
-description: "Use this skill when a row of a c975L BookBundle catalog is created, copied, replaced, hidden or moved between environments — publishing a new version of a book without losing its address, duplicating a book, a serie or a planche, the trash and the 410/301 answers that keep urls in order, what each repository read is allowed to answer, and the zip export/import that carries a whole catalog with its files. Triggers on: BookVersionPublisher, publishVersion, newerVersion, previousVersion, createPreviousVersion, moveEdition, moveMedias, BookDuplicator, duplicateBook, duplicateSerie, duplicateStrip, duplicateContributor, BookContributor, BookContributorType, BookTrashManager, moveToTrash, restore, deletePermanently, redirectSlugChange, TrashableInterface, TrashableTrait, TrashableCrudTrait, isDeleted, HideableTrait, isHidden, setHidden, hidden, GoneHttpException, 410, BookExportProvider, BookImportProvider, SerieExportProvider, SerieImportProvider, StripExportProvider, StripImportProvider, ContributorExportProvider, ContributorImportProvider, MediaArchiver, SerieResolver, ContributorResolver, BookCategory, BookCategoryResolver, BookCategoryExportProvider, BookCategoryImportProvider, duplicateCategory, findPublishedByCategory, findWithBooks, BookBackupPathProvider, BookSitemapProvider, BookLinkHealthCheckProvider, BookMediaMoveController, findAllPublished, findAllOnline, findPublishedByIds, findOneByNumber, publishedQueryBuilder, strip:import, strip:card, BookDemoFixtureProvider, BookSampleCatalog, DemoFixtureProviderInterface, getDemoFixtures, PlaceholderMediaRegistry, getImagesFor,  GalleryShowcaseProvider, BookReleaseAlert, BookReleaseAlertService, BookReleaseAlertRepository, BookReleaseAlertSend, BookMaintenanceTaskProvider, isToBePublished, findAllToBePublished, findReleased, purgeStale, isShownInCatalog, book_release_alert_unsubscribe, book_release_alert_unsubscribe_confirm, MAX_ATTEMPTS, attempts, BookEmailTemplateProvider, BookFilesHealthCheckProvider, files-book, findWithFilename, AbstractDeclaredFilesHealthCheckProvider."
+description: "Use this skill when a row of a c975L BookBundle catalog is created, copied, replaced, hidden or moved between environments — publishing a new version of a book without losing its address, duplicating a book, a serie or a planche, the trash and the 410/301 answers that keep urls in order, what each repository read is allowed to answer, and the zip export/import that carries a whole catalog with its files. Triggers on: BookVersionPublisher, publishVersion, newerVersion, previousVersion, createPreviousVersion, moveEdition, moveMedias, BookDuplicator, duplicateBook, duplicateSerie, duplicateStrip, duplicateContributor, BookContributor, BookContributorType, BookTrashManager, moveToTrash, restore, deletePermanently, redirectSlugChange, TrashableInterface, TrashableTrait, TrashableCrudTrait, isDeleted, HideableTrait, isHidden, setHidden, hidden, GoneHttpException, 410, BookExportProvider, BookImportProvider, SerieExportProvider, SerieImportProvider, StripExportProvider, StripImportProvider, ContributorExportProvider, ContributorImportProvider, MediaArchiver, SerieResolver, ContributorResolver, BookCategory, BookCategoryResolver, BookCategoryExportProvider, BookCategoryImportProvider, duplicateCategory, findPublishedByCategory, findWithBooks, BookBackupPathProvider, BookSitemapProvider, BookLinkHealthCheckProvider, BookMediaMoveController, findAllPublished, findAllOnline, findPublishedByIds, findOneByNumber, publishedQueryBuilder, strip:import, c975l:book:characters:from-strips, CharactersFromStripsCommand, Character, CharacterMedia, CharacterRepository, CharacterCrudController, getCharacter, getCharacterGroups, groupName, BookDemoFixtureProvider, BookSampleCatalog, DemoFixtureProviderInterface, getDemoFixtures, PlaceholderMediaRegistry, getImagesFor,  GalleryShowcaseProvider, BookReleaseAlert, BookReleaseAlertService, BookReleaseAlertRepository, BookReleaseAlertSend, BookMaintenanceTaskProvider, isToBePublished, findAllToBePublished, findReleased, purgeStale, isShownInCatalog, book_release_alert_unsubscribe, book_release_alert_unsubscribe_confirm, MAX_ATTEMPTS, attempts, BookEmailTemplateProvider, BookFilesHealthCheckProvider, files-book, findWithFilename, AbstractDeclaredFilesHealthCheckProvider."
 ---
 
 # c975L BookBundle — a row's life
@@ -188,12 +188,32 @@ the row found is that **shell** — nothing but a name and a slug: somebody the 
 a namesake, and gets a row of their own rather than having their page overwritten. Platforms are overwritten on their kind, a book having one address
 per platform.
 
-Two console commands stand beside them, both for a bulk of planches: `strip:import`, which reads an older
-site's table and directory into `book_strip`/`book_media`, and `strip:card`, which hands a directory of square
-captures (see `c975l-book-display-pages`) to the media each planche already carries — through **Vich**, which
-names the new file and deletes the one it replaces. Vich names with a fresh `uniqid`, so the same run against
-two databases yields two different names: run it where the catalog is the source of truth, and bring the
-result back.
+**A serie's archive carries its people whole** — slug, name, `groupName`, presentation, position and the
+portraits — and `SerieImportProvider` matches them on the slug, the one key a character keeps between two
+environments. A planche's own archive names them by slug alone, so without the serie's the round-trip would
+rebuild the characters bare. An archive written before they were rows of their own carries the
+comma-separated names instead, and `StripImportProvider` reads that string as names, slugifying each.
+
+Two console commands stand beside them. `strip:import` reads an older site's table and directory into
+`book_strip`/`book_media`; it writes its files through **Vich**, which names each with a fresh `uniqid`, so
+the same run against two databases yields two different names — run it where the catalog is the source of
+truth, and bring the result back. `c975l:book:characters:from-strips` is the upgrade step to `Character`: one
+row per distinct name the planches carried as text, and the links to them. It reads the former column in SQL,
+so it runs **between the two migrations** of `UPGRADE.md`, and says there is nothing to do once the column is
+gone. Both take `--dry-run`.
+
+## Who peoples a serie
+
+`Character` is held by its serie (`Serie::$characters`, `orphanRemoval`, cascade), and its slug is unique
+**inside that serie** and not across the site: two series may people themselves with a *Papa* who is not the
+same person (`uniq_character_serie_slug`, doubled by `#[UniqueEntity(fields: ['serie', 'slug'])]` so a
+duplicate reads as a message under the field rather than a 500). `Serie::getCharacter($slug)` answers the one
+a slug names, `getCharacterGroups()` parts them by `groupName` for the serie's page.
+
+`CharacterCrudController` gives each of them a screen — and so an address the portrait's pencil can lead to,
+which a row nested in the serie's form had none of. It deliberately does **not** use `TrashableCrudTrait`: a
+character is deleted outright, its planches simply losing the link, so there is nothing to restore and
+`Character` carries no `isDeleted`.
 
 ## A catalog to browse before there is one
 
@@ -251,5 +271,7 @@ php bin/console c975l:health-check:run --kind=files-book
 - **Do not pose a showcase cover with `setName()` alone** — `addCover()` is what files it as a cover.
 - **Do not share an uploaded file between an original and its copy.**
 - **Do not match an import by id** — slugs are what survive an environment change.
+- **Do not name a character on a planche as text** — `Strip::$characters` points at the serie's own rows; a name typed twice used to be two characters.
+- **Do not give a character a slug already worn in the same serie** — it is unique inside the serie, not across the site.
 - **Do not write a made-up book into a consumer** — `BookSampleCatalog` holds the dataset both of them read.
 - **Do not move a catalog with the SQL/CSV/JSON dumps** — they carry one table at a time; the zip carries a row whole with its files.

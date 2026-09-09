@@ -10,6 +10,10 @@
                 <source>narration.categories</source>
                 <target>"Categories" cuts the catalog by subject: a book carries as many as it deserves, and a category has a page of its own where the site gives it one.</target>
             </trans-unit>
+            <trans-unit id="35VWv_4">
+                <source>narration.characters</source>
+                <target>The characters of your series</target>
+            </trans-unit>
             <trans-unit id="wVe4G1M">
                 <source>narration.contributors</source>
                 <target>"Authors and illustrators" holds the people the catalog credits. Each has their page, listing what they signed; a book or a serie picks them from this list rather than retyping their name.</target>
@@ -41,6 +45,46 @@
             <trans-unit id="tAZpoIt">
                 <source>narration.guided_step_book_category_creation_title</source>
                 <target>Give it its name: Novels, Children, Notebooks.</target>
+            </trans-unit>
+            <trans-unit id="JEpJKF0">
+                <source>narration.guided_step_book_character_creation_done</source>
+                <target>The serie is peopled. The planches can now say who speaks by picking from this list.</target>
+            </trans-unit>
+            <trans-unit id="P3Ckzd.">
+                <source>narration.guided_step_book_character_creation_group</source>
+                <target>"Heroes", "Villains": what parts the serie's page into several rows. Left empty, everyone fits on one.</target>
+            </trans-unit>
+            <trans-unit id="5o2Di_L">
+                <source>narration.guided_step_book_character_creation_name</source>
+                <target>Name them the way the planches say it: this is the name the badges wear.</target>
+            </trans-unit>
+            <trans-unit id="IUH3Q3W">
+                <source>narration.guided_step_book_character_creation_new</source>
+                <target>The button opens a character's blank sheet.</target>
+            </trans-unit>
+            <trans-unit id="McgsdVg">
+                <source>narration.guided_step_book_character_creation_open</source>
+                <target>Open "Characters": they are all there, each filed under its own serie.</target>
+            </trans-unit>
+            <trans-unit id="ml2pIBL">
+                <source>narration.guided_step_book_character_creation_portrait</source>
+                <target>Give them a face: the portrait is uploaded once and worn by every planche they speak in.</target>
+            </trans-unit>
+            <trans-unit id="y2U0bYg">
+                <source>narration.guided_step_book_character_creation_presentation</source>
+                <target>Introduce them in one sentence: it is what is read under their portrait, on the serie's page.</target>
+            </trans-unit>
+            <trans-unit id="GCWihUZ">
+                <source>narration.guided_step_book_character_creation_save</source>
+                <target>Save: the character joins their serie.</target>
+            </trans-unit>
+            <trans-unit id="MatVWzQ">
+                <source>narration.guided_step_book_character_creation_serie</source>
+                <target>File them under their serie: two series may each have their own "Papa", who are not the same person.</target>
+            </trans-unit>
+            <trans-unit id="PZeR3B_">
+                <source>narration.guided_step_book_character_creation_slug</source>
+                <target>The address is derived from the name, and it is what filters the listing of planches. Change it before the first publication, not after.</target>
             </trans-unit>
             <trans-unit id="exSRKHD">
                 <source>narration.guided_step_book_composition_add</source>
@@ -384,7 +428,7 @@
             </trans-unit>
             <trans-unit id="UVtNxpy">
                 <source>narration.guided_step_book_strip_creation_characters</source>
-                <target>Say who speaks: the names separated by a comma. They are what the serie's badges filter on.</target>
+                <target>Say who speaks: pick them among the serie's characters. On the creation screen the list offers every serie's, narrowed once the planche is saved and reopened.</target>
             </trans-unit>
             <trans-unit id="HHP.rG8">
                 <source>narration.guided_step_book_strip_creation_done</source>

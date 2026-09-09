@@ -54,6 +54,10 @@
                 <source>description.guided_project_book_category_creation</source>
                 <target>Ordenar el catálogo por tema: una categoría, su frase de presentación y los libros que se clasifican después desde su propia ficha. Innecesario si sus libros se ordenan solo por serie.</target>
             </trans-unit>
+            <trans-unit id="g4K6Jac">
+                <source>description.guided_project_book_character_creation</source>
+                <target>Quién habla en las páginas: un personaje, su retrato y la frase que lo presenta.</target>
+            </trans-unit>
             <trans-unit id="YT.YFdA">
                 <source>description.guided_project_book_composition</source>
                 <target>Más allá de sus propios campos, la página de un libro se compone con bloques: banner, texto, galería, llamada a la acción.</target>
@@ -133,6 +137,42 @@
             <trans-unit id="e8YAjV3">
                 <source>description.guided_step_book_category_creation_title</source>
                 <target>La palabra con la que los lectores encontrarán esos libros: «Novelas», «Infantil», «Cuadernos». La dirección de su página se deduce de ella.</target>
+            </trans-unit>
+            <trans-unit id="ZOKSiW4">
+                <source>description.guided_step_book_character_creation_done</source>
+                <target>Las páginas ya pueden decir quién habla eligiéndolo de esta lista.</target>
+            </trans-unit>
+            <trans-unit id="FcCmxJl">
+                <source>description.guided_step_book_character_creation_group</source>
+                <target>«Héroes», «Villanos»: lo que divide la página de la serie en varias filas. Si se deja vacío, todos caben en una sola.</target>
+            </trans-unit>
+            <trans-unit id="MpAo1.W">
+                <source>description.guided_step_book_character_creation_name</source>
+                <target>El nombre tal como lo dicen las páginas: es el que llevan las etiquetas.</target>
+            </trans-unit>
+            <trans-unit id="nkDuwic">
+                <source>description.guided_step_book_character_creation_new</source>
+                <target>El botón abre la ficha en blanco de un personaje.</target>
+            </trans-unit>
+            <trans-unit id="YyikeqZ">
+                <source>description.guided_step_book_character_creation_open</source>
+                <target>«Personajes» enumera los de todas las series, cada uno vinculado a la suya.</target>
+            </trans-unit>
+            <trans-unit id="R4qHwEG">
+                <source>description.guided_step_book_character_creation_portrait</source>
+                <target>El retrato que llevarán todas las páginas donde habla, subido una sola vez.</target>
+            </trans-unit>
+            <trans-unit id="xSCoGJX">
+                <source>description.guided_step_book_character_creation_presentation</source>
+                <target>La frase que se lee bajo su retrato, en la página de la serie.</target>
+            </trans-unit>
+            <trans-unit id="BhLOSNP">
+                <source>description.guided_step_book_character_creation_serie</source>
+                <target>Un personaje pertenece a una serie: dos series pueden tener cada una su «Papá».</target>
+            </trans-unit>
+            <trans-unit id="v6XO8dt">
+                <source>description.guided_step_book_character_creation_slug</source>
+                <target>Derivada del nombre, es la que filtra la lista de páginas. Modifíquela antes de la primera publicación, no después.</target>
             </trans-unit>
             <trans-unit id="QmMk4WE">
                 <source>description.guided_step_book_composition_add</source>
@@ -448,7 +488,7 @@
             </trans-unit>
             <trans-unit id="hualbfA">
                 <source>description.guided_step_book_strip_creation_characters</source>
-                <target>Los nombres separados por comas: son los que filtran las etiquetas de la serie.</target>
+                <target>Elíjalos entre los personajes de la serie: al crearla la lista los ofrece todos, se filtra al reabrir la página.</target>
             </trans-unit>
             <trans-unit id="i_zWQS3">
                 <source>description.guided_step_book_strip_creation_done</source>
@@ -1078,9 +1118,29 @@
                 <source>label.category_summary-help</source>
                 <target>La frase que presenta la categoría, en la cabecera de su página y en los resultados de búsqueda.</target>
             </trans-unit>
+            <trans-unit id="OcWTEKZ">
+                <source>label.character</source>
+                <target>Personaje</target>
+            </trans-unit>
+            <trans-unit id="T.DlcMr">
+                <source>label.character_group</source>
+                <target>Grupo</target>
+            </trans-unit>
+            <trans-unit id="hufLBdF">
+                <source>label.character_slug-help</source>
+                <target>Lo que llevan las planchas y las direcciones: renombrarlo mueve todos los enlaces que nombran a este personaje.</target>
+            </trans-unit>
             <trans-unit id="J2ePCOx">
                 <source>label.characters</source>
                 <target>Personajes</target>
+            </trans-unit>
+            <trans-unit id="qkNRraw">
+                <source>label.characters-help</source>
+                <target>Una imagen por personaje, nombrada por el personaje que representa: la pastilla de búsqueda lleva entonces ese rostro en lugar del nombre solo.</target>
+            </trans-unit>
+            <trans-unit id="Hoz1eZl">
+                <source>label.characters_section</source>
+                <target>¿Quiénes son?</target>
             </trans-unit>
             <trans-unit id="fBgQMYT">
                 <source>label.contributor</source>
@@ -1298,6 +1358,10 @@
                 <source>label.guided_project_book_category_creation</source>
                 <target>Crear una categoría</target>
             </trans-unit>
+            <trans-unit id="aTTwAAP">
+                <source>label.guided_project_book_character_creation</source>
+                <target>Poblar una serie</target>
+            </trans-unit>
             <trans-unit id="xHGOxRr">
                 <source>label.guided_project_book_composition</source>
                 <target>Enriquecer la página de un libro</target>
@@ -1381,6 +1445,46 @@
             <trans-unit id="XfYYiRM">
                 <source>label.guided_step_book_category_creation_title</source>
                 <target>El nombre</target>
+            </trans-unit>
+            <trans-unit id="98hgU5A">
+                <source>label.guided_step_book_character_creation_done</source>
+                <target>La serie está poblada</target>
+            </trans-unit>
+            <trans-unit id="jRhfcsm">
+                <source>label.guided_step_book_character_creation_group</source>
+                <target>Agrúpelo, si hace falta</target>
+            </trans-unit>
+            <trans-unit id="T3y7829">
+                <source>label.guided_step_book_character_creation_name</source>
+                <target>Nómbrelo</target>
+            </trans-unit>
+            <trans-unit id="16jqOCM">
+                <source>label.guided_step_book_character_creation_new</source>
+                <target>Cree uno</target>
+            </trans-unit>
+            <trans-unit id="FaVl9Mo">
+                <source>label.guided_step_book_character_creation_open</source>
+                <target>Abra los personajes</target>
+            </trans-unit>
+            <trans-unit id="EHfTCTO">
+                <source>label.guided_step_book_character_creation_portrait</source>
+                <target>Dele un rostro</target>
+            </trans-unit>
+            <trans-unit id="Ie2Pt6y">
+                <source>label.guided_step_book_character_creation_presentation</source>
+                <target>Preséntelo</target>
+            </trans-unit>
+            <trans-unit id="D7KTHA7">
+                <source>label.guided_step_book_character_creation_save</source>
+                <target>Guarde</target>
+            </trans-unit>
+            <trans-unit id="LmEfPv4">
+                <source>label.guided_step_book_character_creation_serie</source>
+                <target>Vincúlelo a su serie</target>
+            </trans-unit>
+            <trans-unit id="rJJeM9m">
+                <source>label.guided_step_book_character_creation_slug</source>
+                <target>Compruebe su dirección</target>
             </trans-unit>
             <trans-unit id="8EtrFFM">
                 <source>label.guided_step_book_composition_add</source>
@@ -1862,6 +1966,10 @@
                 <source>label.info_category</source>
                 <target>Lista de todas las categorías del catálogo. Cree, modifique o elimine una categoría; los bloques de contenido de su página también se gestionan aquí. Un libro recibe las que necesite desde su propia ficha.</target>
             </trans-unit>
+            <trans-unit id="_GRvq0D">
+                <source>label.info_character</source>
+                <target>Quién puebla sus series: un personaje lleva su rostro, su presentación y el slug por el que se filtran sus planchas.</target>
+            </trans-unit>
             <trans-unit id="nD1o3ug">
                 <source>label.info_contributor</source>
                 <target>Los autores e ilustradores del catálogo. Cada uno tiene su página, que enumera lo que ha firmado. Un libro o una serie los elige en esta lista en vez de volver a escribir su nombre.</target>
@@ -2050,6 +2158,10 @@
                 <source>label.position</source>
                 <target>Posición</target>
             </trans-unit>
+            <trans-unit id="Q1eLOqX">
+                <source>label.presentation</source>
+                <target>Presentación</target>
+            </trans-unit>
             <trans-unit id="Sf1AIVC">
                 <source>label.presse</source>
                 <target>Prensa</target>
@@ -2234,9 +2346,45 @@
                 <source>label.strip</source>
                 <target>Página</target>
             </trans-unit>
+            <trans-unit id="pXlAsPE">
+                <source>label.strip_cases</source>
+                <target>Viñeta a viñeta</target>
+            </trans-unit>
+            <trans-unit id="JtBKS58">
+                <source>label.strip_media_card</source>
+                <target>Tarjeta</target>
+            </trans-unit>
+            <trans-unit id=".wVoLZE">
+                <source>label.strip_media_case</source>
+                <target>Viñeta</target>
+            </trans-unit>
+            <trans-unit id="axhBYPd">
+                <source>label.strip_media_gallery</source>
+                <target>Sin función (galería)</target>
+            </trans-unit>
+            <trans-unit id=".weY5CM">
+                <source>label.strip_media_gallery-help</source>
+                <target>Lo que no reclaman las dos rúbricas anteriores: una plancha cuyas imágenes se leen de una vez, y las imágenes puestas por los comandos. Sin función, se muestran como una galería única.</target>
+            </trans-unit>
+            <trans-unit id="oo4oP63">
+                <source>label.strip_media_page</source>
+                <target>Página completa</target>
+            </trans-unit>
+            <trans-unit id="VEcCTny">
+                <source>label.strip_media_thumbnail</source>
+                <target>Miniatura</target>
+            </trans-unit>
+            <trans-unit id="EEBE_JH">
+                <source>label.strip_page</source>
+                <target>Página completa</target>
+            </trans-unit>
             <trans-unit id="DSj269.">
                 <source>label.strip_search</source>
                 <target>Buscar una plancha</target>
+            </trans-unit>
+            <trans-unit id="D88P91q">
+                <source>label.strip_transcription</source>
+                <target>Transcripción</target>
             </trans-unit>
             <trans-unit id="3ORIptn">
                 <source>label.strips</source>

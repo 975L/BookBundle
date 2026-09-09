@@ -12,11 +12,13 @@ namespace c975L\BookBundle\Twig;
 
 use c975L\BookBundle\Controller\Management\BookCategoryCrudController;
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\CharacterCrudController;
 use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
@@ -47,6 +49,7 @@ class BookEditUrlExtension
     private const array SERIE_FIELDS = [
         'hero' => 'title',
         'resume' => 'summary',
+        'characters' => 'characters',
     ];
 
     // A person's page is their portrait, the sentences they are introduced with and what they signed - the first two standing together inside the hero, and the last being written on each book's own screen, it gets no pencil
@@ -57,7 +60,10 @@ class BookEditUrlExtension
 
     private const array STRIP_FIELDS = [
         'hero' => 'title',
+        // The panels and the page they were cut from each hold a collection of their own on the edit screen (see StripCrudController), so a section of the public page opens the very one it is drawn from. "medias" is the whole picture area, which a planche telling no role apart still draws as one gallery, and it opens the collection that gallery is read from
         'medias' => 'medias',
+        'cases' => 'caseMedias',
+        'page' => 'pageMedias',
         'summary' => 'summary',
         'characters' => 'characters',
         'sourceUrl' => 'sourceUrl',
@@ -145,6 +151,13 @@ class BookEditUrlExtension
     public function contributorEditUrl(Contributor $contributor): ?string
     {
         return $this->editUrl(ContributorCrudController::class, $contributor->getId());
+    }
+
+    // One character's own screen, which is what the pencil over their portrait leads to (see Serie:Characters)
+    #[AsTwigFunction('character_edit_url')]
+    public function characterEditUrl(Character $character): ?string
+    {
+        return $this->editUrl(CharacterCrudController::class, $character->getId());
     }
 
     private function editUrl(string $crudControllerFqcn, ?int $entityId): ?string

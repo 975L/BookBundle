@@ -10,7 +10,20 @@
     <div class="flex-center"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
         {% for character in characters %}
             {% set url = serie ? serie_path(serie, {'character': character.slug}) ~ '#strips' : '' %}
-            {% if url %}
+            {# The face the character carries, uploaded on their own screen (see Character) - one not yet drawn falls back on the name alone, which is what every serie showed before any face existed #}
+            {% set face = serie ? serie.getCharacter(character.slug)?.media : null %}
+            {% if face and face.name %}
+                <twig:c975LUi:Image:Link
+                    label="{{ character.name|capitalize }}"
+                    src="{{ face.name }}"
+                    url="{{ url }}"
+                    alt=""
+                    class="strip-character{{ selected == character.slug ? ' strip-character--selected' : '' }}"
+                    classLabel="strip-character__name"
+                    width="{{ face.width }}"
+                    height="{{ face.height }}"
+                />
+            {% elseif url %}
                 <twig:c975LUi:Button:Button
                     label="{{ character.name|capitalize }}"
                     url="{{ url }}"

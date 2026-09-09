@@ -4,7 +4,9 @@
 {% set isPublished = strip.published is not null and strip.published|date("U") < "now"|date("U") %}
 {% set title = strip.title %}
 {% set summarySocialNetwork = strip.summary %}
-{% set ogImage = absolute_url(asset(strip.medias|first != false ? strip.medias|first : "bundles/c975lbook/images/no-cover.webp")) %}
+{# What a share shows: the whole page where the planche is a drawing, the square card where it is words, and only failing both whatever the planche carries first. Read by role and no longer by rank - the back-office numbers each collection apart (see StripCrudController), so the first media of the whole set is no longer the one meant to stand for the planche #}
+{% set ogMedia = strip.getMediasByKind('page')|first ?: strip.getMediasByKind('card')|first ?: strip.medias|first %}
+{% set ogImage = absolute_url(asset(ogMedia ?: "bundles/c975lbook/images/no-cover.webp")) %}
 {% set language = strip.serie ? strip.serie.language : null %}
 
 {# Editor-only: the pencil UiBundle floats over anything carrying "data-block-edit-url" (see its assets/js/block-edit-overlay.js), leading to the very field the section is written in. Gated on the very role the edit screen asks for (see configureCrud()), the same one the blocks below go by: a pencil leading to a 403 would be worse than no pencil #}
@@ -35,22 +37,23 @@
                         <twig:c975LBook:Strip:Card card="{{ strip }}" display="text" :linked="false"/>
                         {% if editUrls.summary|default('') %}</div>{% endif %}
                     {% else %}
-                        {# The planche itself draws either an image or a slider, neither of which is this bundle's own markup to write an attribute on: the pencil goes on a wrapper, transparent to the layout (see UiBundle's sass/_block-edit-overlay.scss) #}
-                        {% if editUrls.medias|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.medias }}">{% endif %}
-                        <twig:c975LBook:Strip:Medias strip="{{ strip }}"/>
-                        {% if editUrls.medias|default('') %}</div>{% endif %}
+                        {# One pencil per collection rather than one over the whole picture area: the component places them itself, each section leading to the very collection it is drawn from #}
+                        <twig:c975LBook:Strip:Medias strip="{{ strip }}" editUrl="{{ editUrls.medias|default('') }}" casesEditUrl="{{ editUrls.cases|default('') }}" pageEditUrl="{{ editUrls.page|default('') }}"/>
 
+                        {# The words under the drawing, as a section of their own and no longer as the listing's card: a card summarizes a planche the visitor has yet to open, where this is the transcription of the one being read - selectable, searchable, and the only version of it a screen reader can say #}
                         {% if strip.summary is not null %}
-                            {% if editUrls.summary|default('') %}<div class="block-editable" data-block-edit-url="{{ editUrls.summary }}">{% endif %}
-                            <twig:c975LBook:Strip:Card card="{{ strip }}" display="text" :linked="false"/>
-                            {% if editUrls.summary|default('') %}</div>{% endif %}
+                            <twig:c975LBook:Strip:Summary summary="{{ strip.summary }}" heading="h2" language="{{ language }}" editUrl="{{ editUrls.summary|default('') }}"/>
                         {% endif %}
                     {% endif %}
 
+                </div>
+
+                {# Under the planche and no longer laid over it: an arrow flanking a drawing had no room to say where it led, and over a planche that is only words it read across them. The row names both neighbours, and is where a reader looks once the planche is read #}
+                <nav class="strip-nav-row" aria-label="{{ 'label.strips'|trans({}, 'book', language) }}">
                     <twig:c975LBook:Strip:Previous previousNext="{{ previousNext }}" language="{{ language }}"/>
                     <twig:c975LBook:Strip:Next previousNext="{{ previousNext }}" language="{{ language }}"/>
-                </div>
-                {% if strip.characters is not null %}
+                </nav>
+                {% if strip.characters is not empty %}
                     <twig:c975LBook:Strip:Characters characters="{{ strip.charactersList }}" serie="{{ strip.serie }}" language="{{ language }}" editUrl="{{ editUrls.characters|default('') }}"/>
                 {% endif %}
                 {% if strip.sourceUrl is not null %}

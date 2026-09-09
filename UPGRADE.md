@@ -2,6 +2,38 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.9
+
+**CoreBundle 1.26 is required.** A planche's whole page opens over the page through `<twig:c975LUi:Image:Zoom>`,
+which CoreBundle only ships from 1.26: `composer update c975l/core-bundle` before this version.
+
+**Who peoples a serie is a row of its own.** `Character` replaces the two things that said the same apart:
+the comma-separated names a planche carried (`Strip::$characters`, `$charactersSlug`) and the cards a site
+composed by hand to present its characters. A planche now points at the serie's own people.
+
+Three steps, in this order - the middle one reads the column the last one drops.
+
+1. **The tables.** The bundle ships no migration: generate one in your own application
+   (`doctrine:migrations:diff`) holding everything but the `DROP` of the two columns, and run it.
+
+2. **The rows.** One character per distinct name the planches carried, and the links to them:
+
+   ```bash
+   php bin/console c975l:book:characters:from-strips --dry-run
+   php bin/console c975l:book:characters:from-strips
+   ```
+
+   The name is the one that was typed and the slug is derived from it, so the addresses a character's own
+   listing answers at (`?character=...`) are the ones the site already served. A site that also presented
+   its characters as composed cards writes those rows first, so the command finds them and only writes the
+   links - a character it does not find is created bare, with no picture and no presentation.
+
+3. **The columns.** A second migration dropping `characters` and `characters_slug` from `book_strip`, once
+   step 2 has run and been checked.
+
+A site presenting its characters with a composed block of cards can then delete that block and its
+collection: the serie's page renders the section on its own.
+
 ## v2.8
 
 **`Media::$name` moves from 100 to 255 characters.** The column holds the path Vich builds from the media's

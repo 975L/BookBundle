@@ -3,7 +3,8 @@
 {# Defines specific variables #}
 {% set title = contributor.name %}
 {% set summarySocialNetwork = contributor.summary %}
-{% set ogImage = absolute_url(asset(contributor.portraits|first != false ? contributor.portraits|first : "bundles/c975lbook/images/no-cover.webp")) %}
+{# The card a social network builds of this page, falling back on the same silhouette the page itself shows rather than on a book's cover #}
+{% set ogImage = absolute_url(asset(contributor.portraits|first != false ? contributor.portraits|first : "bundles/c975lbook/images/no-portrait.webp")) %}
 
 {# The hero carries the page's only h1, inside the container where the portrait can stand beside it #}
 {% block heading %}{% endblock %}

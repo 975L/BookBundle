@@ -252,6 +252,8 @@ class BookSectionsExtension
         // The planches are a section of their own, listed whole: a serie holding hundreds of them grows its list as the visitor scrolls rather than being cut to a handful (see serie/display.html.twig). The "book_serie_strips" block stays what shows a few of them on any other page
         // The summary is no section either, exactly as a book's is none: it is the sentence the serie opens on, laid under the hero without a title or an anchor (see Serie:Resume)
         return $this->sections([
+            // Above what the serie holds and not below it: a serie opens on who peoples it, and that presentation is read before the hundred planches it explains
+            'characters' => ['label.characters_section', !$serie->getCharacters()->isEmpty()],
             'books' => ['label.serie_books', !$serie->getBooks()->isEmpty()],
             'strips' => ['label.strips', !$serie->getStrips()->isEmpty()],
         ], $serie->getLanguage());

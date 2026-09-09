@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Controller\Management\BookCategoryCrudController;
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\CharacterCrudController;
 use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
@@ -78,6 +79,16 @@ class MenuProvider implements MenuProviderInterface
                 // The very text the people screen opens on (see contributor_crud_index.html.twig), reused as-is for the onboarding tour rather than written again for it
                 'description' => 'label.info_contributor',
                 // The bar ContributorCrudController states on its own rows - a catalog is written by whoever writes the site
+                'role' => $this->configService->get('site-role-editor'),
+            ],
+            'character' => [
+                'controller' => CharacterCrudController::class,
+                'label' => 'label.characters',
+                'narration' => 'narration.characters',
+                'translation_domain' => 'book',
+                'icon' => 'fas fa-masks-theater',
+                'description' => 'label.info_character',
+                // The bar CharacterCrudController states on its own rows - a catalog is written by whoever writes the site
                 'role' => $this->configService->get('site-role-editor'),
             ],
             'strip' => [

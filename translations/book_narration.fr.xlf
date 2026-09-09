@@ -10,6 +10,10 @@
                 <source>narration.categories</source>
                 <target>« Catégories » découpe le catalogue par sujet : un livre en porte autant qu'il en mérite, et une catégorie a sa propre page si le site lui en donne une.</target>
             </trans-unit>
+            <trans-unit id="35VWv_4">
+                <source>narration.characters</source>
+                <target>Les personnages de vos séries</target>
+            </trans-unit>
             <trans-unit id="wVe4G1M">
                 <source>narration.contributors</source>
                 <target>« Auteurs et illustrateurs » tient les personnes créditées par le catalogue. Chacune a sa page, qui liste ce qu'elle a signé ; un livre ou une série les choisit dans cette liste plutôt que de retaper leur nom.</target>
@@ -41,6 +45,46 @@
             <trans-unit id="tAZpoIt">
                 <source>narration.guided_step_book_category_creation_title</source>
                 <target>Donnez-lui son nom : Romans, Jeunesse, Carnets.</target>
+            </trans-unit>
+            <trans-unit id="JEpJKF0">
+                <source>narration.guided_step_book_character_creation_done</source>
+                <target>La série est peuplée. Les planches peuvent désormais dire qui parle en le choisissant dans cette liste.</target>
+            </trans-unit>
+            <trans-unit id="P3Ckzd.">
+                <source>narration.guided_step_book_character_creation_group</source>
+                <target>« Héros », « Méchants » : ce qui coupe la page de la série en plusieurs rangées. Laissé vide, tout le monde tient sur une seule.</target>
+            </trans-unit>
+            <trans-unit id="5o2Di_L">
+                <source>narration.guided_step_book_character_creation_name</source>
+                <target>Nommez-le comme les planches le disent : c'est ce nom que portent les pastilles.</target>
+            </trans-unit>
+            <trans-unit id="IUH3Q3W">
+                <source>narration.guided_step_book_character_creation_new</source>
+                <target>Le bouton ouvre la fiche vierge d'un personnage.</target>
+            </trans-unit>
+            <trans-unit id="McgsdVg">
+                <source>narration.guided_step_book_character_creation_open</source>
+                <target>Ouvrez « Personnages » : ils y sont tous, chacun rattaché à sa série.</target>
+            </trans-unit>
+            <trans-unit id="ml2pIBL">
+                <source>narration.guided_step_book_character_creation_portrait</source>
+                <target>Donnez-lui un visage : le portrait est téléversé une fois et porté par toutes les planches où il parle.</target>
+            </trans-unit>
+            <trans-unit id="y2U0bYg">
+                <source>narration.guided_step_book_character_creation_presentation</source>
+                <target>Présentez-le en une phrase : c'est elle qui se lit sous son portrait, sur la page de la série.</target>
+            </trans-unit>
+            <trans-unit id="GCWihUZ">
+                <source>narration.guided_step_book_character_creation_save</source>
+                <target>Enregistrez : le personnage rejoint sa série.</target>
+            </trans-unit>
+            <trans-unit id="MatVWzQ">
+                <source>narration.guided_step_book_character_creation_serie</source>
+                <target>Rattachez-le à sa série : deux séries peuvent avoir chacune leur « Papa », qui ne sont pas la même personne.</target>
+            </trans-unit>
+            <trans-unit id="PZeR3B_">
+                <source>narration.guided_step_book_character_creation_slug</source>
+                <target>L'adresse est dérivée du nom, et c'est elle qui filtre la liste des planches. Modifiez-la avant la première mise en ligne, pas après.</target>
             </trans-unit>
             <trans-unit id="exSRKHD">
                 <source>narration.guided_step_book_composition_add</source>
@@ -384,7 +428,7 @@
             </trans-unit>
             <trans-unit id="UVtNxpy">
                 <source>narration.guided_step_book_strip_creation_characters</source>
-                <target>Dites qui parle : les noms séparés par une virgule. Ce sont eux que les pastilles de la série filtrent.</target>
+                <target>Dites qui parle : choisissez-les parmi les personnages de la série. À la création, la liste les offre toutes, elle se filtre en rouvrant la planche.</target>
             </trans-unit>
             <trans-unit id="HHP.rG8">
                 <source>narration.guided_step_book_strip_creation_done</source>
