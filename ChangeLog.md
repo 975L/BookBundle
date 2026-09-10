@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.10.1
+
+A serie presents its characters only where there is something to present
+
+- The characters section of a serie's page is drawn only where a character carries a face or a presentation (10/09/2026)
+
 ## v2.10.0
 
 Where a catalog is sold is said by each book alone

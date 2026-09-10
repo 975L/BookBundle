@@ -249,8 +249,8 @@ A book's and a serie's sections are named once, by `book_sections(book)` and `se
 (`Twig\BookSectionsExtension`), and the page reads that list twice: once by the hero, which offers the
 sections a reader comes for, once to decide what to render. A section is therefore never offered by a
 button without being on the page, nor rendered without an anchor pointing at it — `extracts`,
-`podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `informations` for a book, `books`
-and `strips` for a serie. Each section wears UiBundle's `toc-target`, which leaves the room a resting
+`podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `informations` for a book,
+`characters`, `books` and `strips` for a serie. Each section wears UiBundle's `toc-target`, which leaves the room a resting
 summary bar would cover, so a jump doesn't land a title under it.
 
 No page of this bundle carries a summary of anchors: the hero's own row of buttons opens what a reader
@@ -358,7 +358,9 @@ series; left empty, they are presented as one.
 
 The screen sits under **Catalogue**, like the series' one, and a planche picks who speaks from it rather than
 typing names. `Serie:Characters` draws the section on the serie's own page, in UiBundle's `portrait` variant,
-so a site that composed those cards by hand keeps the styling it already had and can then drop the block.
+so a site that composed those cards by hand keeps the styling it already had and can then drop the block. That
+section is written for the serie whose people carry a presentation or a portrait: where they are bare names,
+the row of chips under the planches says them already, and no section repeats it.
 
 Upgrading a catalog whose planches carried the names as text, `c975l:book:characters:from-strips` writes one
 character per distinct name and the links to them — see [`UPGRADE.md`](UPGRADE.md), which names the two

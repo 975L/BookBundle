@@ -11,6 +11,8 @@
 namespace c975L\BookBundle\Twig;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Character;
+use c975L\BookBundle\Entity\CharacterMedia;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
@@ -243,6 +245,15 @@ class BookSectionsExtension
         return null;
     }
 
+    // Whether presenting the characters says anything the row of chips under the planches does not: the section is written for the serie whose people carry a face or a presentation of their own, a bare list of names being that row already
+    private function hasPresentedCharacters(Serie $serie): bool
+    {
+        // The text first, carried by the row the character was loaded with, where the face costs a query per character
+        return $serie->getCharacters()->exists(
+            static fn (int $key, Character $character): bool => '' !== (string) $character->getPresentation() || $character->getMedia() instanceof CharacterMedia
+        );
+    }
+
     /**
      * @return array<int, array{anchor: string, label: string}>
      */
@@ -253,7 +264,7 @@ class BookSectionsExtension
         // The summary is no section either, exactly as a book's is none: it is the sentence the serie opens on, laid under the hero without a title or an anchor (see Serie:Resume)
         return $this->sections([
             // Above what the serie holds and not below it: a serie opens on who peoples it, and that presentation is read before the hundred planches it explains
-            'characters' => ['label.characters_section', !$serie->getCharacters()->isEmpty()],
+            'characters' => ['label.characters_section', $this->hasPresentedCharacters($serie)],
             'books' => ['label.serie_books', !$serie->getBooks()->isEmpty()],
             'strips' => ['label.strips', !$serie->getStrips()->isEmpty()],
         ], $serie->getLanguage());

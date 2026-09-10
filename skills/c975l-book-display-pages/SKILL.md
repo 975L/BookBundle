@@ -74,10 +74,12 @@ and the page keeps its whole width. `sass/_book.scss` opens the two-column layou
 | Owner | Keys, in the bundle's order |
 | --- | --- |
 | a book | `extracts`, `podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `informations` |
-| a serie | `books`, `strips` |
+| a serie | `characters`, `books`, `strips` |
 
 A section is present only when the book actually holds something for it, `informations` excepted — a book
-with no field filled in still says when it comes out and who wrote it. Each entry carries `key`, `anchor`,
+with no field filled in still says when it comes out and who wrote it. A serie's `characters` asks more than
+that: it is written for the serie whose people carry a presentation or a portrait, a bare list of names being
+the row of chips a planche already prints. Each entry carries `key`, `anchor`,
 `label` and, when the catalog holds one, `intro`. **`key` is the name everything else uses** — the site's
 declaration, the pencil's map of fields; `anchor` is only what the page writes as an `id`, and a site may
 rename it. Reading a section off its anchor is what silently loses a button when a site renames one.
@@ -120,7 +122,7 @@ They all live in `templates/components/` and are overridden in
 | `<twig:c975LBook:Contributor:Contributor>` | a person in a listing: portrait squared, name, what they are credited under, the whole card leading to their page |
 | `<twig:c975LBook:Strip:Card>` | a planche, the whole card being the link |
 | `<twig:c975LBook:Strip:Characters>` | who speaks, as chips narrowing the serie's listing — the face each wears is the one uploaded on their own screen |
-| `<twig:c975LBook:Serie:Characters>` | who peoples the serie, presented above what it holds, parted into rows by `Character::$groupName` |
+| `<twig:c975LBook:Serie:Characters>` | who peoples the serie, presented above what it holds, parted into rows by `Character::$groupName` — drawn only where a character carries a presentation or a portrait |
 | `<twig:c975LBook:Strip:Medias>` | what a planche shows, each media placed by its role — takes `editUrl`, `casesEditUrl` and `pageEditUrl`, one per collection |
 | `<twig:c975LBook:Strip:Previous>` / `<twig:c975LBook:Strip:Next>` | the arrows laid over the planche |
 | `<twig:c975LBook:Breadcrumb>` | the trail, for all three pages |

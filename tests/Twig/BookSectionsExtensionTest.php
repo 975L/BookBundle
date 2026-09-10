@@ -16,6 +16,8 @@ use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
+use c975L\BookBundle\Entity\Character;
+use c975L\BookBundle\Entity\CharacterMedia;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use c975L\BookBundle\Twig\BookSectionsExtension;
@@ -128,6 +130,36 @@ class BookSectionsExtensionTest extends TestCase
         $serie->setSummary('Une série');
 
         $this->assertSame([], array_column($this->extension($this->translator())->serie($serie), 'anchor'));
+    }
+
+    // Naming who speaks is not presenting them: a serie whose characters carry neither face nor text says their names in the row of chips under the planches, and opens no section to repeat them
+    public function testCharactersWithNothingToShowOpenNoSection(): void
+    {
+        $serie = new Serie();
+        $serie->addCharacter(new Character()->setName('Loris'));
+
+        $this->assertNotContains('characters', array_column($this->extension($this->translator())->serie($serie), 'anchor'));
+    }
+
+    // A presentation is enough on its own, a face being what a serie uploads later
+    public function testAPresentedCharacterOpensTheSection(): void
+    {
+        $serie = new Serie();
+        $serie->addCharacter(new Character()->setName('Loris')->setPresentation('Le grand frère'));
+
+        $this->assertContains('characters', array_column($this->extension($this->translator())->serie($serie), 'anchor'));
+    }
+
+    // And so is a face, the presentation being a text a serie writes later
+    public function testACharacterCarryingAFaceOpensTheSection(): void
+    {
+        $character = new Character()->setName('Loris');
+        $character->addMedia(new CharacterMedia()->setName('loris.jpg'));
+
+        $serie = new Serie();
+        $serie->addCharacter($character);
+
+        $this->assertContains('characters', array_column($this->extension($this->translator())->serie($serie), 'anchor'));
     }
 
     // The book's recording is listened to and downloaded in the "Listen" card, which already holds the podcast apps. It belongs to the book, its edition saying only the ISBN it comes out under (see BookEditionType)

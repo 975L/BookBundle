@@ -1,5 +1,15 @@
 [
     {
+        "date": "2026-09-10",
+        "description": [
+            {
+                "en": "A serie's page shows its \"Characters\" section once its characters carry a portrait or a sentence presenting them: where they are only names, the chips under the planches say them already.",
+                "fr": "La page d'une série affiche sa section « Personnages » dès lors que ses personnages portent un portrait ou une phrase de présentation : lorsqu'ils ne sont que des noms, les pastilles sous les planches les disent déjà.",
+                "es": "La página de una serie muestra su sección «Personajes» cuando sus personajes llevan un retrato o una frase que los presenta: cuando solo son nombres, las etiquetas bajo las páginas ya los dicen."
+            }
+        ]
+    },
+    {
         "date": "2026-09-09",
         "description": [
             {
