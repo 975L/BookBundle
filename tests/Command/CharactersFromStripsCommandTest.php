@@ -81,8 +81,9 @@ class CharactersFromStripsCommandTest extends TestCase
     private function execute(Serie $serie, array $strips, array $rows, bool $hasColumn = true): CommandTester
     {
         $schemaManager = $this->createStub(AbstractSchemaManager::class);
-        $schemaManager->method('listTableColumns')->willReturn(
-            $hasColumn ? [new Column('characters', Type::getType(Types::STRING))] : []
+        // Quoted as a real introspection names its columns, where toString() would keep the quotes
+        $schemaManager->method('introspectTableColumnsByUnquotedName')->willReturn(
+            $hasColumn ? [new Column('"characters"', Type::getType(Types::STRING))] : []
         );
 
         $connection = $this->createStub(Connection::class);

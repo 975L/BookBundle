@@ -75,25 +75,25 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
     // The id breaks the ties on every collection below: a position is typed in the back-office and a date is shared by two rows, so nothing here is unique on its own and the database was free to order the rows sharing one as it liked
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinTable(name: 'book_serie_block')]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $blocks;
 
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'serie')]
-    #[ORM\OrderBy(['number' => 'ASC', 'published' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['number' => \SortDirection::Ascending, 'published' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $books;
 
     #[ORM\OneToMany(targetEntity: Strip::class, mappedBy: 'serie')]
-    #[ORM\OrderBy(['number' => 'ASC', 'published' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['number' => \SortDirection::Ascending, 'published' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $strips;
 
     // Who peoples the serie, presented on its page and picked from on a planche's screen (see Character)
     #[ORM\OneToMany(targetEntity: Character::class, mappedBy: 'serie', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $characters;
 
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: SerieMedia::class, mappedBy: 'serie', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $medias;
 
     #[ORM\ManyToOne]

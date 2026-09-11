@@ -63,7 +63,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 
 - PHP >= 8.4
 - [c975L/CoreBundle](https://github.com/975L/CoreBundle) >= 1.28 — the localised routes, the language screens and the translations a copy carries (`LocalizedRouteNegotiator`, `ContentLocaleScreen`, `TranslationCopier`)
-- Doctrine ORM
+- Doctrine ORM >= 3.7 and DBAL >= 4.4
 - EasyAdmin
 - symfony/ux-live-component
 - symfony/ux-twig-component

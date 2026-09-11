@@ -59,8 +59,8 @@ class ContributorRepository extends ServiceEntityRepository
             ->andWhere('c.isDeleted = false')
             // The public listing, read by the front, by the sitemap and by the link picker alike - a person set aside belongs to none of the three (see Entity\Trait\HideableTrait). The back-office lists them all, EasyAdmin building its own query
             ->andWhere('c.hidden = false')
-            ->orderBy('c.position', 'ASC')
-            ->addOrderBy('c.name', 'ASC')
+            ->orderBy('c.position', \SortDirection::Ascending)
+            ->addOrderBy('c.name', \SortDirection::Ascending)
         ;
 
         if (null !== $number) {
@@ -89,8 +89,8 @@ class ContributorRepository extends ServiceEntityRepository
                 . ' OR EXISTS (SELECT isr.id FROM ' . Serie::class . ' isr WHERE isr.illustrator = c AND isr.isDeleted = false AND isr.hidden = false)'
                 . ' OR EXISTS (SELECT cr.id FROM ' . BookContributor::class . ' cr JOIN cr.book cb WHERE cr.contributor = c AND cb.isDeleted = false AND cb.hidden = false AND cb.newerVersion IS NULL)'
             )
-            ->orderBy('c.position', 'ASC')
-            ->addOrderBy('c.name', 'ASC')
+            ->orderBy('c.position', \SortDirection::Ascending)
+            ->addOrderBy('c.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult()
         ;

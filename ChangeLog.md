@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.11.1
+
+Replace Doctrine deprecated calls
+
+- Sort directions use `\SortDirection` instead of `'ASC'`/`'DESC'` (11/09/2026)
+- `CharactersFromStripsCommand` introspects columns by unquoted name (11/09/2026)
+- PHPStan reports deprecated calls, through `phpstan-deprecation-rules` (11/09/2026)
+- PHPUnit sees Doctrine deprecations, `DOCTRINE_DEPRECATIONS` set to `trigger` (11/09/2026)
+- PHPStan moves to require-dev, out of the CI's installed tools (11/09/2026)
+- Requires `doctrine/orm` `^3.7` and `doctrine/dbal` `^4.4` (11/09/2026)
+
 ## v2.11.0
 
 The catalog is read in every language the site declares

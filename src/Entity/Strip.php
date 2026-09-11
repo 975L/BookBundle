@@ -58,7 +58,7 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     // Who speaks in the planche, pointing at the serie's own people rather than naming them again as text - a name could not be misspelled into a second character, and renaming one renames it on every planche at once (see Character)
     #[ORM\ManyToMany(targetEntity: Character::class, inversedBy: 'strips')]
     #[ORM\JoinTable(name: 'book_strip_character')]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $characters;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -85,13 +85,13 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
 
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinTable(name: 'book_strip_block')]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $blocks;
 
     #[Assert\Valid]
     // The id breaks the ties: the position is typed in the back-office, so nothing makes it unique, and on the rows sharing one the database is free to order as it likes - a planche whose panels shared a position was read in one order on a page load and in another on the next
     #[ORM\OneToMany(targetEntity: StripMedia::class, mappedBy: 'strip', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $medias;
 
     public function __construct()

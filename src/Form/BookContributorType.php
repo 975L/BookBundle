@@ -42,7 +42,7 @@ class BookContributorType extends AbstractType
                 'query_builder' => static fn (ContributorRepository $repository) => $repository
                     ->createQueryBuilder('c')
                     ->andWhere('c.isDeleted = false')
-                    ->orderBy('c.name', 'ASC'),
+                    ->orderBy('c.name', \SortDirection::Ascending),
             ])
             // The parts this site credits, its vocabulary being its own (see BookCustomizationProviderInterface::getContributorRoles())
             ->add('role', ChoiceType::class, [

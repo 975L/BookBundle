@@ -33,8 +33,8 @@ class CharacterRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->andWhere('c.serie = :serie')
             ->setParameter('serie', $serie)
-            ->orderBy('c.position', 'ASC')
-            ->addOrderBy('c.id', 'ASC')
+            ->orderBy('c.position', \SortDirection::Ascending)
+            ->addOrderBy('c.id', \SortDirection::Ascending)
             ->getQuery()
             ->getResult()
         ;

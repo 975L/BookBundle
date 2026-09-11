@@ -56,8 +56,8 @@ class SerieRepository extends ServiceEntityRepository
             ->andWhere('s.isDeleted = false')
             // The public listing, read by the front, by the sitemap and by the link picker alike - a serie set aside belongs to none of the three (see Entity\Trait\HideableTrait). The back-office lists them all, EasyAdmin building its own query
             ->andWhere('s.hidden = false')
-            ->orderBy('s.position', 'ASC')
-            ->addOrderBy('s.title', 'ASC')
+            ->orderBy('s.position', \SortDirection::Ascending)
+            ->addOrderBy('s.title', \SortDirection::Ascending)
         ;
 
         if (null !== $number) {
@@ -110,8 +110,8 @@ class SerieRepository extends ServiceEntityRepository
             ->andWhere('s.kind IS NULL OR s.kind = :kind')
             ->setParameter('kind', SerieKind::Book->value)
             ->setParameter('now', new \DateTime())
-            ->orderBy('s.position', 'ASC')
-            ->addOrderBy('s.title', 'ASC')
+            ->orderBy('s.position', \SortDirection::Ascending)
+            ->addOrderBy('s.title', \SortDirection::Ascending)
             ->getQuery()
             ->getResult()
         ;
@@ -130,8 +130,8 @@ class SerieRepository extends ServiceEntityRepository
             ->andWhere('s.hidden = false')
             ->andWhere('s.kind IS NULL OR s.kind = :kind')
             ->setParameter('kind', SerieKind::Strip->value)
-            ->orderBy('s.position', 'ASC')
-            ->addOrderBy('s.title', 'ASC')
+            ->orderBy('s.position', \SortDirection::Ascending)
+            ->addOrderBy('s.title', \SortDirection::Ascending)
             ->getQuery()
             ->getResult()
         ;
@@ -147,8 +147,8 @@ class SerieRepository extends ServiceEntityRepository
             ->where('s.slug = :slug')
             ->setParameter('slug', $slug)
             ->addSelect('CASE WHEN b.published IS NULL THEN 1 ELSE 0 END AS HIDDEN sortNull')
-            ->orderBy('sortNull', 'DESC') // NULLs en premier
-            ->addOrderBy('b.published', 'DESC') // Les plus récents ensuite
+            ->orderBy('sortNull', \SortDirection::Descending) // NULLs first
+            ->addOrderBy('b.published', \SortDirection::Descending) // Newest next
             ->getQuery()
             ->getOneOrNullResult()
         ;

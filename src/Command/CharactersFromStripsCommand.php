@@ -88,7 +88,7 @@ class CharactersFromStripsCommand extends Command
     // Whether the planches still carry the column this reads: asked of the schema itself, the entity having stopped declaring it
     private function hasLegacyColumn(): bool
     {
-        return array_any($this->connection->createSchemaManager()->listTableColumns('book_strip'), fn ($column) => self::LEGACY_COLUMN === $column->getName());
+        return array_any($this->connection->createSchemaManager()->introspectTableColumnsByUnquotedName('book_strip'), fn ($column) => self::LEGACY_COLUMN === $column->getObjectName()->getIdentifier()->getValue());
     }
 
     /**

@@ -60,7 +60,7 @@ class BookRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.isDeleted = false')
-            ->orderBy('b.title', 'ASC')
+            ->orderBy('b.title', \SortDirection::Ascending)
             ->getQuery()
             ->getResult()
         ;
@@ -202,7 +202,7 @@ class BookRepository extends ServiceEntityRepository
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->setParameter('number', $number)
             // Two books left sharing a number - a site numbering each language apart - answer in a fixed order rather than in the one the database happens to return
-            ->orderBy('b.id', 'ASC')
+            ->orderBy('b.id', \SortDirection::Ascending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
@@ -223,7 +223,7 @@ class BookRepository extends ServiceEntityRepository
             // A book of a serie set aside is no more shown than the serie telling it: reading it here covers every way a row is written - the form, the index switch, the import and the fixtures - where a guard on each of them would not
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.published IS NOT NULL AND b.published <= :now')
-            ->orderBy('b.published', 'DESC')
+            ->orderBy('b.published', \SortDirection::Descending)
             ->setParameter('now', new \DateTime())
         ;
 
@@ -259,8 +259,8 @@ class BookRepository extends ServiceEntityRepository
             ->andWhere('b.hidden = false')
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.published > :now OR b.published IS NULL')
-            ->orderBy('b.published', 'DESC')
-            ->addOrderBy('b.id', 'DESC')
+            ->orderBy('b.published', \SortDirection::Descending)
+            ->addOrderBy('b.id', \SortDirection::Descending)
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult()
@@ -308,7 +308,7 @@ class BookRepository extends ServiceEntityRepository
             ->andWhere('b.hidden = false')
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.language IS NOT NULL')
-            ->orderBy('b.language', 'ASC')
+            ->orderBy('b.language', \SortDirection::Ascending)
             ->getQuery()
             ->getSingleColumnResult()
         ;
@@ -343,7 +343,7 @@ class BookRepository extends ServiceEntityRepository
             ->andWhere('b.published <= :now')
             ->setParameter('now', new \DateTime())
             ->setParameter('query', '%' . $query . '%')
-            ->orderBy('b.published', 'DESC')
+            ->orderBy('b.published', \SortDirection::Descending)
             ->getQuery()
             ->getResult()
         ;

@@ -197,7 +197,7 @@ class BookCrudController extends AbstractCrudController
             AssociationField::new('translationBook')
                 ->setLabel(t('label.translations', [], 'book'))
                 ->setFormTypeOption('query_builder', fn ($repository) => $repository->createQueryBuilder('s')
-                    ->orderBy('s.title', 'ASC'))
+                    ->orderBy('s.title', \SortDirection::Ascending))
                 ->formatValue(function ($value, $entity) {
                     if (!$value) {
                         return null;
@@ -477,7 +477,7 @@ class BookCrudController extends AbstractCrudController
         return function ($repository) use ($id) {
             $queryBuilder = $repository->createQueryBuilder('v')
                 ->andWhere('v.isDeleted = false')
-                ->orderBy('v.title', 'ASC');
+                ->orderBy('v.title', \SortDirection::Ascending);
 
             // Nothing to exclude on the creation screen: the book has no identity yet
             if (null !== $id) {

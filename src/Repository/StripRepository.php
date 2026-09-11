@@ -64,9 +64,9 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
-            ->orderBy('s.published', 'DESC')
+            ->orderBy('s.published', \SortDirection::Descending)
             // Two planches published the same day are read newest first all the same, on the id the navigation from one to the next ties on too (see findPreviousNext) - a number is nullable where an id never is
-            ->addOrderBy('s.id', 'DESC')
+            ->addOrderBy('s.id', \SortDirection::Descending)
             ->setParameter('now', new \DateTime())
         ;
 
@@ -87,9 +87,9 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             // The latest published first, as in the listing of all planches: a serie holding hundreds of them opens on what has just come out
-            ->orderBy('s.number', 'DESC')
-            ->addOrderBy('s.published', 'DESC')
-            ->addOrderBy('s.id', 'DESC')
+            ->orderBy('s.number', \SortDirection::Descending)
+            ->addOrderBy('s.published', \SortDirection::Descending)
+            ->addOrderBy('s.id', \SortDirection::Descending)
             ->setParameter('serie', $serie)
             ->setParameter('now', new \DateTime())
         ;
@@ -121,8 +121,8 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
-            ->orderBy('s.published', 'DESC')
-            ->addOrderBy('s.id', 'DESC')
+            ->orderBy('s.published', \SortDirection::Descending)
+            ->addOrderBy('s.id', \SortDirection::Descending)
             ->setParameter('character', $character)
             ->setParameter('now', new \DateTime())
             ->getQuery()
@@ -158,7 +158,7 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.published <= :now')
             ->setParameter('number', $number)
             ->setParameter('now', new \DateTime())
-            ->orderBy('s.id', 'ASC')
+            ->orderBy('s.id', \SortDirection::Ascending)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
@@ -174,8 +174,8 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->andWhere('s.published < :current OR (s.published = :current AND s.id < :id)')
-            ->orderBy('s.published', 'DESC')
-            ->addOrderBy('s.id', 'DESC')
+            ->orderBy('s.published', \SortDirection::Descending)
+            ->addOrderBy('s.id', \SortDirection::Descending)
             ->setMaxResults(1)
             ->setParameter('serie', $strip->getSerie())
             ->setParameter('now', new \DateTime())
@@ -192,8 +192,8 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->andWhere('s.published > :current OR (s.published = :current AND s.id > :id)')
-            ->orderBy('s.published', 'ASC')
-            ->addOrderBy('s.id', 'ASC')
+            ->orderBy('s.published', \SortDirection::Ascending)
+            ->addOrderBy('s.id', \SortDirection::Ascending)
             ->setMaxResults(1)
             ->setParameter('serie', $strip->getSerie())
             ->setParameter('now', new \DateTime())
@@ -204,14 +204,14 @@ class StripRepository extends ServiceEntityRepository
         ;
 
         // At either end the serie loops rather than stopping: from the last planche the reader goes back to the first, and the bar keeps its three places filled instead of showing a hole. A serie of one loops on itself, which is no navigation at all, so it keeps its nulls
-        $previous ??= $this->findEnd($strip, 'DESC');
-        $next ??= $this->findEnd($strip, 'ASC');
+        $previous ??= $this->findEnd($strip, \SortDirection::Descending);
+        $next ??= $this->findEnd($strip, \SortDirection::Ascending);
 
         return ['previous' => $previous, 'next' => $next];
     }
 
     // The first or the last planche of the serie the given one belongs to, whichever end the loop asks for
-    private function findEnd(Strip $strip, string $direction): ?Strip
+    private function findEnd(Strip $strip, \SortDirection $direction): ?Strip
     {
         $end = $this->createQueryBuilder('s')
             ->andWhere('s.serie = :serie')
@@ -245,7 +245,7 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
-            ->orderBy('c.name', 'ASC')
+            ->orderBy('c.name', \SortDirection::Ascending)
             ->setParameter('serie', $serie)
             ->setParameter('now', new \DateTime())
             ->getQuery()
@@ -281,8 +281,8 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.published <= :now')
             ->setParameter('now', new \DateTime())
             ->setParameter('query', '%' . $query . '%')
-            ->orderBy('s.published', 'DESC')
-            ->addOrderBy('s.id', 'DESC')
+            ->orderBy('s.published', \SortDirection::Descending)
+            ->addOrderBy('s.id', \SortDirection::Descending)
             ->getQuery()
             ->getResult()
         ;

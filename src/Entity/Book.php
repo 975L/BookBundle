@@ -78,7 +78,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     // What the book is about, where its serie is what it belongs to: as many as it deserves, none being just as valid (see BookCategory). The owning side sits here, this being the screen a category is picked on
     #[ORM\ManyToMany(targetEntity: BookCategory::class, inversedBy: 'books')]
     #[ORM\JoinTable(name: 'book_category_link')]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $categories;
 
     // The volume number, which is the book's rank in its serie - named as Strip::$number is, the two being the same thing
@@ -87,20 +87,20 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
 
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinTable(name: 'book_book_block')]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $blocks;
 
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: BookMedia::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $medias;
 
     #[ORM\OneToMany(targetEntity: BookLink::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $links;
 
     #[ORM\OneToMany(targetEntity: BookEdition::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $editions;
 
     // Who else had a hand in it - the voice that read it, the pen that carried it into another language - each row naming the person and the part they took (see BookContributor). Author and illustrator stay columns of their own: they are the two a book inherits from its serie
@@ -108,7 +108,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     // errorPath so the message lands on the person field of the offending row rather than at the head of the form, where EasyAdmin prints what bubbles up from a compound field
     #[Assert\Unique(message: 'label.contributor_role_duplicate', normalizer: [self::class, 'creditKey'], errorPath: 'contributor')]
     #[ORM\OneToMany(targetEntity: BookContributor::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $contributors;
 
     // The fields this site adds to a book and no other site has, held as one JSON payload rather than a column each - same reasoning as UiBundle's Block::$data: what a single catalog needs is then a form type it declares (see BookCustomizationProviderInterface::getDataFormType()), no schema migration for every app running this bundle. Anything the database itself has to filter, sort or join on stays a real column, an ISBN being a BookEdition row
@@ -117,17 +117,17 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
 
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: BookVideo::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $videos;
 
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: BookPresse::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $presses;
 
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: BookMarketing::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $marketings;
 
     #[ORM\Column(length: 5, nullable: true)]

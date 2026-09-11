@@ -55,8 +55,8 @@ class BookCategoryRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('c')
             ->andWhere('c.isDeleted = false')
             ->andWhere('c.hidden = false')
-            ->orderBy('c.position', 'ASC')
-            ->addOrderBy('c.title', 'ASC')
+            ->orderBy('c.position', \SortDirection::Ascending)
+            ->addOrderBy('c.title', \SortDirection::Ascending)
         ;
 
         if (null !== $number) {
@@ -79,8 +79,8 @@ class BookCategoryRepository extends ServiceEntityRepository
             ->andWhere('c.isDeleted = false')
             ->andWhere('c.hidden = false')
             ->setParameter('now', new \DateTime())
-            ->orderBy('c.position', 'ASC')
-            ->addOrderBy('c.title', 'ASC')
+            ->orderBy('c.position', \SortDirection::Ascending)
+            ->addOrderBy('c.title', \SortDirection::Ascending)
             ->getQuery()
             ->getResult()
         ;

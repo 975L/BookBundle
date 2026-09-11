@@ -31,7 +31,7 @@ class MediaRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->where('m.name IS NOT NULL AND m.name != :empty')
             ->setParameter('empty', '')
-            ->orderBy('m.name', 'ASC')
+            ->orderBy('m.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult()
         ;
@@ -44,7 +44,7 @@ class MediaRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->andWhere('m.name LIKE :pdf')
             ->setParameter('pdf', '%.pdf')
-            ->orderBy('m.name', 'ASC')
+            ->orderBy('m.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult()
         ;
@@ -57,8 +57,8 @@ class MediaRepository extends ServiceEntityRepository
                 ->andWhere('m.entityId = :entityId')
                 ->setParameter('entityType', $entityType)
                 ->setParameter('entityId', $entityId)
-                ->orderBy('m.category', 'ASC')
-                ->addOrderBy('m.createdAt', 'DESC')
+                ->orderBy('m.category', \SortDirection::Ascending)
+                ->addOrderBy('m.createdAt', \SortDirection::Descending)
                 ->getQuery()
                 ->getResult();
         }
@@ -72,7 +72,7 @@ class MediaRepository extends ServiceEntityRepository
                 ->setParameter('entityType', $entityType)
                 ->setParameter('entityId', $entityId)
                 ->setParameter('category', $category)
-                ->orderBy('m.createdAt', 'DESC')
+                ->orderBy('m.createdAt', \SortDirection::Descending)
                 ->getQuery()
                 ->getResult();
         }

@@ -59,7 +59,7 @@ class Character implements \Stringable
 
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: CharacterMedia::class, mappedBy: 'character', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $medias;
 
     #[ORM\ManyToMany(targetEntity: Strip::class, mappedBy: 'characters')]

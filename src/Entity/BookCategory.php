@@ -68,7 +68,7 @@ class BookCategory implements HasBlocksInterface, TrashableInterface, \Stringabl
     // What the category page says beyond the books it lists - composed in the back office with UiBundle's kinds, the same way a serie's page is
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinTable(name: 'book_category_block')]
-    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $blocks;
 
     #[ORM\ManyToMany(targetEntity: Book::class, mappedBy: 'categories')]
