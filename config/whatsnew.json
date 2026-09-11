@@ -1,5 +1,45 @@
 [
     {
+        "date": "2026-09-11",
+        "description": [
+            {
+                "en": "Your catalog now reads in every language your site offers: each book, serie, category, planche, character and author page has its own address in each language.",
+                "fr": "Votre catalogue se lit désormais dans toutes les langues de votre site : chaque livre, série, catégorie, planche, personnage et page d'auteur a sa propre adresse dans chaque langue.",
+                "es": "Su catálogo se lee ahora en todos los idiomas de su sitio: cada libro, serie, categoría, página, personaje y autor tiene su propia dirección en cada idioma."
+            },
+            {
+                "en": "A \"Translate\" button opens a book, a serie, a category, a planche, a character or a person in another language, offering only the texts to translate: the title, the summary, the presentation.",
+                "fr": "Un bouton « Traduire » ouvre un livre, une série, une catégorie, une planche, un personnage ou une personne dans une autre langue, en ne proposant que les textes à traduire : le titre, le résumé, la présentation.",
+                "es": "Un botón «Traducir» abre un libro, una serie, una categoría, una página, un personaje o una persona en otro idioma, ofreciendo solo los textos por traducir: el título, el resumen, la presentación."
+            },
+            {
+                "en": "The titles under a book's press cuttings and promotional visuals can be translated too.",
+                "fr": "Les titres des coupures de presse et des visuels promotionnels d'un livre se traduisent aussi.",
+                "es": "Los títulos de los recortes de prensa y de los visuales promocionales de un libro también se traducen."
+            },
+            {
+                "en": "A copy keeps the translations already written, and a new version of a book keeps those of its summary.",
+                "fr": "Une copie garde les traductions déjà écrites, et une nouvelle version d'un livre garde celles de son résumé.",
+                "es": "Una copia conserva las traducciones ya escritas, y una nueva versión de un libro conserva las de su resumen."
+            },
+            {
+                "en": "The page where readers ask to be told a book is out now speaks the language they are reading in.",
+                "fr": "La page où un lecteur demande à être prévenu de la parution d'un livre parle désormais la langue dans laquelle il lit.",
+                "es": "La página donde un lector pide que le avisen de la publicación de un libro habla ahora el idioma en el que lee."
+            },
+            {
+                "en": "A guided tour shows how to translate a book.",
+                "fr": "Une visite guidée montre comment traduire un livre.",
+                "es": "Una visita guiada muestra cómo traducir un libro."
+            },
+            {
+                "en": "A demo site shows its sample catalog in every language it offers.",
+                "fr": "Un site de démonstration montre son catalogue d'exemple dans toutes les langues qu'il propose.",
+                "es": "Un sitio de demostración muestra su catálogo de ejemplo en todos los idiomas que ofrece."
+            }
+        ]
+    },
+    {
         "date": "2026-09-10",
         "description": [
             {

@@ -1,15 +1,15 @@
 {# <twig:c975LBook:Book:Informations book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
 {% props book, section = {}, editUrl = "" %}
-{% set section = {anchor: 'informations', label: 'label.informations'|trans({}, 'book', book.language)}|merge(section) %}
+{% set section = {anchor: 'informations', label: 'label.informations'|trans({}, 'book', book_ui_locale(book.language))}|merge(section) %}
 {% set body %}
     <div class="text-left">
         <p>
-            {{ 'label.published_date'|trans({}, 'book', book.language) }} :
+            {{ 'label.published_date'|trans({}, 'book', book_ui_locale(book.language)) }} :
             <strong>
                 {% if book.published == null %}
-                    {{ 'label.to_be_published'|trans({}, 'book', book.language) }}
+                    {{ 'label.to_be_published'|trans({}, 'book', book_ui_locale(book.language)) }}
                 {% elseif book.published|date("Ymd") > "now"|date("Ymd") %}
-                    {{ 'label.to_be_published'|trans({}, 'book', book.language) }} ({{ book.published|date('d/m/Y') }})
+                    {{ 'label.to_be_published'|trans({}, 'book', book_ui_locale(book.language)) }} ({{ book.published|date('d/m/Y') }})
                 {% else %}
                     {{ book.published|date('d/m/Y') }}
                 {% endif %}
@@ -18,7 +18,7 @@
         {# The serie's author and illustrator stand for a book naming none of its own - the same reading BookSnippetBuilder gives the structured data, so the page and the snippet never name two different people. Their name leads to their own page now that they have one, not to their site off ours: that address is printed there, beside everything else they signed. Null when this site doesn't serve the family, the name then reading as plain text (see BookRoutePrefix) #}
         {% if book.effectiveAuthor %}
             <p>
-                {{ 'label.author'|trans({}, 'book', book.language) }} :
+                {{ 'label.author'|trans({}, 'book', book_ui_locale(book.language)) }} :
                 {% set authorPath = contributor_path(book.effectiveAuthor) %}
                 {% if authorPath %}
                     <a href="{{ authorPath }}">{{ book.effectiveAuthor.name }}</a>
@@ -29,7 +29,7 @@
         {% endif %}
         {% if book.effectiveIllustrator %}
             <p>
-                {{ 'label.illustrator'|trans({}, 'book', book.language) }} :
+                {{ 'label.illustrator'|trans({}, 'book', book_ui_locale(book.language)) }} :
                 {% set illustratorPath = contributor_path(book.effectiveIllustrator) %}
                 {% if illustratorPath %}
                     <a href="{{ illustratorPath }}">{{ book.effectiveIllustrator.name }}</a>
@@ -42,7 +42,7 @@
         {% for credit in book.contributors %}
             {% if credit.contributor %}
                 <p>
-                    {{ book_role_label(credit, book.language) }} :
+                    {{ book_role_label(credit, book_ui_locale(book.language)) }} :
                     {% set creditPath = contributor_path(credit.contributor) %}
                     {% if creditPath %}
                         <a href="{{ creditPath }}">{{ credit.contributor.name }}</a>
@@ -53,15 +53,15 @@
             {% endif %}
         {% endfor %}
         {# The endonym, read from the one place the bundle names languages (see BookTranslationExtension) rather than from a list of this template's own #}
-        <p>{{ 'label.language'|trans({}, 'book', book.language) }} : <strong>{{ book_language_label(book.language) }}</strong></p>
+        <p>{{ 'label.language'|trans({}, 'book', book_ui_locale(book.language)) }} : <strong>{{ book_language_label(book.language) }}</strong></p>
         {% if book.age %}
-            <p>{{ 'label.age'|trans({}, 'book', book.language) }} : <strong>{{ book.age }}</strong></p>
+            <p>{{ 'label.age'|trans({}, 'book', book_ui_locale(book.language)) }} : <strong>{{ book.age }}</strong></p>
         {% endif %}
         {# The serie on one line and no longer in a card of its own: its cover and its summary spoke of another work. The hero names it, the informations lead to it - the path being null on a site serving books but no series (see BookUrlExtension), where the name stays written but is clickable nowhere #}
         {% if book.serie %}
             {% set seriePath = serie_path(book.serie) %}
             <p>
-                {{ 'label.serie'|trans({}, 'book', book.language) }} :
+                {{ 'label.serie'|trans({}, 'book', book_ui_locale(book.language)) }} :
                 {% if seriePath %}
                     <a href="{{ seriePath }}">{{ book.serie.title }}</a>
                 {% else %}
@@ -73,7 +73,7 @@
         {% set categories = book.shownCategories %}
         {% if categories|length %}
             <p>
-                {{ 'label.categories'|trans({}, 'book', book.language) }} :
+                {{ 'label.categories'|trans({}, 'book', book_ui_locale(book.language)) }} :
                 {% for category in categories %}
                     {%- set categoryPath = book_category_path(category) -%}
                     {%- if categoryPath -%}<a href="{{ categoryPath }}">{{ category.title }}</a>{%- else -%}<strong>{{ category.title }}</strong>{%- endif -%}
@@ -89,7 +89,7 @@
         {% endfor %}
         {% if others|length %}
             <p>
-                {{ 'label.translations'|trans({}, 'book', book.language) }} :
+                {{ 'label.translations'|trans({}, 'book', book_ui_locale(book.language)) }} :
                 {% for other in others %}<a href="{{ other.url }}">{{ other.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
             </p>
         {% endif %}
@@ -100,19 +100,19 @@
         {% endfor %}
         {% if versions|length %}
             <p>
-                {{ 'label.other_versions'|trans({}, 'book', book.language) }} :
+                {{ 'label.other_versions'|trans({}, 'book', book_ui_locale(book.language)) }} :
                 {% for version in versions %}<a href="{{ version.url }}">{{ version.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
             </p>
         {% endif %}
         {# One line per edition: its name, its ISBN, and what it is physically - the date is the book's and reads above. An edition holding neither ISBN, format nor pagination has nothing to say and drops out here #}
         {% set editions = book.editions|filter(edition => edition.isbn or edition.format or edition.pages) %}
         {% if editions|length %}
-            <h3>{{ 'label.editions'|trans({}, 'book', book.language) }}</h3>
+            <h3>{{ 'label.editions'|trans({}, 'book', book_ui_locale(book.language)) }}</h3>
             {% for edition in editions %}
                 {# The format and the pagination belong to the edition, not to the book: an epub has neither the size nor the page count of its paperback #}
-                {% set details = [edition.format, edition.pages ? edition.pages ~ ' ' ~ 'label.pages'|trans({}, 'book', book.language)|lower : null]|filter(part => part) %}
+                {% set details = [edition.format, edition.pages ? edition.pages ~ ' ' ~ 'label.pages'|trans({}, 'book', book_ui_locale(book.language))|lower : null]|filter(part => part) %}
                 <p>
-                    {{ book_edition_label(edition, book.language) }} :
+                    {{ book_edition_label(edition, book_ui_locale(book.language)) }} :
                     {# No ISBN is a legitimate state, not a hole to fill: an audio sold on the site alone never needed a number, so its absence stays silent rather than showing a dash #}
                     {% if edition.isbn %}<strong>{{ edition.isbn|isbn }}</strong>{% if details|length %} - {% endif %}{% endif %}
                     {{ details|join(' - ') }}

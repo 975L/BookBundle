@@ -1,6 +1,6 @@
 {# <twig:c975LBook:Book:Presses book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
 {% props book, section = {}, editUrl = "" %}
-{% set section = {anchor: 'presse', label: 'label.presse'|trans({}, 'book', book.language)}|merge(section) %}
+{% set section = {anchor: 'presse', label: 'label.presse'|trans({}, 'book', book_ui_locale(book.language))}|merge(section) %}
 {% if book.presses is not empty %}
     {% set body %}
         <div class="cards">

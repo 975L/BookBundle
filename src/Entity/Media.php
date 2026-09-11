@@ -97,6 +97,10 @@ abstract class Media implements \Stringable
     #[ORM\ManyToOne()]
     private ?UserInterface $user = null;
 
+    // What this row says in the language being rendered, laid over its title and stored nowhere on the row: unmapped on purpose, Doctrine computing its changeset from the mapped properties and never from these getters, so a screen rendered in English cannot write English over the title the file was given (see BookTranslator, the only thing that sets it)
+    /** @var array<string, string|null>|null */
+    private ?array $translated = null;
+
     // A media row is written as soon as its owner is, whether or not a file has been picked - so it carries a date from the moment it exists, an upload simply moving that date forward (see setFile)
     public function __construct()
     {
@@ -185,7 +189,7 @@ abstract class Media implements \Stringable
 
     public function getTitle(): ?string
     {
-        return $this->title;
+        return $this->translated['title'] ?? $this->title;
     }
 
     public function setTitle(?string $title): static
@@ -258,7 +262,7 @@ abstract class Media implements \Stringable
     // The title typed in the back-office is the only text this hierarchy holds, so it stands as the alternative text too
     public function getAlt(): ?string
     {
-        return $this->title;
+        return $this->getTitle();
     }
 
     public function getLabel(): ?string
@@ -324,5 +328,18 @@ abstract class Media implements \Stringable
         }
 
         return $this;
+    }
+
+    // Lays what a language says over the title this file was given, for the render being built and no longer than that - only BookTranslator calls it, and only on the front, a form screen having to go on reading the row
+    /** @param array<string, string|null> $values field => value */
+    public function setTranslated(array $values): void
+    {
+        $this->translated = $values;
+    }
+
+    // The title the row itself carries, whatever language is being rendered - what a language screen offers as the thing to translate (see BookTranslator)
+    public function getUntranslated(string $field): ?string
+    {
+        return 'title' === $field ? $this->title : null;
     }
 }

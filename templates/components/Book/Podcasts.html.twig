@@ -2,7 +2,7 @@
 {# Where the book is listened to, and everything is there: the recording itself, the files taken away, then the podcast apps and the audio bookshops. One gesture for one reader, so one card #}
 {# One column, from the largest to the smallest: listen, take away, subscribe. Everything in it is optional #}
 {% props book, section = {}, editUrl = "" %}
-{% set section = {anchor: 'podcasts', label: 'label.podcasts'|trans({}, 'book', book.language)}|merge(section) %}
+{% set section = {anchor: 'podcasts', label: 'label.podcasts'|trans({}, 'book', book_ui_locale(book.language))}|merge(section) %}
 {% set medias = book_audio_medias(book) %}
 {% set links = book_links_of(book, 'audio', 'podcast') %}
 {% if medias|length or links|length %}
@@ -15,7 +15,7 @@
                 <div class="book-listen__files">
                     {% for media in medias %}
                         {# "Download MP3": the word comes from UiBundle, already translated everywhere a file is downloaded #}
-                        <twig:c975LUi:Button:Button label="{{ 'label.download'|trans({}, 'ui', book.language) }} {{ media.name|split('.')|last|upper }}" url="{{ vich_uploader_asset(media) }}" inline="true"/>
+                        <twig:c975LUi:Button:Button label="{{ 'label.download'|trans({}, 'ui', book_ui_locale(book.language)) }} {{ media.name|split('.')|last|upper }}" url="{{ vich_uploader_asset(media) }}" inline="true"/>
                     {% endfor %}
                 </div>
             </div>

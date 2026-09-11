@@ -5,7 +5,7 @@
 {% set mark = config('book-strip-card-icon')|default('') %}
 {# The picture standing for the planche, read by role and not by rank (see Strip::getThumbnailMedia()) #}
 {% set cardMedia = card.thumbnailMedia %}
-{% set url = path('strip_display', {'slug': card.slug}) %}
+{% set url = book_path('strip_display', {'slug': card.slug}) %}
 {% set editUrl = editable and is_granted(config('site-role-editor')) ? strip_edit_url(card) : null %}
 {# Renamed for the same reason as "mark" above, and it was found the same way: the nested content is rendered in the card's own context, where "rating" is one of its props (the read-only row of its "stat" variant) and shadowed this one, silently leaving every card of the listing without its icons #}
 {% set showRating = rating %}

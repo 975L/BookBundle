@@ -26,6 +26,10 @@
                 <source>action.restore</source>
                 <target>Restaurar</target>
             </trans-unit>
+            <trans-unit id="VOwL1H0">
+                <source>action.translate</source>
+                <target>Traducir</target>
+            </trans-unit>
             <trans-unit id="8w7xgsI">
                 <source>action.trash</source>
                 <target>Papelera</target>
@@ -101,6 +105,10 @@
             <trans-unit id="0ebzwCX">
                 <source>description.guided_project_book_strip_creation</source>
                 <target>Una página, la serie que la cuenta, su lugar y su dibujo: lo necesario para publicarla.</target>
+            </trans-unit>
+            <trans-unit id="Sr_0fZh">
+                <source>description.guided_project_book_translation</source>
+                <target>El mismo libro dicho en otro idioma: su título y su resumen le pertenecen, ya que el número, las ediciones y los enlaces de venta son los mismos en todas partes.</target>
             </trans-unit>
             <trans-unit id="pNsC2xL">
                 <source>description.guided_project_book_trash</source>
@@ -489,6 +497,30 @@
             <trans-unit id="FckYTEl">
                 <source>description.guided_step_book_strip_creation_title</source>
                 <target>El título nombra la página en todas las listas, y de él se deriva su dirección.</target>
+            </trans-unit>
+            <trans-unit id="_wv.XJy">
+                <source>description.guided_step_book_translation_action</source>
+                <target>El botón abre el libro directamente en el primer idioma por traducir. Solo aparece si el sitio declara más de un idioma.</target>
+            </trans-unit>
+            <trans-unit id="TUsX0g7">
+                <source>description.guided_step_book_translation_done</source>
+                <target>Abra su página en la dirección de ese idioma: el título y el resumen traducidos sustituyen a los del idioma de redacción.</target>
+            </trans-unit>
+            <trans-unit id="mQxATAo">
+                <source>description.guided_step_book_translation_locale</source>
+                <target>Las pestañas pasan de un idioma a otro; la primera es aquella en la que se escribió el libro.</target>
+            </trans-unit>
+            <trans-unit id="i2PSx7s">
+                <source>description.guided_step_book_translation_open</source>
+                <target>Una traducción empieza en la lista de libros.</target>
+            </trans-unit>
+            <trans-unit id="9mQftLS">
+                <source>description.guided_step_book_translation_summary</source>
+                <target>El resumen del idioma de redacción se propone entre corchetes, y Donovan puede reformularlo bajo el campo.</target>
+            </trans-unit>
+            <trans-unit id="sHdWjPg">
+                <source>description.guided_step_book_translation_title</source>
+                <target>El título entre corchetes es el del idioma de redacción: sigue mostrándose mientras no se escriba nada.</target>
             </trans-unit>
             <trans-unit id="Kl4RXD0">
                 <source>description.guided_step_book_trash_delete</source>
@@ -1230,6 +1262,14 @@
                 <source>label.extract-help</source>
                 <target>Las páginas que un lector hojea antes de comprar. Las páginas de un álbum pertenecen a la edición en la que se publicaron y se añaden en ella.</target>
             </trans-unit>
+            <trans-unit id="LHpZe.c">
+                <source>label.fieldset_this_language</source>
+                <target>En este idioma (%language%)</target>
+            </trans-unit>
+            <trans-unit id="p8XUdUk">
+                <source>label.fieldset_this_language_help</source>
+                <target>Estos textos son propios de este idioma. Los demás campos —número, slug, ISBN, fechas, enlaces de venta— son los mismos en todas partes y se modifican en la pantalla del idioma de redacción.</target>
+            </trans-unit>
             <trans-unit id="Na2sWb9">
                 <source>label.flipbook</source>
                 <target>Hojeo</target>
@@ -1337,6 +1377,10 @@
             <trans-unit id="9Q84XCP">
                 <source>label.guided_project_book_strip_creation</source>
                 <target>Publicar una página</target>
+            </trans-unit>
+            <trans-unit id="qwcFsNd">
+                <source>label.guided_project_book_translation</source>
+                <target>Traducir un libro</target>
             </trans-unit>
             <trans-unit id="dMs_Dy.">
                 <source>label.guided_project_book_trash</source>
@@ -1761,6 +1805,34 @@
             <trans-unit id="eJnKowv">
                 <source>label.guided_step_book_strip_creation_title</source>
                 <target>Póngale un título</target>
+            </trans-unit>
+            <trans-unit id="BFz211V">
+                <source>label.guided_step_book_translation_action</source>
+                <target>Abrir la pantalla de idioma</target>
+            </trans-unit>
+            <trans-unit id="f2sd9FI">
+                <source>label.guided_step_book_translation_done</source>
+                <target>El libro se lee en ese idioma</target>
+            </trans-unit>
+            <trans-unit id="zYWWz4X">
+                <source>label.guided_step_book_translation_locale</source>
+                <target>Elegir el idioma</target>
+            </trans-unit>
+            <trans-unit id="QqkW.Ip">
+                <source>label.guided_step_book_translation_open</source>
+                <target>Abrir el catálogo</target>
+            </trans-unit>
+            <trans-unit id="7hk52yW">
+                <source>label.guided_step_book_translation_save</source>
+                <target>Guardar</target>
+            </trans-unit>
+            <trans-unit id="WadSqJk">
+                <source>label.guided_step_book_translation_summary</source>
+                <target>Traducir el resumen</target>
+            </trans-unit>
+            <trans-unit id="M.t_Yip">
+                <source>label.guided_step_book_translation_title</source>
+                <target>Traducir el título</target>
             </trans-unit>
             <trans-unit id="omgz67L">
                 <source>label.guided_step_book_trash_delete</source>

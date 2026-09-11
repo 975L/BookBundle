@@ -120,6 +120,7 @@ services:
               translation_domain: 'book'
               category: 'label.category_books'
               form: 'c975L\BookBundle\Form\Block\ReaderBlockType'
+              translatable: 'title'
               template: '@c975LBook/blocks/Reader.html.twig'
               pickable: true
               cacheable: true

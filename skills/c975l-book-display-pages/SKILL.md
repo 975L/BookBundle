@@ -1,6 +1,6 @@
 ---
 name: c975l-book-display-pages
-description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie, of a planche and of a person the catalog credits, their hero and the row of buttons it offers, their sections and the order they come in, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, contributor_display, contributor_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Contributor:Hero, Contributor:Shops, Contributor:Contributor, Contributor:Contributors, Strip:Card, Strip:Cards, Serie:Characters, Strip:Medias, Strip:Summary, StripMediaKind, getMediasByKind, getThumbnailMedia, strip_highres, BookHighresExtension, Image:Zoom, Book:Books, Serie:Series, infinite, infiniteScroll, displayMore, label.books_more, label.series_more, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_role_label, getRoles, book_alternates, book_versions, contributor_path, contributor_url, contributor_edit_url, contributor_edit_urls, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css, block-thumbs, ui-block-thumb, ui.management_stylesheet, getManagementStylesheets, BundleStylesheetManagementProviderInterface, StylesheetProvider, BookBlockCacheTagProvider, BookBlockCacheInvalidator, BookCacheInvalidationListener, book_catalog, hasScheduled, cacheable, book_reader, ReaderBlockType, ReaderCueType, cues, linkLabel, linkUrl, AbstractBookListingBlockType, BookSnippetBuilder, BookJsonLdExtension, book_json_ld, serie_json_ld, strip_json_ld, contributor_json_ld, book_breadcrumb_json_ld, book_item_list_json_ld, BreadcrumbList, ItemList, Person."
+description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie, of a planche and of a person the catalog credits, their hero and the row of buttons it offers, their sections and the order they come in, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, contributor_display, contributor_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Contributor:Hero, Contributor:Shops, Contributor:Contributor, Contributor:Contributors, Strip:Card, Strip:Cards, Serie:Characters, Strip:Medias, Strip:Summary, StripMediaKind, getMediasByKind, getThumbnailMedia, strip_highres, BookHighresExtension, Image:Zoom, Book:Books, Serie:Series, infinite, infiniteScroll, displayMore, label.books_more, label.series_more, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, book_role_label, getRoles, book_alternates, book_versions, contributor_path, contributor_url, contributor_edit_url, contributor_edit_urls, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css, block-thumbs, ui-block-thumb, ui.management_stylesheet, getManagementStylesheets, BundleStylesheetManagementProviderInterface, StylesheetProvider, BookBlockCacheTagProvider, BookBlockCacheInvalidator, BookCacheInvalidationListener, book_ui_locale, BookTranslator, apply, BookTranslatedLocales, BookPublicUrlResolver, resolveLocalizedPath, resolveAlternates, BookLinkLocalizer, _localized, findCharactersBySerie, book_catalog, hasScheduled, cacheable, book_reader, ReaderBlockType, ReaderCueType, cues, linkLabel, linkUrl, AbstractBookListingBlockType, BookSnippetBuilder, BookJsonLdExtension, book_json_ld, serie_json_ld, strip_json_ld, contributor_json_ld, book_breadcrumb_json_ld, book_item_list_json_ld, BreadcrumbList, ItemList, Person."
 ---
 
 # c975L BookBundle — display pages
@@ -10,7 +10,7 @@ description: "Use this skill when working on the public pages of a catalog built
 **Package:** `c975l/book-bundle` · **Bundle:** `c975L\BookBundle\` · **Twig namespace:** `@c975LBook` · **Translation domain:** `book`
 
 **Key source paths** (relative to the package root):
-`src/Twig/BookSectionsExtension.php`, `src/Twig/BookEditUrlExtension.php`, `src/Twig/BookUrlExtension.php`, `src/Twig/BookTranslationExtension.php`, `src/Twig/BookVersionExtension.php`, `src/Controller/BookController.php`, `src/Controller/SerieController.php`, `src/Controller/StripController.php`, `src/Controller/ContributorController.php`, `templates/book/display.html.twig`, `templates/book/_section.html.twig`, `templates/book/index.html.twig`, `templates/serie/display.html.twig`, `templates/serie/index.html.twig`, `templates/strip/display.html.twig`, `templates/strip/index.html.twig`, `templates/contributor/display.html.twig`, `templates/contributor/index.html.twig`, `templates/components/`, `templates/blocks/`, `src/Enum/StripMediaKind.php`, `src/Twig/BookHighresExtension.php`, `src/Form/Block/`, `src/Service/BookBlockCacheTagProvider.php`, `sass/_variables.scss`, `sass/_book.scss`, `sass/block-thumbs.scss`, `src/Service/StylesheetProvider.php`, `scaffold/assets/styles/themes/book.css`
+`src/Twig/BookSectionsExtension.php`, `src/Twig/BookEditUrlExtension.php`, `src/Twig/BookUrlExtension.php`, `src/Twig/BookTranslationExtension.php`, `src/Twig/BookVersionExtension.php`, `src/Service/BookPublicUrlResolver.php`, `src/Service/BookTranslator.php`, `src/Service/BookTranslatedLocales.php`, `src/Service/BookLinkLocalizer.php`, `src/Controller/BookController.php`, `src/Controller/SerieController.php`, `src/Controller/StripController.php`, `src/Controller/ContributorController.php`, `templates/book/display.html.twig`, `templates/book/_section.html.twig`, `templates/book/index.html.twig`, `templates/serie/display.html.twig`, `templates/serie/index.html.twig`, `templates/strip/display.html.twig`, `templates/strip/index.html.twig`, `templates/contributor/display.html.twig`, `templates/contributor/index.html.twig`, `templates/components/`, `templates/blocks/`, `src/Enum/StripMediaKind.php`, `src/Twig/BookHighresExtension.php`, `src/Form/Block/`, `src/Service/BookBlockCacheTagProvider.php`, `sass/_variables.scss`, `sass/_book.scss`, `sass/block-thumbs.scss`, `src/Service/StylesheetProvider.php`, `scaffold/assets/styles/themes/book.css`
 
 **Related skills:** `c975l-book-customization` and `c975l-book-lifecycle` in this same bundle, and `c975l-blocks`, `c975l-media`, `c975l-ui-assets` in UiBundle beside it.
 
@@ -34,9 +34,17 @@ Every prefix is a ConfigBundle setting (`book-route-books`, `book-route-book`, `
 `book-route-categories`, `book-route-contributors`, `book-route-contributor`, `book-route-strips`,
 `book-route-strip`, `book-route-book-shortcut`, `book-route-strip-shortcut`) — see
 `c975l-book-customization`. **A prefix emptied means the site serves that page itself**, and the route
-answers nothing: anything linking to it must ask `BookPublicUrlResolver::resolvePath()` first, which
+answers nothing: anything linking to it goes through `BookPublicUrlResolver::resolveLocalizedPath()`, which
 returns null rather than throwing. `book_path()`, `serie_path()`, `serie_url()`, `contributor_path()`,
 `contributor_url()` and `book_category_path()` already do.
+
+**Every one of these pages answers in each language the site declares too.** Its localised twin —
+`book_display_localized` beside `book_display`, `serie_index_localized` beside `serie_index`, and so on — answers
+`/{_locale}/…` behind the very same condition, whether or not the row has been translated yet: "/en" is the
+language the catalog is read in (`BookTranslatedLocales`). The bare url stays the writing language's own. A link
+goes through `book_path()` and its siblings, which answer in the language being read — `path('book_display', …)`
+sends a visitor reading "/en" back into the writing language at the first click. `BookPublicUrlResolver::resolvePath()`
+stays the canonical url, the one a sitemap, a hreflang group and a JSON-LD node declare.
 
 **`book-route-categories` is the one prefix shipping empty**: a site serves no category page until it says
 under which word it wants them, and the categories a book carries still print on its sheet as plain words —
@@ -131,6 +139,23 @@ They all live in `templates/components/` and are overridden in
 `Book:Marketings` take the `book` itself rather than the collection, so they can print their title in the
 book's language; `Book:Book` and `Book:Books` take `editable` and hand `editUrl` down to the card, which
 is what keeps the pencil. Dropping either leaves a right page with a wrong language or no pencil at all.
+
+## The language a page is read in
+
+A row's own texts — a title, a summary, a character's name, a picture's title — are laid over it by
+`BookTranslator::apply()` just before the render, in the language being read, and never persisted. The
+controllers call it on everything their page prints, the serie a book belongs to and the neighbours of a planche
+included. **Anything else handing a row to a template calls it first** — a site's own controller, a block
+resolver, a provider copying a title into an item — or prints the writing language's text among labels already
+turned.
+
+The labels this bundle prints read `book_ui_locale(book.language)` rather than `book.language`: the language the
+url reads where there is one, the row's own where there is none, which is every url of a single-language site.
+The book's own language stays a fact about the book, printed by `book_language_label()`. `Strip:Characters`
+receives `Character` entities (`StripServiceInterface::findCharactersBySerie()`), so their names follow too.
+
+A catalog link an editor stored in a block — a card, a call to action, a word linked in a rich text — is
+rewritten the same way by `BookLinkLocalizer`, its patterns built from the configured prefixes at each call.
 
 ## A listing that grows
 
@@ -312,7 +337,9 @@ than one language translates what its editor typed — `linkUrl` is an address a
 - **Do not compute in a template what `book_sections()` already answers** — the summary and the page must agree.
 - **Do not pass a section's contents through an `{% embed %}` block** — hand `_section.html.twig` a rendered `body`.
 - **Do not give the summary a title or an anchor** — it is not a destination.
-- **Do not link to a public route without asking `BookPublicUrlResolver::resolvePath()`** — a prefix may be emptied.
+- **Do not link to a public route with `path()`** — `book_path()` and its siblings answer null for an emptied prefix and keep the language being read.
+- **Do not hand a row to a template without `BookTranslator::apply()`** — its title stays in the writing language.
+- **Do not pass `book.language` as a label's locale** — `book_ui_locale(book.language)` follows the language being read.
 - **Do not drop a component's props when overriding it** — the language and the pencil ride on them.
 - **Do not pass a boolean prop as a string** — `compact="false"` reaches Twig as a true string; write `:compact="false"`.
 - **Do not mark two listings of one page with `infinite`** — the controller reads the fetched page through that attribute.

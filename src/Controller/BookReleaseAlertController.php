@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\BookReleaseAlert;
 use c975L\BookBundle\Form\BookReleaseAlertType;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookReleaseAlertServiceInterface;
+use c975L\BookBundle\Service\BookTranslator;
 use c975L\UiBundle\Service\FormBotProtection;
 use c975L\UiBundle\Service\RateLimiterGuard;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,12 +37,23 @@ class BookReleaseAlertController extends AbstractController
         private readonly FormBotProtection $botProtection,
         private readonly RateLimiterGuard $rateLimiterGuard,
         private readonly TranslatorInterface $translator,
+        private readonly BookTranslator $bookTranslator,
         private readonly ?RateLimiterFactoryInterface $releaseAlertLimiterFactory = null,
     ) {
     }
 
     // SUBSCRIBE
     #[Cache(maxage: 0, public: false, mustRevalidate: true)]
+    // Twinned like the book's own page: the language the book is read in carries over to this page, to the message it answers with and to the language the subscription is stored in (see BookReleaseAlertService::subscribe)
+    #[Route(
+        '/{_locale}/book/release-alert/{id:book}',
+        name: 'book_release_alert_new_localized',
+        requirements: [
+            '_locale' => '%c975l_config.locales_pattern%',
+            'id' => '\d+',
+        ],
+        methods: ['GET', 'POST']
+    )]
     #[Route(
         '/book/release-alert/{id:book}',
         name: 'book_release_alert_new',
@@ -50,7 +62,8 @@ class BookReleaseAlertController extends AbstractController
     )]
     public function new(Request $request, Book $book): Response
     {
-        $bookPath = $this->bookPublicUrlResolver->resolvePath('book_display', ['slug' => $book->getSlug()]);
+        // The book's page in the language this one is read in, which is where the visitor is sent back to
+        $bookPath = $this->bookPublicUrlResolver->resolveLocalizedPath('book_display', ['slug' => $book->getSlug()]);
 
         // Nothing is offered on what the site does not show, nor on a book it does not serve at all: a stale link is answered with a 404 rather than with a page promising an e-mail nobody will send
         if ($book->isHidden() || $book->isDeleted() || null === $bookPath) {
@@ -94,6 +107,9 @@ class BookReleaseAlertController extends AbstractController
 
         // Armed here rather than before isSuspicious(), which consumes the key on every submission: a page displayed again after a typo would otherwise re-arm the timer to now and read 0 second elapsed, turning every correction into a suspicious submission
         $this->botProtection->startTimer($request, self::SESSION_KEY);
+
+        // Its title in the language the page is read in, which is what the heading and the introduction quote
+        $this->bookTranslator->apply([$book]);
 
         // A suspicious submission is answered exactly like a first display, and stored nowhere
         return $this->render('@c975LBook/release_alert/new.html.twig', [

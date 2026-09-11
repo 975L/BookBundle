@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Management;
 use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\BookBundle\Service\SerieServiceInterface;
 use c975L\BookBundle\Service\StripServiceInterface;
@@ -24,6 +25,7 @@ class BookSitemapProvider implements SitemapProviderInterface
 {
     public function __construct(
         private readonly BookPublicUrlResolver $bookPublicUrlResolver,
+        private readonly BookTranslatedLocales $translatedLocales,
         private readonly BookCategoryServiceInterface $categoryService,
         private readonly BookServiceInterface $bookService,
         private readonly ContributorServiceInterface $contributorService,
@@ -55,20 +57,20 @@ class BookSitemapProvider implements SitemapProviderInterface
         $urls = $this->getIndexUrls('book_index', 'label.books');
 
         foreach ($this->bookService->findAllOnline() as $book) {
-            $url = $this->bookPublicUrlResolver->resolve('book_display', ['slug' => $book->getSlug()]);
+            $parameters = ['slug' => $book->getSlug()];
+            $url = $this->bookPublicUrlResolver->resolve('book_display', $parameters);
             if (null === $url) {
                 continue;
             }
 
-            $urls[] = [
-                'loc' => $url,
+            $urls = [...$urls, ...$this->localized([
                 'lastmod' => date('Y-m-d', $book->getModification()->getTimestamp()),
                 'changefreq' => 'monthly',
                 'priority' => 8,
                 'title' => (string) $book->getTitle(),
                 // The back-cover text, handed over as it stands: the writer flattens it, strips its markup and bounds it
                 'description' => $book->getSummary(),
-            ];
+            ], $url, $this->bookPublicUrlResolver->resolveAlternates('book_display', $parameters, $this->translatedLocales->forEntry()))];
         }
 
         return $urls;
@@ -80,19 +82,19 @@ class BookSitemapProvider implements SitemapProviderInterface
         $urls = $this->getIndexUrls('book_category_index', 'label.categories');
 
         foreach ($this->categoryService->findWithBooks() as $category) {
-            $url = $this->bookPublicUrlResolver->resolve('book_category_display', ['slug' => $category->getSlug()]);
+            $parameters = ['slug' => $category->getSlug()];
+            $url = $this->bookPublicUrlResolver->resolve('book_category_display', $parameters);
             if (null === $url) {
                 continue;
             }
 
-            $urls[] = [
-                'loc' => $url,
+            $urls = [...$urls, ...$this->localized([
                 'lastmod' => date('Y-m-d', $category->getModification()->getTimestamp()),
                 'changefreq' => 'monthly',
                 'priority' => 7,
                 'title' => (string) $category->getTitle(),
                 'description' => $category->getSummary(),
-            ];
+            ], $url, $this->bookPublicUrlResolver->resolveAlternates('book_category_display', $parameters, $this->translatedLocales->forEntry()))];
         }
 
         return $urls;
@@ -104,19 +106,20 @@ class BookSitemapProvider implements SitemapProviderInterface
 
         foreach ($this->serieService->findAll() as $serie) {
             // Each serie under the index listing it, the two families having their own segment (see BookPublicUrlResolver::serieRoute())
-            $url = $this->bookPublicUrlResolver->resolve(BookPublicUrlResolver::serieRoute($serie), ['slug' => $serie->getSlug()]);
+            $route = BookPublicUrlResolver::serieRoute($serie);
+            $parameters = ['slug' => $serie->getSlug()];
+            $url = $this->bookPublicUrlResolver->resolve($route, $parameters);
             if (null === $url) {
                 continue;
             }
 
-            $urls[] = [
-                'loc' => $url,
+            $urls = [...$urls, ...$this->localized([
                 'lastmod' => date('Y-m-d', $serie->getModification()->getTimestamp()),
                 'changefreq' => 'monthly',
                 'priority' => 8,
                 'title' => (string) $serie->getTitle(),
                 'description' => $serie->getSummary(),
-            ];
+            ], $url, $this->bookPublicUrlResolver->resolveAlternates($route, $parameters, $this->translatedLocales->forEntry()))];
         }
 
         return $urls;
@@ -128,19 +131,19 @@ class BookSitemapProvider implements SitemapProviderInterface
         $urls = $this->getIndexUrls('contributor_index', 'label.contributors');
 
         foreach ($this->contributorService->findCredited() as $contributor) {
-            $url = $this->bookPublicUrlResolver->resolve('contributor_display', ['slug' => $contributor->getSlug()]);
+            $parameters = ['slug' => $contributor->getSlug()];
+            $url = $this->bookPublicUrlResolver->resolve('contributor_display', $parameters);
             if (null === $url) {
                 continue;
             }
 
-            $urls[] = [
-                'loc' => $url,
+            $urls = [...$urls, ...$this->localized([
                 'lastmod' => date('Y-m-d', $contributor->getModification()->getTimestamp()),
                 'changefreq' => 'monthly',
                 'priority' => 7,
                 'title' => (string) $contributor->getName(),
                 'description' => $contributor->getSummary(),
-            ];
+            ], $url, $this->bookPublicUrlResolver->resolveAlternates('contributor_display', $parameters, $this->translatedLocales->forEntry()))];
         }
 
         return $urls;
@@ -152,17 +155,17 @@ class BookSitemapProvider implements SitemapProviderInterface
         $urls = $this->getIndexUrls('strip_index', 'label.strips_series');
 
         foreach ($this->stripService->findAllPublished() as $strip) {
-            $url = $this->bookPublicUrlResolver->resolve('strip_display', ['slug' => $strip->getSlug()]);
+            $parameters = ['slug' => $strip->getSlug()];
+            $url = $this->bookPublicUrlResolver->resolve('strip_display', $parameters);
             if (null === $url) {
                 continue;
             }
 
-            $urls[] = [
-                'loc' => $url,
+            $urls = [...$urls, ...$this->localized([
                 'lastmod' => date('Y-m-d', $strip->getModification()->getTimestamp()),
                 'changefreq' => 'monthly',
                 'priority' => 6,
-            ];
+            ], $url, $this->bookPublicUrlResolver->resolveAlternates('strip_display', $parameters, $this->translatedLocales->forEntry()))];
         }
 
         return $urls;
@@ -173,12 +176,26 @@ class BookSitemapProvider implements SitemapProviderInterface
     {
         $url = $this->bookPublicUrlResolver->resolve($route);
 
-        return null === $url ? [] : [[
-            'loc' => $url,
+        return null === $url ? [] : $this->localized([
             'lastmod' => date('Y-m-d'),
             'changefreq' => 'weekly',
             'priority' => 9,
             'title' => $this->translator->trans($label, [], 'book'),
-        ]];
+        ], $url, $this->bookPublicUrlResolver->resolveAlternates($route, [], $this->translatedLocales->forIndex()));
+    }
+
+    // The same page once per language, each entry carrying the whole group: a language's url is only ever crawled if the sitemap names it, and the group alone leaves the other languages undeclared. The writing language comes first (see SiteLocales::all()), so the entry a single-language site has always had stays byte for byte the first one
+    /**
+     * @param array<string, mixed>  $url
+     * @param array<string, string> $alternates
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function localized(array $url, string $canonical, array $alternates): array
+    {
+        return array_map(
+            static fn (string $loc): array => ['loc' => $loc, ...$url, 'alternates' => $alternates],
+            [] === $alternates ? [$canonical] : array_values($alternates),
+        );
     }
 }

@@ -21,8 +21,10 @@ class BookCollectionSourceProvider implements CollectionSourceProviderInterface
     // The rail draws the cover in portrait beside nothing else, which the built-in card does not - Book:Card draws exactly that
     private const string ITEM_TEMPLATE = '@c975LBook/collection/BookItem.html.twig';
 
-    public function __construct(private readonly BookServiceInterface $bookService)
-    {
+    public function __construct(
+        private readonly BookServiceInterface $bookService,
+        private readonly BookTranslator $bookTranslator,
+    ) {
     }
 
     // No cache tag declared: a source naming an item template is rendered outside the entry cache anyway (see CollectionSourceProviderInterface), so a tag here would only promise an invalidation nothing performs
@@ -65,7 +67,12 @@ class BookCollectionSourceProvider implements CollectionSourceProviderInterface
     /** @return list<CollectionItem> */
     private function buildItems(?int $limit, ?string $language): array
     {
-        return array_map($this->buildItem(...), $this->bookService->findAllPublished($limit, $language));
+        $books = $this->bookService->findAllPublished($limit, $language);
+
+        // The title and the summary are read off the book here and copied into the item, so the language has to be laid on before that and not by whatever renders the rail (see BookTranslator::apply)
+        $this->bookTranslator->apply($books);
+
+        return array_map($this->buildItem(...), $books);
     }
 
     // The book itself travels in "data": BookItem.html.twig hands it to Book:Card, which reads the cover, the summary and the language off it

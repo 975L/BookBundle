@@ -16,6 +16,7 @@ use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\BookTranslator;
 use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\BookBundle\Service\SerieServiceInterface;
 use c975L\BookBundle\Service\StripServiceInterface;
@@ -52,6 +53,7 @@ class BookBlockExtensionTest extends TestCase
         return new BookBlockExtension(
             $categoryService ?? $this->createStub(BookCategoryServiceInterface::class),
             $bookService ?? $this->createStub(BookServiceInterface::class),
+            $this->createStub(BookTranslator::class),
             $contributorService ?? $this->createStub(ContributorServiceInterface::class),
             $serieService ?? $this->createStub(SerieServiceInterface::class),
             $this->createStub(StripServiceInterface::class),

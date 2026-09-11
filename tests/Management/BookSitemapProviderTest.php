@@ -19,12 +19,17 @@ use c975L\BookBundle\Management\BookSitemapProvider;
 use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\BookBundle\Service\SerieServiceInterface;
 use c975L\BookBundle\Service\StripServiceInterface;
 use c975L\BookBundle\Tests\BookPublicUrlGeneratorTestTrait;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
+use c975L\ConfigBundle\Service\LocalizedUrlGenerator;
+use c975L\ConfigBundle\Service\SiteLocales;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 // What public/sitemap-book.xml declares, and what public/llms.txt is built from - see ConfigBundle's SitemapWriter and SeoFilesWriter
@@ -41,6 +46,7 @@ class BookSitemapProviderTest extends TestCase
         array $categories = [],
         string $siteUrl = 'https://example.com',
         array $prefixes = [],
+        array $locales = ['fr'],
     ): BookSitemapProvider {
         $configService = $this->createStub(ConfigServiceInterface::class);
         $configService->method('get')->willReturn($siteUrl);
@@ -63,8 +69,12 @@ class BookSitemapProviderTest extends TestCase
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnArgument(0);
 
+        $urlGenerator = $this->createUrlGenerator();
+        $siteLocales = new SiteLocales($locales, 'fr');
+
         return new BookSitemapProvider(
-            new BookPublicUrlResolver($configService, $this->createRoutePrefix($prefixes), $this->createUrlGenerator()),
+            new BookPublicUrlResolver($configService, $this->createRoutePrefix($prefixes), $this->createLocalizedUrlGenerator($urlGenerator), $urlGenerator, $siteLocales),
+            new BookTranslatedLocales($siteLocales),
             $categoryService,
             $bookService,
             $contributorService,
@@ -148,6 +158,7 @@ class BookSitemapProviderTest extends TestCase
             'priority' => 8,
             'title' => 'Tome 1',
             'description' => 'Une histoire de pirates',
+            'alternates' => [],
         ], $urls[1]);
     }
 
@@ -162,6 +173,7 @@ class BookSitemapProviderTest extends TestCase
             'priority' => 8,
             'title' => 'La Compagnie des Ombres',
             'description' => 'Le résumé de la série',
+            'alternates' => [],
         ], $urls[2]);
     }
 
@@ -175,7 +187,35 @@ class BookSitemapProviderTest extends TestCase
             'lastmod' => '2026-03-25',
             'changefreq' => 'monthly',
             'priority' => 6,
+            'alternates' => [],
         ], $urls[3]);
+    }
+
+    // A site declaring one language keeps the sitemap it has always had, byte for byte
+    public function testASingleLanguageSiteDeclaresNoAlternates(): void
+    {
+        foreach ($this->createProvider([$this->book()], [$this->serie()])->getUrls() as $url) {
+            $this->assertSame([], $url['alternates']);
+        }
+    }
+
+    // Each page is declared once per language it answers in, every entry carrying the whole group: a language's url is only ever crawled if the sitemap names it
+    public function testEachPageIsDeclaredOncePerLanguageWithItsWholeGroup(): void
+    {
+        $urls = $this->createProvider([$this->book()], [], [], [], [], 'https://example.com', [], ['fr', 'en'])->getUrls();
+        $locs = array_column($urls, 'loc');
+
+        $this->assertContains('https://example.com/livres', $locs);
+        $this->assertContains('https://example.com/en/livres', $locs);
+        $this->assertContains('https://example.com/livre/tome-1', $locs);
+        $this->assertContains('https://example.com/en/livre/tome-1', $locs);
+
+        $group = ['fr' => 'https://example.com/livre/tome-1', 'en' => 'https://example.com/en/livre/tome-1'];
+        foreach ($urls as $url) {
+            if (\in_array($url['loc'], array_values($group), true)) {
+                $this->assertSame($group, $url['alternates']);
+            }
+        }
     }
 
     // A person the catalog credits carries a title and a description, so their page is one of the lines llms.txt is built from
@@ -190,6 +230,7 @@ class BookSitemapProviderTest extends TestCase
             'priority' => 7,
             'title' => 'Tim Loval',
             'description' => 'Auteur des Triados',
+            'alternates' => [],
         ], $urls[4]);
     }
 
@@ -239,5 +280,11 @@ class BookSitemapProviderTest extends TestCase
             ['https://example.com/livres', 'https://example.com/livre/tome-1', 'https://example.com/series'],
             array_column($provider->getUrls(), 'loc')
         );
+    }
+
+    // A generator that hands every url back exactly as the router built it: with no request in the stack there is no language being read, and LocalizedUrlGenerator falls through to the bare route (see ConfigBundle's LocalizedUrlGenerator::path)
+    private function createLocalizedUrlGenerator(UrlGeneratorInterface $urlGenerator): LocalizedUrlGenerator
+    {
+        return new LocalizedUrlGenerator($urlGenerator, new SiteLocales(['fr'], 'fr'), new RequestStack());
     }
 }

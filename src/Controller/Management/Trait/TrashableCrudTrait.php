@@ -125,6 +125,7 @@ trait TrashableCrudTrait
             ->add(Crud::PAGE_EDIT, $viewOnSiteAction)
             ->add(Crud::PAGE_INDEX, $duplicateAction)
             ->add(Crud::PAGE_EDIT, $duplicateAction)
+            ->add(Crud::PAGE_INDEX, $this->translateAction())
             ->update(Crud::PAGE_INDEX, Action::EDIT, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
                 $action->displayIf(static fn (TrashableInterface $entity): bool => !$entity->isDeleted()),
                 $this->translator->trans('action.edit', [], 'EasyAdminBundle'),
@@ -136,6 +137,10 @@ trait TrashableCrudTrait
             ->update(Crud::PAGE_INDEX, 'duplicate', fn (Action $action) => EasyAdminActionHelper::toIconOnly(
                 $action,
                 $this->translator->trans('action.duplicate', [], 'book'),
+            ))
+            ->update(Crud::PAGE_INDEX, 'translate', fn (Action $action) => EasyAdminActionHelper::toIconOnly(
+                $action,
+                $this->translator->trans('action.translate', [], 'book'),
             ))
             ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
                 $action
@@ -152,13 +157,14 @@ trait TrashableCrudTrait
                 $action,
                 $this->translator->trans('action.delete_permanently', [], 'book'),
             ))
-            ->reorder(Crud::PAGE_INDEX, array_values(array_filter([Action::EDIT, 'viewOnSite', 'duplicate', ...$this->extraIndexActions(), Action::DELETE, 'restore', 'deletePermanently'])))
+            ->reorder(Crud::PAGE_INDEX, array_values(array_filter([Action::EDIT, 'viewOnSite', 'duplicate', 'translate', ...$this->extraIndexActions(), Action::DELETE, 'restore', 'deletePermanently'])))
             ->setPermission(Action::INDEX, $role)
             ->setPermission(Action::NEW, $role)
             ->setPermission(Action::EDIT, $role)
             ->setPermission(Action::DELETE, $role)
             ->setPermission('viewOnSite', $role)
             ->setPermission('duplicate', $role)
+            ->setPermission('translate', $role)
             ->setPermission('trash', $role)
             ->setPermission('restore', $exportRole)
             ->setPermission('deletePermanently', $exportRole)
@@ -303,6 +309,9 @@ trait TrashableCrudTrait
 
     // The copy the duplicate action saves, made by the very method of BookDuplicator that knows what this row holds
     abstract protected function duplicateEntity(mixed $entity): object;
+
+    // The action opening the first language screen, held by ContentLocaleCrudTrait - every screen using this trait uses that one too
+    abstract private function translateAction(): Action;
 
     // The checked rows, serialized by the export provider of this very family - the same one the "export sync all" dashboard shortcut reads (see eg. Management\BookExportProvider)
     /** @param list<int> $ids */

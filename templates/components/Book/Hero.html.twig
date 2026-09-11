@@ -14,7 +14,7 @@
     {# A site knowing better than book_cover() which of its files stands for the book hands it over - a catalog whose covers are not uploaded on the field of their own, say #}
     {% set coverSrc = cover|default(null) ?: (book_cover(book) ?: "bundles/c975lbook/images/no-cover.webp") %}
     {% set coverBackSrc = coverBack|default('') %}
-    {% set coverAlt = 'label.cover'|trans({}, 'book', book.language) ~ ' - ' ~ book.title %}
+    {% set coverAlt = 'label.cover'|trans({}, 'book', book_ui_locale(book.language)) ~ ' - ' ~ book.title %}
     {% if coverBackSrc %}
         {# A book has two covers, and the fourth is where its blurb is printed: given one, the hero turns instead of stacking them - the very fold UiBundle's flip card block uses, borrowed by its classes and its "flipCard" controller rather than by its component, which reads Media entities where a hero is handed plain paths (see UiBundle sass/_flip-card.scss). The face's own frame is undone in sass/_book.scss: a cover is printed to its own edge #}
         <div class="flip-card book-hero__cover-flip" data-controller="flipCard">
@@ -23,11 +23,11 @@
                     {# fetchpriority: the cover is what the page is about, and on a phone it is the whole first screen #}
                     <img class="book-hero__cover-face" src="{{ asset(coverSrc) }}" alt="{{ coverAlt }}" width="240" fetchpriority="high">
                     {# Hidden until flip-card.js takes over, and the whole face once it has: a control turning nothing would be a dead one #}
-                    <button type="button" class="flip-card-toggle" data-action="flipCard#toggle" aria-label="{{ 'label.flip_card_show_back'|trans({}, 'ui', book.language) }} : {{ book.title }}" hidden></button>
+                    <button type="button" class="flip-card-toggle" data-action="flipCard#toggle" aria-label="{{ 'label.flip_card_show_back'|trans({}, 'ui', book_ui_locale(book.language)) }} : {{ book.title }}" hidden></button>
                 </div>
                 <div class="flip-card-face flip-card-back" data-flipCard-target="face">
-                    <img class="book-hero__cover-face" src="{{ asset(coverBackSrc) }}" alt="{{ 'label.back_cover'|trans({}, 'book', book.language) }} - {{ book.title }}" width="240" loading="lazy">
-                    <button type="button" class="flip-card-toggle" data-action="flipCard#toggle" aria-label="{{ 'label.flip_card_show_front'|trans({}, 'ui', book.language) }} : {{ book.title }}" hidden></button>
+                    <img class="book-hero__cover-face" src="{{ asset(coverBackSrc) }}" alt="{{ 'label.back_cover'|trans({}, 'book', book_ui_locale(book.language)) }} - {{ book.title }}" width="240" loading="lazy">
+                    <button type="button" class="flip-card-toggle" data-action="flipCard#toggle" aria-label="{{ 'label.flip_card_show_front'|trans({}, 'ui', book_ui_locale(book.language)) }} : {{ book.title }}" hidden></button>
                 </div>
             </div>
         </div>
@@ -40,11 +40,11 @@
         {% if book.serie %}
             {# The serie is named and neither painted nor clickable any more: on a book's page it says where the book comes from, it is not what the page is about - its logo took a banner's room and its link carried away the reader who had just found the book #}
             <p class="book-hero__eyebrow">
-                {{ book.serie.title }}{% if book.number %} - {{ 'label.number'|trans({}, 'book', book.language) }} {{ book.number }}{% endif %}
+                {{ book.serie.title }}{% if book.number %} - {{ 'label.number'|trans({}, 'book', book_ui_locale(book.language)) }} {{ book.number }}{% endif %}
             </p>
         {% elseif book.number %}
             {# A numbered book outside any serie still says which one it is: the number used to be printed inside the serie's own line and went with it #}
-            <p class="book-hero__eyebrow">{{ 'label.number'|trans({}, 'book', book.language) }} {{ book.number }}</p>
+            <p class="book-hero__eyebrow">{{ 'label.number'|trans({}, 'book', book_ui_locale(book.language)) }} {{ book.number }}</p>
         {% endif %}
 
         <h1 class="book-hero__title">{{ book.title }}</h1>
@@ -63,16 +63,16 @@
             {% set credits = [author, illustrator and (author is null or illustrator.id != author.id) ? illustrator : null]|filter(c => c) %}
             {{ credits|join(' - ') }}{% if credits is not empty %} - {% endif %}
             {% if book.published == null or book.published|date("Ymd") > "now"|date("Ymd") %}
-                {{ 'label.to_be_published'|trans({}, 'book', book.language) }}{% if book.published %} ({{ book.published|date('d/m/Y') }}){% endif %}
+                {{ 'label.to_be_published'|trans({}, 'book', book_ui_locale(book.language)) }}{% if book.published %} ({{ book.published|date('d/m/Y') }}){% endif %}
             {% else %}
-                {{ 'label.published_on'|trans({}, 'book', book.language) }} {{ book.published|date('d/m/Y') }}
+                {{ 'label.published_on'|trans({}, 'book', book_ui_locale(book.language)) }} {{ book.published|date('d/m/Y') }}
             {% endif %}
         </p>
 
         {# Offered on the books still to come only, and as a link rather than as a form: this html is handed to a shared cache per fragment, where a form needs a session and a csrf token (see BookReleaseAlertController) #}
         {% if book.isToBePublished %}
             <p>
-                <a href="{{ path('book_release_alert_new', {'id': book.id}) }}" rel="nofollow" class="btn btn-secondary">{{ 'label.release_alert_notify_me'|trans({}, 'book', book.language) }}</a>
+                <a href="{{ localized_path('book_release_alert_new', {'id': book.id}) }}" rel="nofollow" class="btn btn-secondary">{{ 'label.release_alert_notify_me'|trans({}, 'book', book_ui_locale(book.language)) }}</a>
             </p>
         {% endif %}
 

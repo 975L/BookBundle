@@ -16,15 +16,20 @@ use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
 use c975L\BookBundle\Enum\SerieKind;
+use c975L\UiBundle\Contract\DemoFixtureLinkerInterface;
 use c975L\UiBundle\Contract\DemoFixtureProviderInterface;
 use c975L\UiBundle\Registry\PlaceholderMediaRegistry;
+use c975L\UiBundle\Service\DemoFixtureTranslator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 
 // The catalog a demo site is seeded with, from the very data the block showcase renders (see BookSampleCatalog) - persisted here, where the showcase only ever builds entities it never writes
-class BookDemoFixtureProvider implements DemoFixtureProviderInterface
+class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixtureProviderInterface
 {
+    // The catalogue every sample text is read from, in the language the site is written in and in each of the others
+    private const string DOMAIN = 'book';
+
     // What each declared picture of a book is, in the order declared - "-1" the cover, "-2" the fourth cover, "-3" the backdrop its page opens on: three kinds and not three covers, a page reading them one by one (see book/display.html.twig)
     private const array KINDS = ['cover', 'cover_back', 'background'];
 
@@ -36,6 +41,7 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
 
     public function __construct(
         private readonly BookSampleCatalog $catalog,
+        private readonly DemoFixtureTranslator $demoFixtureTranslator,
         private readonly TranslatorInterface $translator,
         private readonly PlaceholderMediaRegistry $placeholderMediaRegistry,
         #[Autowire(param: 'kernel.project_dir')]
@@ -83,12 +89,21 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
 
             $series[$spec['slug']] = $serie;
 
+            $this->demoFixtureTranslator->stage($serie, BookTranslator::OWNER_SERIE, self::DOMAIN, ['title' => $spec['title'], 'summary' => $spec['summary']]);
+
             yield $serie;
         }
 
         foreach ($this->catalog->getBooks() as $spec) {
             yield $this->book($spec, $series[$spec['serie']], $author, $illustrator);
         }
+    }
+
+    // The very same catalog said in each of the other languages the site declares, its keys being already written there (see DemoFixtureTranslator)
+    /** @return iterable<object> */
+    public function getLinkedDemoFixtures(): iterable
+    {
+        return $this->demoFixtureTranslator->translations();
     }
 
     // A made-up person, dated like the rest of the dataset rather than from the clock. No portrait: a demo catalog reads whole without one, and the card falls back on the bundle's "no-portrait.webp", the silhouette standing where a book falls back on its "no-cover.webp"
@@ -109,7 +124,11 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
     {
         $date = new \DateTime($spec['creation']);
 
-        $book = new Book()
+        $book = new Book();
+
+        $this->demoFixtureTranslator->stage($book, BookTranslator::OWNER_BOOK, self::DOMAIN, ['title' => $spec['title'], 'summary' => $spec['summary']]);
+
+        $book
             ->setSlug($spec['slug'])
             ->setTitle($this->trans($spec['title']))
             ->setSummary($this->trans($spec['summary']))
@@ -219,6 +238,6 @@ class BookDemoFixtureProvider implements DemoFixtureProviderInterface
 
     private function trans(string $key): string
     {
-        return $this->translator->trans($key, [], 'book');
+        return $this->translator->trans($key, [], self::DOMAIN);
     }
 }

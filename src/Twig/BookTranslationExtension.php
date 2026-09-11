@@ -11,11 +11,25 @@
 namespace c975L\BookBundle\Twig;
 
 use c975L\BookBundle\Entity\Book;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Attribute\AsTwigFunction;
 
 // The other languages one and the same book is written in. Book::getTranslation() only walks the children of a book, so it answers from the original and answers nothing from a translation - which is the language switch missing on every page but the first. The family is read from whichever end the visitor arrived at
 class BookTranslationExtension
 {
+    public function __construct(private readonly RequestStack $requestStack)
+    {
+    }
+
+    // The language this bundle's own words are read in: the one the url reads ("/es/livre/..."), the row's own language where there is none - which is every url of a single-language site
+    #[AsTwigFunction('book_ui_locale')]
+    public function uiLocale(?string $rowLanguage = null): ?string
+    {
+        $locale = $this->requestStack->getCurrentRequest()?->attributes->get('_locale');
+
+        return \is_string($locale) && '' !== $locale ? $locale : $rowLanguage;
+    }
+
     // How a language names itself, never translated: a reader looking for their own language looks for the word they use for it, not for the word this book's language uses
     private const array ENDONYMS = [
         'de' => 'Deutsch',

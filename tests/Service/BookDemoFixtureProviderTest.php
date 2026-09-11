@@ -15,7 +15,10 @@ use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookDemoFixtureProvider;
 use c975L\BookBundle\Service\BookSampleCatalog;
+use c975L\BookBundle\Service\BookTranslator;
+use c975L\UiBundle\Entity\Translation;
 use c975L\UiBundle\Registry\PlaceholderMediaRegistry;
+use c975L\UiBundle\Service\DemoFixtureTranslator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -57,7 +60,7 @@ class BookDemoFixtureProviderTest extends TestCase
         $registry->method('getImages')->willReturn($images);
         $registry->method('getImagesFor')->willReturnCallback(static fn (string $key): array => $keyed[$key] ?? []);
 
-        return new BookDemoFixtureProvider(new BookSampleCatalog(), $translator, $registry, $this->projectDir);
+        return new BookDemoFixtureProvider(new BookSampleCatalog(), new DemoFixtureTranslator($translator, ['fr'], 'fr'), $translator, $registry, $this->projectDir);
     }
 
     /** @return list<object> */
@@ -207,5 +210,48 @@ class BookDemoFixtureProviderTest extends TestCase
         foreach ($books as $book) {
             $this->assertCount(0, $book->getMedias(), (string) $book->getSlug());
         }
+    }
+
+    // The dataset says itself in every language the site declares, its catalogue keys read a second time - the series and the books filed under them
+    public function testTheSecondPassWritesEveryLanguageOfTheCatalog(): void
+    {
+        $translator = $this->createStub(TranslatorInterface::class);
+        $translator->method('trans')->willReturnCallback(
+            static fn (string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string => sprintf('%s[%s]', $id, $locale ?? 'fr')
+        );
+
+        $registry = $this->createStub(PlaceholderMediaRegistry::class);
+        $registry->method('getImages')->willReturn([]);
+        $registry->method('getImagesFor')->willReturn([]);
+
+        $provider = new BookDemoFixtureProvider(new BookSampleCatalog(), new DemoFixtureTranslator($translator, ['fr', 'en'], 'fr'), $translator, $registry, $this->projectDir);
+
+        $identifier = 0;
+        foreach ($provider->getDemoFixtures() as $entity) {
+            new \ReflectionProperty($entity::class, 'id')->setValue($entity, ++$identifier);
+        }
+
+        $rows = iterator_to_array($provider->getLinkedDemoFixtures(), false);
+
+        $this->assertNotSame([], $rows, 'The demo catalog was not staged for translation at all.');
+        $this->assertSame(['en'], $this->distinct($rows, static fn (Translation $row): string => (string) $row->getLocale()));
+        $this->assertSame(
+            [BookTranslator::OWNER_BOOK, BookTranslator::OWNER_SERIE],
+            $this->distinct($rows, static fn (Translation $row): string => (string) $row->getOwnerType())
+        );
+    }
+
+    /**
+     * @param list<Translation>             $rows
+     * @param callable(Translation): string $read
+     *
+     * @return list<string>
+     */
+    private function distinct(array $rows, callable $read): array
+    {
+        $values = array_values(array_unique(array_map($read, $rows)));
+        sort($values);
+
+        return $values;
     }
 }

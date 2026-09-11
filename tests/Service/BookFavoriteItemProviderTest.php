@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Service\BookFavoriteItemProvider;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
+use c975L\BookBundle\Service\BookTranslator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Asset\Packages;
 
@@ -68,10 +69,10 @@ class BookFavoriteItemProviderTest extends TestCase
         $repository->method('findPublishedByIds')->willReturn($books);
 
         $urlResolver = $this->createStub(BookPublicUrlResolver::class);
-        $urlResolver->method('resolvePath')->willReturnCallback(
+        $urlResolver->method('resolveLocalizedPath')->willReturnCallback(
             static fn (string $route, array $parameters): string => '/histoires/' . $parameters['slug']
         );
 
-        return new BookFavoriteItemProvider($repository, $urlResolver, $this->createStub(Packages::class));
+        return new BookFavoriteItemProvider($repository, $urlResolver, $this->createStub(Packages::class), $this->createStub(BookTranslator::class));
     }
 }

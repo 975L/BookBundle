@@ -2,6 +2,22 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.11
+
+**CoreBundle 1.28 is required.** The localised routes, the language screens and the translations a copy carries
+are CoreBundle's (`LocalizedRouteNegotiator`, `ContentLocaleScreen`, `TranslationCopier`, `DemoFixtureTranslator`):
+`composer update c975l/core-bundle` before this version. The catalog's translations are stored in UiBundle's own
+table, and no entity of this bundle changes its mapping.
+
+**`StripServiceInterface::findCharactersBySerie()` returns `Character` entities** rather than `name`/`slug`
+pairs, so the language being read can be laid over them. A template reading `character.name` and
+`character.slug` is untouched, Twig reading a getter as it read an array key; PHP reading `$character['name']`
+reads `$character->getName()` now, and a site implementing the interface returns the entities.
+
+**A template overridden with `path('book_display', …)` keeps working**, but sends a visitor reading "/en" back
+into the writing language: link with `book_path()` and its siblings, and translate a label in
+`book_ui_locale(book.language)` rather than in `book.language`.
+
 ## v2.10
 
 **The `book_stores` block kind is removed.** It named a platform and one address per platform, meant to be

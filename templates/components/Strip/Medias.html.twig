@@ -12,7 +12,7 @@
     {# The panels first: a planche is read one case at a time, and on a phone the whole page is a thumbnail nobody can follow #}
     {% if cases|length > 0 %}
         <section class="strip-cases"{% if casesEditUrl %} data-block-edit-url="{{ casesEditUrl }}"{% endif %}>
-            <h2>{{ 'label.strip_cases'|trans({}, 'book', language) }}</h2>
+            <h2>{{ 'label.strip_cases'|trans({}, 'book', book_ui_locale(language)) }}</h2>
             <twig:c975LUi:Slider:Slider media="{{ cases }}" id="strip-cases-{{ strip.slug }}" fallbackAlt="{{ strip.title }}"/>
         </section>
     {% endif %}
@@ -22,7 +22,7 @@
         {# The high resolution the picture opens over the page, when the upload left one beside the stored file - a planche uploaded before this bundle asked for the derivatives has none, and is shown without a zoom rather than with one leading to a 404 #}
         {% set highres = pages|length == 1 ? strip_highres(pages|first) : null %}
         <section class="strip-page"{% if pageEditUrl %} data-block-edit-url="{{ pageEditUrl }}"{% endif %}>
-            <h2>{{ 'label.strip_page'|trans({}, 'book', language) }}</h2>
+            <h2>{{ 'label.strip_page'|trans({}, 'book', book_ui_locale(language)) }}</h2>
             {# A single page carrying its high resolution is shown on its own rather than run through a slider: the slider is what carries several, and it is the zoom that a reader of one planche reaches for #}
             {% if highres %}
                 {% set page = pages|first %}

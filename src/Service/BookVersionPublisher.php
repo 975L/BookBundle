@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\UiBundle\Service\TranslationCopier;
 use c975L\UiBundle\Service\UniqueSlug;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -29,10 +30,11 @@ class BookVersionPublisher
     public function __construct(
         private readonly BookRepository $bookRepository,
         private readonly SluggerInterface $slugger,
+        private readonly TranslationCopier $translationCopier,
     ) {
     }
 
-    // The twin carrying the version set aside: the same book, the same number, the same language, the same people credited. No translations, no blocks, no reader ratings - those belong to the page being kept, which is the one outside links reach. The title is the one the editor writes, in the book's language: the bundle presumes no reason for the replacement - original edition, unillustrated text, second edition - and that title is what names the cross link from one version to the other (see Book/Hero.html.twig)
+    // The twin carrying the version set aside: the same book, the same number, the same language, the same people credited. No blocks, no reader ratings - those belong to the page being kept, which is the one outside links reach - and of the translations only the summary's, the one text copied over as it stands (see TranslationCopier). The title is the one the editor writes, in the book's language: the bundle presumes no reason for the replacement - original edition, unillustrated text, second edition - and that title is what names the cross link from one version to the other (see Book/Hero.html.twig)
     public function createPreviousVersion(Book $book, string $title, ?string $slug = null): Book
     {
         $now = new \DateTime();
@@ -62,6 +64,9 @@ class BookVersionPublisher
                 ->setRole($credit->getRole())
                 ->setPosition($credit->getPosition()));
         }
+
+        // The summary is copied, so what it says in the site's other languages is too: the title is the editor's own, and stays theirs in every language
+        $this->translationCopier->copy(BookTranslator::OWNER_BOOK, $book, $previous, ['summary']);
 
         return $previous;
     }

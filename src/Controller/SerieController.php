@@ -12,8 +12,12 @@ namespace c975L\BookBundle\Controller;
 
 use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
+use c975L\BookBundle\Service\BookTranslatedLocales;
+use c975L\BookBundle\Service\BookTranslator;
 use c975L\BookBundle\Service\SerieServiceInterface;
 use c975L\BookBundle\Service\StripServiceInterface;
+use c975L\ConfigBundle\Service\LocalizedRouteNegotiator;
+use c975L\ConfigBundle\Service\LocalizedUrlGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,12 +34,23 @@ class SerieController extends AbstractController
     private const string STRIPS_CONDITION = "service('" . BookRoutePrefix::ALIAS . "').matches('book-route-strips', params['strips_prefix'])";
 
     public function __construct(
+        private readonly BookTranslatedLocales $translatedLocales,
+        private readonly BookTranslator $bookTranslator,
+        private readonly LocalizedRouteNegotiator $negotiator,
+        private readonly LocalizedUrlGenerator $localizedUrlGenerator,
         private readonly SerieServiceInterface $serieService,
         private readonly StripServiceInterface $stripService,
     ) {
     }
 
     // INDEX
+    #[Route(
+        '/{_locale}/{series_prefix}',
+        name: 'serie_index_localized',
+        requirements: ['_locale' => '%c975l_config.locales_pattern%'],
+        methods: ['GET'],
+        condition: self::SERIES_CONDITION
+    )]
     #[Route(
         '/{series_prefix}',
         name: 'serie_index',
@@ -45,14 +60,34 @@ class SerieController extends AbstractController
     // The series of books, and only those: the ones telling planches are listed by StripController::index(), so neither index repeats the other (see SerieKind)
     public function index(Request $request): Response
     {
-        return $this->render(
+        $askedLanguage = $this->negotiator->redirectToAskedLanguage($request, $this->translatedLocales->forIndex(), 'serie_index');
+        if (null !== $askedLanguage) {
+            return $this->negotiator->vary($request, $askedLanguage);
+        }
+
+        $series = $this->serieService->findWithBooksPaginated($request->query);
+
+        // The language being read laid over the titles and summaries, for this render and no longer (see BookTranslator::apply)
+        $this->bookTranslator->apply($series);
+
+        return $this->negotiator->vary($request, $this->render(
             '@c975LBook/serie/index.html.twig',
-            ['series' => $this->serieService->findWithBooksPaginated($request->query)]
-        );
+            ['series' => $series]
+        ));
     }
 
     // DISPLAY
     // Two routes for one page: a serie is read below the index listing it - "/series/{slug}" for the ones telling books, "/strips/{slug}" for the ones telling planches (see SerieKind). A segment of its own would have filed both under a word neither index wears, and search engines read the hierarchy the url draws
+    #[Route(
+        '/{_locale}/{series_prefix}/{slug}',
+        name: 'serie_display_localized',
+        requirements: [
+            '_locale' => '%c975l_config.locales_pattern%',
+            'slug' => '^([a-z0-9\-]+)',
+        ],
+        methods: ['GET'],
+        condition: self::SERIES_CONDITION
+    )]
     #[Route(
         '/{series_prefix}/{slug}',
         name: 'serie_display',
@@ -61,6 +96,16 @@ class SerieController extends AbstractController
         ],
         methods: ['GET'],
         condition: self::SERIES_CONDITION
+    )]
+    #[Route(
+        '/{_locale}/{strips_prefix}/{slug}',
+        name: 'strip_serie_display_localized',
+        requirements: [
+            '_locale' => '%c975l_config.locales_pattern%',
+            'slug' => '^([a-z0-9\-]+)',
+        ],
+        methods: ['GET'],
+        condition: self::STRIPS_CONDITION
     )]
     #[Route(
         '/{strips_prefix}/{slug}',
@@ -93,22 +138,45 @@ class SerieController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        // A serie has but one address, the one its kind wears: asked under the other index' segment, it points there once and for all rather than answering the same page at two urls competing for the same search result
+        // A serie has but one address, the one its kind wears: asked under the other index' segment, it points there once and for all, in the language it was read in - "/en/strips/x" leading to "/en/series/x" (see LocalizedRouteNegotiator::bareRoute)
         $route = BookPublicUrlResolver::serieRoute($serie);
-        if ($route !== $request->attributes->get('_route')) {
-            return $this->redirectToRoute($route, ['slug' => $slug], Response::HTTP_MOVED_PERMANENTLY);
+        if ($route !== $this->negotiator->bareRoute($request)) {
+            return $this->redirect(
+                $this->localizedUrlGenerator->path($route, ['slug' => $slug]),
+                Response::HTTP_MOVED_PERMANENTLY
+            );
         }
 
-        return $this->render(
+        $locales = $this->translatedLocales->forEntry();
+
+        // A localised url answers for every language the site declares: the guard stays as the one place that would refuse one (see BookTranslatedLocales)
+        if (!$this->negotiator->isTranslated($request, $locales)) {
+            throw $this->createNotFoundException();
+        }
+
+        $askedLanguage = $this->negotiator->redirectToAskedLanguage($request, $locales, $route, ['slug' => $slug]);
+        if (null !== $askedLanguage) {
+            return $this->negotiator->vary($request, $askedLanguage);
+        }
+
+        // The planches it tells, page by page: the page lists them whole and grows as the visitor scrolls, where the books it holds are few enough to be shown at once
+        $strips = $this->stripService->findAllBySeriePaginated($serie, $request->query, $character);
+
+        // Who speaks in this serie: the same chips as under a planche, below the search field
+        $characters = $this->stripService->findCharactersBySerie($serie);
+
+        // The serie, the books it holds, the people it presents and the ones its planches name, then the planches it tells, all read on this page (see BookTranslator::apply)
+        $this->bookTranslator->apply([$serie, ...$serie->getBooks(), ...$serie->getCharacters(), ...$characters]);
+        $this->bookTranslator->apply($strips);
+
+        return $this->negotiator->vary($request, $this->render(
             '@c975LBook/serie/display.html.twig',
             [
                 'serie' => $serie,
-                // The planches it tells, page by page: the page lists them whole and grows as the visitor scrolls, where the books it holds are few enough to be shown at once
-                'strips' => $this->stripService->findAllBySeriePaginated($serie, $request->query, $character),
-                // Who speaks in this serie: the same chips as under a planche, below the search field
-                'characters' => $this->stripService->findCharactersBySerie($serie),
+                'strips' => $strips,
+                'characters' => $characters,
                 'character' => $character,
             ]
-        );
+        ));
     }
 }

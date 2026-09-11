@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Twig\Extension;
 
 use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\BookTranslator;
 use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\BookBundle\Service\SerieServiceInterface;
 use c975L\BookBundle\Service\StripServiceInterface;
@@ -22,6 +23,7 @@ class BookBlockExtension
     public function __construct(
         private readonly BookCategoryServiceInterface $categoryService,
         private readonly BookServiceInterface $bookService,
+        private readonly BookTranslator $bookTranslator,
         private readonly ContributorServiceInterface $contributorService,
         private readonly SerieServiceInterface $serieService,
         private readonly StripServiceInterface $stripService,
@@ -35,17 +37,17 @@ class BookBlockExtension
         $slugs = $this->slugs($serieSlugs);
 
         if ([] !== $slugs) {
-            return $this->draw($this->pick($this->serieService->findAll(), $slugs), $max, $random);
+            return $this->translated($this->draw($this->pick($this->serieService->findAll(), $slugs), $max, $random));
         }
 
-        return $random ? $this->draw($this->serieService->findAll(), $max) : $this->serieService->findAll($max);
+        return $this->translated($random ? $this->draw($this->serieService->findAll(), $max) : $this->serieService->findAll($max));
     }
 
     // Only the categories holding a book the site shows, as their own index lists them: an empty one would head a card saying "0"
     #[AsTwigFunction('book_block_categories')]
     public function getCategories(?int $max = null, bool $random = false): array
     {
-        return $this->draw($this->categoryService->findWithBooks(), $max, $random);
+        return $this->translated($this->draw($this->categoryService->findWithBooks(), $max, $random));
     }
 
     // Narrowed down to one category when the block names one, the whole catalog otherwise - the slug is what the block stores, its data being JSON and holding no entity (see BooksBlockType)
@@ -59,21 +61,21 @@ class BookBlockExtension
             ? $this->bookService->findAllPublished($number)
             : $this->bookService->findPublishedByCategory($categorySlug, $number);
 
-        return $random ? $this->draw($books, $max) : $books;
+        return $this->translated($random ? $this->draw($books, $max) : $books);
     }
 
     // The whole list is read whatever the maximum: findCredited() takes none, the people a catalog credits being a handful and not a shelf
     #[AsTwigFunction('book_block_contributors')]
     public function getContributors(?int $max = null, bool $random = false): array
     {
-        return $this->draw($this->contributorService->findCredited(), $max, $random);
+        return $this->translated($this->draw($this->contributorService->findCredited(), $max, $random));
     }
 
     // Same as the contributors: findAllToBePublished() reads the books waiting for their date, which are counted in units, and the maximum cuts that list here
     #[AsTwigFunction('book_block_to_be_published')]
     public function getToBePublished(?int $max = null, bool $random = false): array
     {
-        return $this->draw($this->bookService->findAllToBePublished(), $max, $random);
+        return $this->translated($this->draw($this->bookService->findAllToBePublished(), $max, $random));
     }
 
     // One serie, or several separated by commas - the maximum then applies to each of them rather than to the row, so a block naming two series shows as many planches of one as of the other (see SerieStripsBlockType)
@@ -94,7 +96,20 @@ class BookBlockExtension
                 : $this->stripService->findAllPublishedBySerie($serie, $max))];
         }
 
-        return $strips;
+        return $this->translated($strips);
+    }
+
+    // The language being read laid over whatever a block is about to show: these are the very rows a page of the site draws its rails from, and without this a book rail on "/en/" stayed in the writing language while everything around it turned (see BookTranslator::apply)
+    /**
+     * @param list<object> $rows
+     *
+     * @return list<object>
+     */
+    private function translated(array $rows): array
+    {
+        $this->bookTranslator->apply($rows);
+
+        return $rows;
     }
 
     // The slugs a block names, read off the one text field holding them - the same shape as the single slug the other kinds store, block data being JSON and holding no entity (see SerieStripsBlockType, BooksBlockType)

@@ -5,6 +5,6 @@
     {% if strip.serie and serie_path(strip.serie) %}
         <twig:c975LUi:Button:Button label="{{ strip.serie.title }}" url="{{ serie_path(strip.serie) }}"/>
     {% elseif config('book-route-strips')|default('') is not empty %}
-        <twig:c975LUi:Button:Button label="{{ 'label.strips_series'|trans({}, 'book') }}" url="{{ path('strip_index') }}"/>
+        <twig:c975LUi:Button:Button label="{{ 'label.strips_series'|trans({}, 'book') }}" url="{{ book_path('strip_index') }}"/>
     {% endif %}
 </article>

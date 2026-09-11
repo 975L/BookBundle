@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Controller\Management;
 
+use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
@@ -47,6 +48,8 @@ use function Symfony\Component\Translation\t;
 
 class BookCategoryCrudController extends AbstractCrudController
 {
+    use ContentLocaleCrudTrait;
+
     use TrashableCrudTrait;
 
     // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
@@ -89,6 +92,12 @@ class BookCategoryCrudController extends AbstractCrudController
     /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
     public function configureFields(string $pageName): iterable
     {
+        // The very same edit screen, opened on another language: what that language says of this row, and nothing else. A number, a slug, an ISBN, a date and a sales link are the same in every language and are written on the screen the row was written on (see ContentLocaleScreen)
+        $contentLocale = Crud::PAGE_EDIT === $pageName ? $this->contentLocale() : null;
+        if (null !== $contentLocale) {
+            return $this->translationFields($contentLocale);
+        }
+
         $entity = $this->adminContextProvider->getContext()?->getEntity()?->getInstance();
 
         return [

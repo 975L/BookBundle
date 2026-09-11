@@ -76,6 +76,10 @@ class Character implements \Stringable
         return (string) $this->name;
     }
 
+    // What this row says in the language being rendered, laid over the texts below and stored nowhere on the row: unmapped on purpose, Doctrine computing its changeset from the mapped properties and never from these getters, so a screen rendered in English cannot write English over the text the row was written in (see BookTranslator, the only thing that sets it)
+    /** @var array<string, string|null>|null */
+    private ?array $translated = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -95,7 +99,7 @@ class Character implements \Stringable
 
     public function getName(): ?string
     {
-        return $this->name;
+        return $this->translated['name'] ?? $this->name;
     }
 
     public function setName(string $name): static
@@ -119,7 +123,7 @@ class Character implements \Stringable
 
     public function getPresentation(): ?string
     {
-        return $this->presentation;
+        return $this->translated['presentation'] ?? $this->presentation;
     }
 
     public function setPresentation(?string $presentation): static
@@ -206,5 +210,22 @@ class Character implements \Stringable
     public function getStrips(): Collection
     {
         return $this->strips;
+    }
+
+    // Lays what a language says over the texts this row was written with, for the render being built and no longer than that - only BookTranslator calls it, and only on the front, a form screen having to go on reading the row
+    /** @param array<string, string|null> $values field => value */
+    public function setTranslated(array $values): void
+    {
+        $this->translated = $values;
+    }
+
+    // The text the row itself carries, whatever language is being rendered - what a language screen offers as the thing to translate, and what tells an untouched field from a written one (see BookTranslator)
+    public function getUntranslated(string $field): ?string
+    {
+        return match ($field) {
+            'name' => $this->name,
+            'presentation' => $this->presentation,
+            default => null,
+        };
     }
 }

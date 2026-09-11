@@ -6,17 +6,17 @@
 {% set indexLabel = isStripSerie ? 'label.strips_series' : 'label.series' %}
 {% set hasIndex = config(isStripSerie ? 'book-route-strips' : 'book-route-series')|default('') is not empty %}
 {% set hasCategoryIndex = config('book-route-categories')|default('') is not empty %}
-<nav class="book-breadcrumb" aria-label="{{ 'label.breadcrumb'|trans({}, 'book', language) }}">
+<nav class="book-breadcrumb" aria-label="{{ 'label.breadcrumb'|trans({}, 'book', book_ui_locale(language)) }}">
     {% if category %}
         {% if hasCategoryIndex %}
-            <a href="{{ book_path('book_category_index') }}">{{ 'label.categories'|trans({}, 'book', language) }}</a>
+            <a href="{{ book_path('book_category_index') }}">{{ 'label.categories'|trans({}, 'book', book_ui_locale(language)) }}</a>
             <span class="book-breadcrumb__separator" aria-hidden="true">&rsaquo;</span>
         {% endif %}
         <span class="book-breadcrumb__current" aria-current="page">{{ category.title }}</span>
     {% endif %}
     {% if serie %}
         {% if hasIndex %}
-            <a href="{{ path(indexRoute) }}">{{ indexLabel|trans({}, 'book', language) }}</a>
+            <a href="{{ book_path(indexRoute) }}">{{ indexLabel|trans({}, 'book', book_ui_locale(language)) }}</a>
             <span class="book-breadcrumb__separator" aria-hidden="true">&rsaquo;</span>
         {% endif %}
         {# A serie set aside is named but not linked: its own page answers 404, and the trail is where a book or a planche still holding on to it would offer that broken link (see Entity\Trait\HideableTrait) #}
@@ -37,7 +37,7 @@
 {% set trail = [] %}
 {% if category and hasCategoryIndex %}
     {% set trail = [
-        {name: 'label.categories'|trans({}, 'book', language), url: absolute_url(book_path('book_category_index'))},
+        {name: 'label.categories'|trans({}, 'book', book_ui_locale(language)), url: absolute_url(book_path('book_category_index'))},
         {name: category.title, url: absolute_url(app.request.pathinfo)}
     ] %}
     {% set jsonLd = book_breadcrumb_json_ld(trail) %}
@@ -48,7 +48,7 @@
 {% endif %}
 {% if serie %}
     {% if hasIndex %}
-        {% set trail = trail|merge([{name: indexLabel|trans({}, 'book', language), url: absolute_url(path(indexRoute))}]) %}
+        {% set trail = trail|merge([{name: indexLabel|trans({}, 'book', book_ui_locale(language)), url: absolute_url(book_path(indexRoute))}]) %}
     {% endif %}
     {% if current is not empty and not serie.hidden and serie_path(serie) %}
         {% set trail = trail|merge([{name: serie.title, url: absolute_url(serie_path(serie))}]) %}

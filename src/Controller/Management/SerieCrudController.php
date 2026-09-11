@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Controller\Management;
 
+use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Enum\SerieKind;
@@ -55,6 +56,8 @@ use function Symfony\Component\Translation\t;
 
 class SerieCrudController extends AbstractCrudController
 {
+    use ContentLocaleCrudTrait;
+
     // updateEntity() is widened below: a method written in the class body would take the trait's place instead of chaining to it
     use TrashableCrudTrait {
         updateEntity as private trashableUpdateEntity;
@@ -81,12 +84,12 @@ class SerieCrudController extends AbstractCrudController
         private readonly BlockMoveRowAttrBuilder $blockMoveRowAttrBuilder,
         private readonly BookCatalogExporter $catalogExporter,
         private readonly BookDuplicator $duplicator,
-        private readonly SerieExportProvider $serieExportProvider,
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly BookTrashManager $trashManager,
         private readonly ConfigServiceInterface $configService,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly RequestStack $requestStack,
+        private readonly SerieExportProvider $serieExportProvider,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -100,6 +103,12 @@ class SerieCrudController extends AbstractCrudController
     /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
     public function configureFields(string $pageName): iterable
     {
+        // The very same edit screen, opened on another language: what that language says of this row, and nothing else. A number, a slug, an ISBN, a date and a sales link are the same in every language and are written on the screen the row was written on (see ContentLocaleScreen)
+        $contentLocale = Crud::PAGE_EDIT === $pageName ? $this->contentLocale() : null;
+        if (null !== $contentLocale) {
+            return $this->translationFields($contentLocale);
+        }
+
         $entity = $this->adminContextProvider->getContext()?->getEntity()?->getInstance();
         // The serie being edited, null on the creation screen: its images say which slots are already taken
         $serie = $entity instanceof Serie ? $entity : null;

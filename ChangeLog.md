@@ -1,5 +1,42 @@
 # Changelog
 
+## v2.11.0
+
+The catalog is read in every language the site declares
+
+- **A book, a serie, a category, a planche, a character and a person are translatable**, through `BookTranslator` (10/09/2026)
+- One row in every language, its translations stored beside it as a page's are (10/09/2026)
+- A person's own name is not translated, a character's is (10/09/2026)
+- Slugs, numbers, ISBNs, edition formats, age ranges and a book's language are left out (10/09/2026)
+- **The title of a press cutting and of a promotional visual is translatable**, on the book's language screen (11/09/2026)
+- **The eleven public screens answer at `/{_locale}/…`** in every language the site declares, translated or not (10/09/2026)
+- `BookTranslatedLocales` holds which languages each screen answers in (10/09/2026)
+- A numbered url keeps the language it was read in (10/09/2026)
+- A serie asked under the other index' segment is redirected in the language it was read in (10/09/2026)
+- `book_path()`, `serie_path()`, `book_category_path()` and `contributor_path()` answer in the language being read (10/09/2026)
+- `BookLinkLocalizer` rewrites the catalog links stored in blocks the same way (10/09/2026)
+- **The sitemap declares each page once per language**, with its `alternates` group (10/09/2026)
+- The block extension, the collection source and the favorites lay the language on before copying a title (10/09/2026)
+- **A serie's characters and a planche's neighbours follow the language being read** (11/09/2026)
+- `StripServiceInterface::findCharactersBySerie()` returns `Character` entities [BC-Break] see [UPGRADE.md](UPGRADE.md) (11/09/2026)
+- **The release alert page answers in the language the book is read in**, at `/{_locale}/book/release-alert/{id}` (11/09/2026)
+- **This bundle's own labels follow the language being read**, through `book_ui_locale()` (10/09/2026)
+- The language menu shows on these screens (10/09/2026)
+- **The back office gains a language screen per row**, opened by a "Translate" action and the `?contenu=xx` tabs (10/09/2026)
+- `ContentLocaleCrudTrait` holds it once for the six screens, its collaborators subscribed rather than injected (11/09/2026)
+- A language screen stores what it writes on the flush saving the row (10/09/2026)
+- A guided project walks through translating a book (11/09/2026)
+- Translations are laid over a row for the render only, never persisted (10/09/2026)
+- **A duplicated book, serie, category, planche or person carries its translations**, blocks and pictures included (11/09/2026)
+- A new version carries the translations of its summary alone (11/09/2026)
+- **A row removed for good takes its translations with it**, through `BookTranslationPurgeListener` (10/09/2026)
+- The trash keeps a row's translations (10/09/2026)
+- `CatalogueCompletenessTest` checks every language file of a domain against the source one (10/09/2026)
+- The narration catalogue ships in Spanish too (11/09/2026)
+- The reader block declares its title translatable (10/09/2026)
+- **A demo site is seeded with its catalog in every language it declares** (10/09/2026)
+- Requires `c975l/core-bundle` `^1.28.0` (10/09/2026)
+
 ## v2.10.1
 
 A serie presents its characters only where there is something to present

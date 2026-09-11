@@ -26,6 +26,10 @@
                 <source>action.restore</source>
                 <target>Restore</target>
             </trans-unit>
+            <trans-unit id="VOwL1H0">
+                <source>action.translate</source>
+                <target>Translate</target>
+            </trans-unit>
             <trans-unit id="8w7xgsI">
                 <source>action.trash</source>
                 <target>Trash</target>
@@ -101,6 +105,10 @@
             <trans-unit id="0ebzwCX">
                 <source>description.guided_project_book_strip_creation</source>
                 <target>A strip, the serie telling it, its rank and its drawing: what it takes to put it online.</target>
+            </trans-unit>
+            <trans-unit id="Sr_0fZh">
+                <source>description.guided_project_book_translation</source>
+                <target>The same book said in another language: its title and its summary belong to it, the number, the editions and the sales links being the same everywhere.</target>
             </trans-unit>
             <trans-unit id="pNsC2xL">
                 <source>description.guided_project_book_trash</source>
@@ -489,6 +497,30 @@
             <trans-unit id="FckYTEl">
                 <source>description.guided_step_book_strip_creation_title</source>
                 <target>The title names the strip everywhere it is listed, and its address follows from it.</target>
+            </trans-unit>
+            <trans-unit id="_wv.XJy">
+                <source>description.guided_step_book_translation_action</source>
+                <target>The button opens the book straight into the first language to translate. It only shows where the site declares more than one language.</target>
+            </trans-unit>
+            <trans-unit id="TUsX0g7">
+                <source>description.guided_step_book_translation_done</source>
+                <target>Open its page at that language's address: the translated title and summary stand in for the writing language's own.</target>
+            </trans-unit>
+            <trans-unit id="mQxATAo">
+                <source>description.guided_step_book_translation_locale</source>
+                <target>The tabs move from one language to another, the first being the one the book was written in.</target>
+            </trans-unit>
+            <trans-unit id="i2PSx7s">
+                <source>description.guided_step_book_translation_open</source>
+                <target>A translation starts from the list of books.</target>
+            </trans-unit>
+            <trans-unit id="9mQftLS">
+                <source>description.guided_step_book_translation_summary</source>
+                <target>The writing language's summary is offered between brackets, and Donovan can rephrase it under the field.</target>
+            </trans-unit>
+            <trans-unit id="sHdWjPg">
+                <source>description.guided_step_book_translation_title</source>
+                <target>The title between brackets is the writing language's own: it stays shown until something is typed.</target>
             </trans-unit>
             <trans-unit id="Kl4RXD0">
                 <source>description.guided_step_book_trash_delete</source>
@@ -1230,6 +1262,14 @@
                 <source>label.extract-help</source>
                 <target>The pages a reader browses before buying. The pages of an album belong to the edition they were published in, and are added on that edition.</target>
             </trans-unit>
+            <trans-unit id="LHpZe.c">
+                <source>label.fieldset_this_language</source>
+                <target>In this language (%language%)</target>
+            </trans-unit>
+            <trans-unit id="p8XUdUk">
+                <source>label.fieldset_this_language_help</source>
+                <target>These texts belong to this language alone. Every other field - number, slug, ISBN, dates, sales links - is the same everywhere and is written on the writing language’s own screen.</target>
+            </trans-unit>
             <trans-unit id="Na2sWb9">
                 <source>label.flipbook</source>
                 <target>Flipbook</target>
@@ -1337,6 +1377,10 @@
             <trans-unit id="9Q84XCP">
                 <source>label.guided_project_book_strip_creation</source>
                 <target>Publish a strip</target>
+            </trans-unit>
+            <trans-unit id="qwcFsNd">
+                <source>label.guided_project_book_translation</source>
+                <target>Translate a book</target>
             </trans-unit>
             <trans-unit id="dMs_Dy.">
                 <source>label.guided_project_book_trash</source>
@@ -1761,6 +1805,34 @@
             <trans-unit id="eJnKowv">
                 <source>label.guided_step_book_strip_creation_title</source>
                 <target>Give it a title</target>
+            </trans-unit>
+            <trans-unit id="BFz211V">
+                <source>label.guided_step_book_translation_action</source>
+                <target>Open the language screen</target>
+            </trans-unit>
+            <trans-unit id="f2sd9FI">
+                <source>label.guided_step_book_translation_done</source>
+                <target>The book reads in that language</target>
+            </trans-unit>
+            <trans-unit id="zYWWz4X">
+                <source>label.guided_step_book_translation_locale</source>
+                <target>Choose the language</target>
+            </trans-unit>
+            <trans-unit id="QqkW.Ip">
+                <source>label.guided_step_book_translation_open</source>
+                <target>Open the catalog</target>
+            </trans-unit>
+            <trans-unit id="7hk52yW">
+                <source>label.guided_step_book_translation_save</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="WadSqJk">
+                <source>label.guided_step_book_translation_summary</source>
+                <target>Translate the summary</target>
+            </trans-unit>
+            <trans-unit id="M.t_Yip">
+                <source>label.guided_step_book_translation_title</source>
+                <target>Translate the title</target>
             </trans-unit>
             <trans-unit id="omgz67L">
                 <source>label.guided_step_book_trash_delete</source>

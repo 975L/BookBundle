@@ -46,6 +46,11 @@ trait BookPublicUrlGeneratorTestTrait
         $routes->add('strip_serie_display', new Route('/{strips_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
         $routes->add('strip_display', new Route('/{strip_prefix}/{slug}', [], ['slug' => '^([a-z0-9\-]+)']));
 
+        // The localised twin of each of them, as the controllers declare it: the same path behind "/{_locale}", which is what an alternates group is built from (see BookPublicUrlResolver::resolveAlternates())
+        foreach ($routes->all() as $name => $route) {
+            $routes->add($name . '_localized', new Route('/{_locale}' . $route->getPath(), [], $route->getRequirements()));
+        }
+
         return new UrlGenerator($routes, new RequestContext());
     }
 

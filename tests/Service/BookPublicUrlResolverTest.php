@@ -15,19 +15,28 @@ use c975L\BookBundle\Enum\SerieKind;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Tests\BookPublicUrlGeneratorTestTrait;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
+use c975L\ConfigBundle\Service\LocalizedUrlGenerator;
+use c975L\ConfigBundle\Service\SiteLocales;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 // The single place this bundle's public urls are spelled - what the sitemap declares, hence what a crawler is sent to
 class BookPublicUrlResolverTest extends TestCase
 {
     use BookPublicUrlGeneratorTestTrait;
 
-    private function createResolver(string $siteUrl = 'https://example.com', array $prefixes = []): BookPublicUrlResolver
+    // With no request in the stack there is no language being read, and LocalizedUrlGenerator falls through to the bare route
+    private function createResolver(string $siteUrl = 'https://example.com', array $prefixes = [], array $locales = ['fr'], ?Request $request = null): BookPublicUrlResolver
     {
         $configService = $this->createStub(ConfigServiceInterface::class);
         $configService->method('get')->willReturn($siteUrl);
 
-        return new BookPublicUrlResolver($configService, $this->createRoutePrefix($prefixes), $this->createUrlGenerator());
+        $urlGenerator = $this->createUrlGenerator();
+        $siteLocales = new SiteLocales($locales, 'fr');
+        $requestStack = new RequestStack(null === $request ? [] : [$request]);
+
+        return new BookPublicUrlResolver($configService, $this->createRoutePrefix($prefixes), new LocalizedUrlGenerator($urlGenerator, $siteLocales, $requestStack), $urlGenerator, $siteLocales);
     }
 
     // The path comes from the routes themselves, its first segment from the site's own configuration, the host from "site-url"
@@ -98,5 +107,41 @@ class BookPublicUrlResolverTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $this->createResolver()->resolvePath('management');
+    }
+
+    // A link read at "/en/..." stays in English, and where no language is being read it is the bare path it has always been
+    public function testResolveLocalizedPathFollowsTheLanguageBeingRead(): void
+    {
+        $request = new Request();
+        $request->attributes->set('_locale', 'en');
+
+        $this->assertSame('/en/livre/tome-1', $this->createResolver('', [], ['fr', 'en'], $request)->resolveLocalizedPath('book_display', ['slug' => 'tome-1']));
+        $this->assertSame('/livre/tome-1', $this->createResolver('', [], ['fr', 'en'])->resolveLocalizedPath('book_display', ['slug' => 'tome-1']));
+    }
+
+    // A family this site does not serve has no link to hand back, in any language
+    public function testResolveLocalizedPathReturnsNullForAFamilyNotServedHere(): void
+    {
+        $this->assertNull($this->createResolver('', ['book-route-strip' => ''])->resolveLocalizedPath('strip_display', ['slug' => 'planche-1']));
+    }
+
+    // Each language the page answers in, the writing language on its bare url and the others behind their code
+    public function testResolveAlternatesNamesEveryLanguageThePageAnswersIn(): void
+    {
+        $this->assertSame(
+            ['fr' => 'https://example.com/livre/tome-1', 'en' => 'https://example.com/en/livre/tome-1'],
+            $this->createResolver('https://example.com', [], ['fr', 'en'])->resolveAlternates('book_display', ['slug' => 'tome-1'], ['fr', 'en'])
+        );
+    }
+
+    // No group where it would name one language alone, leave the writing language out, lack a host or point at a family not served
+    public function testResolveAlternatesIsEmptyWhereAGroupWouldSayNothing(): void
+    {
+        $parameters = ['slug' => 'tome-1'];
+
+        $this->assertSame([], $this->createResolver()->resolveAlternates('book_display', $parameters, ['fr']));
+        $this->assertSame([], $this->createResolver('https://example.com', [], ['fr', 'en'])->resolveAlternates('book_display', $parameters, ['en', 'es']));
+        $this->assertSame([], $this->createResolver('', [], ['fr', 'en'])->resolveAlternates('book_display', $parameters, ['fr', 'en']));
+        $this->assertSame([], $this->createResolver('https://example.com', ['book-route-book' => ''], ['fr', 'en'])->resolveAlternates('book_display', $parameters, ['fr', 'en']));
     }
 }

@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Controller\Management;
 
+use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Form\ContributorLinkType;
@@ -58,6 +59,8 @@ use function Symfony\Component\Translation\t;
 
 class ContributorCrudController extends AbstractCrudController
 {
+    use ContentLocaleCrudTrait;
+
     // updateEntity() and createIndexQueryBuilder() are widened below: a method written in the class body would take the trait's place instead of chaining to it
     use TrashableCrudTrait {
         createIndexQueryBuilder as private trashableIndexQueryBuilder;
@@ -85,10 +88,10 @@ class ContributorCrudController extends AbstractCrudController
         private readonly BlockMoveRowAttrBuilder $blockMoveRowAttrBuilder,
         private readonly BookCatalogExporter $catalogExporter,
         private readonly BookDuplicator $duplicator,
-        private readonly ContributorExportProvider $contributorExportProvider,
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly BookTrashManager $trashManager,
         private readonly ConfigServiceInterface $configService,
+        private readonly ContributorExportProvider $contributorExportProvider,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly RequestStack $requestStack,
         private readonly TranslatorInterface $translator,
@@ -104,6 +107,12 @@ class ContributorCrudController extends AbstractCrudController
     /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
     public function configureFields(string $pageName): iterable
     {
+        // The very same edit screen, opened on another language: what that language says of this row, and nothing else. A number, a slug, an ISBN, a date and a sales link are the same in every language and are written on the screen the row was written on (see ContentLocaleScreen)
+        $contentLocale = Crud::PAGE_EDIT === $pageName ? $this->contentLocale() : null;
+        if (null !== $contentLocale) {
+            return $this->translationFields($contentLocale);
+        }
+
         $entity = $this->adminContextProvider->getContext()?->getEntity()?->getInstance();
         // The person being edited, null on the creation screen: their images say which slots are already taken
         $contributor = $entity instanceof Contributor ? $entity : null;

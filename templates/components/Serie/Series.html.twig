@@ -18,7 +18,7 @@
         {% if displayMore %}
             <article class="text-center">
                 <h3 class="card-title">{{ 'label.series_more'|trans({}, 'book') }}</h3>
-                <twig:c975LUi:Button:Button label="{{ 'label.series'|trans({}, 'book') }}" url="{{ path('serie_index') }}" />
+                <twig:c975LUi:Button:Button label="{{ 'label.series'|trans({}, 'book') }}" url="{{ book_path('serie_index') }}" />
             </article>
         {% endif %}
     </div>

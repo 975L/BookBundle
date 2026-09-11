@@ -10,7 +10,7 @@
     {% endif %}
 
     {% set coverSrc = serie.covers|first != false ? serie.covers|first : "bundles/c975lbook/images/no-cover.webp" %}
-    <img class="book-hero__cover" src="{{ asset(coverSrc) }}" alt="{{ 'label.cover'|trans({}, 'book', serie.language) }} - {{ serie.title }}" width="240" fetchpriority="high">
+    <img class="book-hero__cover" src="{{ asset(coverSrc) }}" alt="{{ 'label.cover'|trans({}, 'book', book_ui_locale(serie.language)) }} - {{ serie.title }}" width="240" fetchpriority="high">
 
     <div class="book-hero__body">
         {% if serie.logos is not empty %}
@@ -34,10 +34,10 @@
 
         <div class="book-hero__actions">
             {% if 'books' in anchors %}
-                <twig:c975LUi:Button:Button label="{{ 'label.serie_books'|trans({}, 'book', serie.language) }}" url="#books" inline="true"/>
+                <twig:c975LUi:Button:Button label="{{ 'label.serie_books'|trans({}, 'book', book_ui_locale(serie.language)) }}" url="#books" inline="true"/>
             {% endif %}
             {% if 'strips' in anchors %}
-                <twig:c975LUi:Button:Button label="{{ 'label.strips'|trans({}, 'book', serie.language) }}" url="#strips" inline="true"/>
+                <twig:c975LUi:Button:Button label="{{ 'label.strips'|trans({}, 'book', book_ui_locale(serie.language)) }}" url="#strips" inline="true"/>
             {% endif %}
         </div>
     </div>

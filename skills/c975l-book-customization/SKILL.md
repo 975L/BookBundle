@@ -1,6 +1,6 @@
 ---
 name: c975l-book-customization
-description: "Use this skill when a single site has to bend the c975L BookBundle to its own catalog without overriding a controller — the words it gives its file kinds, its editions and its platforms, the sections its book pages hold and in what order, the fields it adds to a book, which rows its catalog page lists and under what name, and the url prefixes of its public pages. Triggers on: BookCustomizationProviderInterface, BookCustomizationRegistry, book.customization_provider, BookCatalogProviderInterface, BookCatalogRegistry, book.catalog_provider, getMediaKinds, getEditionKinds, getContributorRoles, getLinkKinds, getSections, getDataFormType, getBooks, getTitle, book_catalog_title, BookCatalogExtension, BookLinkKind, BookLinkGroup, BookMediaKind, BookEditionKind, BookContributorRole, BookContributor, SerieKind, book_link_label, book_link_icon, book_link_url, book_links_of, book_edition_label, book_role_label, BookLinkExtension, BookRoutePrefix, book-route-books, book-route-book, book-route-series, book-route-contributors, book-route-contributor, book-route-strips, book-route-strip, book-route-book-shortcut, book-route-strip-shortcut, book-catalog-title, book-gplay-affiliate, book-rating, book-confetti, book-strip-card, Book::data, BookDataField."
+description: "Use this skill when a single site has to bend the c975L BookBundle to its own catalog without overriding a controller — the words it gives its file kinds, its editions and its platforms, the sections its book pages hold and in what order, the fields it adds to a book, which rows its catalog page lists and under what name, and the url prefixes of its public pages. Triggers on: BookCustomizationProviderInterface, BookCustomizationRegistry, book.customization_provider, BookCatalogProviderInterface, BookCatalogRegistry, book.catalog_provider, getMediaKinds, getEditionKinds, getContributorRoles, getLinkKinds, getSections, getDataFormType, getBooks, getTitle, book_catalog_title, BookCatalogExtension, BookLinkKind, BookLinkGroup, BookMediaKind, BookEditionKind, BookContributorRole, BookContributor, SerieKind, book_link_label, book_link_icon, book_link_url, book_links_of, book_edition_label, book_role_label, BookLinkExtension, BookRoutePrefix, book-route-books, book-route-book, book-route-series, book-route-contributors, book-route-contributor, book-route-strips, book-route-strip, book-route-book-shortcut, book-route-strip-shortcut, book-catalog-title, book-gplay-affiliate, book-rating, book-confetti, book-strip-card, Book::data, BookDataField, book_ui_locale, resolveLocalizedPath."
 ---
 
 # c975L BookBundle — customizing a catalog
@@ -46,8 +46,8 @@ class CatalogCustomization implements BookCustomizationProviderInterface
 | `getDataFormType()` | no extra fields | a form class mapped on `Book::$data` |
 
 A **label is a plain word or a translation key**: it goes through the translator in the `book` catalog (or
-the `domain` the declaration names), in the book's own language, and an untranslated one prints as it
-stands. That is what lets `'Édition illustrée'` and `'label.paper'` sit side by side.
+the `domain` the declaration names), in the language being read — the book's own where none is
+(`book_ui_locale()`) — and an untranslated one prints as it stands. That is what lets `'Édition illustrée'` and `'label.paper'` sit side by side.
 
 `BookCustomizationRegistry` is what everything reads — never the provider directly. **A kind the vocabulary
 does not hold prints as it is stored** (`getLinkLabel()` answers `epub_fnac` for an undeclared `epub_fnac`)
@@ -122,8 +122,10 @@ All sixteen live in `config/configs.json`, group **book**, and are read through 
 | `book-strip-card`, `book-strip-card-icon`, `book-strip-rating-icon` | how a planche card reads |
 
 **A prefix emptied means the site serves that page itself**: `BookRoutePrefix` then registers no route at
-all for it, and everything linking to it must go through `BookPublicUrlResolver::resolvePath()`, which
-answers null rather than throwing.
+all for it, and everything linking to it must go through `BookPublicUrlResolver::resolveLocalizedPath()` — or
+`resolvePath()` for the canonical url — which answer null rather than throwing. The same prefix names the
+localised twin of each route (`/{_locale}/{prefix}/…`): a site translating its catalog keeps one word per family,
+not one per language.
 
 ## Do not
 

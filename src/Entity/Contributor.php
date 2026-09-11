@@ -122,6 +122,10 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
         return (string) $this->name;
     }
 
+    // What this row says in the language being rendered, laid over the texts below and stored nowhere on the row: unmapped on purpose, Doctrine computing its changeset from the mapped properties and never from these getters, so a screen rendered in English cannot write English over the text the row was written in (see BookTranslator, the only thing that sets it)
+    /** @var array<string, string|null>|null */
+    private ?array $translated = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -165,7 +169,7 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
 
     public function getSummary(): ?string
     {
-        return $this->summary;
+        return $this->translated['summary'] ?? $this->summary;
     }
 
     public function setSummary(?string $summary): static
@@ -424,5 +428,21 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
     public function holdsVisibleContent(): bool
     {
         return array_any([...$this->getBooks(), ...$this->getSeries()], fn ($entity) => !$entity->isHidden() && !$entity->isDeleted());
+    }
+
+    // Lays what a language says over the texts this row was written with, for the render being built and no longer than that - only BookTranslator calls it, and only on the front, a form screen having to go on reading the row
+    /** @param array<string, string|null> $values field => value */
+    public function setTranslated(array $values): void
+    {
+        $this->translated = $values;
+    }
+
+    // The text the row itself carries, whatever language is being rendered - what a language screen offers as the thing to translate, and what tells an untouched field from a written one (see BookTranslator)
+    public function getUntranslated(string $field): ?string
+    {
+        return match ($field) {
+            'summary' => $this->summary,
+            default => null,
+        };
     }
 }

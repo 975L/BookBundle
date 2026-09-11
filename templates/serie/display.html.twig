@@ -34,14 +34,14 @@
             {# Who peoples the serie, above what it holds: the presentation explains the books and the planches listed under it #}
             {% if 'characters' in anchors %}
                 <section id="characters" class="toc-target" lang="{{ serie.language }}">
-                    <h2>{{ 'label.characters_section'|trans({}, 'book', serie.language) }}</h2>
+                    <h2>{{ 'label.characters_section'|trans({}, 'book', book_ui_locale(serie.language)) }}</h2>
                     <twig:c975LBook:Serie:Characters serie="{{ serie }}"/>
                 </section>
             {% endif %}
             {# No card around the items: what the serie holds is no section to be announced, it is what the page is read for - a title, the field searching in it, and the cards themselves #}
             {% if 'books' in anchors %}
                 <section id="books" class="toc-target" lang="{{ serie.language }}">
-                    <h2>{{ 'label.serie_books'|trans({}, 'book', serie.language) }}</h2>
+                    <h2>{{ 'label.serie_books'|trans({}, 'book', book_ui_locale(serie.language)) }}</h2>
                     <twig:c975LBook:Book:Search serie="{{ serie }}" heading="h3"/>
                     <twig:c975LBook:Book:Books books="{{ serie.books }}" displayMore="false" :editable="editUrls is not empty"/>
                 </section>
@@ -49,7 +49,7 @@
             {% if 'strips' in anchors %}
                 {# Every planche of the serie and not a handful: the list grows as the visitor scrolls (UiBundle's controller fetches the page the link below already points at), and without javascript that link is the ordinary link to the next page it looks like #}
                 <section id="strips" class="toc-target" lang="{{ serie.language }}">
-                    <h2>{{ 'label.strips'|trans({}, 'book', serie.language) }}</h2>
+                    <h2>{{ 'label.strips'|trans({}, 'book', book_ui_locale(serie.language)) }}</h2>
                     <twig:c975LBook:Strip:Search serie="{{ serie }}" heading="h3"/>
                     {# Under the field: search a word, or follow who says it - the two ways into a serie of planches #}
                     <twig:c975LBook:Strip:Characters characters="{{ characters|default([]) }}" serie="{{ serie }}" selected="{{ character|default('') }}" language="{{ serie.language }}" heading="h3"/>
@@ -59,7 +59,7 @@
 
                         <div class="strip-list-footer">
                             {% if strips.getTotalItemCount > strips.getItemNumberPerPage %}
-                                <p class="text text-center" aria-live="polite">{{ 'label.strips'|trans({}, 'book', serie.language) }} <span data-infiniteScroll-target="count">{{ strips|length }}</span> / {{ strips.getTotalItemCount }}</p>
+                                <p class="text text-center" aria-live="polite">{{ 'label.strips'|trans({}, 'book', book_ui_locale(serie.language)) }} <span data-infiniteScroll-target="count">{{ strips|length }}</span> / {{ strips.getTotalItemCount }}</p>
                             {% endif %}
                             {% if strips.getCurrentPageNumber < strips.getPageCount %}
                                 {# The paginator's own query is reused rather than rebuilt: whatever the visitor came with stays in it #}
@@ -69,7 +69,7 @@
                                     class="btn btn-secondary"
                                     data-infiniteScroll-target="next"
                                     data-action="click->infiniteScroll#load"
-                                >{{ 'label.load_more'|trans({}, 'book', serie.language) }}</a>
+                                >{{ 'label.load_more'|trans({}, 'book', book_ui_locale(serie.language)) }}</a>
                             {% endif %}
                         </div>
                     </div>

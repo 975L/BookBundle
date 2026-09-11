@@ -16,7 +16,9 @@ use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Service\BookTranslator;
 use c975L\BookBundle\Service\BookVersionPublisher;
+use c975L\UiBundle\Service\TranslationCopier;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
@@ -94,12 +96,27 @@ class BookVersionPublisherTest extends TestCase
         $this->assertNull($this->publisher()->editionOfKind($book, 'paper'));
     }
 
-    private function publisher(?Book $collides = null): BookVersionPublisher
+    // The summary is copied over as it stands, so what it says in the site's other languages follows it - the title is the editor's own, in every language (see TranslationCopier)
+    public function testThePreviousVersionCarriesTheTranslationsOfItsSummaryAlone(): void
+    {
+        $copied = [];
+        $translationCopier = $this->createStub(TranslationCopier::class);
+        $translationCopier->method('copy')->willReturnCallback(static function (string $ownerType, object $source, object $copy, ?array $fields = null) use (&$copied): void {
+            $copied[] = [$ownerType, $source, $copy, $fields];
+        });
+
+        $book = new Book()->setTitle('Chat et Chocolat')->setSlug('chat-et-chocolat');
+        $previous = $this->publisher(translationCopier: $translationCopier)->createPreviousVersion($book, 'Chat et Chocolat — Édition originale');
+
+        $this->assertSame([[BookTranslator::OWNER_BOOK, $book, $previous, ['summary']]], $copied);
+    }
+
+    private function publisher(?Book $collides = null, ?TranslationCopier $translationCopier = null): BookVersionPublisher
     {
         $repository = $this->createStub(BookRepository::class);
         $repository->method('findOneBy')->willReturn($collides);
 
-        return new BookVersionPublisher($repository, new AsciiSlugger());
+        return new BookVersionPublisher($repository, new AsciiSlugger(), $translationCopier ?? $this->createStub(TranslationCopier::class));
     }
 
     // The pages of the text as it came out follow the version set aside; what holds for the text itself - the recording, the trailer - stays with the book keeping the page

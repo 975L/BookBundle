@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Tests\Service;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Service\BookCollectionSourceProvider;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\BookTranslator;
 use PHPUnit\Framework\TestCase;
 
 // The catalog offered to UiBundle's "collection" block: the whole of it, plus one source per language the catalog actually holds
@@ -67,7 +68,7 @@ class BookCollectionSourceProviderTest extends TestCase
         $bookService = $this->createStub(BookServiceInterface::class);
         $bookService->method('findLanguages')->willThrowException(new \RuntimeException('no such table'));
 
-        $this->assertSame(['book.collection.books'], array_keys(new BookCollectionSourceProvider($bookService)->getSources()));
+        $this->assertSame(['book.collection.books'], array_keys(new BookCollectionSourceProvider($bookService, $this->createStub(BookTranslator::class))->getSources()));
     }
 
     /**
@@ -81,6 +82,6 @@ class BookCollectionSourceProviderTest extends TestCase
         $bookService->method('findAllPublished')->willReturn($books);
         $bookService->method('countPublished')->willReturn(\count($books));
 
-        return new BookCollectionSourceProvider($bookService);
+        return new BookCollectionSourceProvider($bookService, $this->createStub(BookTranslator::class));
     }
 }

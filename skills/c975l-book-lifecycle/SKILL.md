@@ -1,6 +1,6 @@
 ---
 name: c975l-book-lifecycle
-description: "Use this skill when a row of a c975L BookBundle catalog is created, copied, replaced, hidden or moved between environments — publishing a new version of a book without losing its address, duplicating a book, a serie or a planche, the trash and the 410/301 answers that keep urls in order, what each repository read is allowed to answer, and the zip export/import that carries a whole catalog with its files. Triggers on: BookVersionPublisher, publishVersion, newerVersion, previousVersion, createPreviousVersion, moveEdition, moveMedias, BookDuplicator, duplicateBook, duplicateSerie, duplicateStrip, duplicateContributor, BookContributor, BookContributorType, BookTrashManager, moveToTrash, restore, deletePermanently, redirectSlugChange, TrashableInterface, TrashableTrait, TrashableCrudTrait, isDeleted, HideableTrait, isHidden, setHidden, hidden, GoneHttpException, 410, BookExportProvider, BookImportProvider, SerieExportProvider, SerieImportProvider, StripExportProvider, StripImportProvider, ContributorExportProvider, ContributorImportProvider, MediaArchiver, SerieResolver, ContributorResolver, BookCategory, BookCategoryResolver, BookCategoryExportProvider, BookCategoryImportProvider, duplicateCategory, findPublishedByCategory, findWithBooks, BookBackupPathProvider, BookSitemapProvider, BookLinkHealthCheckProvider, BookMediaMoveController, findAllPublished, findAllOnline, findPublishedByIds, findOneByNumber, publishedQueryBuilder, strip:import, c975l:book:characters:from-strips, CharactersFromStripsCommand, Character, CharacterMedia, CharacterRepository, CharacterCrudController, getCharacter, getCharacterGroups, groupName, BookDemoFixtureProvider, BookSampleCatalog, DemoFixtureProviderInterface, getDemoFixtures, PlaceholderMediaRegistry, getImagesFor,  GalleryShowcaseProvider, BookReleaseAlert, BookReleaseAlertService, BookReleaseAlertRepository, BookReleaseAlertSend, BookMaintenanceTaskProvider, isToBePublished, findAllToBePublished, findReleased, purgeStale, isShownInCatalog, book_release_alert_unsubscribe, book_release_alert_unsubscribe_confirm, MAX_ATTEMPTS, attempts, BookEmailTemplateProvider, BookFilesHealthCheckProvider, files-book, findWithFilename, AbstractDeclaredFilesHealthCheckProvider."
+description: "Use this skill when a row of a c975L BookBundle catalog is created, copied, replaced, hidden or moved between environments — publishing a new version of a book without losing its address, duplicating a book, a serie or a planche, the trash and the 410/301 answers that keep urls in order, what each repository read is allowed to answer, and the zip export/import that carries a whole catalog with its files. Triggers on: BookVersionPublisher, publishVersion, newerVersion, previousVersion, createPreviousVersion, moveEdition, moveMedias, BookDuplicator, duplicateBook, duplicateSerie, duplicateStrip, duplicateContributor, BookContributor, BookContributorType, BookTrashManager, moveToTrash, restore, deletePermanently, redirectSlugChange, TrashableInterface, TrashableTrait, TrashableCrudTrait, isDeleted, HideableTrait, isHidden, setHidden, hidden, GoneHttpException, 410, BookExportProvider, BookImportProvider, SerieExportProvider, SerieImportProvider, StripExportProvider, StripImportProvider, ContributorExportProvider, ContributorImportProvider, MediaArchiver, SerieResolver, ContributorResolver, BookCategory, BookCategoryResolver, BookCategoryExportProvider, BookCategoryImportProvider, duplicateCategory, findPublishedByCategory, findWithBooks, BookBackupPathProvider, BookSitemapProvider, BookLinkHealthCheckProvider, BookMediaMoveController, findAllPublished, findAllOnline, findPublishedByIds, findOneByNumber, publishedQueryBuilder, strip:import, c975l:book:characters:from-strips, CharactersFromStripsCommand, Character, CharacterMedia, CharacterRepository, CharacterCrudController, getCharacter, getCharacterGroups, groupName, BookDemoFixtureProvider, BookSampleCatalog, DemoFixtureProviderInterface, getDemoFixtures, PlaceholderMediaRegistry, getImagesFor,  GalleryShowcaseProvider, BookReleaseAlert, BookReleaseAlertService, BookReleaseAlertRepository, BookReleaseAlertSend, BookMaintenanceTaskProvider, isToBePublished, findAllToBePublished, findReleased, purgeStale, isShownInCatalog, book_release_alert_unsubscribe, book_release_alert_unsubscribe_confirm, MAX_ATTEMPTS, attempts, BookEmailTemplateProvider, BookFilesHealthCheckProvider, files-book, findWithFilename, AbstractDeclaredFilesHealthCheckProvider, BookTranslator, TranslationCopier, BookTranslationPurgeListener, ContentLocaleCrudTrait, translate, contenu, getLinkedDemoFixtures, DemoFixtureTranslator, book_book, book_media."
 ---
 
 # c975L BookBundle — a row's life
@@ -10,7 +10,7 @@ description: "Use this skill when a row of a c975L BookBundle catalog is created
 **Package:** `c975l/book-bundle` · **Bundle:** `c975L\BookBundle\` · **Translation domain:** `book`
 
 **Key source paths** (relative to the package root):
-`src/Service/BookVersionPublisher.php`, `src/Service/BookDuplicator.php`, `src/Service/BookTrashManager.php`, `src/Contract/TrashableInterface.php`, `src/Entity/Trait/TrashableTrait.php`, `src/Entity/Trait/HideableTrait.php`, `src/Controller/Management/Trait/TrashableCrudTrait.php`, `src/Controller/Management/BookCrudController.php`, `src/Controller/Management/BookMediaMoveController.php`, `src/Repository/BookRepository.php`, `src/Repository/SerieRepository.php`, `src/Repository/StripRepository.php`, `src/Repository/ContributorRepository.php`, `src/Repository/BookCategoryRepository.php`, `src/Management/BookExportProvider.php`, `src/Management/BookImportProvider.php`, `src/Management/ContributorExportProvider.php`, `src/Management/ContributorImportProvider.php`, `src/Management/ContributorResolver.php`, `src/Management/BookCategoryResolver.php`, `src/Management/BookCategoryExportProvider.php`, `src/Management/BookCategoryImportProvider.php`, `src/Management/MediaArchiver.php`, `src/Management/BookSitemapProvider.php`, `src/Management/BookLinkHealthCheckProvider.php`, `src/Management/BookFilesHealthCheckProvider.php`, `src/Repository/MediaRepository.php`, `src/Command/StripImportCommand.php`, `src/Service/BookReleaseAlertService.php`, `src/Repository/BookReleaseAlertRepository.php`, `src/Command/BookReleaseAlertSend.php`, `src/Email/BookEmailTemplateProvider.php`, `src/Service/BookSampleCatalog.php`, `src/Service/BookDemoFixtureProvider.php`, `src/Service/GalleryShowcaseProvider.php`
+`src/Service/BookVersionPublisher.php`, `src/Service/BookDuplicator.php`, `src/Service/BookTrashManager.php`, `src/Service/BookTranslator.php`, `src/Listener/BookTranslationPurgeListener.php`, `src/Controller/Management/Trait/ContentLocaleCrudTrait.php`, `src/Contract/TrashableInterface.php`, `src/Entity/Trait/TrashableTrait.php`, `src/Entity/Trait/HideableTrait.php`, `src/Controller/Management/Trait/TrashableCrudTrait.php`, `src/Controller/Management/BookCrudController.php`, `src/Controller/Management/BookMediaMoveController.php`, `src/Repository/BookRepository.php`, `src/Repository/SerieRepository.php`, `src/Repository/StripRepository.php`, `src/Repository/ContributorRepository.php`, `src/Repository/BookCategoryRepository.php`, `src/Management/BookExportProvider.php`, `src/Management/BookImportProvider.php`, `src/Management/ContributorExportProvider.php`, `src/Management/ContributorImportProvider.php`, `src/Management/ContributorResolver.php`, `src/Management/BookCategoryResolver.php`, `src/Management/BookCategoryExportProvider.php`, `src/Management/BookCategoryImportProvider.php`, `src/Management/MediaArchiver.php`, `src/Management/BookSitemapProvider.php`, `src/Management/BookLinkHealthCheckProvider.php`, `src/Management/BookFilesHealthCheckProvider.php`, `src/Repository/MediaRepository.php`, `src/Command/StripImportCommand.php`, `src/Service/BookReleaseAlertService.php`, `src/Repository/BookReleaseAlertRepository.php`, `src/Command/BookReleaseAlertSend.php`, `src/Email/BookEmailTemplateProvider.php`, `src/Service/BookSampleCatalog.php`, `src/Service/BookDemoFixtureProvider.php`, `src/Service/GalleryShowcaseProvider.php`
 
 **Related skills:** `c975l-book-display-pages` and `c975l-book-customization` in this same bundle, and `c975l-config`, `c975l-media`, `c975l-operations` in the core beside it.
 
@@ -30,7 +30,9 @@ book, under the gesture they serve, and the date is the book's — the only one 
 The **Publier une nouvelle version** action of a book's screen (`site-role-editor`) calls
 `BookVersionPublisher::createPreviousVersion()`. The book **keeps its address and its identity** — its id,
 its slug, its readers' ratings, its blocks, its translations — and a twin is born taking what came out so
-far, its editions among them with `moveEdition()`, and the pages of that text with `moveMedias()`.
+far, its editions among them with `moveEdition()`, and the pages of that text with `moveMedias()`. The twin
+carries the translations of its summary, copied over as it stands, and not of its title — the editor's own in
+every language.
 
 ```text
 book (kept, same url)  ← newerVersion —  twin (what came out so far)  ← newerVersion —  the one before
@@ -65,8 +67,9 @@ same books.
 A book **leaves its versions behind**: a duplicate is a new book the editor then qualifies, where chaining
 one book behind another is the versions gesture's own doing. The title gets a `(copie)` suffix, the slug is
 freed of collisions, `Book::$data` travels whole, and **every uploaded file is copied on disk** rather than
-shared — deleting one of the two must never take the other's image with it. The service persists nothing,
-so a command or a listener of the app can call it.
+shared — deleting one of the two must never take the other's image with it. Each row copied brings its
+translations too, blocks and pictures included, through UiBundle's `TranslationCopier`, written on the flush that
+saves the copy. The service persists nothing, so a command or a listener of the app can call it.
 
 ## Trash, 410 and 301
 
@@ -84,7 +87,21 @@ the two actions out.
 | renamed | a 301 from the old path (`redirectSlugChange()`) |
 
 `deletePermanently()` also drops what hangs off `owner type + id` and is cascaded by nothing: a row's
-ratings, and a book's reviews.
+ratings, and a book's reviews. Its translations go with any removal, through
+`Listener\BookTranslationPurgeListener` — a character dropped by `orphanRemoval` included — and the trash, being
+no removal, keeps them for the day the row comes back.
+
+## A row in another language
+
+`BookTranslator` names the rows `book_book`, `book_serie`, `book_category`, `book_strip`, `book_character`,
+`book_contributor` and `book_media` in UiBundle's translation table, and `BookTranslator::fields()` says which
+texts each carries — never a slug, a number, an ISBN, a date, a sales link or a person's own name. They name
+their owner rather than pointing at it, so no foreign key cascades: whatever copies or removes a row carries its
+translations with it, as the duplicator, the version publisher and the purge listener do.
+
+The back office writes them on a language screen, the row's own edit screen opened with `?contenu=xx`
+(`ContentLocaleCrudTrait`, on the six screens holding prose): that language's texts alone, unmapped, handed to
+`BookTranslator::stage()` and stored on the flush that saves the row — a refused submission writes nothing.
 
 **Every public read honours the flag.** A new lookup picks from this table rather than writing its own
 `where`:
@@ -220,7 +237,10 @@ character is deleted outright, its planches simply losing the link, so there is 
 `BookDemoFixtureProvider` (UiBundle's `DemoFixtureProviderInterface`) seeds a demo site with the made-up
 catalog `BookSampleCatalog` holds — two series of two books, three out and one still to come. Every title
 and summary is a key of the `book` domain, so a site seeded in Spanish reads as a Spanish catalog; the two
-credited names are literal, and so is the age each book is read at, digits carrying no language.
+credited names are literal, and so is the age each book is read at, digits carrying no language. A site
+declaring several languages is seeded with each of them: `BookDemoFixtureProvider::getLinkedDemoFixtures()`
+hands over the translations of the series and the books, the same keys read once per language (UiBundle's
+`DemoFixtureTranslator`).
 
 The series are yielded first and the books after: `Serie::$books` is the inverse side and nothing cascades
 off it, so each book is recorded on its own. Pictures come from `PlaceholderMediaRegistry`, keyed
@@ -270,6 +290,8 @@ php bin/console c975l:health-check:run --kind=files-book
 - **Do not write a public query without the trash and draft filters** — pick a repository read.
 - **Do not pose a showcase cover with `setName()` alone** — `addCover()` is what files it as a cover.
 - **Do not share an uploaded file between an original and its copy.**
+- **Do not copy or remove a translatable row without its translations** — they are named by owner type and id, and nothing cascades.
+- **Do not lay a translation over a row on `postLoad`** — the back office has to read what the row was written in.
 - **Do not match an import by id** — slugs are what survive an environment change.
 - **Do not name a character on a planche as text** — `Strip::$characters` points at the serie's own rows; a name typed twice used to be two characters.
 - **Do not give a character a slug already worn in the same serie** — it is unique inside the serie, not across the site.

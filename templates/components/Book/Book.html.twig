@@ -4,7 +4,7 @@
     {% set cover = book_cover(book) %}
     {% set imageSrc = cover ?: "bundles/c975lbook/images/no-cover.webp" %}
     {# The cover's own alternative text, the book's title when it carries none - the same reading as ShopBundle's product card. The title is printed again just below, so a screen reader says it twice: the cost of a cover a search engine can place, which on an illustrated catalog is a channel of its own #}
-    <twig:c975LUi:Image:Link alt="{{ cover.alt|default('') ?: book.title }}" src="{{ asset(imageSrc) }}" url="{{ path('book_display', {'slug': book.slug}) }}" class="img-thumbnail box-shadow"/>
+    <twig:c975LUi:Image:Link alt="{{ cover.alt|default('') ?: book.title }}" src="{{ asset(imageSrc) }}" url="{{ book_path('book_display', {'slug': book.slug}) }}" class="img-thumbnail box-shadow"/>
     {# The title breaks on its " - " so the serie and the episode read on two lines. The space is kept ahead of the break: whatever reads the text without rendering it - a search engine, a screen reader - joins the two lines with nothing in between, and "The Twins - Pool" becomes the word "TwinsPool", which matches no query anyone types #}
     <h3>{{ book.title|replace({' - ': ' <br>'})|raw }}</h3>
     {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
@@ -12,11 +12,11 @@
 
     <p class="text text-center small italic">
         {% if book.published == null %}
-            {{ 'label.to_be_published'|trans({}, 'messages', book.language) }}
+            {{ 'label.to_be_published'|trans({}, 'messages', book_ui_locale(book.language)) }}
         {% elseif book.published|date("Ymd") > "now"|date("Ymd") %}
-            {{ 'label.to_be_published'|trans({}, 'messages', book.language) }} ({{ book.published|date('d/m/Y') }})
+            {{ 'label.to_be_published'|trans({}, 'messages', book_ui_locale(book.language)) }} ({{ book.published|date('d/m/Y') }})
         {% else %}
-            {{ 'label.published_on'|trans({}, 'messages', book.language) }} {{ book.published|date('d/m/Y') }}
+            {{ 'label.published_on'|trans({}, 'messages', book_ui_locale(book.language)) }} {{ book.published|date('d/m/Y') }}
         {% endif %}
     </p>
 

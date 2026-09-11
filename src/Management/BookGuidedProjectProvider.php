@@ -40,6 +40,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->mediaMoveProject(),
             $this->bookCompositionProject(),
             $this->bookReaderProject(),
+            $this->translationProject(),
             $this->sortingProject(),
             $this->characterCreationProject(),
             $this->stripCreationProject(),
@@ -542,6 +543,64 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_reader_done',
                     'description' => 'description.guided_step_book_reader_done',
                     'narration' => 'narration.guided_step_book_reader_done',
+                ],
+            ],
+        ];
+    }
+
+    // A book is translated once it is written and composed: the parcours opens its first language screen from the list, the tabs moving between the others (see ContentLocaleCrudTrait)
+    private function translationProject(): array
+    {
+        return [
+            'slug' => 'book-translation',
+            'label' => 'label.guided_project_book_translation',
+            'description' => 'description.guided_project_book_translation',
+            'translation_domain' => 'book',
+            'order' => 6034,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_translation_open',
+                    'description' => 'description.guided_step_book_translation_open',
+                    'narration' => 'narration.guided_step_book_translation_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    // Shown only where the site declares more than one language, like the tabs it leads to (see ContentLocaleCrudTrait::translateAction())
+                    'label' => 'label.guided_step_book_translation_action',
+                    'description' => 'description.guided_step_book_translation_action',
+                    'narration' => 'narration.guided_step_book_translation_action',
+                    'highlight' => '.action-translate',
+                ],
+                [
+                    // Posted by ConfigBundle's own tab strip, which is what carries the "?contenu=xx" the language screens are read at
+                    'label' => 'label.guided_step_book_translation_locale',
+                    'description' => 'description.guided_step_book_translation_locale',
+                    'narration' => 'narration.guided_step_book_translation_locale',
+                    'highlight' => '[data-content-locales]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_translation_title',
+                    'description' => 'description.guided_step_book_translation_title',
+                    'narration' => 'narration.guided_step_book_translation_title',
+                    'highlight' => '#Book_title',
+                ],
+                [
+                    // A plain textarea on a language screen, Donovan under it, where the writing screen hides its own behind Trix (see ContentLocaleCrudTrait::translationFields())
+                    'label' => 'label.guided_step_book_translation_summary',
+                    'description' => 'description.guided_step_book_translation_summary',
+                    'narration' => 'narration.guided_step_book_translation_summary',
+                    'highlight' => '#Book_summary',
+                ],
+                [
+                    'label' => 'label.guided_step_book_translation_save',
+                    'narration' => 'narration.guided_step_book_translation_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_translation_done',
+                    'description' => 'description.guided_step_book_translation_done',
+                    'narration' => 'narration.guided_step_book_translation_done',
                 ],
             ],
         ];

@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Controller\Management;
 
+use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Form\StripMediaType;
@@ -50,6 +51,8 @@ use function Symfony\Component\Translation\t;
 
 class StripCrudController extends AbstractCrudController
 {
+    use ContentLocaleCrudTrait;
+
     use TrashableCrudTrait;
 
     // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
@@ -73,12 +76,12 @@ class StripCrudController extends AbstractCrudController
         private readonly BlockMoveRowAttrBuilder $blockMoveRowAttrBuilder,
         private readonly BookCatalogExporter $catalogExporter,
         private readonly BookDuplicator $duplicator,
-        private readonly StripExportProvider $stripExportProvider,
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly BookTrashManager $trashManager,
         private readonly ConfigServiceInterface $configService,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly RequestStack $requestStack,
+        private readonly StripExportProvider $stripExportProvider,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -90,6 +93,12 @@ class StripCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        // The very same edit screen, opened on another language: what that language says of this row, and nothing else. A number, a slug, an ISBN, a date and a sales link are the same in every language and are written on the screen the row was written on (see ContentLocaleScreen)
+        $contentLocale = Crud::PAGE_EDIT === $pageName ? $this->contentLocale() : null;
+        if (null !== $contentLocale) {
+            return $this->translationFields($contentLocale);
+        }
+
         $entity = $this->adminContextProvider->getContext()?->getEntity()?->getInstance();
         // The planche being edited, null on the creation screen: its serie is who the characters are picked among
         $strip = $entity instanceof Strip ? $entity : null;

@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookReleaseAlert;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookReleaseAlertServiceInterface;
+use c975L\BookBundle\Service\BookTranslator;
 use c975L\UiBundle\Service\FormBotProtection;
 use c975L\UiBundle\Service\RateLimiterGuard;
 use PHPUnit\Framework\TestCase;
@@ -40,6 +41,7 @@ class BookReleaseAlertControllerTest extends TestCase
 
         $urlResolver = $this->createStub(BookPublicUrlResolver::class);
         $urlResolver->method('resolvePath')->willReturnCallback(fn (): ?string => $this->bookPath);
+        $urlResolver->method('resolveLocalizedPath')->willReturnCallback(fn (): ?string => $this->bookPath);
 
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturn('a message');
@@ -50,6 +52,7 @@ class BookReleaseAlertControllerTest extends TestCase
             $botProtection,
             $this->createStub(RateLimiterGuard::class),
             $translator,
+            $this->createStub(BookTranslator::class),
         );
 
         $form = $this->createStub(FormInterface::class);

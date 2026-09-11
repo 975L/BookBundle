@@ -17,7 +17,11 @@ use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Tests\BookPublicUrlGeneratorTestTrait;
 use c975L\BookBundle\Twig\BookUrlExtension;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
+use c975L\ConfigBundle\Service\LocalizedUrlGenerator;
+use c975L\ConfigBundle\Service\SiteLocales;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 // What the layout writes as "alternate hreflang" links: a book and its translations are the same page in several languages, and without those links a search engine reads them as several pages saying the same thing
 class BookUrlExtensionTest extends TestCase
@@ -107,7 +111,9 @@ class BookUrlExtensionTest extends TestCase
         $configService = $this->createStub(ConfigServiceInterface::class);
         $configService->method('get')->willReturn($siteUrl);
 
-        return new BookUrlExtension(new BookPublicUrlResolver($configService, $this->createRoutePrefix($prefixes), $this->createUrlGenerator()));
+        $urlGenerator = $this->createUrlGenerator();
+
+        return new BookUrlExtension(new BookPublicUrlResolver($configService, $this->createRoutePrefix($prefixes), $this->createLocalizedUrlGenerator($urlGenerator), $urlGenerator, new SiteLocales(['fr'], 'fr')));
     }
 
     /** @return array{Book, Book, Book} */
@@ -121,5 +127,11 @@ class BookUrlExtensionTest extends TestCase
         $original->addTranslation($spanish);
 
         return [$original, $english, $spanish];
+    }
+
+    // A generator that hands every url back exactly as the router built it: with no request in the stack there is no language being read, and LocalizedUrlGenerator falls through to the bare route (see ConfigBundle's LocalizedUrlGenerator::path)
+    private function createLocalizedUrlGenerator(UrlGeneratorInterface $urlGenerator): LocalizedUrlGenerator
+    {
+        return new LocalizedUrlGenerator($urlGenerator, new SiteLocales(['fr'], 'fr'), new RequestStack());
     }
 }

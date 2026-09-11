@@ -28,6 +28,8 @@ use c975L\BookBundle\Repository\StripRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use c975L\UiBundle\Entity\Block;
 use c975L\UiBundle\Entity\Media as BlockMedia;
+use c975L\UiBundle\Entity\Translation;
+use c975L\UiBundle\Service\TranslationCopier;
 use c975L\UiBundle\Service\UniqueSlug;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -35,7 +37,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 
-// Builds the copy of a serie, a book, a strip or a person with everything that belongs to it - its files, its platform links, its blocks - as an unsaved graph the caller persists in one go (see the duplicate() action of each CRUD controller). A serie's books and strips are deliberately left out: they belong to the serie they were published in, and duplicating one is its own decision, taken book by book
+// Builds the copy of a serie, a book, a strip or a person with everything that belongs to it - its files, its platform links, its blocks - as an unsaved graph the caller persists in one go (see the duplicate() action of each CRUD controller), what each row says in the site's other languages following on that flush (see TranslationCopier). A serie's books and strips are deliberately left out: they belong to the serie they were published in, and duplicating one is its own decision, taken book by book
 class BookDuplicator
 {
     public function __construct(
@@ -47,6 +49,7 @@ class BookDuplicator
         private readonly SluggerInterface $slugger,
         private readonly StripRepository $stripRepository,
         private readonly TranslatorInterface $translator,
+        private readonly TranslationCopier $translationCopier,
         #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
     ) {
@@ -83,6 +86,9 @@ class BookDuplicator
                 ->setPosition($link->getPosition()));
         }
 
+        // What it says in the site's other languages goes with it, written once the copy is saved (see TranslationCopier)
+        $this->translationCopier->copy(BookTranslator::OWNER_CONTRIBUTOR, $source, $copy);
+
         return $copy;
     }
 
@@ -111,6 +117,9 @@ class BookDuplicator
             $copy->addBlock($this->cloneBlock($block));
         }
 
+        // What it says in the site's other languages goes with it, written once the copy is saved (see TranslationCopier)
+        $this->translationCopier->copy(BookTranslator::OWNER_SERIE, $source, $copy);
+
         return $copy;
     }
 
@@ -131,6 +140,9 @@ class BookDuplicator
         foreach ($source->getBlocks() as $block) {
             $copy->addBlock($this->cloneBlock($block));
         }
+
+        // What it says in the site's other languages goes with it, written once the copy is saved (see TranslationCopier)
+        $this->translationCopier->copy(BookTranslator::OWNER_CATEGORY, $source, $copy);
 
         return $copy;
     }
@@ -210,6 +222,9 @@ class BookDuplicator
             $copy->addBlock($this->cloneBlock($block));
         }
 
+        // What it says in the site's other languages goes with it, written once the copy is saved (see TranslationCopier)
+        $this->translationCopier->copy(BookTranslator::OWNER_BOOK, $source, $copy);
+
         return $copy;
     }
 
@@ -242,6 +257,9 @@ class BookDuplicator
             $copy->addBlock($this->cloneBlock($block));
         }
 
+        // What it says in the site's other languages goes with it, written once the copy is saved (see TranslationCopier)
+        $this->translationCopier->copy(BookTranslator::OWNER_STRIP, $source, $copy);
+
         return $copy;
     }
 
@@ -268,6 +286,9 @@ class BookDuplicator
             $copy->setFile(new ReplacingFile($path));
         }
 
+        // What it says in the site's other languages goes with it, written once the copy is saved (see TranslationCopier)
+        $this->translationCopier->copy(BookTranslator::OWNER_MEDIA, $source, $copy);
+
         return $copy;
     }
 
@@ -288,6 +309,9 @@ class BookDuplicator
         foreach ($source->getSlots() as $slot) {
             $copy->addSlot($this->cloneBlock($slot));
         }
+
+        // What it says in the site's other languages goes with it, written once the copy is saved (see TranslationCopier)
+        $this->translationCopier->copy(Translation::OWNER_BLOCK, $source, $copy);
 
         return $copy;
     }
@@ -312,6 +336,9 @@ class BookDuplicator
         if (null !== $filename && is_file($path = $this->projectDir . '/public/' . $filename)) {
             $copy->setFile(new ReplacingFile($path));
         }
+
+        // What it says in the site's other languages goes with it, written once the copy is saved (see TranslationCopier)
+        $this->translationCopier->copy(Translation::OWNER_MEDIA, $source, $copy);
 
         return $copy;
     }

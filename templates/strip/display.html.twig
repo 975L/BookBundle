@@ -49,7 +49,7 @@
                 </div>
 
                 {# Under the planche and no longer laid over it: an arrow flanking a drawing had no room to say where it led, and over a planche that is only words it read across them. The row names both neighbours, and is where a reader looks once the planche is read #}
-                <nav class="strip-nav-row" aria-label="{{ 'label.strips'|trans({}, 'book', language) }}">
+                <nav class="strip-nav-row" aria-label="{{ 'label.strips'|trans({}, 'book', book_ui_locale(language)) }}">
                     <twig:c975LBook:Strip:Previous previousNext="{{ previousNext }}" language="{{ language }}"/>
                     <twig:c975LBook:Strip:Next previousNext="{{ previousNext }}" language="{{ language }}"/>
                 </nav>
@@ -66,13 +66,13 @@
 
         {% elseif strip.published is not null %}
             <twig:c975LUi:Alert:Alert type="warning">
-                {{ 'label.to_be_published'|trans({}, 'book', language) }} {{ strip.published|date("d/m/Y") }}
+                {{ 'label.to_be_published'|trans({}, 'book', book_ui_locale(language)) }} {{ strip.published|date("d/m/Y") }}
             </twig:c975LUi:Alert:Alert>
             {# To its serie, which holds the listing of planches; to the index of planche series when it has none and the site serves it - the "book-route-strips" setting emptied, that route answers nothing (see BookRoutePrefix) #}
             {% if strip.serie and serie_path(strip.serie) %}
                 <twig:c975LUi:Button:Button label="{{ strip.serie.title }}" url="{{ serie_path(strip.serie) }}"/>
             {% elseif config('book-route-strips')|default('') is not empty %}
-                <twig:c975LUi:Button:Button label="{{ 'label.strips_series'|trans({}, 'book', language) }}" url="{{ path('strip_index') }}"/>
+                <twig:c975LUi:Button:Button label="{{ 'label.strips_series'|trans({}, 'book', book_ui_locale(language)) }}" url="{{ book_path('strip_index') }}"/>
             {% endif %}
         {% endif %}
     </div>

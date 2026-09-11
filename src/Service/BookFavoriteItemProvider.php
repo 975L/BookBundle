@@ -28,6 +28,7 @@ class BookFavoriteItemProvider implements FavoriteItemProviderInterface
         private readonly BookRepository $bookRepository,
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly Packages $packages,
+        private readonly BookTranslator $bookTranslator,
     ) {
     }
 
@@ -41,13 +42,18 @@ class BookFavoriteItemProvider implements FavoriteItemProviderInterface
         $items = [];
 
         // The repository already leaves out what a visitor may not reach - a book in the trash, one not published yet - so an id nobody may see is simply absent rather than named
-        foreach ($this->bookRepository->findPublishedByIds($ownerIds) as $book) {
+        $books = $this->bookRepository->findPublishedByIds($ownerIds);
+
+        // The title and the summary are copied into the item here, so the language has to be laid on before that (see BookTranslator::apply)
+        $this->bookTranslator->apply($books);
+
+        foreach ($books as $book) {
             $items[(int) $book->getId()] = new CollectionItem(
                 title: trim((string) $book->getTitle()),
                 description: $book->getSummary(),
                 imageUrl: $this->coverUrl($book),
                 // Null on a site not serving the books' route at all, which is what resolvePath() answers rather than throwing (see BookUrlExtension)
-                url: $this->publicUrlResolver->resolvePath('book_display', ['slug' => $book->getSlug()]),
+                url: $this->publicUrlResolver->resolveLocalizedPath('book_display', ['slug' => $book->getSlug()]),
                 slug: $book->getSlug(),
             );
         }

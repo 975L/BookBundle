@@ -28,7 +28,10 @@ use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\BookBundle\Service\BookDuplicator;
+use c975L\BookBundle\Service\BookTranslator;
 use c975L\UiBundle\Entity\Block;
+use c975L\UiBundle\Entity\Translation;
+use c975L\UiBundle\Service\TranslationCopier;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -40,6 +43,11 @@ class BookDuplicatorTest extends TestCase
     private BookDuplicator $duplicator;
 
     protected function setUp(): void
+    {
+        $this->duplicator = $this->createDuplicator($this->createStub(TranslationCopier::class));
+    }
+
+    private function createDuplicator(TranslationCopier $translationCopier): BookDuplicator
     {
         $bookRepository = $this->createStub(BookRepository::class);
         $bookRepository->method('findOneBy')->willReturn(null);
@@ -55,7 +63,7 @@ class BookDuplicatorTest extends TestCase
         $translator->method('trans')->willReturn('copie');
 
         // No project directory holding the uploaded files, so no file is copied here - what the copy carries of a media is checked on its columns
-        $this->duplicator = new BookDuplicator(
+        return new BookDuplicator(
             $this->createStub(BookCategoryRepository::class),
             $bookRepository,
             $this->createStub(ContributorRepository::class),
@@ -64,6 +72,7 @@ class BookDuplicatorTest extends TestCase
             new AsciiSlugger(),
             $stripRepository,
             $translator,
+            $translationCopier,
             sys_get_temp_dir(),
         );
     }
@@ -93,6 +102,24 @@ class BookDuplicatorTest extends TestCase
         $this->assertCount(1, $copy->getBlocks());
         $this->assertCount(0, $copy->getBooks());
         $this->assertSame(['text' => 'Un texte'], $copy->getBlocks()->first()->getData());
+    }
+
+    // What the book and each of its blocks say in the site's other languages go with the copy, written once it is saved (see TranslationCopier)
+    public function testTheCopyCarriesTheTranslationsOfTheBookAndOfItsBlocks(): void
+    {
+        $copied = [];
+        $translationCopier = $this->createStub(TranslationCopier::class);
+        $translationCopier->method('copy')->willReturnCallback(static function (string $ownerType, object $source, object $copy) use (&$copied): void {
+            $copied[$ownerType][] = [$source, $copy];
+        });
+
+        $book = $this->book();
+        $book->addBlock(new Block()->setKind('article')->setData(['text' => 'Un texte']));
+
+        $copy = $this->createDuplicator($translationCopier)->duplicateBook($book);
+
+        $this->assertSame([[$book, $copy]], $copied[BookTranslator::OWNER_BOOK]);
+        $this->assertSame([[$book->getBlocks()->last(), $copy->getBlocks()->last()]], \array_slice($copied[Translation::OWNER_BLOCK], -1));
     }
 
     public function testTheCopyOfABookCarriesEachFileAndLinkOnce(): void

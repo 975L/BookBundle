@@ -1,7 +1,7 @@
 {# <twig:c975LBook:Strip:Previous previousNext="{{ previousNext }}" language="{{ language }}"/> - one half of the row under the planche (see Strip:Next for the other) #}
 {# The neighbour is named beside the glyph rather than by the label alone: the row reads under the planche and no longer over it, so there is room to say where the click lands - and a planche that is only words, a reply or a gag, no longer carries an arrow laid across them #}
 {% if previousNext.previous is not null %}
-    <a href="{{ path('strip_display', {'slug': previousNext.previous.slug}) }}"
+    <a href="{{ book_path('strip_display', {'slug': previousNext.previous.slug}) }}"
         rel="prev"
         class="strip-nav strip-nav--previous"
         aria-label="{{ 'label.previous_strip'|trans({}, 'book', language|default(null)) }} - {{ previousNext.previous.title }}">

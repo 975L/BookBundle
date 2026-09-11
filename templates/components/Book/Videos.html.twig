@@ -2,7 +2,7 @@
 {# Where the book is watched: the videos it carries - uploaded file or YouTube id - and the platforms it is watched on elsewhere. The same gesture for a reader, so the same card #}
 {# One column, from the largest to the smallest: the videos, then the platforms. Everything in it is optional #}
 {% props book, section = {}, editUrl = "" %}
-{% set section = {anchor: 'apercu', label: 'label.watch'|trans({}, 'book', book.language)}|merge(section) %}
+{% set section = {anchor: 'apercu', label: 'label.watch'|trans({}, 'book', book_ui_locale(book.language))}|merge(section) %}
 {% set links = book_links_of(book, 'video') %}
 {% if book.videos is not empty or links|length %}
     {% set body %}

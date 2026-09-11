@@ -10,10 +10,12 @@
 
 namespace c975L\BookBundle\Controller\Management;
 
+use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Form\CharacterMediaType;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Form\TrixEditorType;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -30,6 +32,8 @@ use function Symfony\Component\Translation\t;
 // No TrashableCrudTrait: a character is deleted outright, its planches simply losing the link - so there is nothing to restore, and the serie's own export carries them (see SerieExportProvider::exportSerieData())
 class CharacterCrudController extends AbstractCrudController
 {
+    use ContentLocaleCrudTrait;
+
     public function __construct(
         private readonly ConfigServiceInterface $configService,
     ) {
@@ -54,8 +58,20 @@ class CharacterCrudController extends AbstractCrudController
         ;
     }
 
+    // The language screen opened straight from the list, as on the five other screens of the catalog - left labelled, EasyAdmin's own row actions being labelled here too (see ContentLocaleCrudTrait::translateAction())
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions->add(Crud::PAGE_INDEX, $this->translateAction());
+    }
+
     public function configureFields(string $pageName): iterable
     {
+        // The very same edit screen, opened on another language: what that language says of this row, and nothing else. A number, a slug, an ISBN, a date and a sales link are the same in every language and are written on the screen the row was written on (see ContentLocaleScreen)
+        $contentLocale = Crud::PAGE_EDIT === $pageName ? $this->contentLocale() : null;
+        if (null !== $contentLocale) {
+            return $this->translationFields($contentLocale);
+        }
+
         return [
             IntegerField::new('id')
                 ->setFormTypeOption('disabled', 'disabled')

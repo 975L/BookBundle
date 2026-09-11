@@ -13,6 +13,8 @@ namespace c975L\BookBundle\Tests\Twig;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Twig\BookTranslationExtension;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 // Book::getTranslation() walks the children of a book alone, so it answers from the original and answers nothing from a translation - the language switch was there on the French page and gone from the English one
 class BookTranslationExtensionTest extends TestCase
@@ -54,6 +56,29 @@ class BookTranslationExtensionTest extends TestCase
         $this->assertSame('Deutsch', BookTranslationExtension::languageLabel('de'));
         $this->assertSame('sv', BookTranslationExtension::languageLabel('sv'));
         $this->assertSame('', BookTranslationExtension::languageLabel(null));
+    }
+
+    // The language the url reads is the one this bundle's own words follow: a Spanish url printing French labels around a Spanish title is a page half translated
+    public function testTheLanguageBeingReadWinsOverTheRowsOwn(): void
+    {
+        $request = new Request();
+        $request->attributes->set('_locale', 'es');
+
+        $this->assertSame('es', new BookTranslationExtension(new RequestStack([$request]))->uiLocale('fr'));
+    }
+
+    // Where no language is being read - no request, an url carrying none, an empty one - the row's own language answers as it always did
+    public function testTheRowsOwnLanguageAnswersWhereNoneIsBeingRead(): void
+    {
+        $this->assertSame('fr', new BookTranslationExtension(new RequestStack())->uiLocale('fr'));
+
+        $bare = new RequestStack([new Request()]);
+        $this->assertSame('fr', new BookTranslationExtension($bare)->uiLocale('fr'));
+        $this->assertNull(new BookTranslationExtension($bare)->uiLocale());
+
+        $empty = new Request();
+        $empty->attributes->set('_locale', '');
+        $this->assertSame('en', new BookTranslationExtension(new RequestStack([$empty]))->uiLocale('en'));
     }
 
     /** @return array{Book, Book, Book} */

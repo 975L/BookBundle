@@ -13,6 +13,9 @@ namespace c975L\BookBundle\Controller;
 use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\BookTranslatedLocales;
+use c975L\BookBundle\Service\BookTranslator;
+use c975L\ConfigBundle\Service\LocalizedRouteNegotiator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,10 +31,20 @@ class BookCategoryController extends AbstractController
     public function __construct(
         private readonly BookCategoryServiceInterface $categoryService,
         private readonly BookServiceInterface $bookService,
+        private readonly BookTranslatedLocales $translatedLocales,
+        private readonly BookTranslator $bookTranslator,
+        private readonly LocalizedRouteNegotiator $negotiator,
     ) {
     }
 
     // INDEX. Only the categories holding a book the site shows: an empty one heads a page with nothing under it, the same rule the series' index follows
+    #[Route(
+        '/{_locale}/{categories_prefix}',
+        name: 'book_category_index_localized',
+        requirements: ['_locale' => '%c975l_config.locales_pattern%'],
+        methods: ['GET'],
+        condition: self::CATEGORIES_CONDITION
+    )]
     #[Route(
         '/{categories_prefix}',
         name: 'book_category_index',
@@ -40,13 +53,33 @@ class BookCategoryController extends AbstractController
     )]
     public function index(Request $request): Response
     {
-        return $this->render(
+        $askedLanguage = $this->negotiator->redirectToAskedLanguage($request, $this->translatedLocales->forIndex(), 'book_category_index');
+        if (null !== $askedLanguage) {
+            return $this->negotiator->vary($request, $askedLanguage);
+        }
+
+        $categories = $this->categoryService->findWithBooksPaginated($request->query);
+
+        // The language being read laid over the titles and summaries, for this render and no longer (see BookTranslator::apply)
+        $this->bookTranslator->apply($categories);
+
+        return $this->negotiator->vary($request, $this->render(
             '@c975LBook/category/index.html.twig',
-            ['categories' => $this->categoryService->findWithBooksPaginated($request->query)]
-        );
+            ['categories' => $categories]
+        ));
     }
 
     // DISPLAY
+    #[Route(
+        '/{_locale}/{categories_prefix}/{slug}',
+        name: 'book_category_display_localized',
+        requirements: [
+            '_locale' => '%c975l_config.locales_pattern%',
+            'slug' => '^([a-z0-9\-]+)',
+        ],
+        methods: ['GET'],
+        condition: self::CATEGORIES_CONDITION
+    )]
     #[Route(
         '/{categories_prefix}/{slug}',
         name: 'book_category_display',
@@ -56,7 +89,7 @@ class BookCategoryController extends AbstractController
         methods: ['GET'],
         condition: self::CATEGORIES_CONDITION
     )]
-    public function display(string $slug): Response
+    public function display(string $slug, Request $request): Response
     {
         $category = $this->categoryService->findOneBySlug($slug);
 
@@ -75,13 +108,30 @@ class BookCategoryController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->render(
+        $locales = $this->translatedLocales->forEntry();
+
+        // A localised url answers for every language the site declares: the guard stays as the one place that would refuse one (see BookTranslatedLocales)
+        if (!$this->negotiator->isTranslated($request, $locales)) {
+            throw $this->createNotFoundException();
+        }
+
+        $askedLanguage = $this->negotiator->redirectToAskedLanguage($request, $locales, 'book_category_display', ['slug' => $slug]);
+        if (null !== $askedLanguage) {
+            return $this->negotiator->vary($request, $askedLanguage);
+        }
+
+        // Read through the catalog's own query rather than off the association: a category holds the books of a serie set aside too, which the catalog does not show (see BookRepository::findPublishedByCategory())
+        $books = $this->bookService->findPublishedByCategory($slug);
+
+        // The category and the books filed under it, in the language being read (see BookTranslator::apply)
+        $this->bookTranslator->apply([$category, ...$books]);
+
+        return $this->negotiator->vary($request, $this->render(
             '@c975LBook/category/display.html.twig',
             [
                 'category' => $category,
-                // Read through the catalog's own query rather than off the association: a category holds the books of a serie set aside too, which the catalog does not show (see BookRepository::findPublishedByCategory())
-                'books' => $this->bookService->findPublishedByCategory($slug),
+                'books' => $books,
             ]
-        );
+        ));
     }
 }

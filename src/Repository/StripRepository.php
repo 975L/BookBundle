@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Repository;
 
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -230,13 +231,15 @@ class StripRepository extends ServiceEntityRepository
         return $end === $strip ? null : $end;
     }
 
-    // The characters speaking in one serie, each named once - the ones its own listing offers to filter on, which is who actually speaks in a published planche and not everyone the serie declares.
-    /** @return array<int, array{name: string, slug: string}> */
+    // The characters speaking in one serie, each named once - the ones its own listing offers to filter on, which is who actually speaks in a published planche and not everyone the serie declares. Entities rather than a name and a slug, so the language being read can be laid over them (see BookTranslator::apply), and rooted on the character since Doctrine selects no joined entity without its root
+    /** @return list<Character> */
     public function findCharactersBySerie(Serie $serie): array
     {
-        $rows = $this->createQueryBuilder('s')
-            ->select('DISTINCT c.name, c.slug')
-            ->innerJoin('s.characters', 'c')
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('c')
+            ->distinct()
+            ->from(Character::class, 'c')
+            ->innerJoin('c.strips', 's')
             ->andWhere('s.serie = :serie')
             ->andWhere('s.isDeleted = false')
             ->andWhere('s.hidden = false')
@@ -246,13 +249,8 @@ class StripRepository extends ServiceEntityRepository
             ->setParameter('serie', $serie)
             ->setParameter('now', new \DateTime())
             ->getQuery()
-            ->getScalarResult()
+            ->getResult()
         ;
-
-        return array_map(
-            static fn (array $row): array => ['name' => (string) $row['name'], 'slug' => (string) $row['slug']],
-            $rows
-        );
     }
 
     // "$serieId": the search a serie's own page carries, which looks inside that serie alone - the same field asks the whole site elsewhere (see strip/index.html.twig)

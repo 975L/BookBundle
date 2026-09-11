@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Service;
 
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\UiBundle\Model\Pagination;
@@ -31,11 +32,8 @@ interface StripServiceInterface
      */
     public function findAllPublishedBySerie(Serie $serie, ?int $number = null, ?string $character = null): array;
 
-    /**
-     * The characters speaking in one serie, each named once and sorted by name - the chips a serie's own listing offers to filter on.
-     *
-     * @return array<int, array{name: string, slug: string}>
-     */
+    // The characters speaking in one serie, each named once and sorted by name - the chips a serie's own listing offers to filter on, handed over as entities so the language being read can be laid over them
+    /** @return list<Character> */
     public function findCharactersBySerie(Serie $serie): array;
 
     /**

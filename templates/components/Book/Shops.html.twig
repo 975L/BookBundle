@@ -2,7 +2,7 @@
 {# Where a published book is bought. A site adds its own button inside that very card through the section's "template" (see BookCustomizationProviderInterface::getSections()), rather than by overriding this template #}
 {# The site's own shop comes at the head of the row and carries the site color: it is the same book everywhere, but it is here the publisher sells it himself #}
 {% props book, section = {}, editUrl = "" %}
-{% set section = {anchor: 'shops', label: 'label.buy'|trans({}, 'book', book.language)}|merge(section) %}
+{% set section = {anchor: 'shops', label: 'label.buy'|trans({}, 'book', book_ui_locale(book.language))}|merge(section) %}
 {% if book.published and book.published|date("Ymd") <= "now"|date("Ymd") %}
     {% set links = book_links_of(book, 'epub') %}
     {# The basket belongs to the site itself (see c975L\BookBundle\Enum\BookLinkKind::Shop): it takes the bookshops' tile, at the head and accented, rather than leaving the row #}

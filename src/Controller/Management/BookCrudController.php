@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Controller\Management;
 
+use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Field\BookDataField;
@@ -44,6 +45,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Provider\AdminContextProviderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -69,6 +71,8 @@ use function Symfony\Component\Translation\t;
 
 class BookCrudController extends AbstractCrudController
 {
+    use ContentLocaleCrudTrait;
+
     // configureActions() is widened below with an action of its own to books: only a book comes in versions
     use TrashableCrudTrait {
         configureActions as private trashableActions;
@@ -116,6 +120,12 @@ class BookCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        // The very same edit screen, opened on another language: what that language says of this row, and nothing else. A number, a slug, an ISBN, a date and a sales link are the same in every language and are written on the screen the row was written on (see ContentLocaleScreen)
+        $contentLocale = Crud::PAGE_EDIT === $pageName ? $this->contentLocale() : null;
+        if (null !== $contentLocale) {
+            return [...$this->translationFields($contentLocale), ...$this->mediaTranslationFields($contentLocale)];
+        }
+
         $entity = $this->adminContextProvider->getContext()?->getEntity()?->getInstance();
         // The book being edited, null on the "new" screen: its id is carried by the file collections so their rows can be swapped by drag-and-drop (see BookMediaMoveRowAttrBuilder), and its images say which slots are already filled
         $book = $entity instanceof Book ? $entity : null;
@@ -623,6 +633,25 @@ class BookCrudController extends AbstractCrudController
             ->setController(self::class)
             ->setAction(Action::INDEX)
             ->generateUrl();
+    }
+
+    // The titles printed under a book's press cuttings and promotional visuals, through the types they are always edited with - neither "+" nor bin, a file taken away there leaving every language at once
+    /** @return list<FieldInterface> */
+    private function mediaTranslationFields(string $locale): array
+    {
+        $fields = [];
+        foreach (['presses' => [BookPresseType::class, 'label.presse'], 'marketings' => [BookMarketingType::class, 'label.marketing']] as $property => [$entryType, $label]) {
+            $fields[] = FormField::addFieldset(t($label, [], 'book'));
+            $fields[] = CollectionField::new($property)
+                ->setLabel(false)
+                ->setEntryType($entryType)
+                ->allowAdd(false)
+                ->allowDelete(false)
+                ->setFormTypeOption('by_reference', false)
+                ->setFormTypeOption('entry_options.translation_locale', $locale);
+        }
+
+        return $fields;
     }
 
     protected function duplicateEntity(mixed $entity): object

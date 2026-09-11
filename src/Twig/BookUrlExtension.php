@@ -17,7 +17,7 @@ use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use Twig\Attribute\AsTwigFunction;
 
-// The path of one of this bundle's public pages, null for a family this site does not serve. path() cannot answer that: the first segment of every one of those routes is a ConfigBundle entry (see BookRoutePrefix), and generating one whose entry is empty throws rather than returning nothing - which is how a book page belonging to a serie went down on a site serving books alone
+// The path of one of this bundle's public pages, in the language the page around it is being read in, null for a family this site does not serve. path() cannot answer that: the first segment of every one of those routes is a ConfigBundle entry (see BookRoutePrefix), and generating one whose entry is empty throws rather than returning nothing - which is how a book page belonging to a serie went down on a site serving books alone
 class BookUrlExtension
 {
     public function __construct(private readonly BookPublicUrlResolver $publicUrlResolver)
@@ -28,7 +28,7 @@ class BookUrlExtension
     #[AsTwigFunction('book_path')]
     public function path(string $route, array $parameters = []): ?string
     {
-        return $this->publicUrlResolver->resolvePath($route, $parameters);
+        return $this->publicUrlResolver->resolveLocalizedPath($route, $parameters);
     }
 
     // The path of a serie's page, below the index listing its kind (see BookPublicUrlResolver::serieRoute()): the templates hand the serie over and never have to tell which of the two routes reads it
@@ -36,7 +36,7 @@ class BookUrlExtension
     #[AsTwigFunction('serie_path')]
     public function seriePath(Serie $serie, array $parameters = []): ?string
     {
-        return $this->publicUrlResolver->resolvePath(
+        return $this->publicUrlResolver->resolveLocalizedPath(
             BookPublicUrlResolver::serieRoute($serie),
             ['slug' => (string) $serie->getSlug(), ...$parameters]
         );
@@ -46,14 +46,14 @@ class BookUrlExtension
     #[AsTwigFunction('book_category_path')]
     public function categoryPath(BookCategory $category): ?string
     {
-        return $this->publicUrlResolver->resolvePath('book_category_display', ['slug' => (string) $category->getSlug()]);
+        return $this->publicUrlResolver->resolveLocalizedPath('book_category_display', ['slug' => (string) $category->getSlug()]);
     }
 
     // The path of a person's page, the templates handing the person over rather than spelling their slug
     #[AsTwigFunction('contributor_path')]
     public function contributorPath(Contributor $contributor): ?string
     {
-        return $this->publicUrlResolver->resolvePath('contributor_display', ['slug' => (string) $contributor->getSlug()]);
+        return $this->publicUrlResolver->resolveLocalizedPath('contributor_display', ['slug' => (string) $contributor->getSlug()]);
     }
 
     // The same page as an absolute url, needed wherever a path says nothing - a share tag, a structured-data node

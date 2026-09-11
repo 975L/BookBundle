@@ -434,6 +434,34 @@
                 <source>narration.guided_step_book_strip_creation_title</source>
                 <target>Give it a title. It names the strip everywhere it is listed, and its address follows from it.</target>
             </trans-unit>
+            <trans-unit id="0LC0TJT">
+                <source>narration.guided_step_book_translation_action</source>
+                <target>This button opens the book straight into the first language to translate, without going through the writing screen. It is only there where the site declares more than one language.</target>
+            </trans-unit>
+            <trans-unit id="9JA.QEX">
+                <source>narration.guided_step_book_translation_done</source>
+                <target>The book reads in that language. Open its page at that language's address: the translated title and summary stand in for the writing language's own.</target>
+            </trans-unit>
+            <trans-unit id="uFA07Fs">
+                <source>narration.guided_step_book_translation_locale</source>
+                <target>The tabs move from one language to another. The first is the one the book was written in: it is the one serving as the source.</target>
+            </trans-unit>
+            <trans-unit id="cpQUtsQ">
+                <source>narration.guided_step_book_translation_open</source>
+                <target>The panel takes you to the books: a translation starts from this very list.</target>
+            </trans-unit>
+            <trans-unit id="Hh0G56g">
+                <source>narration.guided_step_book_translation_save</source>
+                <target>Save: the translation goes online at once, at that language's own address. The number, the editions and the sales links stay the same everywhere.</target>
+            </trans-unit>
+            <trans-unit id="vWbjOQn">
+                <source>narration.guided_step_book_translation_summary</source>
+                <target>The same goes for the summary. Under the field, Donovan can offer you a rephrasing.</target>
+            </trans-unit>
+            <trans-unit id="OeIG8bn">
+                <source>narration.guided_step_book_translation_title</source>
+                <target>The title shown between brackets is the writing language's own. It stays as it is until you type something: a half-translated book stays readable.</target>
+            </trans-unit>
             <trans-unit id=".QzKE3N">
                 <source>narration.guided_step_book_trash_delete</source>
                 <target>Move the book to the trash. The icon asks for confirmation, then the book leaves the catalog without losing anything else.</target>

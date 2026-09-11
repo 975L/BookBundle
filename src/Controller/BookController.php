@@ -12,6 +12,10 @@ namespace c975L\BookBundle\Controller;
 
 use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\BookTranslatedLocales;
+use c975L\BookBundle\Service\BookTranslator;
+use c975L\ConfigBundle\Service\LocalizedRouteNegotiator;
+use c975L\ConfigBundle\Service\LocalizedUrlGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,10 +33,21 @@ class BookController extends AbstractController
 
     public function __construct(
         private readonly BookServiceInterface $bookService,
+        private readonly BookTranslatedLocales $translatedLocales,
+        private readonly BookTranslator $bookTranslator,
+        private readonly LocalizedRouteNegotiator $negotiator,
+        private readonly LocalizedUrlGenerator $localizedUrlGenerator,
     ) {
     }
 
-    // INDEX
+    // INDEX. The writing language keeps "/livres" byte for byte, the others go through "/{_locale}/livres" - a pattern matching nothing on a single-language site (see ConfigBundle's c975LConfigBundle::declareLocalesPattern())
+    #[Route(
+        '/{_locale}/{books_prefix}',
+        name: 'book_index_localized',
+        requirements: ['_locale' => '%c975l_config.locales_pattern%'],
+        methods: ['GET'],
+        condition: self::INDEX_CONDITION
+    )]
     #[Route(
         '/{books_prefix}',
         name: 'book_index',
@@ -41,14 +56,34 @@ class BookController extends AbstractController
     )]
     public function index(Request $request): Response
     {
-        return $this->render(
+        $askedLanguage = $this->negotiator->redirectToAskedLanguage($request, $this->translatedLocales->forIndex(), 'book_index');
+        if (null !== $askedLanguage) {
+            return $this->negotiator->vary($request, $askedLanguage);
+        }
+
+        $books = $this->bookService->findAllPaginated($request->query);
+
+        // The language being read laid over the titles and summaries, for this render and no longer: called here rather than on postLoad, the back office having to go on showing the text a row was written in (see BookTranslator::apply)
+        $this->bookTranslator->apply($books);
+
+        return $this->negotiator->vary($request, $this->render(
             '@c975LBook/book/index.html.twig',
-            ['books' => $this->bookService->findAllPaginated($request->query)]
-        );
+            ['books' => $books]
+        ));
     }
 
     // DISPLAY
     // The slug is resolved here rather than by the router's own converter: an url naming no book falls back on the number it may carry instead of stopping at a 404 (see numberedRedirect())
+    #[Route(
+        '/{_locale}/{book_prefix}/{slug}',
+        name: 'book_display_localized',
+        requirements: [
+            '_locale' => '%c975l_config.locales_pattern%',
+            'slug' => '^([a-z0-9\-]+)',
+        ],
+        methods: ['GET'],
+        condition: self::DISPLAY_CONDITION
+    )]
     #[Route(
         '/{book_prefix}/{slug}',
         name: 'book_display',
@@ -58,7 +93,7 @@ class BookController extends AbstractController
         methods: ['GET'],
         condition: self::DISPLAY_CONDITION
     )]
-    public function display(string $slug): Response
+    public function display(string $slug, Request $request): Response
     {
         $book = $this->bookService->findOneBySlug($slug);
 
@@ -77,12 +112,27 @@ class BookController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->render(
+        $locales = $this->translatedLocales->forEntry();
+
+        // A localised url answers for every language the site declares: the guard stays as the one place that would refuse one, and refuses nothing while these screens are read in all of them (see BookTranslatedLocales)
+        if (!$this->negotiator->isTranslated($request, $locales)) {
+            throw $this->createNotFoundException();
+        }
+
+        $askedLanguage = $this->negotiator->redirectToAskedLanguage($request, $locales, 'book_display', ['slug' => $slug]);
+        if (null !== $askedLanguage) {
+            return $this->negotiator->vary($request, $askedLanguage);
+        }
+
+        // The book, the serie it belongs to, the categories it is filed under and the titles printed under its press cuttings and promotional visuals: all of them are read on this page, and all of them carry words of their own
+        $this->bookTranslator->apply([$book, ...(null === $book->getSerie() ? [] : [$book->getSerie()]), ...$book->getShownCategories(), ...$book->getPresses(), ...$book->getMarketings()]);
+
+        return $this->negotiator->vary($request, $this->render(
             '@c975LBook/book/display.html.twig',
             [
                 'book' => $book,
             ]
-        );
+        ));
     }
 
     // SHORTCUT
@@ -123,6 +173,10 @@ class BookController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->redirectToRoute('book_display', ['slug' => $book->getSlug()], Response::HTTP_MOVED_PERMANENTLY);
+        // Through the generator rather than redirectToRoute(): a numbered url read at "/en/livre/003" leads to the book's English page, where the bare route would send the visitor back into the writing language (see LocalizedUrlGenerator::path)
+        return $this->redirect(
+            $this->localizedUrlGenerator->path('book_display', ['slug' => $book->getSlug()]),
+            Response::HTTP_MOVED_PERMANENTLY
+        );
     }
 }

@@ -20,7 +20,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 ## Contents
 
 - **Setup** — [requirements](#requirements) · [installation](#installation) · [configuration](#load-the-configuration) · [routes](#enable-routes) · [assets](#install-assets)
-- **Using it** — [public routes](#routes) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
+- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
 
 ## Features
 
@@ -28,7 +28,8 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - Each book supports media, video, press, and marketing sub-collections with drag-and-drop ordering
 - Series group books with sorted ordering
 - What a book is about said apart from what it belongs to: flat categories, as many on a book as it deserves, with a page of their own where the site wants one and read as plain keywords where it doesn't
-- Multilingual: books can reference translations across languages
+- The catalog read in every language the site declares: a book, a serie, a category, a planche, a character and a person translated on a language screen of their own row, every public page answering at `/{_locale}/…` as well
+- Multilingual editions: a book published in another language as a book of its own references its translations
 - Each published form of a book — paperback, ebook, audiobook, illustrated edition — as a row carrying its own ISBN, its size and its page count
 - Where a book is read, listened to or watched, as rows rather than columns — adding a platform is an enum case, not a migration
 - What a single site adds to a book — its own fields, its own media and edition vocabulary — declared rather than coded into an overridden CRUD
@@ -44,7 +45,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - The four catalog indexes describable from the back office — title and shared sentence written in *Descriptions d'urls*, over the bundle's own labels
 - Deletion goes through a trash, and the urls that leave the site answer 410 rather than 404 — a renamed one 301s to its new address
 - A book, a serie or a strip set aside in one click: kept whole in the back office, off every listing and out of the sitemap, back with the same click
-- A demo site seeded with a made-up catalog of its own, in the site's own language
+- A demo site seeded with a made-up catalog of its own, in every language the site declares
 - Live component search for books
 - Books, series and strips are composable in blocks, with the kinds of UiBundle
 - schema.org `Book`, `BookSeries` and `ComicStory` data published as JSON-LD
@@ -61,7 +62,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 ## Requirements
 
 - PHP >= 8.4
-- [c975L/CoreBundle](https://github.com/975L/CoreBundle) >= 1.26 — a planche's whole page opens over the page through its `Image:Zoom` component
+- [c975L/CoreBundle](https://github.com/975L/CoreBundle) >= 1.28 — the localised routes, the language screens and the translations a copy carries (`LocalizedRouteNegotiator`, `ContentLocaleScreen`, `TranslationCopier`)
 - Doctrine ORM
 - EasyAdmin
 - symfony/ux-live-component
@@ -223,6 +224,37 @@ prefix is empty declares nothing (see `BookSitemapProvider`, `Management\Linkabl
 A site that turns a family off must not use that family's public components either (`Book:Book`,
 `Serie:Serie`, `Strip:Card`…) nor the blocks built on them: they link to pages that are no longer served.
 
+### Translating the catalog
+
+A site declaring more than one language reads its catalog in each of them, and **a book stays one row in
+every language**: one number, one slug, one set of editions and sales links. What an editor typed on it is
+translated beside it, in UiBundle's `site_translation` table (`Service\BookTranslator`): the title and the
+summary of a book, a serie, a category and a planche, a character's name and presentation, a person's
+presentation, the title of a press cutting or a promotional visual. A slug, an ISBN, an edition's format, an
+age range and a person's own name are not translated.
+
+Every public route has a localised twin — `book_display_localized` beside `book_display`, and so on for the
+eleven pages and the release alert — answering `/{_locale}/livre/{slug}` for each language the site declares
+beside the one it is written in, whether the row has been translated yet or not: "/en" is the language the
+catalog is read in. The bare url stays the writing language's own, and a site declaring a single language
+serves nothing else. `book_path()`, `serie_path()`, `book_category_path()` and `contributor_path()` answer in
+the language being read (`BookPublicUrlResolver::resolveLocalizedPath()`), and so do the catalog links stored
+in a block (`Service\BookLinkLocalizer`); `resolvePath()` stays the canonical url. The labels this bundle prints
+follow the same rule through `book_ui_locale()`, the row's own language answering wherever none is being read.
+
+PHP reading a title off a row lays the language on first, with `BookTranslator::apply()`: the texts are laid
+over the row for the render being built and never persisted, which is why it runs on the front's own render
+paths rather than on `postLoad` — the back office goes on showing what a row was written in.
+
+The six screens of the back office gain a **Traduire** action and a tab strip above each edit screen
+(`?contenu=xx`, ConfigBundle's `ContentLocaleScreen`), offering that language's texts alone. A duplicate and a
+new version carry the translations of what they copy, a row removed for good takes its own away
+(`Listener\BookTranslationPurgeListener`), and the trash keeps them.
+
+This is not the translated **edition**: a book sold in another language as a book of its own — its own ISBN,
+its own page — is still bound to its original, and `book_translations()` lists that family. Translate a row
+when the words change and the book does not; publish a book of its own when it is sold as one.
+
 ### Display pages
 
 The three detail pages — a book, a serie, a planche — are laid out mobile first: one column, in source
@@ -257,7 +289,7 @@ No page of this bundle carries a summary of anchors: the hero's own row of butto
 looks for — `extracts`, `podcasts`, `apercu`, `shops`, `presse` and `marketing`, in the order the page
 lays them out and only those it actually holds — and the bar overflowed on a phone where that row wraps.
 Buy keeps the full color, every other button is stated quietly, and the labels come from the `book`
-translation domain, in the book's own language rather than the visitor's. The page therefore keeps its
+translation domain, in the language being read — the book's own where none is (`book_ui_locale()`). The page therefore keeps its
 whole width; the second column is only opened for a site adding a summary of its own
 (`sass/_book.scss`, `.book-page:has(> .book-page__toc)`). A planche gets the same skeleton: it has one
 picture and a line or two around it. `Strip:Breadcrumb` opens the page with where the planche sits (the
@@ -425,7 +457,8 @@ marketing and its blocks — each file and each link copied exactly once. It **l
 a duplicate is a new book the editor then qualifies, where chaining one book behind another is the
 versions gesture's own doing. A serie brings its covers, its logos and its blocks, and **leaves its books and its
 strips with the original**: they belong to the serie they were published in, and duplicating one is its own
-decision, taken book by book. A strip brings its plates and its blocks.
+decision, taken book by book. A strip brings its plates and its blocks. Each row copied brings its translations
+too, blocks and pictures included (UiBundle's `TranslationCopier`), written once the copy is saved.
 
 The copy is a new row from top to bottom: its title carries a `(copie)` suffix, its slug is freed of any
 collision (`UniqueSlug`), and every uploaded file is copied on disk rather than shared with the source —
@@ -440,7 +473,8 @@ A book rewritten, revised or newly illustrated is not one more edition — every
 texts. It is a book of its own, and the **Publier une nouvelle version** action of the book's screen
 (`site-role-editor`, beside the copy) is what brings it out: the book **keeps its address and its
 identity** — its id, its slug, its readers' ratings, its blocks, its translations — and a twin is born
-carrying what came out so far, its editions among them. The book starts again with editions to fill.
+carrying what came out so far, its editions among them. The book starts again with editions to fill. The twin
+carries the translations of its summary, copied over as it stands, and not of its title, which is the editor's own.
 
 The address is the point: it is the one outside links carry and the one a search engine indexes, so it has
 to lead to the most recent text. The twin only leaves the catalog (`Book::$newerVersion`): it keeps its
@@ -809,6 +843,9 @@ A row [set aside](#setting-a-row-aside) is declared by none of them: the provide
 
 Each one is built by `BookPublicUrlResolver`, which generates the path through the router and prefixes it with the configured `site-url`, so the sitemap declares the exact urls the routes answer to: it follows the prefixes of `BookRoutePrefix`, and leaves out a family whose prefix is empty — those pages are not served here at all. Nothing is declared before `site-url` is set, a sitemap accepting no relative url.
 
+On a site declaring several languages, each page is declared once per language, every entry carrying the whole
+`alternates` group (`BookPublicUrlResolver::resolveAlternates()`); a site declaring one keeps the sitemap it had.
+
 The bundle supplies urls and nothing else: `public/sitemap-book.xml` and the site's `public/sitemap-index.xml` are written by ConfigBundle, which collects every installed bundle's provider:
 
 ```bash
@@ -890,7 +927,8 @@ fixtures gets a catalog to browse straight away: **two series of two books**, th
 to come, held once in `BookSampleCatalog`. Nothing to register — implementing the interface is what tags it.
 
 Titles and summaries are translation keys of the `book` domain, so a site seeded in Spanish reads as a
-Spanish catalog. The same `BookSampleCatalog` feeds `GalleryShowcaseProvider`, which renders the block
+Spanish catalog, and a site declaring several languages is seeded with each of them, the same keys read once
+per language (UiBundle's `DemoFixtureTranslator`). The same `BookSampleCatalog` feeds `GalleryShowcaseProvider`, which renders the block
 showcase off entities it never writes: one dataset, two readings.
 
 Pictures come from CoreBundle's `PlaceholderMediaRegistry`. A site declaring `keyed_images` under
