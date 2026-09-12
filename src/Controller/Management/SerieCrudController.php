@@ -100,7 +100,6 @@ class SerieCrudController extends AbstractCrudController
     }
 
     // A declaration of fields, one line per field: its length says how much the screen shows, not how much the method decides
-    /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
     public function configureFields(string $pageName): iterable
     {
         // The very same edit screen, opened on another language: what that language says of this row, and nothing else. A number, a slug, an ISBN, a date and a sales link are the same in every language and are written on the screen the row was written on (see ContentLocaleScreen)
@@ -329,7 +328,6 @@ class SerieCrudController extends AbstractCrudController
     }
 
     // A serie is read below the index listing its kind, so this family wears two routes where the others wear one (see BookPublicUrlResolver::serieRoute())
-    /** @SuppressWarnings(PHPMD.UnusedPrivateMethod) Overrides the trait's own, which calls it - PHPMD reads the class alone */
     private function displayRoute(mixed $entity): string
     {
         return $entity instanceof Serie ? BookPublicUrlResolver::serieRoute($entity) : self::DISPLAY_ROUTE;

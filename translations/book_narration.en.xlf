@@ -186,6 +186,10 @@
                 <source>narration.guided_step_book_creation_open</source>
                 <target>The panel takes you to the books, where the whole catalog is listed.</target>
             </trans-unit>
+            <trans-unit id="rpw9Dv8">
+                <source>narration.guided_step_book_creation_page_tab</source>
+                <target>Open the second tab of the form, the page one: it holds the editions and the crowdfunding.</target>
+            </trans-unit>
             <trans-unit id="29QaM7u">
                 <source>narration.guided_step_book_creation_published</source>
                 <target>Date the publication. A book with no date, or with a date still ahead, stays out of the public lists and shows up among the ones to be published.</target>
@@ -197,10 +201,6 @@
             <trans-unit id="Wuifh39">
                 <source>narration.guided_step_book_creation_serie</source>
                 <target>Attach it to a serie: the book takes its place there, and the serie's page then lists its volumes.</target>
-            </trans-unit>
-            <trans-unit id="KHQTOs6">
-                <source>narration.guided_step_book_creation_technical_tab</source>
-                <target>Open the second tab of the form, the page one: it holds the editions and the crowdfunding.</target>
             </trans-unit>
             <trans-unit id="qalvavl">
                 <source>narration.guided_step_book_creation_title</source>
@@ -490,6 +490,10 @@
                 <source>narration.guided_step_book_version_publication_open</source>
                 <target>The panel takes you to the catalog, where every row carries the versions gesture.</target>
             </trans-unit>
+            <trans-unit id="Zxix3EA">
+                <source>narration.guided_step_book_version_publication_page_tab</source>
+                <target>Open the second tab of the form, the page one, where the formats are declared.</target>
+            </trans-unit>
             <trans-unit id="Fo9ZTux">
                 <source>narration.guided_step_book_version_publication_previous</source>
                 <target>Check the twin: the replaces field names the version set aside. It keeps its page and its ISBN, and only leaves the catalog.</target>
@@ -501,10 +505,6 @@
             <trans-unit id="1CAia.N">
                 <source>narration.guided_step_book_version_publication_save</source>
                 <target>Save with the button at the bottom of the form.</target>
-            </trans-unit>
-            <trans-unit id="aGlRGiA">
-                <source>narration.guided_step_book_version_publication_technical_tab</source>
-                <target>Open the second tab of the form, the page one, where the formats are declared.</target>
             </trans-unit>
             <trans-unit id="6XzWZHL">
                 <source>narration.series</source>

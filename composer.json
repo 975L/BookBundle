@@ -62,7 +62,6 @@
         "fixer": "php-cs-fixer check --diff",
         "stan": "phpstan analyse --no-progress",
         "rector": "rector process --dry-run",
-        "mess": "phpmd src text phpmd.xml.dist --ignore-errors-on-exit --report-file .phpmd-report.log; s=$?; grep -E \"^(/|[[:space:]]*-)\" .phpmd-report.log; n=$(grep -c \"Unexpected token\" .phpmd-report.log); if [ \"$n\" -gt 0 ]; then echo \"phpmd analysed nothing in $n file(s): PDepend cannot parse them\"; fi; exit $s",
         "lizard-ccn": "lizard -l php -C 14 -w src",
         "lizard-nloc": "find src -name '*.php' ! -name '*CrudController.php' ! -name '*Type.php' | xargs lizard -l php -T nloc=99 -C 999 -a 999 -w",
         "lizard": [
@@ -76,7 +75,6 @@
             "@fixer",
             "@stan",
             "@rector",
-            "@mess",
             "@lizard",
             "@test"
         ]

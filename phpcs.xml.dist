@@ -29,4 +29,39 @@
     <rule ref="PSR1.Files.SideEffects">
         <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
+
+    <!-- What phpmd used to report before its parser was left behind by PHP 8.4: a debug call or an exit() forgotten in the code. Stated here rather than left to phpmd's own DevelopmentCodeFragment, which reads a function image together with its namespace and therefore never matched a single call in namespaced code -->
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array">
+                <element key="var_dump" value="null"/>
+                <element key="print_r" value="null"/>
+                <element key="debug_zval_dump" value="null"/>
+                <element key="debug_print_backtrace" value="null"/>
+                <element key="exit" value="null"/>
+                <element key="die" value="null"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- eval() needs its own sniff, being a construct and not a function ForbiddenFunctions could name, and it is raised to an error so the severity says what the rule means -->
+    <rule ref="Squiz.PHP.Eval.Discouraged">
+        <type>error</type>
+    </rule>
+
+    <!-- The rest of what phpmd reported through unusedcode.xml, design.xml and naming.xml, each one stated as the sniff that covers it. UnusedLocalVariable and DepthOfInheritance leave with phpmd: no sniff replaces them, and PHPStan at level 5 does not see the first -->
+    <rule ref="Generic.CodeAnalysis.EmptyStatement">
+        <!-- A test may swallow the very exception it expects, the assertion being what was not written before it -->
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Generic.CodeAnalysis.ForLoopWithTestFunctionCall">
+        <type>error</type>
+    </rule>
+    <rule ref="Generic.PHP.DiscourageGoto">
+        <type>error</type>
+    </rule>
+    <rule ref="Squiz.NamingConventions.ValidVariableName">
+        <!-- The camelCase is what phpmd asked for; the leading underscore on a private member is a PEAR convention PSR-12 dropped -->
+        <exclude name="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+    </rule>
 </ruleset>

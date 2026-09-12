@@ -270,6 +270,10 @@
                 <source>description.guided_step_book_creation_open</source>
                 <target>La pantalla de libros enumera todo el catálogo.</target>
             </trans-unit>
+            <trans-unit id="2Y_mLVH">
+                <source>description.guided_step_book_creation_page_tab</source>
+                <target>La segunda pestaña del formulario, donde están las ediciones y la financiación colectiva</target>
+            </trans-unit>
             <trans-unit id="veI3Jgo">
                 <source>description.guided_step_book_creation_published</source>
                 <target>Un libro sin fecha, o con una fecha futura, queda fuera de las listas públicas y aparece entre las próximas publicaciones.</target>
@@ -277,10 +281,6 @@
             <trans-unit id="Gcj9PEQ">
                 <source>description.guided_step_book_creation_serie</source>
                 <target>El libro ocupa su lugar en la serie, cuya página muestra entonces sus tomos.</target>
-            </trans-unit>
-            <trans-unit id="eJkp167">
-                <source>description.guided_step_book_creation_technical_tab</source>
-                <target>La segunda pestaña del formulario, donde están las ediciones y la financiación colectiva</target>
             </trans-unit>
             <trans-unit id="x5k_Kqu">
                 <source>description.guided_step_book_creation_title</source>
@@ -550,6 +550,10 @@
                 <source>description.guided_step_book_version_publication_open</source>
                 <target>La lista de libros, donde cada fila lleva el gesto de las versiones.</target>
             </trans-unit>
+            <trans-unit id="sz4ha5a">
+                <source>description.guided_step_book_version_publication_page_tab</source>
+                <target>La segunda pestaña del formulario, donde se declaran los formatos.</target>
+            </trans-unit>
             <trans-unit id="BgcIQsS">
                 <source>description.guided_step_book_version_publication_previous</source>
                 <target>El campo «Sustituye a» nombra la versión apartada: conserva su página y su ISBN, y solo sale del catálogo.</target>
@@ -557,10 +561,6 @@
             <trans-unit id="RYYQFGu">
                 <source>description.guided_step_book_version_publication_publish</source>
                 <target>El botón pide confirmación y luego abre el libro que permanece, vacío de sus formatos, que se han ido con el gemelo.</target>
-            </trans-unit>
-            <trans-unit id="MgK60xZ">
-                <source>description.guided_step_book_version_publication_technical_tab</source>
-                <target>La segunda pestaña del formulario, donde se declaran los formatos.</target>
             </trans-unit>
             <trans-unit id="YKVN37A">
                 <source>flash.book_deleted_permanently</source>
@@ -1558,6 +1558,10 @@
                 <source>label.guided_step_book_creation_open</source>
                 <target>Abrir los libros</target>
             </trans-unit>
+            <trans-unit id="HeNzTmi">
+                <source>label.guided_step_book_creation_page_tab</source>
+                <target>Abra la pestaña «Página»</target>
+            </trans-unit>
             <trans-unit id="WRbMRY9">
                 <source>label.guided_step_book_creation_published</source>
                 <target>Fechar la publicación</target>
@@ -1569,10 +1573,6 @@
             <trans-unit id="Q6u5St9">
                 <source>label.guided_step_book_creation_serie</source>
                 <target>Vincular a una serie</target>
-            </trans-unit>
-            <trans-unit id="QKFhS_d">
-                <source>label.guided_step_book_creation_technical_tab</source>
-                <target>Abra la pestaña «Página»</target>
             </trans-unit>
             <trans-unit id="r8dIS66">
                 <source>label.guided_step_book_creation_title</source>
@@ -1862,6 +1862,10 @@
                 <source>label.guided_step_book_version_publication_open</source>
                 <target>Abra el catálogo</target>
             </trans-unit>
+            <trans-unit id="SecFyj3">
+                <source>label.guided_step_book_version_publication_page_tab</source>
+                <target>Abra la pestaña «Página»</target>
+            </trans-unit>
             <trans-unit id="IreQ5kh">
                 <source>label.guided_step_book_version_publication_previous</source>
                 <target>Compruebe el gemelo</target>
@@ -1873,10 +1877,6 @@
             <trans-unit id="zsR1kmI">
                 <source>label.guided_step_book_version_publication_save</source>
                 <target>Guarde</target>
-            </trans-unit>
-            <trans-unit id="8uZwQXB">
-                <source>label.guided_step_book_version_publication_technical_tab</source>
-                <target>Abra la pestaña «Página»</target>
             </trans-unit>
             <trans-unit id="T5sqP.N">
                 <source>label.health_check_link_broken</source>

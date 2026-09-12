@@ -104,7 +104,6 @@ class ContributorCrudController extends AbstractCrudController
     }
 
     // A declaration of fields, one line per field: its length says how much the screen shows, not how much the method decides
-    /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
     public function configureFields(string $pageName): iterable
     {
         // The very same edit screen, opened on another language: what that language says of this row, and nothing else. A number, a slug, an ISBN, a date and a sales link are the same in every language and are written on the screen the row was written on (see ContentLocaleScreen)

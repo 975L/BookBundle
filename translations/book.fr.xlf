@@ -270,6 +270,10 @@
                 <source>description.guided_step_book_creation_open</source>
                 <target>L'écran des livres liste tout le catalogue.</target>
             </trans-unit>
+            <trans-unit id="2Y_mLVH">
+                <source>description.guided_step_book_creation_page_tab</source>
+                <target>Le deuxième onglet du formulaire, où se trouvent les éditions et le financement participatif</target>
+            </trans-unit>
             <trans-unit id="veI3Jgo">
                 <source>description.guided_step_book_creation_published</source>
                 <target>Un livre sans date, ou dont la date est à venir, reste hors des listes publiques et apparaît parmi les parutions à venir.</target>
@@ -277,10 +281,6 @@
             <trans-unit id="Gcj9PEQ">
                 <source>description.guided_step_book_creation_serie</source>
                 <target>Le livre prend sa place dans la série, dont la page liste alors ses tomes.</target>
-            </trans-unit>
-            <trans-unit id="eJkp167">
-                <source>description.guided_step_book_creation_technical_tab</source>
-                <target>Le deuxième onglet du formulaire, où se trouvent les éditions et le financement participatif</target>
             </trans-unit>
             <trans-unit id="x5k_Kqu">
                 <source>description.guided_step_book_creation_title</source>
@@ -550,6 +550,10 @@
                 <source>description.guided_step_book_version_publication_open</source>
                 <target>La liste des livres, où chaque ligne porte le geste des versions.</target>
             </trans-unit>
+            <trans-unit id="sz4ha5a">
+                <source>description.guided_step_book_version_publication_page_tab</source>
+                <target>Le deuxième onglet du formulaire, où se déclarent les formats.</target>
+            </trans-unit>
             <trans-unit id="BgcIQsS">
                 <source>description.guided_step_book_version_publication_previous</source>
                 <target>Le champ « Remplace » nomme la version reléguée : elle garde sa page et son ISBN, et ne quitte que le catalogue.</target>
@@ -557,10 +561,6 @@
             <trans-unit id="RYYQFGu">
                 <source>description.guided_step_book_version_publication_publish</source>
                 <target>Le bouton demande confirmation, puis ouvre le livre qui reste — vidé de ses formats, partis avec le jumeau.</target>
-            </trans-unit>
-            <trans-unit id="MgK60xZ">
-                <source>description.guided_step_book_version_publication_technical_tab</source>
-                <target>Le deuxième onglet du formulaire, où se déclarent les formats.</target>
             </trans-unit>
             <trans-unit id="YKVN37A">
                 <source>flash.book_deleted_permanently</source>
@@ -1558,6 +1558,10 @@
                 <source>label.guided_step_book_creation_open</source>
                 <target>Ouvrir les livres</target>
             </trans-unit>
+            <trans-unit id="HeNzTmi">
+                <source>label.guided_step_book_creation_page_tab</source>
+                <target>Ouvrez l'onglet « Page »</target>
+            </trans-unit>
             <trans-unit id="WRbMRY9">
                 <source>label.guided_step_book_creation_published</source>
                 <target>Dater la parution</target>
@@ -1569,10 +1573,6 @@
             <trans-unit id="Q6u5St9">
                 <source>label.guided_step_book_creation_serie</source>
                 <target>Rattacher à une série</target>
-            </trans-unit>
-            <trans-unit id="QKFhS_d">
-                <source>label.guided_step_book_creation_technical_tab</source>
-                <target>Ouvrez l'onglet « Page »</target>
             </trans-unit>
             <trans-unit id="r8dIS66">
                 <source>label.guided_step_book_creation_title</source>
@@ -1862,6 +1862,10 @@
                 <source>label.guided_step_book_version_publication_open</source>
                 <target>Ouvrez le catalogue</target>
             </trans-unit>
+            <trans-unit id="SecFyj3">
+                <source>label.guided_step_book_version_publication_page_tab</source>
+                <target>Ouvrez l'onglet « Page »</target>
+            </trans-unit>
             <trans-unit id="IreQ5kh">
                 <source>label.guided_step_book_version_publication_previous</source>
                 <target>Vérifiez le jumeau</target>
@@ -1873,10 +1877,6 @@
             <trans-unit id="zsR1kmI">
                 <source>label.guided_step_book_version_publication_save</source>
                 <target>Enregistrez</target>
-            </trans-unit>
-            <trans-unit id="8uZwQXB">
-                <source>label.guided_step_book_version_publication_technical_tab</source>
-                <target>Ouvrez l'onglet « Page »</target>
             </trans-unit>
             <trans-unit id="T5sqP.N">
                 <source>label.health_check_link_broken</source>

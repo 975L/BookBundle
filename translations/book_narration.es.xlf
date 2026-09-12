@@ -186,6 +186,10 @@
                 <source>narration.guided_step_book_creation_open</source>
                 <target>El panel le lleva a los libros, donde está listado todo el catálogo.</target>
             </trans-unit>
+            <trans-unit id="rpw9Dv8">
+                <source>narration.guided_step_book_creation_page_tab</source>
+                <target>Abra la segunda pestaña del formulario, la de la página: lleva las ediciones y la financiación participativa.</target>
+            </trans-unit>
             <trans-unit id="29QaM7u">
                 <source>narration.guided_step_book_creation_published</source>
                 <target>Feche la publicación. Un libro sin fecha, o con una fecha futura, queda fuera de las listas públicas y aparece entre las próximas publicaciones.</target>
@@ -197,10 +201,6 @@
             <trans-unit id="Wuifh39">
                 <source>narration.guided_step_book_creation_serie</source>
                 <target>Vincúlelo a una serie: el libro ocupa su lugar en ella, y la página de la serie muestra entonces sus tomos.</target>
-            </trans-unit>
-            <trans-unit id="KHQTOs6">
-                <source>narration.guided_step_book_creation_technical_tab</source>
-                <target>Abra la segunda pestaña del formulario, la de la página: lleva las ediciones y la financiación participativa.</target>
             </trans-unit>
             <trans-unit id="qalvavl">
                 <source>narration.guided_step_book_creation_title</source>
@@ -490,6 +490,10 @@
                 <source>narration.guided_step_book_version_publication_open</source>
                 <target>El panel le lleva al catálogo, donde cada fila lleva el gesto de las versiones.</target>
             </trans-unit>
+            <trans-unit id="Zxix3EA">
+                <source>narration.guided_step_book_version_publication_page_tab</source>
+                <target>Abra la segunda pestaña del formulario, la de la página, donde se declaran los formatos.</target>
+            </trans-unit>
             <trans-unit id="Fo9ZTux">
                 <source>narration.guided_step_book_version_publication_previous</source>
                 <target>Compruebe el gemelo: el campo «Sustituye a» nombra la versión apartada. Conserva su página y su ISBN, y solo sale del catálogo.</target>
@@ -501,10 +505,6 @@
             <trans-unit id="1CAia.N">
                 <source>narration.guided_step_book_version_publication_save</source>
                 <target>Guarde con el botón situado en la parte inferior del formulario.</target>
-            </trans-unit>
-            <trans-unit id="aGlRGiA">
-                <source>narration.guided_step_book_version_publication_technical_tab</source>
-                <target>Abra la segunda pestaña del formulario, la de la página, donde se declaran los formatos.</target>
             </trans-unit>
             <trans-unit id="6XzWZHL">
                 <source>narration.series</source>

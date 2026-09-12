@@ -270,6 +270,10 @@
                 <source>description.guided_step_book_creation_open</source>
                 <target>The books screen lists the whole catalog.</target>
             </trans-unit>
+            <trans-unit id="2Y_mLVH">
+                <source>description.guided_step_book_creation_page_tab</source>
+                <target>The second tab of the form, holding the editions and the crowdfunding</target>
+            </trans-unit>
             <trans-unit id="veI3Jgo">
                 <source>description.guided_step_book_creation_published</source>
                 <target>A book with no date, or with a date still ahead, stays out of the public lists and shows up among the ones to be published.</target>
@@ -277,10 +281,6 @@
             <trans-unit id="Gcj9PEQ">
                 <source>description.guided_step_book_creation_serie</source>
                 <target>The book takes its place in the serie, whose page then lists its volumes.</target>
-            </trans-unit>
-            <trans-unit id="eJkp167">
-                <source>description.guided_step_book_creation_technical_tab</source>
-                <target>The second tab of the form, holding the editions and the crowdfunding</target>
             </trans-unit>
             <trans-unit id="x5k_Kqu">
                 <source>description.guided_step_book_creation_title</source>
@@ -550,6 +550,10 @@
                 <source>description.guided_step_book_version_publication_open</source>
                 <target>The list of books, where every row carries the versions gesture.</target>
             </trans-unit>
+            <trans-unit id="sz4ha5a">
+                <source>description.guided_step_book_version_publication_page_tab</source>
+                <target>The second tab of the form, where the formats are declared.</target>
+            </trans-unit>
             <trans-unit id="BgcIQsS">
                 <source>description.guided_step_book_version_publication_previous</source>
                 <target>The "Replaces" field names the version set aside: it keeps its page and its ISBN, and only leaves the catalog.</target>
@@ -557,10 +561,6 @@
             <trans-unit id="RYYQFGu">
                 <source>description.guided_step_book_version_publication_publish</source>
                 <target>The button asks for confirmation, then opens the book that stays - emptied of its formats, gone with the twin.</target>
-            </trans-unit>
-            <trans-unit id="MgK60xZ">
-                <source>description.guided_step_book_version_publication_technical_tab</source>
-                <target>The second tab of the form, where the formats are declared.</target>
             </trans-unit>
             <trans-unit id="YKVN37A">
                 <source>flash.book_deleted_permanently</source>
@@ -1558,6 +1558,10 @@
                 <source>label.guided_step_book_creation_open</source>
                 <target>Open the books</target>
             </trans-unit>
+            <trans-unit id="HeNzTmi">
+                <source>label.guided_step_book_creation_page_tab</source>
+                <target>Open the "Page" tab</target>
+            </trans-unit>
             <trans-unit id="WRbMRY9">
                 <source>label.guided_step_book_creation_published</source>
                 <target>Date the publication</target>
@@ -1569,10 +1573,6 @@
             <trans-unit id="Q6u5St9">
                 <source>label.guided_step_book_creation_serie</source>
                 <target>Attach it to a serie</target>
-            </trans-unit>
-            <trans-unit id="QKFhS_d">
-                <source>label.guided_step_book_creation_technical_tab</source>
-                <target>Open the "Page" tab</target>
             </trans-unit>
             <trans-unit id="r8dIS66">
                 <source>label.guided_step_book_creation_title</source>
@@ -1862,6 +1862,10 @@
                 <source>label.guided_step_book_version_publication_open</source>
                 <target>Open the catalog</target>
             </trans-unit>
+            <trans-unit id="SecFyj3">
+                <source>label.guided_step_book_version_publication_page_tab</source>
+                <target>Open the "Page" tab</target>
+            </trans-unit>
             <trans-unit id="IreQ5kh">
                 <source>label.guided_step_book_version_publication_previous</source>
                 <target>Check the twin</target>
@@ -1873,10 +1877,6 @@
             <trans-unit id="zsR1kmI">
                 <source>label.guided_step_book_version_publication_save</source>
                 <target>Save</target>
-            </trans-unit>
-            <trans-unit id="8uZwQXB">
-                <source>label.guided_step_book_version_publication_technical_tab</source>
-                <target>Open the "Page" tab</target>
             </trans-unit>
             <trans-unit id="T5sqP.N">
                 <source>label.health_check_link_broken</source>

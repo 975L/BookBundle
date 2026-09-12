@@ -312,9 +312,9 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                 ],
                 [
                     // The second tab of the form, an ISBN belonging to an edition and no longer to the book itself (see BookCrudController)
-                    'label' => 'label.guided_step_book_creation_technical_tab',
-                    'description' => 'description.guided_step_book_creation_technical_tab',
-                    'narration' => 'narration.guided_step_book_creation_technical_tab',
+                    'label' => 'label.guided_step_book_creation_page_tab',
+                    'description' => 'description.guided_step_book_creation_page_tab',
+                    'narration' => 'narration.guided_step_book_creation_page_tab',
                     'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
                 ],
                 [
@@ -871,9 +871,9 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => '.form-group:has(#Book_previousVersion)',
                 ],
                 [
-                    'label' => 'label.guided_step_book_version_publication_technical_tab',
-                    'description' => 'description.guided_step_book_version_publication_technical_tab',
-                    'narration' => 'narration.guided_step_book_version_publication_technical_tab',
+                    'label' => 'label.guided_step_book_version_publication_page_tab',
+                    'description' => 'description.guided_step_book_version_publication_page_tab',
+                    'narration' => 'narration.guided_step_book_version_publication_page_tab',
                     'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
                 ],
                 [

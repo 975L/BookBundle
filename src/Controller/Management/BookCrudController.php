@@ -269,7 +269,6 @@ class BookCrudController extends AbstractCrudController
     }
 
     // The "page" tab: the very sections a book's page lays out, in the order it prints them (see BookSectionsExtension) - the header it opens on, its videos, its versions, then what comes under them. The images and files the public page is built from, each collection carrying the book's id so its rows can be swapped by drag-and-drop: where a file or a platform is written is where it is read. A declaration of fields, one line per field: its length says how much the screen shows, not how much the method decides
-    /** @SuppressWarnings(PHPMD.ExcessiveMethodLength) */
     private function pageFields(?Book $book, ?int $bookId): array
     {
         return [

@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.11.2
+
+phpmd leaves the quality chain for phpcs sniffs
+
+- `controllers.js` joins one Stimulus application per page instead of starting its own: every call to `startStimulusApp()` also registers whatever `controllers.json` enables, so a page loading five of these barrels instantiated the `live` controller five times and a Live Component answered five times over (12/09/2026)
+- PHP Mess Detector is gone from `composer qa` (12/09/2026)
+- `phpmd.xml.dist` removed, along with its `.gitattributes`, `.gitignore` and PHPStan entries (12/09/2026)
+- phpmd leaves the CI's tool install loop and its version line, in `bin/ci.sh` and `ci.yml` (12/09/2026)
+- Debug calls and `exit()` are caught by `Generic.PHP.ForbiddenFunctions` (12/09/2026)
+- `eval()` is caught by `Squiz.PHP.Eval.Discouraged`, raised to an error (12/09/2026)
+- An empty catch, a `count()` in a loop test, a `goto` and a non-camelCase variable are caught by their own sniffs, all raised to errors (12/09/2026)
+- The empty-catch sniff spares `tests/`, and the camelCase one the PEAR underscore (12/09/2026)
+- The six `@SuppressWarnings` annotations phpmd needed are gone from the controllers (12/09/2026)
+- Two guided-step keys say `page_tab` where the tab they open is named Page (12/09/2026)
+
 ## v2.11.1
 
 Replace Doctrine deprecated calls

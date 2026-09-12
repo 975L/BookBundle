@@ -88,6 +88,7 @@ class MenuProvider implements MenuProviderInterface
                 'narration' => 'narration.characters',
                 'translation_domain' => 'book',
                 'icon' => 'fas fa-masks-theater',
+                // The very text the characters screen opens on (see character_crud_index.html.twig), reused as-is for the onboarding tour rather than written again for it
                 'description' => 'label.info_character',
                 // The bar CharacterCrudController states on its own rows - a catalog is written by whoever writes the site
                 'role' => $this->configService->get('site-role-editor'),
