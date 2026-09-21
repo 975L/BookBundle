@@ -35,6 +35,7 @@ use c975L\UiBundle\Registry\FormBlockDependencyRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BookImportProviderTest extends TestCase
 {
@@ -225,7 +226,7 @@ class BookImportProviderTest extends TestCase
         return new BookImportProvider(
             $em,
             $bookRepository,
-            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class)),
+            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class), $this->createStub(ValidatorInterface::class)),
             new MediaArchiver($em, $projectDir),
             new ContributorResolver($em, $this->createStub(ContributorRepository::class), new AsciiSlugger()),
             new BookCategoryResolver($em, $this->createStub(BookCategoryRepository::class)),

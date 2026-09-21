@@ -19,6 +19,7 @@ use c975L\UiBundle\Management\BlockDataImporter;
 use c975L\UiBundle\Registry\FormBlockDependencyRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BookCategoryImportProviderTest extends TestCase
 {
@@ -105,7 +106,7 @@ class BookCategoryImportProviderTest extends TestCase
         return new BookCategoryImportProvider(
             $em,
             $categoryRepository,
-            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class)),
+            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class), $this->createStub(ValidatorInterface::class)),
         );
     }
 }

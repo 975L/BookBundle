@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.11.3
+
+Declare symfony/validator, drop the unprefixed line-clamp
+
+- Requires `symfony/validator` `^8.0`, used by entities and forms but never declared (21/09/2026)
+- Serie tiles drop the unprefixed `line-clamp`, left to `-webkit-line-clamp` (21/09/2026)
+
 ## v2.11.2
 
 phpmd leaves the quality chain for phpcs sniffs

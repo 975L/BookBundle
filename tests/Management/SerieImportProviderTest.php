@@ -28,6 +28,7 @@ use c975L\UiBundle\Registry\FormBlockDependencyRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SerieImportProviderTest extends TestCase
 {
@@ -161,7 +162,7 @@ class SerieImportProviderTest extends TestCase
             $em,
             new ContributorResolver($em, $this->createStub(ContributorRepository::class), new AsciiSlugger()),
             $serieRepository,
-            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class)),
+            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class), $this->createStub(ValidatorInterface::class)),
             new MediaArchiver($em, $projectDir),
         );
     }

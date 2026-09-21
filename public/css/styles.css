@@ -383,7 +383,6 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: var(--book-serie-tile-text-lines);
-  line-clamp: var(--book-serie-tile-text-lines);
   max-height: calc(var(--book-serie-tile-text-lines) * var(--book-serie-tile-text-line-height) * 1em);
   overflow: hidden;
   margin: 0;

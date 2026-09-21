@@ -22,6 +22,7 @@ use c975L\UiBundle\Management\BlockDataImporter;
 use c975L\UiBundle\Registry\FormBlockDependencyRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ContributorImportProviderTest extends TestCase
 {
@@ -147,7 +148,7 @@ class ContributorImportProviderTest extends TestCase
         return new ContributorImportProvider(
             $em,
             $repository,
-            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class)),
+            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class), $this->createStub(ValidatorInterface::class)),
             new MediaArchiver($em, $projectDir),
         );
     }

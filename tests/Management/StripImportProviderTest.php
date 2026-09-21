@@ -27,6 +27,7 @@ use c975L\UiBundle\Registry\FormBlockDependencyRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class StripImportProviderTest extends TestCase
 {
@@ -123,7 +124,7 @@ class StripImportProviderTest extends TestCase
         return new StripImportProvider(
             $em,
             $stripRepository,
-            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class)),
+            new BlockDataImporter($em, $this->createStub(FormBlockDependencyRegistry::class), $this->createStub(ValidatorInterface::class)),
             new MediaArchiver($em, $projectDir),
             new SerieResolver($em, $this->createStub(SerieRepository::class)),
             new AsciiSlugger(),
