@@ -40,6 +40,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - A book, a serie or a strip duplicated in one click, with its files, its editions, its platforms and its blocks
 - A new version of a book published in one click: the book keeps its address and its readers, a twin carries what came out so far
 - A book still to come tells its readers when it is out: an address left on its page, one e-mail sent the day it appears, and the row deleted with it
+- Books and planches handed to SocialBundle's scheduled publication, where the site installs it
 - Reader reviews on a book's page, behind UiBundle's `ui-enable-reviews` setting
 - The site's age warning stated on a book declaring an age — one sentence written once in the back office (CoreBundle's `site-age-warning`), printed on every such book and said in the book's own language where the site translated it
 - The four catalog indexes describable from the back office — title and shared sentence written in *Descriptions d'urls*, over the bundle's own labels
@@ -532,6 +533,17 @@ skip — the acknowledgement would have promised a message that never comes.
 The two messages are `EmailTemplate` rows an admin composes, `book_release_alert_confirmation` and
 `book_released`, seeded by `php bin/console c975l:ui:email-templates:ensure` and sent under the site-wide
 `email-*` addresses — this bundle declares no address of its own.
+
+### Posting the catalog on social networks
+
+Where the site installs SocialBundle, its scheduled publication draws from the catalog through two
+`SocialContentSourceInterface` services, autoconfigured: `BookSocialContentSource` (`book`) hands out the
+published books, oldest first, and recalls each one 90 days after it last went out;
+`StripSocialContentSource` (`strip`) hands out the published planches, oldest first, never twice. Each
+post carries the public page's address, the cover or the planche's page as its image, the summary and the
+serie. A row with no public address — `site-url` unset, or its pages not served on this site — is never
+handed out, and a row taken off the site since its post was prepared is dropped. Which rows went out where
+is SocialBundle's to record; a site without it never asks.
 
 ### Trash, redirects and 410
 

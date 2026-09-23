@@ -14,12 +14,14 @@ use c975L\BookBundle\Repository\BookCategoryRepository;
 use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Routing\BookRoutePrefix;
+use c975L\BookBundle\Service\BookBlockCacheInvalidator;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
+use c975L\ConfigBundle\Management\LinkableRouteCacheTagsInterface;
 use c975L\ConfigBundle\Management\LinkableRouteProviderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 // Exposes the catalog's public pages as SiteBundle Menu targets (navbar/footer): the indexes, and one entry per serie and per category - a publisher's navbar usually names a collection rather than the whole catalog. Nothing is stored but the target itself: the url is generated at render time (see MenuExtension), so renaming a route prefix or a serie's slug leaves no menu item behind
-class LinkableRouteProvider implements LinkableRouteProviderInterface
+class LinkableRouteProvider implements LinkableRouteProviderInterface, LinkableRouteCacheTagsInterface
 {
     // What a serie entry is keyed on, its id following - the menu item stores it as "route:book_serie.12"
     public const SERIE_PREFIX = 'book_serie.';
@@ -153,5 +155,11 @@ class LinkableRouteProvider implements LinkableRouteProviderInterface
         }
 
         return $routes;
+    }
+
+    // The entries stand for rows of this bundle, emptied with them by a book, a category, a serie, a contributor or a "book-route-*" setting saved (see BookCacheInvalidationListener)
+    public function getLinkableRouteCacheTags(): array
+    {
+        return [BookBlockCacheInvalidator::CACHE_TAG_CATALOG];
     }
 }

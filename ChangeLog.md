@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.12.0
+
+Books and planches feed SocialBundle, catalog cards cached
+
+- Requires `c975l/core-bundle` `^1.33.0` (23/09/2026)
+- Added `BookSocialContentSource` and `StripSocialContentSource` for SocialBundle's scheduled publication (23/09/2026)
+- The route provider declares the `book_catalog` cache tag (`LinkableRouteCacheTagsInterface`) (23/09/2026)
+- The `book.collection.books` sources declare the `book_catalog` tag, none while a book is scheduled (23/09/2026)
+- A `book-route-*` setting saved invalidates the `book_catalog` tag (23/09/2026)
+
 ## v2.11.3
 
 Declare symfony/validator, drop the unprefixed line-clamp

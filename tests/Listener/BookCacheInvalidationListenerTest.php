@@ -20,6 +20,7 @@ use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
 use c975L\BookBundle\Listener\BookCacheInvalidationListener;
 use c975L\BookBundle\Service\BookBlockCacheInvalidator;
+use c975L\ConfigBundle\Entity\Config;
 use c975L\UiBundle\Entity\Block;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostPersistEventArgs;
@@ -65,6 +66,17 @@ class BookCacheInvalidationListenerTest extends TestCase
     {
         $this->listen(new Block());
 
+        $this->assertSame([], $this->invalidated);
+    }
+
+    // A family of pages turned on or off changes the cached menu entries, any other setting leaves the catalog alone
+    public function testOnlyARouteSettingDropsTheBlocks(): void
+    {
+        $this->listen(new Config()->setSlug('book-route-strips'));
+        $this->assertSame([[BookBlockCacheInvalidator::CACHE_TAG_CATALOG]], $this->invalidated);
+
+        $this->invalidated = [];
+        $this->listen(new Config()->setSlug('site-name'));
         $this->assertSame([], $this->invalidated);
     }
 

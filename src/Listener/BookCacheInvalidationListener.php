@@ -17,6 +17,7 @@ use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookBlockCacheInvalidator;
+use c975L\ConfigBundle\Entity\Config;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
@@ -48,7 +49,7 @@ class BookCacheInvalidationListener
         $this->invalidate($args->getObject());
     }
 
-    // Media covers the covers, the portraits and the planches' own files alike, every one of them being a subclass of it (see Entity\Media): a cover replaced changes every listing showing it
+    // Media covers the covers, the portraits and the planches' own files alike, every one of them being a subclass of it (see Entity\Media): a cover replaced changes every listing showing it. A "book-route-*" setting turns a family of pages on or off, which the cached menu entries depend on (see Management\LinkableRouteProvider)
     private function invalidate(object $entity): void
     {
         match (true) {
@@ -57,7 +58,8 @@ class BookCacheInvalidationListener
             $entity instanceof Serie,
             $entity instanceof Strip,
             $entity instanceof Contributor,
-            $entity instanceof Media => $this->invalidator->invalidateCatalog(),
+            $entity instanceof Media,
+            $entity instanceof Config && str_starts_with($entity->getSlug(), 'book-route-') => $this->invalidator->invalidateCatalog(),
             default => null,
         };
     }

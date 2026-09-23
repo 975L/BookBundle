@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Twig\BookTranslationExtension;
 use c975L\UiBundle\Contract\CollectionSourceProviderInterface;
 use c975L\UiBundle\Model\CollectionItem;
@@ -24,18 +25,22 @@ class BookCollectionSourceProvider implements CollectionSourceProviderInterface
     public function __construct(
         private readonly BookServiceInterface $bookService,
         private readonly BookTranslator $bookTranslator,
+        private readonly BookRepository $bookRepository,
     ) {
     }
 
-    // No cache tag declared: a source naming an item template is rendered outside the entry cache anyway (see CollectionSourceProviderInterface), so a tag here would only promise an invalidation nothing performs
+    // Tagged with the catalog, which BookCacheInvalidationListener invalidates on any book saved: each card is then one cache entry, the book it draws never stored with it. No tag while a book waits for a date still ahead, the same veto BookBlockCacheTagProvider applies: no event fires the day it comes out, and a cached listing would leave it out
     public function getSources(): array
     {
+        $cacheTags = $this->bookRepository->hasScheduled() ? [] : [BookBlockCacheInvalidator::CACHE_TAG_CATALOG];
+
         $sources = [
             'book.collection.books' => [
                 'label' => 'Livres',
                 'count' => $this->bookService->countPublished(...),
                 'items' => fn (?int $limit): array => $this->buildItems($limit, null),
                 'itemTemplate' => self::ITEM_TEMPLATE,
+                'cacheTags' => $cacheTags,
             ],
         ];
 
@@ -46,6 +51,7 @@ class BookCollectionSourceProvider implements CollectionSourceProviderInterface
                 'count' => fn (): int => $this->bookService->countPublished($language),
                 'items' => fn (?int $limit): array => $this->buildItems($limit, $language),
                 'itemTemplate' => self::ITEM_TEMPLATE,
+                'cacheTags' => $cacheTags,
             ];
         }
 

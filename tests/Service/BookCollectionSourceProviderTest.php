@@ -11,6 +11,8 @@
 namespace c975L\BookBundle\Tests\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Service\BookBlockCacheInvalidator;
 use c975L\BookBundle\Service\BookCollectionSourceProvider;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslator;
@@ -68,7 +70,7 @@ class BookCollectionSourceProviderTest extends TestCase
         $bookService = $this->createStub(BookServiceInterface::class);
         $bookService->method('findLanguages')->willThrowException(new \RuntimeException('no such table'));
 
-        $this->assertSame(['book.collection.books'], array_keys(new BookCollectionSourceProvider($bookService, $this->createStub(BookTranslator::class))->getSources()));
+        $this->assertSame(['book.collection.books'], array_keys(new BookCollectionSourceProvider($bookService, $this->createStub(BookTranslator::class), $this->createStub(BookRepository::class))->getSources()));
     }
 
     /**
@@ -82,6 +84,25 @@ class BookCollectionSourceProviderTest extends TestCase
         $bookService->method('findAllPublished')->willReturn($books);
         $bookService->method('countPublished')->willReturn(\count($books));
 
-        return new BookCollectionSourceProvider($bookService, $this->createStub(BookTranslator::class));
+        return new BookCollectionSourceProvider($bookService, $this->createStub(BookTranslator::class), $this->createStub(BookRepository::class));
+    }
+
+    // Each card is one cache entry, dropped with the catalog when a book is saved
+    public function testTheSourcesAreTaggedWithTheCatalog(): void
+    {
+        $sources = new BookCollectionSourceProvider($this->createStub(BookServiceInterface::class), $this->createStub(BookTranslator::class), $this->createStub(BookRepository::class))->getSources();
+
+        $this->assertSame([BookBlockCacheInvalidator::CACHE_TAG_CATALOG], $sources['book.collection.books']['cacheTags']);
+    }
+
+    // A book waiting for its date would be left out of a cached listing on the day it comes out, no event firing then
+    public function testNoTagWhileABookIsScheduled(): void
+    {
+        $repository = $this->createStub(BookRepository::class);
+        $repository->method('hasScheduled')->willReturn(true);
+
+        $sources = new BookCollectionSourceProvider($this->createStub(BookServiceInterface::class), $this->createStub(BookTranslator::class), $repository)->getSources();
+
+        $this->assertSame([], $sources['book.collection.books']['cacheTags']);
     }
 }
