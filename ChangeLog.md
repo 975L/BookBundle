@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.12.1
+
+Bump actions/setup-python to v6 in CI
+
+- CI uses `actions/setup-python@v6` (25/09/2026)
+
 ## v2.12.0
 
 Books and planches feed SocialBundle, catalog cards cached
