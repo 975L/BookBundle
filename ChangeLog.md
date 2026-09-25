@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.12.3
+
+A platform link needs its kind and url, README links the demo
+
+- The README opens on its bundle page, tutorials, block kinds and live demo with its back-office (25/09/2026)
+- The license badge links to `main`, the branch `master` became (25/09/2026)
+- `BookLink` and `ContributorLink` require their kind and url, validated through their owner's `links` (25/09/2026)
+- Rector's Doctrine annotation set replaced by `withAttributesSets()` for Symfony, Doctrine and Sensio (25/09/2026)
+
 ## v2.12.2
 
 Flag the Google Play affiliate setting as a feature

@@ -95,6 +95,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $medias;
 
+    #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: BookLink::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $links;

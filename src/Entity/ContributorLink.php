@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Entity;
 
 use c975L\BookBundle\Contract\PlatformLinkInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // Where the books someone signed are bought, one row per platform holding its address - their own page at a store, not one book's (see BookLink, which the page of a book reads). The two are kept apart as the medias are (see ContributorMedia): a person's row belongs to no book
 #[ORM\Entity]
@@ -29,10 +30,12 @@ class ContributorLink implements PlatformLinkInterface, \Stringable
 
     // The platform, stored as the site's own word and read from the very vocabulary a book's links are read from (see BookCustomizationRegistry): a store selling both is declared once
     #[ORM\Column(length: 30)]
+    #[Assert\NotBlank]
     private ?string $kind = null;
 
     // The whole address, as the platform hands it over: an affiliate identifier, a country, an author identifier are all part of it, and none of them is deducible from the person
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $url = null;
 
     #[ORM\Column(nullable: true)]

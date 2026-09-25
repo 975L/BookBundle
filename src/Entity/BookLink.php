@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Entity;
 
 use c975L\BookBundle\Contract\PlatformLinkInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // Where a book is read, listened to or watched, one row per platform holding its address. Used to be four "epub_*" columns on the book itself, which is what made adding a store a migration on every site - the platform is now a value (see c975L\BookBundle\Enum\BookLinkKind) and no longer a column
 #[ORM\Entity]
@@ -29,10 +30,12 @@ class BookLink implements PlatformLinkInterface, \Stringable
 
     // The platform, stored as the site's own word rather than as a case of an enum the bundle would have to know (see c975L\BookBundle\Contract\BookCustomizationProviderInterface). What it is called, the card it prints in and its icon are read from that vocabulary (see BookCustomizationRegistry)
     #[ORM\Column(length: 30)]
+    #[Assert\NotBlank]
     private ?string $kind = null;
 
     // The whole address, as SiteBundle's CollectionItem holds one: an affiliate identifier, a country, a format anchor are all part of what a platform hands over, and none of them is deducible from the book
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $url = null;
 
     #[ORM\Column(nullable: true)]

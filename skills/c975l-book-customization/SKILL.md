@@ -91,6 +91,8 @@ the bundle recomposes. `BookLinkGroup` says which card it prints in: `epub` is t
 own shop stands there beside the digital bookshops), `audio` and `podcast` the listen card, `video` the
 watch card. A kind belonging to no group prints in the "other links" fieldset of the CRUD, so it is never
 uneditable.
+A row, `BookLink` or `ContributorLink`, needs both its kind and its url (`NotBlank`); `Book::$links` and
+`Contributor::$links` carry `Assert\Valid`, so a blank row is refused on the form rather than at the flush.
 
 ```twig
 {% for link in book_links_of(book, 'epub') %}

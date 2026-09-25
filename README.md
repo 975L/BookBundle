@@ -2,10 +2,12 @@
 
 Symfony bundle providing a publisher's catalog of books and series on the c975L core — media, video, press and marketing collections, EasyAdmin CRUD, public listings growing on scroll, multilingual editions and its own sitemap.
 
-[![GitHub](https://img.shields.io/github/license/975L/BookBundle)](https://github.com/975L/BookBundle/blob/master/LICENSE)
+[![GitHub](https://img.shields.io/github/license/975L/BookBundle)](https://github.com/975L/BookBundle/blob/main/LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/c975l/book-bundle)](https://packagist.org/packages/c975l/book-bundle)
 [![PHP Version](https://img.shields.io/packagist/php-v/c975l/book-bundle)](https://packagist.org/packages/c975l/book-bundle)
 [![Codacy Grade](https://app.codacy.com/project/badge/Grade/a9a849a68d024496875550ae58ab4c2d)](https://app.codacy.com/gh/975L/BookBundle/dashboard)
+
+**[Bundle page](https://bundles.975l.com/en/pages/book-bundle) · [Tutorials](https://bundles.975l.com/en/tutoriels/book-bundle) · [Block kinds](https://bundles.975l.com/en/pages/blocks/Book) · [Live demo](https://bundles.975l.com/demo/) · [Demo back-office](https://bundles.975l.com/demo/login)**
 
 ## Why BookBundle
 

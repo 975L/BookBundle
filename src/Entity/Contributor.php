@@ -97,6 +97,7 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
     private Collection $medias;
 
     // Where their books are bought, the same mapping a book's own platforms have (see Book::$links): the order laid in the back office is the order the page prints them in
+    #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: ContributorLink::class, mappedBy: 'contributor', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $links;
