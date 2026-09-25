@@ -194,6 +194,7 @@
     {
         "label": "label.book_gplay_affiliate",
         "slug": "book-gplay-affiliate",
+        "feature": true,
         "sensitive": true,
         "restricted": false,
         "value": "",

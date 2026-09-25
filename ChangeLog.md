@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.12.2
+
+Flag the Google Play affiliate setting as a feature
+
+- `book-gplay-affiliate` setting marked `feature` (25/09/2026)
+
 ## v2.12.1
 
 Bump actions/setup-python to v6 in CI
