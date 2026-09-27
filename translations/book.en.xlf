@@ -100,7 +100,7 @@
             </trans-unit>
             <trans-unit id="MDctu1g">
                 <source>description.guided_project_book_sorting</source>
-                <target>The series and the people show on the site in the order laid here by dragging their rows - nothing on the screen says so, and sorting a column only sorts what you are looking at.</target>
+                <target>The series, the people, the categories and the characters show on the site in the order laid here by dragging their rows - nothing on the screen says so, and sorting a column only sorts what you are looking at.</target>
             </trans-unit>
             <trans-unit id="0ebzwCX">
                 <source>description.guided_project_book_strip_creation</source>
@@ -196,7 +196,7 @@
             </trans-unit>
             <trans-unit id="acTCj2X">
                 <source>description.guided_step_book_composition_listing</source>
-                <target>The five listing kinds - books, series, people, forthcoming titles, strips - each draw their own grid from the catalog, kept up to date on their own.</target>
+                <target>The listing kinds - books, series, categories, people, forthcoming titles, strips - each draw their own grid from the catalog, kept up to date on their own.</target>
             </trans-unit>
             <trans-unit id="xM7BPum">
                 <source>description.guided_step_book_composition_open</source>
@@ -212,7 +212,7 @@
             </trans-unit>
             <trans-unit id="BloTzU.">
                 <source>description.guided_step_book_contributor_creation_links</source>
-                <target>One line per store, pointing at the page listing everything they signed - their own page, not one book’s.</target>
+                <target>One line per store, pointing at the page listing everything they signed - their own page, not one book’s. Each link needs its store and its full address.</target>
             </trans-unit>
             <trans-unit id="ZZSrxfd">
                 <source>description.guided_step_book_contributor_creation_name</source>
@@ -460,7 +460,7 @@
             </trans-unit>
             <trans-unit id="tmNeMsJ">
                 <source>description.guided_step_book_sorting_open</source>
-                <target>The index of the series. The one of the authors and illustrators is sorted exactly the same way.</target>
+                <target>The index of the series. Those of the authors and illustrators, of the categories and of the characters are sorted exactly the same way, the characters within their series.</target>
             </trans-unit>
             <trans-unit id="hualbfA">
                 <source>description.guided_step_book_strip_creation_characters</source>
@@ -818,13 +818,49 @@
                 <source>label.block_reader</source>
                 <target>Illustrated reader</target>
             </trans-unit>
+            <trans-unit id="Db44GbH">
+                <source>label.block_reader_auto_advance</source>
+                <target>The voice turns the pages</target>
+            </trans-unit>
+            <trans-unit id="Gmwn8yZ">
+                <source>label.block_reader_auto_advance_help</source>
+                <target>Unchecked, the cues only serve manual navigation</target>
+            </trans-unit>
+            <trans-unit id="30VcDCA">
+                <source>label.block_reader_cue_page</source>
+                <target>Page</target>
+            </trans-unit>
+            <trans-unit id="sdcC2.A">
+                <source>label.block_reader_cue_start</source>
+                <target>Second of the soundtrack</target>
+            </trans-unit>
+            <trans-unit id="7UDDPMp">
+                <source>label.block_reader_cues</source>
+                <target>Cues</target>
+            </trans-unit>
+            <trans-unit id="0sdtoPO">
+                <source>label.block_reader_cues_help</source>
+                <target>At which second of the soundtrack each page is turned</target>
+            </trans-unit>
             <trans-unit id="bvfK8ka">
                 <source>label.block_reader_description</source>
                 <target>Turns the pages of an album along its recording</target>
             </trans-unit>
+            <trans-unit id="Ik.O_zA">
+                <source>label.block_reader_id</source>
+                <target>Reader identifier</target>
+            </trans-unit>
+            <trans-unit id="78jgvf1">
+                <source>label.block_reader_id_help</source>
+                <target>Used as the anchor in the page, one reader per identifier</target>
+            </trans-unit>
             <trans-unit id="us3SJ0p">
                 <source>label.block_reader_media_help</source>
                 <target>The album's pages in order, then the recording</target>
+            </trans-unit>
+            <trans-unit id="MwGdaKc">
+                <source>label.block_reader_title</source>
+                <target>Soundtrack title</target>
             </trans-unit>
             <trans-unit id="XWzsDqO">
                 <source>label.block_serie_slug</source>

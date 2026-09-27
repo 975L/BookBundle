@@ -104,7 +104,7 @@
             </trans-unit>
             <trans-unit id="5Lflca4">
                 <source>narration.guided_step_book_composition_listing</source>
-                <target>Choisissez une des listings du catalogue. Livres, séries, personnes, à paraître, planches : chacune tire sa grille du catalogue et se tient à jour toute seule, rien n’est à retaper quand un titre paraît.</target>
+                <target>Choisissez un des listings du catalogue. Livres, séries, catégories, personnes, à paraître, planches : chacun tire sa grille du catalogue et se tient à jour tout seul, rien n’est à retaper quand un titre paraît.</target>
             </trans-unit>
             <trans-unit id=".76L87n">
                 <source>narration.guided_step_book_composition_open</source>
@@ -124,7 +124,7 @@
             </trans-unit>
             <trans-unit id="iRopJlo">
                 <source>narration.guided_step_book_contributor_creation_links</source>
-                <target>Ajoutez une ligne par plateforme où on trouve son travail. L’adresse est sa page à elle, celle qui liste tout ce qu’elle a signé, pas la page d’un livre en particulier.</target>
+                <target>Ajoutez une ligne par plateforme où on trouve son travail. L’adresse est sa page à elle, celle qui liste tout ce qu’elle a signé, pas la page d’un livre en particulier. Chaque lien demande sa plateforme et son adresse complète.</target>
             </trans-unit>
             <trans-unit id="H2EMpXm">
                 <source>narration.guided_step_book_contributor_creation_name</source>
@@ -392,7 +392,7 @@
             </trans-unit>
             <trans-unit id="InA.8fX">
                 <source>narration.guided_step_book_sorting_open</source>
-                <target>Le panneau vous emmène sur les séries. Celle des auteurs et illustrateurs se trie exactement de la même façon.</target>
+                <target>Le panneau vous emmène sur les séries. Celles des auteurs et illustrateurs, des catégories et des personnages se trient exactement de la même façon, les personnages à l’intérieur de leur série.</target>
             </trans-unit>
             <trans-unit id="UVtNxpy">
                 <source>narration.guided_step_book_strip_creation_characters</source>

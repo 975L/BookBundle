@@ -1,7 +1,9 @@
 {# Adapter for the dynamic Block system - the categories are resolved live (see BookBlockExtension), the block itself only storing what to show and the head it shows it under #}
 {% set categories = book_block_categories(max ?? null, random ?? false) %}
 {% if categories is not empty %}
+    {# The cards' titles rank under the head this section draws, or straight under the page's <h1> when it draws none - the same rule as UiBundle's Collection block #}
+    {% set level = (title|default('') or eyebrow|default('')) ? 'h3' : 'h2' %}
     <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" linkLabel="{{ linkLabel|default('') }}" linkUrl="{{ linkUrl|default('') }}" id="{{ anchor_id }}">
-        <twig:c975LBook:Category:Categories categories="{{ categories }}" displayMore="{{ displayMore ?? false }}"/>
+        <twig:c975LBook:Category:Categories categories="{{ categories }}" displayMore="{{ displayMore ?? false }}" level="{{ level }}"/>
     </twig:c975LBook:Listing:Section>
 {% endif %}

@@ -24,19 +24,19 @@ class ReaderBlockType extends AbstractType
     {
         $builder
             ->add('id', TextType::class, [
-                'label' => 'Identifiant du lecteur',
-                'help' => 'Sert d\'ancre dans la page, un seul lecteur par identifiant',
+                'label' => 'label.block_reader_id',
+                'help' => 'label.block_reader_id_help',
                 'required' => true,
                 'constraints' => [new NotBlank()],
             ])
             ->add('title', TextType::class, [
-                'label' => 'Titre de la bande son',
+                'label' => 'label.block_reader_title',
                 'required' => false,
             ])
             // Left empty, the pages are turned by the reader alone and the recording plays on its own
             ->add('cues', CollectionType::class, [
-                'label' => 'Repères',
-                'help' => 'À quelle seconde de la bande son chaque page est tournée',
+                'label' => 'label.block_reader_cues',
+                'help' => 'label.block_reader_cues_help',
                 'entry_type' => ReaderCueType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
@@ -45,8 +45,8 @@ class ReaderBlockType extends AbstractType
                 'required' => false,
             ])
             ->add('autoAdvance', CheckboxType::class, [
-                'label' => 'La voix tourne les pages',
-                'help' => 'Décoché, les repères ne servent qu\'à la navigation manuelle',
+                'label' => 'label.block_reader_auto_advance',
+                'help' => 'label.block_reader_auto_advance_help',
                 'required' => false,
             ])
         ;
@@ -54,6 +54,9 @@ class ReaderBlockType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => null]);
+        $resolver->setDefaults([
+            'data_class' => null,
+            'translation_domain' => 'book',
+        ]);
     }
 }

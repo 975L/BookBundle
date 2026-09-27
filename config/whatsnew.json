@@ -1,5 +1,20 @@
 [
     {
+        "date": "2026-09-27",
+        "description": [
+            {
+                "en": "You can now set the order of a serie's characters by dragging their rows in the back office.",
+                "fr": "Vous pouvez désormais fixer l'ordre des personnages d'une série en glissant leurs lignes dans le back-office.",
+                "es": "Ahora puede fijar el orden de los personajes de una serie arrastrando sus filas en el back-office."
+            },
+            {
+                "en": "The audiobook reader block's form now speaks your back office's language.",
+                "fr": "Le formulaire du block lecteur d'album s'affiche désormais dans la langue de votre back-office.",
+                "es": "El formulario del bloque lector de álbum se muestra ahora en el idioma de su back-office."
+            }
+        ]
+    },
+    {
         "date": "2026-09-23",
         "description": [
             {

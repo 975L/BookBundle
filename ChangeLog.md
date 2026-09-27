@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.12.4
+
+Card titles take their rank from the listing, characters sortable
+
+- Requires `doctrine/dbal` `^4.5` (27/09/2026)
+- Listing cards take a `level` prop, `h2` when the block draws no head (27/09/2026)
+- Added `--book-card-title-size`, one card title size whatever its rank (27/09/2026)
+- Characters are reordered by dragging, within their serie (27/09/2026)
+- `ReaderBlockType` and `ReaderCueType` labels translated (27/09/2026)
+- Guided tour highlights target the block just added (27/09/2026)
+- Guided tour texts name the categories and characters among sortable lists and listing kinds (27/09/2026)
+- Guided tour tells a platform link needs its kind and url (27/09/2026)
+- `CharactersFromStripsCommandTest` names its column type (27/09/2026)
+
 ## v2.12.3
 
 A platform link needs its kind and url, README links the demo

@@ -46,6 +46,9 @@
     --book-roles-opacity: 0.75;
     --book-roles-space: 0.2rem;
 
+    /* A card's title on a listing - a book's, a serie's, a category's, a person's - at the scale it has always had, whatever rank the listing gives it: an <h2> straight under the page's <h1> would otherwise take the theme's page-heading size */
+    --book-card-title-size: calc(1.3rem * var(--font-size-title-scale, 1));
+
     /* What a section holds decides its shape (see sass/_book.scss): text reads at a paragraph's measure, a media is bounded in height rather than taking its natural size, and a row of platforms fits on one line - the ceiling in vh on a phone, in px once there is room enough */
     /* The flipbook shows the book being turned: it accompanies, it does not take over */
     --book-flipbook-max-height: 40vh;

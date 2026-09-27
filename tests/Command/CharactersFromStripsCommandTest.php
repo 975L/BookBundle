@@ -18,7 +18,6 @@ use c975L\BookBundle\Repository\SerieRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -83,7 +82,7 @@ class CharactersFromStripsCommandTest extends TestCase
         $schemaManager = $this->createStub(AbstractSchemaManager::class);
         // Quoted as a real introspection names its columns, where toString() would keep the quotes
         $schemaManager->method('introspectTableColumnsByUnquotedName')->willReturn(
-            $hasColumn ? [new Column('"characters"', Type::getType(Types::STRING))] : []
+            $hasColumn ? [new Column('"characters"', Types::STRING)] : []
         );
 
         $connection = $this->createStub(Connection::class);

@@ -391,8 +391,8 @@ on the serie's page is the very row the planches point at. `Character::$groupNam
 into more than one row — *heroes* and *villains* of the same books, told apart on the page without being two
 series; left empty, they are presented as one.
 
-The screen sits under **Catalogue**, like the series' one, and a planche picks who speaks from it rather than
-typing names. `Serie:Characters` draws the section on the serie's own page, in UiBundle's `portrait` variant,
+The screen sits under **Catalogue**, like the series' one — drag to reorder, within each serie — and a planche
+picks who speaks from it rather than typing names. `Serie:Characters` draws the section on the serie's own page, in UiBundle's `portrait` variant,
 so a site that composed those cards by hand keeps the styling it already had and can then drop the block. That
 section is written for the serie whose people carry a presentation or a portrait: where they are bare names,
 the row of chips under the planches says them already, and no section repeats it.

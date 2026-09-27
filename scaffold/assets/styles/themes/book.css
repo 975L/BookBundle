@@ -43,6 +43,9 @@
     /* --book-roles-opacity: 0.75; */
     /* --book-roles-space: 0.2rem; */
 
+    /* A card's title on a listing, at one scale whatever rank the listing gives it */
+    /* --book-card-title-size: calc(1.3rem * var(--font-size-title-scale, 1)); */
+
     /* What a section holds decides its shape: text at a paragraph's measure, media bounded in height, platforms on one line - the ceiling in vh on a phone, in px from the wide step on */
     /* The flipbook accompanies, the extracts are what a reader comes for */
     /* --book-flipbook-max-height: 40vh; */

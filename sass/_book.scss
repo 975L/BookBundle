@@ -752,6 +752,11 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     opacity: 0.75;
 }
 
+// A card's title keeps one scale whatever its rank, the rank being the listing's to set (see the "level" prop of the cards): semantics and scale are two different questions
+.book-card__title {
+    font-size: var(--book-card-title-size);
+}
+
 // What someone is credited under, on their page and on their card alike: one rule for the two, the line saying the same thing in both places
 .book-hero__roles,
 .book-card__roles {

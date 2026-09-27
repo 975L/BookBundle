@@ -104,7 +104,7 @@
             </trans-unit>
             <trans-unit id="5Lflca4">
                 <source>narration.guided_step_book_composition_listing</source>
-                <target>Elija uno de los listados del catálogo. Libros, series, personas, próximas publicaciones, páginas: cada uno saca su cuadrícula del catálogo y se mantiene al día solo, nada hay que volver a teclear cuando aparece un título.</target>
+                <target>Elija uno de los listados del catálogo. Libros, series, categorías, personas, próximas publicaciones, láminas: cada uno saca su cuadrícula del catálogo y se mantiene al día solo, nada hay que volver a teclear cuando aparece un título.</target>
             </trans-unit>
             <trans-unit id=".76L87n">
                 <source>narration.guided_step_book_composition_open</source>
@@ -124,7 +124,7 @@
             </trans-unit>
             <trans-unit id="iRopJlo">
                 <source>narration.guided_step_book_contributor_creation_links</source>
-                <target>Añada una línea por plataforma donde se encuentre su trabajo. La dirección es su propia página, la que enumera todo lo que ha firmado, no la página de un libro en concreto.</target>
+                <target>Añada una línea por plataforma donde se encuentre su trabajo. La dirección es su propia página, la que enumera todo lo que ha firmado, no la página de un libro en concreto. Cada enlace pide su plataforma y su dirección completa.</target>
             </trans-unit>
             <trans-unit id="H2EMpXm">
                 <source>narration.guided_step_book_contributor_creation_name</source>
@@ -392,7 +392,7 @@
             </trans-unit>
             <trans-unit id="InA.8fX">
                 <source>narration.guided_step_book_sorting_open</source>
-                <target>El panel le lleva a las series. La de los autores e ilustradores se ordena exactamente igual.</target>
+                <target>El panel le lleva a las series. Las de los autores e ilustradores, de las categorías y de los personajes se ordenan exactamente igual, los personajes dentro de su serie.</target>
             </trans-unit>
             <trans-unit id="UVtNxpy">
                 <source>narration.guided_step_book_strip_creation_characters</source>

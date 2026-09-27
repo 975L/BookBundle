@@ -15,6 +15,8 @@ use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Form\CharacterMediaType;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Form\TrixEditorType;
+use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -25,6 +27,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 use function Symfony\Component\Translation\t;
 
@@ -80,7 +84,7 @@ class CharacterCrudController extends AbstractCrudController
                 ->setLabel(t('label.serie', [], 'book')),
             TextField::new('name')
                 ->setLabel(t('label.character', [], 'book')),
-            // The order the cards are presented in, laid by dragging them on the index (see UiBundle's assets/js/ea-index-sort.js)
+            // The order the cards are presented in, laid by dragging them on the index inside their serie (see character_crud_index.html.twig and UiBundle's assets/js/ea-index-sort.js)
             IntegerField::new('position')
                 ->setLabel(t('label.position', [], 'book'))
                 ->setFormTypeOption('attr', ['class' => 'ui-sort-position']),
@@ -110,5 +114,47 @@ class CharacterCrudController extends AbstractCrudController
                 ->setFormTypeOption('by_reference', false)
                 ->setFormTypeOption('row_attr', ['data-character-portraits' => '1']),
         ];
+    }
+
+    // Saves a new order for the characters of one serie, as the drag and drop asks (see character_crud_index.html.twig and UiBundle's assets/js/ea-index-sort.js). The ids received are read back from database, and one belonging to another serie is refused outright
+    #[AdminRoute(path: '/reorder', options: ['methods' => ['POST']])]
+    public function reorder(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $this->denyAccessUnlessGranted($this->configService->get('site-role-editor'));
+
+        $payload = json_decode($request->getContent(), true) ?? [];
+        if (!$this->isCsrfTokenValid('character_reorder', $payload['_token'] ?? null)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $ids = array_map(intval(...), (array) ($payload['ids'] ?? []));
+        $characters = $this->charactersScopedToSerie($entityManager, $ids, (int) ($payload['group'] ?? 0));
+
+        $positions = [];
+        foreach (array_values($ids) as $position => $id) {
+            if (isset($characters[$id])) {
+                $characters[$id]->setPosition($position);
+                $positions[$id] = $position;
+            }
+        }
+
+        $entityManager->flush();
+
+        // What was saved, so the screen shows the new numbers without being reloaded
+        return new JsonResponse(['positions' => $positions]);
+    }
+
+    // The submitted characters keyed by id - one belonging to another serie is refused outright rather than silently reordered
+    private function charactersScopedToSerie(EntityManagerInterface $entityManager, array $ids, int $serieId): array
+    {
+        $characters = [];
+        foreach ($entityManager->getRepository(Character::class)->findBy(['id' => $ids]) as $character) {
+            if ($character->getSerie()?->getId() !== $serieId) {
+                throw $this->createAccessDeniedException();
+            }
+            $characters[$character->getId()] = $character;
+        }
+
+        return $characters;
     }
 }

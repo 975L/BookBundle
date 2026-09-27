@@ -25,13 +25,13 @@ class ReaderCueType extends AbstractType
     {
         $builder
             ->add('page', IntegerType::class, [
-                'label' => 'Page',
+                'label' => 'label.block_reader_cue_page',
                 'required' => true,
                 'attr' => ['min' => 1],
                 'constraints' => [new NotBlank()],
             ])
             ->add('start', NumberType::class, [
-                'label' => 'Seconde de la bande son',
+                'label' => 'label.block_reader_cue_start',
                 'required' => true,
                 'scale' => 1,
                 'attr' => ['min' => 0, 'step' => 0.1],
@@ -42,6 +42,9 @@ class ReaderCueType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => null]);
+        $resolver->setDefaults([
+            'data_class' => null,
+            'translation_domain' => 'book',
+        ]);
     }
 }

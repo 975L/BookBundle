@@ -1,5 +1,7 @@
 {# The block interpolates "1"/"" where the pages pass "true"/"false" spelled out, and any non-empty string is true in Twig: the value is brought down to a boolean once here rather than tested at each call #}
 {% set displayMore = displayMore|default(false)|to_bool %}
+{# The rank of every title in the row, the cards' and the closing one's alike: <h3> under a titled section, <h2> straight under the page's <h1>. Matched, not interpolated: it writes a tag name #}
+{% set level = level|default('') in ['h2', 'h3', 'h4'] ? level : 'h3' %}
 {# Matched, not interpolated: the value comes from stored block data and must not write any class name. Only a phone reads it as a rail, the grid taking over from the two-column step (see sass/_book.scss) #}
 {% set variant = variant|default('') == 'rail' ? ' book-cards--rail' : '' %}
 {# "rating": the score under each cover, and the icons to set it - only a listing rendered outside the block cache asks for it, the html of a cached block being shared by every visitor and its averages frozen with it, and only where the site rates its catalog at all (the setting the book's own page reads, see Book:Hero) #}
@@ -9,11 +11,11 @@
 {# "infinite" marks the list for UiBundle's infiniteScroll controller, which reads the page it fetches through this very attribute - only the listing that grows carries it, another listing sitting on the same page would otherwise answer in its place #}
 <div class="cards book-cards{{ variant }}"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
     {% for book in books %}
-        <twig:c975LBook:Book:Book book="{{ book }}" :rating="rating" :aggregate="rating ? ratings[book.id] : null" :editable="editable|default(false)"/>
+        <twig:c975LBook:Book:Book book="{{ book }}" :rating="rating" :aggregate="rating ? ratings[book.id] : null" :editable="editable|default(false)" level="{{ level }}"/>
     {% endfor %}
     {% if displayMore %}
         <article class="text-center">
-            <h3 class="card-title">{{ 'label.books_more'|trans({}, 'book') }}</h3>
+            <{{ level }} class="card-title book-card__title">{{ 'label.books_more'|trans({}, 'book') }}</{{ level }}>
             <twig:c975LUi:Button:Button label="{{ 'label.books'|trans({}, 'book') }}" url="{{ book_path('book_index') }}" />
         </article>
     {% endif %}

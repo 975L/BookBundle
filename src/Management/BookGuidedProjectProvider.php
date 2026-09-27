@@ -24,6 +24,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 // This bundle's guided projects, running the 6000 block GuidedProjectProviderInterface reserves them - the same docblock stating every other bundle's, so a range is read there rather than recopied here. They follow the order a catalog is actually built in - the people are credited by the series and the books, the serie holds the books, so each comes before what names it. Only the opening step of each carries an url: from there the parcours walks the screen the user has been sent to, highlighting the button or the field they are meant to use next (see ConfigBundle's assets/js/guided-project.js). A field is pointed at through the widget the user actually sees, which is not always the one carrying the id: a choice or an association stays a native select only below UiBundle's autocomplete threshold (ChoiceAutocompleteExtension, 10 options), TomSelect taking it over above and clipping the select away behind "ts-hidden-accessible" - so a field whose option count is the catalog's own is named through its row, ".form-group:has(#Entity_property)", the only form both regimes answer to. An association calling autocomplete() is always a TomSelect, its select printed by CrudAutocompleteType under an inner field named "autocomplete" - hence the "_autocomplete" suffix those steps carry, and the "+ .ts-wrapper" naming the widget drawn next to it. TrixEditorType hides its textarea behind "d-none", and a collection prints no field id at all, being marked on its own row instead (see the "data-*" markers of the CRUD controllers)
 class BookGuidedProjectProvider implements GuidedProjectProviderInterface
 {
+    // The reader block just added: the last row of the open pane holding an "_data_autoAdvance", which is that kind's own field (see bookReaderProject())
+    private const string READER_ROW = '.tab-pane.active .field-collection-item:has([id$="_data_autoAdvance"]):last-child';
+
     public function __construct(
         private readonly AdminUrlGeneratorInterface $adminUrlGenerator,
         private readonly ConfigServiceInterface $configService,
@@ -432,22 +435,22 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_composition_add',
                     'description' => 'description.guided_step_book_composition_add',
                     'narration' => 'narration.guided_step_book_composition_add',
-                    // Scoped to the tab the step before it opens: a book form carries three block collections, one per tab, and the first of them - the one an unscoped selector finds - sits on a tab nobody is looking at. Named by the pane Bootstrap marks active rather than by its id, which EasyAdmin slugs from the translated label - "tab-blocs" in French, "tab-blocks" in English, "tab-bloques" in Spanish
-                    'highlight' => '.tab-pane.active .field-collection-add-button',
+                    // Scoped to the tab the step before it opens: a book form carries three block collections, one per tab, and the first of them - the one an unscoped selector finds - sits on a tab nobody is looking at. Named by the pane Bootstrap marks active rather than by its id, which EasyAdmin slugs from the translated label - "tab-blocs" in French, "tab-blocks" in English, "tab-bloques" in Spanish. The add button of a block's own medias, rendered inside its row and so before the collection's own, is left out
+                    'highlight' => '.tab-pane.active .field-collection-add-button:not(.field-collection-item .field-collection-add-button)',
                 ],
                 [
-                    // The silhouette of one listing kind in the palette, each tile carrying the kind it stands for (see UiBundle's block-picker.js). "book_books" stands for the five of them, which all read the same way
+                    // The silhouette of one listing kind in the palette, each tile carrying the kind it stands for (see UiBundle's block-picker.js). "book_books" stands for all of them, which read the same way
                     'label' => 'label.guided_step_book_composition_listing',
                     'description' => 'description.guided_step_book_composition_listing',
                     'narration' => 'narration.guided_step_book_composition_listing',
                     'highlight' => '.ui-block-picker [data-kind="book_books"]',
                 ],
                 [
-                    // The heading a listing now carries of its own (see AbstractBookListingBlockType), which is what saves laying a "text_section" above the grid. Named by the row holding a "random" checkbox rather than by the title alone: every kind prints a "_data_title", where "random" is this bundle's listing kinds and nothing else - UiBundle's own collection block only offers it as a choice value
+                    // The heading a listing now carries of its own (see AbstractBookListingBlockType), which is what saves laying a "text_section" above the grid. Named by the row holding a "random" checkbox rather than by the title alone: every kind prints a "_data_title", where "random" is this bundle's listing kinds and nothing else - UiBundle's own collection block only offers it as a choice value. The last such row, a new one being appended after the blocks the book already holds (see EasyAdmin's field-collection.js)
                     'label' => 'label.guided_step_book_composition_heading',
                     'description' => 'description.guided_step_book_composition_heading',
                     'narration' => 'narration.guided_step_book_composition_heading',
-                    'highlight' => '.tab-pane.active [data-ui-sort-group]:has([id$="_data_random"]) [id$="_data_title"]',
+                    'highlight' => '.tab-pane.active .field-collection-item:has([id$="_data_random"]):last-child [id$="_data_title"]',
                 ],
                 [
                     'label' => 'label.guided_step_book_composition_save',
@@ -463,7 +466,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
         ];
     }
 
-    // The one block of this bundle whose content is its own attached medias: the pages of the album and the recording turned along with them. Its fields live inside a block row, whose ids are numbered by the collection ("Book_blocks_0_data_id"), so each is named by the end of its id - scoped to the open pane, several UiBundle kinds printing a "_data_id" of their own
+    // The one block of this bundle whose content is its own attached medias: the pages of the album and the recording turned along with them. Its fields live inside a block row, whose ids are numbered by the collection ("Book_blocks_0_data_id"), so each is named by the end of its id - scoped to the last row holding an "_data_autoAdvance", the one just added, several UiBundle kinds printing a "_data_id" of their own and a book possibly holding a reader already
     private function bookReaderProject(): array
     {
         return [
@@ -498,7 +501,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_reader_add',
                     'description' => 'description.guided_step_book_reader_add',
                     'narration' => 'narration.guided_step_book_reader_add',
-                    'highlight' => '.tab-pane.active .field-collection-add-button',
+                    'highlight' => '.tab-pane.active .field-collection-add-button:not(.field-collection-item .field-collection-add-button)',
                 ],
                 [
                     // The silhouette of the kind in the palette, each tile carrying the kind it stands for (see UiBundle's block-picker.js)
@@ -512,26 +515,26 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_reader_medias',
                     'description' => 'description.guided_step_book_reader_medias',
                     'narration' => 'narration.guided_step_book_reader_medias',
-                    'highlight' => '.tab-pane.active input[type="file"][multiple]',
+                    'highlight' => self::READER_ROW . ' input[type="file"][multiple]',
                 ],
                 [
                     'label' => 'label.guided_step_book_reader_id',
                     'description' => 'description.guided_step_book_reader_id',
                     'narration' => 'narration.guided_step_book_reader_id',
-                    'highlight' => '.tab-pane.active [id$="_data_id"]',
+                    'highlight' => self::READER_ROW . ' [id$="_data_id"]',
                 ],
                 [
                     // Reached through its prototype rather than through an id: EasyAdmin's collection_widget replaces form_widget_compound entirely and renders no id at all, so only the placeholder it carries tells this collection from the block's medias
                     'label' => 'label.guided_step_book_reader_cues',
                     'description' => 'description.guided_step_book_reader_cues',
                     'narration' => 'narration.guided_step_book_reader_cues',
-                    'highlight' => '.tab-pane.active [data-ea-collection-field][data-prototype*="_data_cues_"]',
+                    'highlight' => self::READER_ROW . ' [data-ea-collection-field][data-prototype*="_data_cues_"]',
                 ],
                 [
                     'label' => 'label.guided_step_book_reader_auto_advance',
                     'description' => 'description.guided_step_book_reader_auto_advance',
                     'narration' => 'narration.guided_step_book_reader_auto_advance',
-                    'highlight' => '.tab-pane.active [id$="_data_autoAdvance"]',
+                    'highlight' => self::READER_ROW . ' [id$="_data_autoAdvance"]',
                 ],
                 [
                     'label' => 'label.guided_step_book_reader_save',
@@ -606,7 +609,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
         ];
     }
 
-    // The order the public pages follow is laid by dragging the rows here, and nothing on the screen says so - only the series and the people are sorted this way, their indexes being the two declaring the reorder markers (see serie_crud_index.html.twig and contributor_crud_index.html.twig)
+    // The order the public pages follow is laid by dragging the rows here, and nothing on the screen says so - the series, the people, the categories and the characters are sorted this way, their indexes being the four declaring the reorder markers (see serie_crud_index.html.twig, contributor_crud_index.html.twig, category_crud_index.html.twig and character_crud_index.html.twig)
     private function sortingProject(): array
     {
         return [

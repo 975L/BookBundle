@@ -1,10 +1,12 @@
-{# <twig:c975LBook:Serie:Serie serie="{{ serie }}" [:editable="false"] [variant=""]/> #}
+{# <twig:c975LBook:Serie:Serie serie="{{ serie }}" [:editable="false"] [variant=""] [level="h3"]/> #}
 {# The serie as a listing shows it. "variant": how the card is drawn - the thumbnail with the title under it the listing has always shown, a tile the cover fills behind the text, or a square vignette #}
-{% props serie, editable = false, variant = '' %}
+{% props serie, editable = false, variant = '', level = 'h3' %}
 {# "editable": the pencil leading to the serie's screen, drawn by UiBundle's overlay above what carries the url - the same condition as a book's card, a listing rendered outside the blocks cache #}
 {% set editUrl = editable|default(false) and is_granted(config('site-role-editor')) ? serie_edit_url(serie) : null %}
 {# Matched, not interpolated: the value comes from stored block data and must not write any class name #}
 {% set variant = variant|default('') in ['tiles', 'thumbnails'] ? variant : '' %}
+{# The title's rank, set by the listing holding the card: <h3> under a titled section, <h2> straight under the page's <h1>. Matched for the same reason as the variant #}
+{% set level = level in ['h2', 'h3', 'h4'] ? level : 'h3' %}
 {% set cover = serie.covers|first %}
 {% set imageSrc = cover != false ? cover : "bundles/c975lbook/images/no-cover.webp" %}
 {# The cover's own alternative text, the serie's title when it carries none - same reading as a book's card #}
@@ -18,7 +20,7 @@
 {# A real <img> and not a CSS background: a background-image needs a style attribute no CSP nonce covers, and the browser would not know the picture's size before it lands #}
         <img class="serie-tile__img" src="{{ asset(imageSrc) }}" alt="{{ imageAlt }}" loading="lazy">
         <div class="serie-tile__body">
-            <h3 class="serie-tile__title">{{ serie.title }}</h3>
+            <{{ level }} class="serie-tile__title">{{ serie.title }}</{{ level }}>
 {# The one line the client writes on the serie itself, reduced to plain text: the summary is stored as editor HTML, which a tile has no room to render #}
             {% if serie.summary %}<p class="serie-tile__text">{{ serie.summary|plain_text }}</p>{% endif %}
         </div>
@@ -28,12 +30,12 @@
         <span class="serie-thumb__frame">
             <img class="serie-thumb__img" src="{{ asset(imageSrc) }}" alt="{{ imageAlt }}" loading="lazy">
         </span>
-        <h3 class="serie-thumb__title">{{ serie.title }}</h3>
+        <{{ level }} class="serie-thumb__title">{{ serie.title }}</{{ level }}>
     </a>
 {% else %}
     <article class="text-center"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
         <twig:c975LUi:Image:Link alt="{{ imageAlt }}" src="{{ asset(imageSrc) }}" url="{{ serie_path(serie) }}" class="img-thumbnail box-shadow"/>
-        <h3>{{ serie.title }}</h3>
+        <{{ level }} class="book-card__title">{{ serie.title }}</{{ level }}>
         <p class="text text-center small bold">({{ languageLabels[serie.language]|default(serie.language) }})</p>
     </article>
 {% endif %}

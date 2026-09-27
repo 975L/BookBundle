@@ -5,3 +5,10 @@
 
     {{ parent() }}
 {% endblock main %}
+
+{# Opens every row to UiBundle's drag and drop (see assets/js/ea-index-sort.js): a character's position only means something inside its serie, hence the serie as group #}
+{% block entity_row_attributes %}
+    data-reorder-group="{{ entity.instance.serie.id|default('') }}"
+    data-reorder-url="{{ ea_url().setAction('reorder') }}"
+    data-reorder-token="{{ csrf_token('character_reorder') }}"
+{% endblock %}

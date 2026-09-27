@@ -104,7 +104,7 @@
             </trans-unit>
             <trans-unit id="5Lflca4">
                 <source>narration.guided_step_book_composition_listing</source>
-                <target>Pick one of the catalog listings. Books, series, people, forthcoming titles, strips: each draws its own grid from the catalog and keeps itself up to date, so nothing has to be retyped when a title comes out.</target>
+                <target>Pick one of the catalog listings. Books, series, categories, people, forthcoming titles, strips: each draws its own grid from the catalog and keeps itself up to date, so nothing has to be retyped when a title comes out.</target>
             </trans-unit>
             <trans-unit id=".76L87n">
                 <source>narration.guided_step_book_composition_open</source>
@@ -124,7 +124,7 @@
             </trans-unit>
             <trans-unit id="iRopJlo">
                 <source>narration.guided_step_book_contributor_creation_links</source>
-                <target>Add a line per store where their work is sold. The address is their own page there, the one listing everything they signed, not the page of a single book.</target>
+                <target>Add a line per store where their work is sold. The address is their own page there, the one listing everything they signed, not the page of a single book. Each link needs its store and its full address.</target>
             </trans-unit>
             <trans-unit id="H2EMpXm">
                 <source>narration.guided_step_book_contributor_creation_name</source>
@@ -392,7 +392,7 @@
             </trans-unit>
             <trans-unit id="InA.8fX">
                 <source>narration.guided_step_book_sorting_open</source>
-                <target>The panel takes you to the series. The authors and illustrators one is sorted exactly the same way.</target>
+                <target>The panel takes you to the series. The authors and illustrators, the categories and the characters are sorted exactly the same way, the characters within their series.</target>
             </trans-unit>
             <trans-unit id="UVtNxpy">
                 <source>narration.guided_step_book_strip_creation_characters</source>
