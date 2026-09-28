@@ -320,12 +320,15 @@ class BookSnippetBuilderTest extends TestCase
 
         $snippet = $this->builder->buildContributor($contributor, 'https://example.org/camille.webp', 'https://example.org/auteurs/camille-ferrand');
 
-        $this->assertSame('Person', $snippet['@type']);
-        $this->assertSame('Camille Ferrand', $snippet['name']);
-        $this->assertSame('Écrit depuis 2011.', $snippet['description']);
-        $this->assertSame('https://example.org/camille.webp', $snippet['image']);
-        $this->assertSame('https://camille-ferrand.example', $snippet['sameAs']);
+        // The page is a profile, the person its main entity: what Google's profile result is drawn from
+        $this->assertSame('ProfilePage', $snippet['@type']);
         $this->assertSame('https://example.org/auteurs/camille-ferrand', $snippet['url']);
+        $person = $snippet['mainEntity'];
+        $this->assertSame('Person', $person['@type']);
+        $this->assertSame('Camille Ferrand', $person['name']);
+        $this->assertSame('Écrit depuis 2011.', $person['description']);
+        $this->assertSame('https://example.org/camille.webp', $person['image']);
+        $this->assertSame('https://camille-ferrand.example', $person['sameAs']);
     }
 
     // No name, no node: a person without one names nobody
@@ -422,7 +425,17 @@ class BookSnippetBuilderTest extends TestCase
         $book = new Book()->setTitle('La Tractopelle');
         new \ReflectionProperty(Book::class, 'id')->setValue($book, 7);
 
-        $this->assertSame($this->aggregateRating, $this->builder->buildBook($book)['aggregateRating']);
+        $this->assertSame($this->aggregateRating, $this->builder->buildBook($book, withRating: true)['aggregateRating']);
+    }
+
+    // The site's "book-rating" switch off, the page shows no stars, and the graph must not claim any: Google penalizes a rating the visitor cannot see
+    public function testNoRatingIsPublishedWhereThePageShowsNoWidget(): void
+    {
+        $this->aggregateRating = ['@type' => 'AggregateRating', 'ratingValue' => '5.0', 'ratingCount' => 2, 'bestRating' => 5, 'worstRating' => 1];
+        $book = new Book()->setTitle('La Tractopelle');
+        new \ReflectionProperty(Book::class, 'id')->setValue($book, 7);
+
+        $this->assertArrayNotHasKey('aggregateRating', $this->builder->buildBook($book));
     }
 
     // Nobody voted: an AggregateRating over no vote is what Google rejects the whole rich result for, so the book publishes none
@@ -431,7 +444,7 @@ class BookSnippetBuilderTest extends TestCase
         $book = new Book()->setTitle('La Tractopelle');
         new \ReflectionProperty(Book::class, 'id')->setValue($book, 7);
 
-        $this->assertArrayNotHasKey('aggregateRating', $this->builder->buildBook($book));
+        $this->assertArrayNotHasKey('aggregateRating', $this->builder->buildBook($book, withRating: true));
     }
 
     // A book never saved has nothing to read votes against, and no query is run for it
@@ -439,6 +452,6 @@ class BookSnippetBuilderTest extends TestCase
     {
         $this->aggregateRating = ['@type' => 'AggregateRating', 'ratingValue' => '5.0', 'ratingCount' => 2];
 
-        $this->assertArrayNotHasKey('aggregateRating', $this->builder->buildBook(new Book()->setTitle('La Tractopelle')));
+        $this->assertArrayNotHasKey('aggregateRating', $this->builder->buildBook(new Book()->setTitle('La Tractopelle'), withRating: true));
     }
 }

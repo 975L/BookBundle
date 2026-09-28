@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.13
+
+Stars published only where shown, contributors as ProfilePage
+
+- A contributor's page is published as a `ProfilePage` around its `Person` (28/09/2026)
+- `book_json_ld()` takes `withRating`, no `aggregateRating` while `book-rating` is off (28/09/2026)
+- Breadcrumb, item list, encoding and plain text delegated to UiBundle's `JsonLdBuilder` (28/09/2026)
+- JSON-LD encoding survives an invalid byte (28/09/2026)
+- Requires `c975l/core-bundle` ^1.47 (28/09/2026)
+
 ## v2.12.4
 
 Card titles take their rank from the listing, characters sortable

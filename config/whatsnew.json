@@ -1,5 +1,15 @@
 [
     {
+        "date": "2026-09-28",
+        "description": [
+            {
+                "en": "The pages of your authors and illustrators are now presented to search engines as profile pages, and a book's stars only appear in search results when its page shows them.",
+                "fr": "Les pages de vos auteurs et illustrateurs sont désormais présentées aux moteurs de recherche comme des pages de profil, et les étoiles d'un livre n'apparaissent dans les résultats de recherche que si sa page les affiche.",
+                "es": "Las páginas de sus autores e ilustradores se presentan ahora a los buscadores como páginas de perfil, y las estrellas de un libro solo aparecen en los resultados de búsqueda cuando su página las muestra."
+            }
+        ]
+    },
+    {
         "date": "2026-09-27",
         "description": [
             {

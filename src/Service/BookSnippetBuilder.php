@@ -16,6 +16,7 @@ use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Enum\BookContributorRole;
+use c975L\UiBundle\Service\JsonLdBuilder;
 use c975L\UiBundle\Service\RatingSnippetBuilder;
 
 // Builds the schema.org graph a book's, a serie's or a strip's page publishes as JSON-LD, out of the fields those pages already show. Assembled here rather than as microdata on the rendered elements, for the same reason as UiBundle's ContactSnippetBuilder: an itemprop pinned to an element leaves an empty node behind when the field is empty, where a graph simply drops what wasn't filled in - and it can carry what no template displays (the two ISBNs as two editions, the rank of a volume in its serie). Price and availability are deliberately absent: they are an "offers" node, which belongs to whoever sells the book - emitted twice, they would diverge.
@@ -30,11 +31,12 @@ class BookSnippetBuilder
     public function __construct(
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly RatingSnippetBuilder $ratingSnippetBuilder,
+        private readonly JsonLdBuilder $jsonLdBuilder = new JsonLdBuilder(),
     ) {
     }
 
     // $imageUrl is resolved by the caller rather than read from the entity: only a template can turn an attached Media into an absolute url
-    public function buildBook(Book $book, ?string $imageUrl = null, ?string $url = null): array
+    public function buildBook(Book $book, ?string $imageUrl = null, ?string $url = null, bool $withRating = false): array
     {
         $name = trim((string) $book->getTitle());
 
@@ -48,7 +50,7 @@ class BookSnippetBuilder
             '@type' => 'Book',
             'name' => $name,
             'url' => trim((string) $url),
-            'description' => $this->plainText($book->getSummary()),
+            'description' => $this->jsonLdBuilder->plainText($book->getSummary()),
             'image' => trim((string) $imageUrl),
             'author' => $this->person($book->getEffectiveAuthor()),
             'illustrator' => $this->person($book->getEffectiveIllustrator()),
@@ -69,8 +71,8 @@ class BookSnippetBuilder
             'isBasedOn' => $this->translation($book->getPreviousVersion()),
             'isPartOf' => $this->partOfSerie($book->getSerie()),
             'position' => $this->positionInSerie($book),
-            // The tally the page already shows above its title, said in the graph too - what puts the stars in a search result. Empty while nobody has voted, an AggregateRating over no vote being what Google rejects the whole rich result for (see UiBundle's RatingSnippetBuilder)
-            'aggregateRating' => $this->rating('book', $book->getId()),
+            // The tally the page already shows above its title, said in the graph too - what puts the stars in a search result. Only where the page shows the widget ($withRating, the site's "book-rating" switch): stars a visitor cannot find on the page are what Google penalizes. Empty while nobody has voted (see UiBundle's RatingSnippetBuilder)
+            'aggregateRating' => $withRating ? $this->rating('book', $book->getId()) : [],
         ]);
     }
 
@@ -87,7 +89,7 @@ class BookSnippetBuilder
             '@type' => 'BookSeries',
             'name' => $name,
             'url' => trim((string) $url),
-            'description' => $this->plainText($serie->getSummary()),
+            'description' => $this->jsonLdBuilder->plainText($serie->getSummary()),
             'image' => trim((string) $imageUrl),
             'author' => $this->person($serie->getAuthor()),
             'illustrator' => $this->person($serie->getIllustrator()),
@@ -115,7 +117,7 @@ class BookSnippetBuilder
             '@type' => 'ComicStory',
             'name' => $name,
             'url' => trim((string) $url),
-            'description' => $this->plainText($strip->getSummary()),
+            'description' => $this->jsonLdBuilder->plainText($strip->getSummary()),
             'image' => trim((string) $imageUrl),
             // A strip carries no author of its own, the serie it belongs to naming the one who draws them all
             'author' => $this->person($serie?->getAuthor()),
@@ -139,15 +141,22 @@ class BookSnippetBuilder
             return [];
         }
 
+        // A ProfilePage whose main entity is the person, which is what Google's profile result is drawn from - a bare Person is only an entity, not a page about one
         return $this->clean([
             '@context' => 'https://schema.org',
-            '@type' => 'Person',
-            'name' => $name,
+            '@type' => 'ProfilePage',
             'url' => trim((string) $url),
-            'description' => $this->plainText($contributor->getSummary()),
-            'image' => trim((string) $imageUrl),
-            // Their own site, which is what tells two people of the same name apart
-            'sameAs' => trim((string) $contributor->getWebsite()),
+            'dateCreated' => $contributor->getCreation()?->format('c'),
+            'dateModified' => $contributor->getModification()?->format('c'),
+            'mainEntity' => $this->clean([
+                '@type' => 'Person',
+                'name' => $name,
+                'url' => trim((string) $url),
+                'description' => $this->jsonLdBuilder->plainText($contributor->getSummary()),
+                'image' => trim((string) $imageUrl),
+                // Their own site, which is what tells two people of the same name apart
+                'sameAs' => trim((string) $contributor->getWebsite()),
+            ]),
         ]);
     }
 
@@ -155,86 +164,23 @@ class BookSnippetBuilder
     /** @param list<array{name: string, url: string}> $trail the levels in reading order, the page's own included */
     public function buildBreadcrumb(array $trail): array
     {
-        $elements = [];
-        $position = 0;
-
-        foreach ($trail as $level) {
-            $name = trim($level['name']);
-            $url = trim($level['url']);
-
-            // A level with nothing to show is dropped rather than numbered: a list whose positions skip one is a malformed breadcrumb
-            if ('' === $name || '' === $url) {
-                continue;
-            }
-
-            $elements[] = [
-                '@type' => 'ListItem',
-                'position' => ++$position,
-                'name' => $name,
-                'item' => $url,
-            ];
-        }
-
-        // A single level is the page itself: a trail leading nowhere says nothing a url does not already say
-        if (\count($elements) < 2) {
-            return [];
-        }
-
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'BreadcrumbList',
-            'itemListElement' => $elements,
-        ];
+        return $this->jsonLdBuilder->breadcrumb($trail);
     }
 
     // What a listing holds, as the ItemList a search engine reads a page of cards through.
     /**
      * @param list<array{name: string, url: string}> $items  the cards in reading order
-     * @param int                                    $offset how many the pages before this one already listed, a listing growing on scroll numbering its cards from where the last one stopped
+     * @param int                                    $offset how many the pages before this one already listed
      */
     public function buildItemList(array $items, int $offset = 0): array
     {
-        $elements = [];
-        $position = max(0, $offset);
-
-        foreach ($items as $item) {
-            $name = trim($item['name']);
-            $url = trim($item['url']);
-
-            if ('' === $name || '' === $url) {
-                continue;
-            }
-
-            $elements[] = [
-                '@type' => 'ListItem',
-                'position' => ++$position,
-                'name' => $name,
-                'url' => $url,
-            ];
-        }
-
-        if ([] === $elements) {
-            return [];
-        }
-
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'ItemList',
-            // What this page holds and not what the whole catalog does: a count claiming more than the elements below it is what a validator refuses
-            'numberOfItems' => \count($elements),
-            'itemListElement' => $elements,
-        ];
+        return $this->jsonLdBuilder->itemList($items, $offset);
     }
 
     // The same graph, encoded for a <script type="application/ld+json">; empty string when there is nothing to publish
     public function buildJson(array $snippet): string
     {
-        if ([] === $snippet) {
-            return '';
-        }
-
-        // JSON_HEX_TAG matters: it turns a "</script>" typed into any field into <, which no browser closes the tag on
-        return json_encode($snippet, \JSON_HEX_TAG | \JSON_HEX_AMP | \JSON_HEX_APOS | \JSON_HEX_QUOT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+        return $this->jsonLdBuilder->encode($snippet);
     }
 
     // The votes cast on one item, as the node schema.org reads them - the tally the widget displays, through the builder UiBundle already owns so the two never disagree
@@ -478,14 +424,6 @@ class BookSnippetBuilder
         usort($volumes, static fn (Book $first, Book $second) => $first->getPublished() <=> $second->getPublished());
 
         return $volumes;
-    }
-
-    // The summary is rich text; a graph carries the words only
-    private function plainText(mixed $html): string
-    {
-        $text = html_entity_decode(strip_tags((string) $html), \ENT_QUOTES | \ENT_HTML5, 'UTF-8');
-
-        return trim((string) preg_replace('/\s+/u', ' ', $text));
     }
 
     // Drops everything left empty, so an unfilled field never reaches the graph as a blank property

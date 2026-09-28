@@ -24,11 +24,11 @@ class BookJsonLdExtension
     {
     }
 
-    // Returns the <script type="application/ld+json"> payload for a book's page, empty when there is nothing to publish
+    // Returns the <script type="application/ld+json"> payload for a book's page, empty when there is nothing to publish; $withRating is the page's own condition for showing the rating widget
     #[AsTwigFunction('book_json_ld', isSafe: ['html'])]
-    public function bookJsonLd(Book $book, ?string $imageUrl = null, ?string $url = null): string
+    public function bookJsonLd(Book $book, ?string $imageUrl = null, ?string $url = null, bool $withRating = false): string
     {
-        return $this->snippetBuilder->buildJson($this->snippetBuilder->buildBook($book, $imageUrl, $url));
+        return $this->snippetBuilder->buildJson($this->snippetBuilder->buildBook($book, $imageUrl, $url, $withRating));
     }
 
     // Same for a serie's page, whose graph carries its volumes

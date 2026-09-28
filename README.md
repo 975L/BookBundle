@@ -827,7 +827,7 @@ An edition carries the ISBN and the page count of its own form, an audio one bei
 
 A strip is a `ComicStory` — its characters, its rank in its serie and the address it first appeared at (`sameAs`) — where a book of that same serie is a `Book`, the two being read and indexed apart. One not published yet publishes nothing.
 
-The page of a person the catalog credits publishes them as a `Person` — their name, their portrait, the sentence their page opens on, and their own site as `sameAs`, which is what tells two authors of the same name apart. What they signed is not repeated there: each book already names its author.
+The page of a person the catalog credits publishes itself as a `ProfilePage` whose `mainEntity` is a `Person` — their name, their portrait, the sentence their page opens on, and their own site as `sameAs`, which is what tells two authors of the same name apart. What they signed is not repeated there: each book already names its author.
 
 The trail a reader follows is published beside it as a `BreadcrumbList`, emitted by the `Breadcrumb` component itself rather than by each page — that is where the hierarchy is already resolved, levels included that a site serving no index, or holding a hidden serie, leaves out. A trail whose only level is the page itself publishes nothing, saying no more than the url does.
 
@@ -836,13 +836,13 @@ The four listings — the catalog, the series, the planches and the people — p
 Overriding a display template keeps the markup, which is a Twig function rather than a template of its own:
 
 ```twig
-{% set jsonLd = book_json_ld(book, ogImage, url('book_display', {'slug': book.slug})) %}
+{% set jsonLd = book_json_ld(book, ogImage, url('book_display', {'slug': book.slug}), config('book-rating')|to_bool) %}
 {% if jsonLd %}
     <script type="application/ld+json">{{ jsonLd }}</script>
 {% endif %}
 ```
 
-`serie_json_ld(serie, ogImage, url)` and `strip_json_ld(strip, imageUrl, url)` are called the same way.
+The fourth argument, `withRating`, adds the readers' `aggregateRating`: pass the condition your page shows the rating widget on, a rating the visitor cannot see being what Google penalizes. `serie_json_ld(serie, ogImage, url)` and `strip_json_ld(strip, imageUrl, url)` are called the same way.
 
 The `Person` node of an author and of an illustrator carries the url of their own page here, the site they
 hold off ours being read on that page rather than in the graph of every book they signed.

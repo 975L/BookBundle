@@ -71,6 +71,20 @@ class BookJsonLdExtensionTest extends TestCase
         new BookJsonLdExtension($builder)->bookJsonLd(new Book(), 'https://example.org/cover.webp', 'https://example.org/livre/un');
     }
 
+    // Whether the page shows its rating widget is the page's call, handed over as is to the builder
+    public function testThePageHandsOverWhetherItShowsTheRating(): void
+    {
+        $builder = $this->createMock(BookSnippetBuilder::class);
+        $builder->expects($this->once())
+            ->method('buildBook')
+            ->with($this->isInstanceOf(Book::class), null, null, true)
+            ->willReturn(['@type' => 'Book'])
+        ;
+        $builder->method('buildJson')->willReturn('{"@type":"Book"}');
+
+        new BookJsonLdExtension($builder)->bookJsonLd(new Book(), withRating: true);
+    }
+
     // A listing's second page numbers its rows from where the first left off, or a crawler reads twenty items all ranked first
     public function testAListingCarriesTheRankItsPageStartsAt(): void
     {
