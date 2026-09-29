@@ -52,7 +52,7 @@
                 </p>
             {% endif %}
         {% endfor %}
-        {# The endonym, read from the one place the bundle names languages (see BookTranslationExtension) rather than from a list of this template's own #}
+        {# The language's name, read from the one place the bundle names languages (see BookTranslationExtension) rather than from a list of this template's own #}
         <p>{{ 'label.language'|trans({}, 'book', book_ui_locale(book.language)) }} : <strong>{{ book_language_label(book.language) }}</strong></p>
         {% if book.age %}
             <p>{{ 'label.age'|trans({}, 'book', book_ui_locale(book.language)) }} : <strong>{{ book.age }}</strong></p>
@@ -81,7 +81,7 @@
                 {% endfor %}
             </p>
         {% endif %}
-        {# The other languages and the other versions of the same text: they read in the book's informations rather than in the hero, where three buttons already say what a reader came for. Each language by its endonym, each version by the title its publisher gave it: the bundle translates neither (see BookTranslationExtension and BookVersionExtension) #}
+        {# The other languages and the other versions of the same text: they read in the book's informations rather than in the hero, where three buttons already say what a reader came for. Each language named in the page's language, each version by the title its publisher gave it: the bundle translates neither (see BookTranslationExtension and BookVersionExtension) #}
         {% set others = [] %}
         {% for translation in book_translations(book) %}
             {% set path = book_path('book_display', {'slug': translation.slug}) %}

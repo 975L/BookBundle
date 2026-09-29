@@ -12,6 +12,6 @@
     </a>
     {# A <div>, not a <p>: Trix stores the summary as html, already block-level, and a <p> would be split by a list or a quotation #}
     {% if book.summary and not compact %}<div class="lead text-center">{{ book.summary|raw }}</div>{% endif %}
-    {# The language by its endonym, never translated - the same rule as the hero's selector (see BookTranslationExtension) #}
+    {# The language named in the page's language - the same rule as the hero's selector (see BookTranslationExtension) #}
     {% if book.language %}<p class="text text-center small bold">({{ book_language_label(book.language) }})</p>{% endif %}
 </twig:c975LUi:Card:Card>

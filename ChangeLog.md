@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.14
+
+Language labels named in the page's language through Intl
+
+- `book_language_label()` names a language in the request's locale, no longer by its endonym (29/09/2026)
+- `BookTranslationExtension::languageLabel()` is no longer static, use `languageName()` [BC-Break] (29/09/2026)
+- `Book:Book` and `Serie:Serie` print their language through `book_language_label()` (29/09/2026)
+- Collection sources name their language in French (29/09/2026)
+- Requires `symfony/intl` `^8.0` (29/09/2026)
+
 ## v2.13.1
 
 A planche answers only in the languages it was written in

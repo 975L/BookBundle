@@ -17,7 +17,7 @@ use Twig\Attribute\AsTwigFunction;
 class BookVersionExtension
 {
     // Every other version, the more recent ones first and the older ones after: a reader landing on a superseded text is looking for the one that replaces it, and a reader on the current one is looking back
-    // Named by nothing this bundle writes: a version is told from another by the title its editor gave it, in the book's own language, the way a translation is told by the endonym of its language
+    // Named by nothing this bundle writes: a version is told from another by the title its editor gave it, in the book's own language, the way a translation is told by the name of its language
     /** @return list<Book> */
     #[AsTwigFunction('book_versions')]
     public static function versions(Book $book): array

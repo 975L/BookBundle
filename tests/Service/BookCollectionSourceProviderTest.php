@@ -32,14 +32,14 @@ class BookCollectionSourceProviderTest extends TestCase
         );
     }
 
-    // Each language is named by its own endonym, never by the word the back office happens to be read in
-    public function testALanguageIsNamedByItsEndonym(): void
+    // Each language is named in French, as the rest of the label is
+    public function testALanguageIsNamedInTheLabelsOwnLanguage(): void
     {
         $sources = $this->provider(['fr', 'es'])->getSources();
 
         $this->assertSame('Livres', $sources['book.collection.books']['label']);
         $this->assertSame('Livres (Français)', $sources['book.collection.books_fr']['label']);
-        $this->assertSame('Livres (Español)', $sources['book.collection.books_es']['label']);
+        $this->assertSame('Livres (Espagnol)', $sources['book.collection.books_es']['label']);
     }
 
     // Every source draws its rows with Book:Card, which the built-in card does not do

@@ -47,7 +47,7 @@ class BookCollectionSourceProvider implements CollectionSourceProviderInterface
         // Read from the catalog itself rather than from a setting: a site publishing in one language gets one extra source, and translating a book adds the source that goes with it without anything to declare
         foreach ($this->languages() as $language) {
             $sources['book.collection.books_' . $language] = [
-                'label' => 'Livres (' . BookTranslationExtension::languageLabel($language) . ')',
+                'label' => 'Livres (' . BookTranslationExtension::languageName($language, 'fr') . ')',
                 'count' => fn (): int => $this->bookService->countPublished($language),
                 'items' => fn (?int $limit): array => $this->buildItems($limit, $language),
                 'itemTemplate' => self::ITEM_TEMPLATE,

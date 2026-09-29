@@ -9,8 +9,7 @@
     <twig:c975LUi:Image:Link alt="{{ cover.alt|default('') ?: book.title }}" src="{{ asset(imageSrc) }}" url="{{ book_path('book_display', {'slug': book.slug}) }}" class="img-thumbnail box-shadow"/>
     {# The title breaks on its " - " so the serie and the episode read on two lines. The space is kept ahead of the break: whatever reads the text without rendering it - a search engine, a screen reader - joins the two lines with nothing in between, and "The Twins - Pool" becomes the word "TwinsPool", which matches no query anyone types #}
     <{{ level }} class="book-card__title">{{ book.title|replace({' - ': ' <br>'})|raw }}</{{ level }}>
-    {% set languageLabels = {'en': 'English', 'es': 'Español', 'fr': 'Français'} %}
-    <p class="text text-center small bold">({{ languageLabels[book.language]|default('Français') }})</p>
+    <p class="text text-center small bold">({{ book_language_label(book.language|default('fr')) }})</p>
 
     <p class="text text-center small italic">
         {% if book.published == null %}

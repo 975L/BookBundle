@@ -49,13 +49,14 @@ class BookTranslationExtensionTest extends TestCase
         $this->assertSame([$spanish], BookTranslationExtension::translations($original));
     }
 
-    // A language names itself, and one this bundle holds no word for prints as its code rather than as nothing
-    public function testALanguageIsNamedByItsOwnEndonym(): void
+    // A language is named in the language the page is read in, and one Intl does not know prints as its code rather than as nothing
+    public function testALanguageIsNamedInTheLanguageOfThePage(): void
     {
-        $this->assertSame('Español', BookTranslationExtension::languageLabel('es'));
-        $this->assertSame('Deutsch', BookTranslationExtension::languageLabel('de'));
-        $this->assertSame('sv', BookTranslationExtension::languageLabel('sv'));
-        $this->assertSame('', BookTranslationExtension::languageLabel(null));
+        $this->assertSame('Anglais', BookTranslationExtension::languageName('en', 'fr'));
+        $this->assertSame('French', BookTranslationExtension::languageName('fr', 'en'));
+        $this->assertSame('Español', BookTranslationExtension::languageName('es', 'es'));
+        $this->assertSame('xx', BookTranslationExtension::languageName('xx', 'fr'));
+        $this->assertSame('', BookTranslationExtension::languageName(null, 'fr'));
     }
 
     // The language the url reads is the one this bundle's own words follow: a Spanish url printing French labels around a Spanish title is a page half translated
