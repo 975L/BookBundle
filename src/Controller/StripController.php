@@ -116,11 +116,11 @@ class StripController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $locales = $this->translatedLocales->forEntry();
+        $locales = $this->translatedLocales->forStrip($strip);
 
-        // A localised url answers for every language the site declares: the guard stays as the one place that would refuse one (see BookTranslatedLocales)
+        // A planche not written in the language of the url moves to the one it was written in rather than answering 404: the arrows and the cards of a page read in that language still link to it
         if (!$this->negotiator->isTranslated($request, $locales)) {
-            throw $this->createNotFoundException();
+            return $this->redirectToRoute('strip_display', ['slug' => $slug], Response::HTTP_MOVED_PERMANENTLY);
         }
 
         $askedLanguage = $this->negotiator->redirectToAskedLanguage($request, $locales, 'strip_display', ['slug' => $slug]);

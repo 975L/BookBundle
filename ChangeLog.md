@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.13.1
+
+A planche answers only in the languages it was written in
+
+- `BookTranslatedLocales::forStrip()` gates a planche on its translated languages (29/09/2026)
+- A planche's url in an untranslated language 301s to its bare url (29/09/2026)
+- A planche's sitemap alternates name its translated languages alone (29/09/2026)
+- Strip characters and search headings follow `book_ui_locale()` (29/09/2026)
+
 ## v2.13
 
 Stars published only where shown, contributors as ProfilePage

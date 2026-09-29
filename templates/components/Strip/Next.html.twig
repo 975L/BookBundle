@@ -3,7 +3,7 @@
     <a href="{{ book_path('strip_display', {'slug': previousNext.next.slug}) }}"
         rel="next"
         class="strip-nav strip-nav--next"
-        aria-label="{{ 'label.next_strip'|trans({}, 'book', language|default(null)) }} - {{ previousNext.next.title }}">
+        aria-label="{{ 'label.next_strip'|trans({}, 'book', book_ui_locale(language|default(null))) }} - {{ previousNext.next.title }}">
         <span class="strip-nav__title">{{ previousNext.next.title }}</span>
         <span class="strip-nav__glyph" aria-hidden="true">&rsaquo;</span>
     </a>

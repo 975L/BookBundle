@@ -165,7 +165,7 @@ class BookSitemapProvider implements SitemapProviderInterface
                 'lastmod' => date('Y-m-d', $strip->getModification()->getTimestamp()),
                 'changefreq' => 'monthly',
                 'priority' => 6,
-            ], $url, $this->bookPublicUrlResolver->resolveAlternates('strip_display', $parameters, $this->translatedLocales->forEntry()))];
+            ], $url, $this->bookPublicUrlResolver->resolveAlternates('strip_display', $parameters, $this->translatedLocales->forStrip($strip)))];
         }
 
         return $urls;

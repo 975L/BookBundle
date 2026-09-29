@@ -19,6 +19,6 @@
     {% endif %}
     {# The platform itself, for whoever wants to subscribe, read the comments or go full screen: the page it opens the video on, read on the player's address above (see UiBundle, VideoExtension::toWatchUrl()) #}
     {% if video.youtubeUrl %}
-        <twig:c975LUi:Button:Button type="secondary" label="{{ 'label.watch_on_youtube'|trans({}, 'book', language|default(null)) }}" url="{{ video.youtubeUrl|video_watch_url }}" target="_blank"/>
+        <twig:c975LUi:Button:Button type="secondary" label="{{ 'label.watch_on_youtube'|trans({}, 'book', book_ui_locale(language|default(null))) }}" url="{{ video.youtubeUrl|video_watch_url }}" target="_blank"/>
     {% endif %}
 {% endif %}

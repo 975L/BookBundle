@@ -30,7 +30,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - Each book supports media, video, press, and marketing sub-collections with drag-and-drop ordering
 - Series group books with sorted ordering
 - What a book is about said apart from what it belongs to: flat categories, as many on a book as it deserves, with a page of their own where the site wants one and read as plain keywords where it doesn't
-- The catalog read in every language the site declares: a book, a serie, a category, a planche, a character and a person translated on a language screen of their own row, every public page answering at `/{_locale}/…` as well
+- The catalog read in every language the site declares: a book, a serie, a category, a planche, a character and a person translated on a language screen of their own row, every public page answering at `/{_locale}/…` as well — a planche only in the languages it was written in
 - Multilingual editions: a book published in another language as a book of its own references its translations
 - Each published form of a book — paperback, ebook, audiobook, illustrated edition — as a row carrying its own ISBN, its size and its page count
 - Where a book is read, listened to or watched, as rows rather than columns — adding a platform is an enum case, not a migration

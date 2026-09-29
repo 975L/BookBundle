@@ -1,3 +1,3 @@
 <p class="text-center">
-    {{ 'label.published_on'|trans({}, 'book', language|default(null)) }} {{ published|date("d/m/Y") }}
+    {{ 'label.published_on'|trans({}, 'book', book_ui_locale(language|default(null))) }} {{ published|date("d/m/Y") }}
 </p>

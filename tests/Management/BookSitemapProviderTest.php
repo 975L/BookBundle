@@ -20,6 +20,7 @@ use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
+use c975L\BookBundle\Service\BookTranslator;
 use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\BookBundle\Service\SerieServiceInterface;
 use c975L\BookBundle\Service\StripServiceInterface;
@@ -47,6 +48,7 @@ class BookSitemapProviderTest extends TestCase
         string $siteUrl = 'https://example.com',
         array $prefixes = [],
         array $locales = ['fr'],
+        array $stripLocales = ['fr'],
     ): BookSitemapProvider {
         $configService = $this->createStub(ConfigServiceInterface::class);
         $configService->method('get')->willReturn($siteUrl);
@@ -72,9 +74,13 @@ class BookSitemapProviderTest extends TestCase
         $urlGenerator = $this->createUrlGenerator();
         $siteLocales = new SiteLocales($locales, 'fr');
 
+        // The languages a planche was really written in, which alone its alternates name (see BookTranslatedLocales::forStrip())
+        $bookTranslator = $this->createStub(BookTranslator::class);
+        $bookTranslator->method('translatedLocales')->willReturn($stripLocales);
+
         return new BookSitemapProvider(
             new BookPublicUrlResolver($configService, $this->createRoutePrefix($prefixes), $this->createLocalizedUrlGenerator($urlGenerator), $urlGenerator, $siteLocales),
-            new BookTranslatedLocales($siteLocales),
+            new BookTranslatedLocales($siteLocales, $bookTranslator),
             $categoryService,
             $bookService,
             $contributorService,
@@ -216,6 +222,24 @@ class BookSitemapProviderTest extends TestCase
                 $this->assertSame($group, $url['alternates']);
             }
         }
+    }
+
+    // A planche translated into English is declared in both languages, as one group
+    public function testATranslatedStripIsDeclaredInEachLanguageItWasWrittenIn(): void
+    {
+        $urls = $this->createProvider(strips: [$this->strip()], locales: ['fr', 'en'], stripLocales: ['fr', 'en'])->getUrls();
+        $alternates = array_column($urls, 'alternates', 'loc');
+
+        $this->assertSame(['fr' => 'https://example.com/strip/planche-1', 'en' => 'https://example.com/en/strip/planche-1'], $alternates['https://example.com/strip/planche-1']);
+    }
+
+    // A planche written in French alone is not declared under "/en", which would name French content in English
+    public function testAnUntranslatedStripIsDeclaredInItsOwnLanguageAlone(): void
+    {
+        $locs = array_column($this->createProvider(strips: [$this->strip()], locales: ['fr', 'en'])->getUrls(), 'loc');
+
+        $this->assertContains('https://example.com/strip/planche-1', $locs);
+        $this->assertNotContains('https://example.com/en/strip/planche-1', $locs);
     }
 
     // A person the catalog credits carries a title and a description, so their page is one of the lines llms.txt is built from

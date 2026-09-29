@@ -1,5 +1,15 @@
 [
     {
+        "date": "2026-09-29",
+        "description": [
+            {
+                "en": "A comic strip page is now only offered in the languages it has actually been translated into, and visitors reaching it in another language are taken to its original version.",
+                "fr": "Une planche n'est désormais proposée que dans les langues où elle a réellement été traduite, et le visiteur qui y arrive dans une autre langue est conduit vers sa version d'origine.",
+                "es": "Una tira solo se ofrece ahora en los idiomas a los que se ha traducido realmente, y el visitante que llega en otro idioma es llevado a su versión original."
+            }
+        ]
+    },
+    {
         "date": "2026-09-28",
         "description": [
             {

@@ -4,7 +4,7 @@
     <a href="{{ book_path('strip_display', {'slug': previousNext.previous.slug}) }}"
         rel="prev"
         class="strip-nav strip-nav--previous"
-        aria-label="{{ 'label.previous_strip'|trans({}, 'book', language|default(null)) }} - {{ previousNext.previous.title }}">
+        aria-label="{{ 'label.previous_strip'|trans({}, 'book', book_ui_locale(language|default(null))) }} - {{ previousNext.previous.title }}">
         <span class="strip-nav__glyph" aria-hidden="true">&lsaquo;</span>
         <span class="strip-nav__title">{{ previousNext.previous.title }}</span>
     </a>

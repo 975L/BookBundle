@@ -3,7 +3,7 @@
     <div class="text-center"{% if editUrl|default('') %} data-block-edit-url="{{ editUrl }}"{% endif %}>
         <twig:c975LUi:Button:Button
             type="secondary"
-            label="{{ 'label.source_url_link'|trans({}, 'book', language|default(null)) }}"
+            label="{{ 'label.source_url_link'|trans({}, 'book', book_ui_locale(language|default(null))) }}"
             url="{{ sourceUrl }}"
             target="_blank"
             inline="true"
