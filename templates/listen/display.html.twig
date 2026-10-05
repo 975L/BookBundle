@@ -13,11 +13,11 @@
     {% set audio = audios|filter(media => media.mimeType == 'audio/mpeg')|first ?: audios|first %}
     <div class="book-listen-page" lang="{{ book.language }}">
         {% if book.cues and book.pages|length %}
-            <twig:c975LBook:Reader:Reader media="{{ book.pages }}" audio="{{ audio }}" cuesFile="{{ book.cues }}" id="listen-{{ book.id }}" title="{{ book.title }}"/>
+            <twig:c975LBook:Reader:Reader media="{{ book.pages }}" audio="{{ audio }}" cuesFile="{{ book.cues }}" id="listen-{{ book.id }}"/>
         {% else %}
             {% set cover = book_cover(book) %}
             <twig:c975LUi:Image:Image class="img-rounded box-shadow img-300" src="{{ asset(cover ?: 'bundles/c975lbook/images/no-cover.webp') }}" alt="{{ book.title }}" width="300" height="425"/>
-            <twig:c975LUi:Audio:Audio src="{{ vich_uploader_asset(audio) }}" type="{{ audio.mimeType }}" title="{{ book.title }}"/>
+            <twig:c975LUi:Audio:Audio src="{{ vich_uploader_asset(audio) }}" type="{{ audio.mimeType }}"/>
         {% endif %}
         {% set bookPath = book_path('book_display', {'slug': book.slug}) %}
         {% if bookPath %}

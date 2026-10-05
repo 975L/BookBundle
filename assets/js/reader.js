@@ -8,7 +8,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 // Reads an illustrated album page by page along its recording: the voice turns the pages, and turning one by hand moves the playhead to that page's cue.
-// Drives UiBundle's slider through its own dots rather than its controller's methods - the dots are the slider's public surface, so the two stay independent.
+// Talks to UiBundle's slider only through its public surface - its dots to turn a page, its "slider:changed" event to learn one was turned - so the two stay independent.
 export default class extends Controller {
     static values = { cues: Array, cuesUrl: String, autoAdvance: Boolean };
 
@@ -34,17 +34,18 @@ export default class extends Controller {
         this.seeking = false;
 
         this.onTimeUpdate = () => this.followVoice();
-        this.onDotClick = (event) => this.followReader(event);
+        this.onPageTurned = (event) => this.followReader(event);
 
         if (this.autoAdvanceValue && this.cues.length > 0) {
             this.audio.addEventListener("timeupdate", this.onTimeUpdate);
         }
-        this.dots.forEach((dot) => { dot.addEventListener("click", this.onDotClick); });
+        // The event rather than the dots' clicks: the arrows, a tap on the page and a swipe turn it too
+        this.element.addEventListener("slider:changed", this.onPageTurned);
     }
 
     disconnect() {
         this.audio?.removeEventListener("timeupdate", this.onTimeUpdate);
-        this.dots?.forEach((dot) => { dot.removeEventListener("click", this.onDotClick); });
+        this.element.removeEventListener("slider:changed", this.onPageTurned);
     }
 
     // The cues of a WebVTT file: each cue's identifier is its page's number, its start time where that page begins
@@ -89,11 +90,11 @@ export default class extends Controller {
         }
     }
 
-    // A page turned by hand moves the recording to that page's cue, so the voice never reads a page that is no longer shown
+    // A page turned by hand moves the recording to that page's cue, so the voice never reads a page that is no longer shown. The page the voice has just turned comes back here too, already current: nothing to seek
     followReader(event) {
-        const page = Number.parseInt(event.currentTarget.dataset.slide ?? "", 10) + 1;
+        const page = Number(event.detail?.page);
         const cue = this.cues.find((entry) => entry.page === page);
-        if (Number.isNaN(page) || undefined === cue) {
+        if (page === this.page || undefined === cue) {
             return;
         }
 

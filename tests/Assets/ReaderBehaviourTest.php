@@ -74,6 +74,18 @@ class ReaderBehaviourTest extends JsCase
         $this->assertSame(1, $held['after'], 'The guard was never released, so the voice stops turning pages for the rest of the recording.');
     }
 
+    // The arrows, a tap on the page and a swipe turn it without any dot being clicked: the slider's event is what the voice follows
+    public function testAPageTurnedWithoutItsDotStillMovesTheRecording(): void
+    {
+        $this->assertSame(20, $this->reader('turn(3); return audio().currentTime;'), 'Turning a page with the arrows left the recording reading the page before.');
+    }
+
+    // The page the voice has just turned comes back as a slider event: seeking to its cue would pull the recording back a little at every page
+    public function testThePageTheVoiceTurnsDoesNotPullTheRecordingBack(): void
+    {
+        $this->assertSame(12, $this->reader('at(12); return audio().currentTime;'), 'The voice turned the page and the recording jumped back to that page\'s cue.');
+    }
+
     // A dot pointing at a page the recording has no cue for leaves the playhead where it was rather than seeking to nothing
     public function testTurningToAPageTheRecordingNeverReachesLeavesItAlone(): void
     {
@@ -128,6 +140,9 @@ class ReaderBehaviourTest extends JsCase
              const dot = (page) => root.querySelector("[data-slide=\"" + (page - 1) + "\"]");
              const clicked = [];
              root.querySelectorAll(".slider-dot").forEach((el) => { el.addEventListener("click", () => clicked.push(Number(el.dataset.slide))); });
+             // What the UiBundle slider does once a page is turned, whatever turned it
+             const turn = (page) => root.querySelector(".slider-dot").dispatchEvent(new CustomEvent("slider:changed", { bubbles: true, detail: { page } }));
+             root.querySelectorAll(".slider-dot").forEach((el) => { el.addEventListener("click", () => turn(Number(el.dataset.slide) + 1)); });
              const tick = () => audio().dispatchEvent(new Event("timeupdate"));
              const frame = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
              const at = (seconds) => { audio().currentTime = seconds; tick(); }; ';

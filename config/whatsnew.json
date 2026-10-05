@@ -3,6 +3,11 @@
         "date": "2026-10-05",
         "description": [
             {
+                "en": "A book's listening section now offers a link to listen while turning its pages, and turning a page with the arrows or a swipe moves the recording along.",
+                "fr": "La section d'écoute d'un livre propose désormais un lien pour écouter en suivant les pages, et tourner une page avec les flèches ou d'un glissement fait suivre l'enregistrement.",
+                "es": "La sección de escucha de un libro ofrece ahora un enlace para escuchar siguiendo las páginas, y pasar una página con las flechas o deslizando hace avanzar la grabación."
+            },
+            {
                 "en": "On the listening page, pages now fade gently into each other instead of sliding.",
                 "fr": "Sur la page d'écoute, les pages se fondent désormais doucement l'une dans l'autre au lieu de glisser.",
                 "es": "En la página de escucha, las páginas se funden ahora suavemente una en otra en lugar de deslizarse."

@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.15.2
+
+Podcasts card links to the listening page
+
+- `Book:Podcasts` links to the listening page when the book carries timecodes (05/10/2026)
+- `reader.js` follows UiBundle's `slider:changed` event instead of the dots' clicks (05/10/2026)
+- The page the voice turns no longer seeks the recording back to its cue (05/10/2026)
+- Listening page centred, its album no wider than 32rem (05/10/2026)
+- Listening page's reader and player no longer print the book's title (05/10/2026)
+
 ## v2.15.1
 
 Reader pages fade into each other

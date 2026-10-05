@@ -588,6 +588,24 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
   gap: 0.5rem;
 }
 
+.book-listen-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.book-listen-page .book-reader {
+  width: 100%;
+  max-width: 32rem;
+}
+
+.book-listen-page .audio-figure {
+  display: flex;
+  justify-content: center;
+  margin-inline: auto;
+}
+
 .book-section .flex-center p {
   display: flex;
   margin: 0;

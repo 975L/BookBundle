@@ -2126,6 +2126,10 @@
                 <source>label.listen_to</source>
                 <target>Escuchar %title%</target>
             </trans-unit>
+            <trans-unit id="QTcROVI">
+                <source>label.listen_with_pages</source>
+                <target>Escuchar siguiendo las páginas</target>
+            </trans-unit>
             <trans-unit id="knMSD8.">
                 <source>label.load_more</source>
                 <target>Ver más</target>

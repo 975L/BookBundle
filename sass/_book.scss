@@ -504,6 +504,25 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
     gap: 0.5rem;
 }
 
+// LISTENING PAGE - the album, its player and the way back stacked in the middle, the album no wider than a page held in the hands rather than the whole screen
+.book-listen-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.book-listen-page .book-reader {
+    width: 100%;
+    max-width: 32rem;
+}
+
+.book-listen-page .audio-figure {
+    display: flex;
+    justify-content: center;
+    margin-inline: auto;
+}
+
 // Every platform is the same tile whatever the mark it carries, so the row reads as a row of buttons rather
 // than as logos of assorted heights. The paragraph Image:Link wraps each one in is only a carrier from here
 // on, the link itself being the tile. The content hangs from the top edge rather than sitting in the middle:
