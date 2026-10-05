@@ -42,6 +42,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->bookCreationProject(),
             $this->mediaMoveProject(),
             $this->bookCompositionProject(),
+            $this->bookListenProject(),
             $this->bookReaderProject(),
             $this->translationProject(),
             $this->sortingProject(),
@@ -379,17 +380,17 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
                 ],
                 [
-                    'label' => 'label.guided_step_book_media_move_extracts',
-                    'description' => 'description.guided_step_book_media_move_extracts',
-                    'narration' => 'narration.guided_step_book_media_move_extracts',
-                    'highlight' => '[data-ui-move-target="extract"]',
+                    'label' => 'label.guided_step_book_media_move_pages',
+                    'description' => 'description.guided_step_book_media_move_pages',
+                    'narration' => 'narration.guided_step_book_media_move_pages',
+                    'highlight' => '[data-ui-move-target="page"]',
                 ],
                 [
                     // The grip UiBundle's ea-sortable.js lays on the header bar of each row
                     'label' => 'label.guided_step_book_media_move_handle',
                     'description' => 'description.guided_step_book_media_move_handle',
                     'narration' => 'narration.guided_step_book_media_move_handle',
-                    'highlight' => '[data-ui-move-target="extract"] .ui-sort-handle',
+                    'highlight' => '[data-ui-move-target="page"] .ui-sort-handle',
                 ],
                 [
                     'label' => 'label.guided_step_book_media_move_done',
@@ -461,6 +462,69 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_composition_done',
                     'description' => 'description.guided_step_book_composition_done',
                     'narration' => 'narration.guided_step_book_composition_done',
+                ],
+            ],
+        ];
+    }
+
+    // The listening page plays the book's own files, no block involved: its pages, its recording and the timecodes turning the first along the second, all three on the "Page" tab (see ListenController)
+    private function bookListenProject(): array
+    {
+        return [
+            'slug' => 'book-listen',
+            'label' => 'label.guided_project_book_listen',
+            'description' => 'description.guided_project_book_listen',
+            'translation_domain' => 'book',
+            'order' => 6031,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_listen_open',
+                    'description' => 'description.guided_step_book_listen_open',
+                    'narration' => 'narration.guided_step_book_listen_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    // An existing book, the pages' marker being laid only once it has an id (see BookMediaMoveRowAttrBuilder::build())
+                    'label' => 'label.guided_step_book_listen_edit',
+                    'description' => 'description.guided_step_book_listen_edit',
+                    'narration' => 'narration.guided_step_book_listen_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    'label' => 'label.guided_step_book_listen_tab',
+                    'description' => 'description.guided_step_book_listen_tab',
+                    'narration' => 'narration.guided_step_book_listen_tab',
+                    'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
+                ],
+                [
+                    'label' => 'label.guided_step_book_listen_pages',
+                    'description' => 'description.guided_step_book_listen_pages',
+                    'narration' => 'narration.guided_step_book_listen_pages',
+                    'highlight' => '[data-ui-move-target="page"]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_listen_audios',
+                    'description' => 'description.guided_step_book_listen_audios',
+                    'narration' => 'narration.guided_step_book_listen_audios',
+                    'highlight' => '[data-book-audios]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_listen_cues',
+                    'description' => 'description.guided_step_book_listen_cues',
+                    'narration' => 'narration.guided_step_book_listen_cues',
+                    'highlight' => '[data-book-cues]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_listen_save',
+                    'narration' => 'narration.guided_step_book_listen_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    // The page answers only once a site names its first segment, "book-route-listen" being empty on a fresh install (see config/configs.json)
+                    'label' => 'label.guided_step_book_listen_done',
+                    'description' => 'description.guided_step_book_listen_done',
+                    'narration' => 'narration.guided_step_book_listen_done',
                 ],
             ],
         ];
@@ -541,6 +605,12 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'description' => 'description.guided_step_book_reader_save',
                     'narration' => 'narration.guided_step_book_reader_save',
                     'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    // The listening page does not read the block: it turns the pages on the timecodes file laid on the book itself (see bookListenProject())
+                    'label' => 'label.guided_step_book_reader_listen',
+                    'description' => 'description.guided_step_book_reader_listen',
+                    'narration' => 'narration.guided_step_book_reader_listen',
                 ],
                 [
                     'label' => 'label.guided_step_book_reader_done',
@@ -885,6 +955,13 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'description' => 'description.guided_step_book_version_publication_editions',
                     'narration' => 'narration.guided_step_book_version_publication_editions',
                     'highlight' => '[data-book-editions] .field-collection-add-button',
+                ],
+                [
+                    // The pages, the flipbook and the timecodes left with the twin too, showing the text as it came out (see BookVersionPublisher::moveMedias())
+                    'label' => 'label.guided_step_book_version_publication_pages',
+                    'description' => 'description.guided_step_book_version_publication_pages',
+                    'narration' => 'narration.guided_step_book_version_publication_pages',
+                    'highlight' => '[data-ui-move-target="page"]',
                 ],
                 [
                     'label' => 'label.guided_step_book_version_publication_save',

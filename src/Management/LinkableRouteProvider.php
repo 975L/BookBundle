@@ -53,6 +53,13 @@ class LinkableRouteProvider implements LinkableRouteProviderInterface, LinkableR
             ];
         }
 
+        if ($this->routePrefix->isEnabled('book-route-listen')) {
+            $routes['book_listen_index'] = [
+                'label' => 'label.listen_index',
+                'translation_domain' => 'book',
+            ];
+        }
+
         if ($this->routePrefix->isEnabled('book-route-series')) {
             $routes['serie_index'] = [
                 'label' => 'label.series',

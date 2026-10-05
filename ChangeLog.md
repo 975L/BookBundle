@@ -1,5 +1,31 @@
 # Changelog
 
+## v2.15.0
+
+Listening pages turning a book's pages along its recording
+
+- Media kind `extract` renamed `page`: `Book::getPages()`, `Book:Pages`, anchor `#pages` [BC-Break] see [UPGRADE.md](UPGRADE.md) (05/10/2026) **Needs db update**
+- Back-office "Extracts" field renamed "Pages", its help rewritten (05/10/2026)
+- New media kind `cues`: a WebVTT file telling when each page starts in the recording (05/10/2026)
+- New "Page timecodes" field in the book's "Listen" fieldset, `.vtt` only (05/10/2026)
+- `Book::getCues()` and the `cueFiles` collection (05/10/2026)
+- `Reader:Reader` takes `cuesFile`, read by `reader.js` in place of inline cues (05/10/2026)
+- A book's timecodes follow its pages to the previous version on a new version (05/10/2026)
+- New `ListenController`: `book_listen_index` and `book_listen`, behind `book-route-listen` (05/10/2026)
+- `book-route-listen` setting, empty by default (05/10/2026)
+- The listening index lists the books holding a recording in the language being read (05/10/2026)
+- A book is played as a reader when it carries timecodes, as its cover and the player otherwise (05/10/2026)
+- Listening index offered as a menu target when its prefix is set (05/10/2026)
+- Unused `label.extract`, `label.media_extract` and `label.extracts` keys removed (05/10/2026)
+- Listening pages keep to books holding an `audio/*` recording (05/10/2026)
+- `m4a` and `wav` files typed as audio (05/10/2026)
+- `BookLinkLocalizer` localizes the listening pages' links (05/10/2026)
+- A pre-2.15 archive imports its `extract` files as `page` (05/10/2026)
+- New `book-listen` guided project (order 6031) (05/10/2026)
+- `book-reader` guided project points the listening page to the timecodes file (05/10/2026)
+- `book-version-publication` guided project asks for the new pages (05/10/2026)
+- `data-book-audios` and `data-book-cues` markers on the recording and timecodes fields (05/10/2026)
+
 ## v2.14
 
 Language labels named in the page's language through Intl

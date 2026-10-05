@@ -27,7 +27,7 @@ class BookSectionsExtension
     private const array OWN_KEYS = [
         'hero',
         'resume',
-        'extracts',
+        'pages',
         'apercu',
         'crowdfunding',
         'shops',
@@ -59,8 +59,8 @@ class BookSectionsExtension
         $sections = array_merge(
             // The summary is no section: it is the sentence the book opens on, printed under the hero by the page itself (Book:Resume) - with no title and no anchor, it has nothing to do in the table of contents
             $this->sections([
-                // The pages a reader leafs through before buying (Book::getExtracts())
-                'extracts' => ['label.read', !$book->getExtracts()->isEmpty()],
+                // The pages the book shows (Book::getPages())
+                'pages' => ['label.read', !$book->getPages()->isEmpty()],
                 // Where the book is listened to: the recording itself as much as the platforms carrying it, the card holding both
                 'podcasts' => ['label.podcasts', [] !== self::audioMedias($book) || [] !== $this->customizationRegistry->getLinksOf($book, 'audio') || [] !== $this->customizationRegistry->getLinksOf($book, 'podcast')],
                 // The videos the book holds as files, and the platforms it is watched on - one card, the way the stores and the podcast apps share theirs. The "video" group had a name and a place in the vocabulary and was printed by nothing

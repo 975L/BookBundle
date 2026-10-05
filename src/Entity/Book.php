@@ -685,20 +685,44 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this->removeMedia($media);
     }
 
-    // The pages a reader leafs through before buying: they belong to the book and not to one of its editions, unlike an album's pages, which are those of the edition they came out in
-    public function getExtracts(): Collection
+    // When each page starts in the recording (BookMediaKind::Cues): one file per book, the recording being one per language and a translation a book of its own
+    public function getCues(): ?BookMedia
     {
-        return $this->mediasOfKind('extract');
+        return $this->mediasOfKind('cues')->first() ?: null;
     }
 
-    public function addExtract(BookMedia $media): static
+    // The same file as a collection, the shape the back office uploads it through (see BookCrudController)
+    public function getCueFiles(): Collection
     {
-        $media->setKind('extract');
+        return $this->mediasOfKind('cues');
+    }
+
+    public function addCueFile(BookMedia $media): static
+    {
+        $media->setKind('cues');
 
         return $this->addMedia($media);
     }
 
-    public function removeExtract(BookMedia $media): static
+    public function removeCueFile(BookMedia $media): static
+    {
+        return $this->removeMedia($media);
+    }
+
+    // The pages the book shows: a few to leaf through before buying, or all of them - those a recording reads, when the book has its timecodes (see getCues())
+    public function getPages(): Collection
+    {
+        return $this->mediasOfKind('page');
+    }
+
+    public function addPage(BookMedia $media): static
+    {
+        $media->setKind('page');
+
+        return $this->addMedia($media);
+    }
+
+    public function removePage(BookMedia $media): static
     {
         return $this->removeMedia($media);
     }

@@ -201,22 +201,22 @@ class BookSectionsExtensionTest extends TestCase
 
         $this->assertNull(BookSectionsExtension::cover($book));
 
-        $book->addExtract(new BookMedia()->setName('page-1.webp'));
+        $book->addPage(new BookMedia()->setName('page-1.webp'));
 
         $this->assertSame('page-1.webp', BookSectionsExtension::cover($book)?->getName());
     }
 
-    // The extracts are a collection of their own (Book::getExtracts()), uploaded on their own field: a recording does not enter it
-    public function testTheExtractsAreTheirOwnCollection(): void
+    // The pages are a collection of their own (Book::getPages()), uploaded on their own field: a recording does not enter it
+    public function testThePagesAreTheirOwnCollection(): void
     {
         $book = new Book();
         $book->addAudio(new BookMedia()->setName('histoire.mp3'));
 
-        $this->assertNotContains('extracts', $this->anchors($book));
+        $this->assertNotContains('pages', $this->anchors($book));
 
-        $book->addExtract(new BookMedia()->setName('extrait-1.webp'));
+        $book->addPage(new BookMedia()->setName('page-1.webp'));
 
-        $this->assertContains('extracts', $this->anchors($book));
+        $this->assertContains('pages', $this->anchors($book));
     }
 
     // The order of the page is the site's, a section it says nothing about coming after the ones it placed

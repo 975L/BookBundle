@@ -13,13 +13,15 @@ namespace c975L\BookBundle\Service;
 use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\UiBundle\Contract\InternalLinkLocalizerInterface;
 
-// Rewrites this catalog's own links into the language the page around them is being read in - the counterpart of SiteBundle's PageLinkLocalizer, for the eleven screens this bundle owns. Without it a visitor reading "/en/" is sent back into the writing language at the first click on a cover
+// Rewrites this catalog's own links into the language the page around them is being read in - the counterpart of SiteBundle's PageLinkLocalizer, for the thirteen screens this bundle owns. Without it a visitor reading "/en/" is sent back into the writing language at the first click on a cover
 class BookLinkLocalizer implements InternalLinkLocalizerInterface
 {
     // The routes this bundle answers both bare and localised, and whether a slug follows their first segment - their prefix read off BookPublicUrlResolver::ROUTE_PREFIXES at each call, an editor naming it
     private const array SLUGGED = [
         'book_index' => false,
         'book_display' => true,
+        'book_listen_index' => false,
+        'book_listen' => true,
         'book_category_index' => false,
         'book_category_display' => true,
         'contributor_index' => false,

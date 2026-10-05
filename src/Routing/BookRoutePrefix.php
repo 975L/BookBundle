@@ -31,6 +31,8 @@ class BookRoutePrefix
         'book-route-strip' => 'strip_prefix',
         'book-route-book-shortcut' => 'book_shortcut',
         'book-route-strip-shortcut' => 'strip_shortcut',
+        // The books that can be listened to, and each one played below it ("/ecouter/{slug}") - empty by default, the listening pages being a site's choice (see ListenController)
+        'book-route-listen' => 'listen_prefix',
     ];
 
     public function __construct(

@@ -43,6 +43,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - A new version of a book published in one click: the book keeps its address and its readers, a twin carries what came out so far
 - A book still to come tells its readers when it is out: an address left on its page, one e-mail sent the day it appears, and the row deleted with it
 - Books and planches handed to SocialBundle's scheduled publication, where the site installs it
+- Listening pages: the books holding a recording, each one played with its pages turning along the voice when it carries their timecodes (a WebVTT file)
 - Reader reviews on a book's page, behind UiBundle's `ui-enable-reviews` setting
 - The site's age warning stated on a book declaring an age — one sentence written once in the back office (CoreBundle's `site-age-warning`), printed on every such book and said in the book's own language where the site translated it
 - The four catalog indexes describable from the back office — title and shared sentence written in *Descriptions d'urls*, over the bundle's own labels
@@ -175,6 +176,8 @@ showcase — contributes the same file through its own stylesheet provider.
 | `strip_display` | `/strip/{slug}` | `book-route-strip` | Strip detail page |
 | `book_shortcut` | `/b{number}` | `book-route-book-shortcut` | Short link to a book, 301 |
 | `strip_shortcut` | `/s{number}` | `book-route-strip-shortcut` | Short link to a strip, 301 |
+| `book_listen_index` | *unset* | `book-route-listen` | The books holding a recording, in the language being read |
+| `book_listen` | *unset* | `book-route-listen` | A book played: its pages turning along the recording when it carries a `cues` file, its cover and the player otherwise |
 | `book_release_alert_new` | `/book/release-alert/{id}` | — | Where an address is left to be told a book is out — `noindex` |
 | `book_release_alert_unsubscribe` | `/book/release-alert/{token}/unsubscribe` | — | The link the acknowledgement e-mail carries, opening a page with a button — `noindex` |
 | `book_release_alert_unsubscribe_confirm` | `/book/release-alert/{token}/unsubscribe` | — | That button, in `POST` — what actually drops the subscription |
@@ -237,7 +240,7 @@ presentation, the title of a press cutting or a promotional visual. A slug, an I
 age range and a person's own name are not translated.
 
 Every public route has a localised twin — `book_display_localized` beside `book_display`, and so on for the
-eleven pages and the release alert — answering `/{_locale}/livre/{slug}` for each language the site declares
+thirteen pages and the release alert — answering `/{_locale}/livre/{slug}` for each language the site declares
 beside the one it is written in, whether the row has been translated yet or not: "/en" is the language the
 catalog is read in. The bare url stays the writing language's own, and a site declaring a single language
 serves nothing else. `book_path()`, `serie_path()`, `book_category_path()` and `contributor_path()` answer in
@@ -283,13 +286,13 @@ the hero and outside the grid, with no title and no anchor — a summary is not 
 A book's and a serie's sections are named once, by `book_sections(book)` and `serie_sections(serie)`
 (`Twig\BookSectionsExtension`), and the page reads that list twice: once by the hero, which offers the
 sections a reader comes for, once to decide what to render. A section is therefore never offered by a
-button without being on the page, nor rendered without an anchor pointing at it — `extracts`,
+button without being on the page, nor rendered without an anchor pointing at it — `pages`,
 `podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `informations` for a book,
 `characters`, `books` and `strips` for a serie. Each section wears UiBundle's `toc-target`, which leaves the room a resting
 summary bar would cover, so a jump doesn't land a title under it.
 
 No page of this bundle carries a summary of anchors: the hero's own row of buttons opens what a reader
-looks for — `extracts`, `podcasts`, `apercu`, `shops`, `presse` and `marketing`, in the order the page
+looks for — `pages`, `podcasts`, `apercu`, `shops`, `presse` and `marketing`, in the order the page
 lays them out and only those it actually holds — and the bar overflowed on a phone where that row wraps.
 Buy keeps the full color, every other button is stated quietly, and the labels come from the `book`
 translation domain, in the language being read — the book's own where none is (`book_ui_locale()`). The page therefore keeps its
@@ -315,7 +318,7 @@ Whoever the back-office lets in (`site-role-editor`, the role the three CRUD scr
 the raw table exports and the two actions of the trash stay at `site-role-admin`) hovers a
 pencil over each section of a display page: it opens that entity's EasyAdmin edit screen straight on the
 field the section is written in — the summary on `summary`, the videos on the `videos` collection, the
-extracts, the editions, the shops and the podcasts on the `editions` collection, and so on. It is
+the pages on the `pages` collection, the editions, the shops and the podcasts on the `editions` collection, and so on. It is
 UiBundle's own overlay (`assets/js/block-edit-overlay.js`, the button it floats over anything carrying
 `data-block-edit-url`) and its own `focusField` query param (`assets/js/field-focus.js`, which opens the
 right tab, scrolls to the field and focuses it) — nothing of it is written here beyond the map of
@@ -680,7 +683,7 @@ class BookCustomizationProvider implements BookCustomizationProviderInterface
 #### Laying out the page
 
 `getSections()` is what lets a site follow the bundle's page rather than draw its own. The keys are the
-sections themselves — `resume`, `apercu`, `extracts`, `edition` (which dresses every edition's section at
+sections themselves — `resume`, `apercu`, `pages`, `edition` (which dresses every edition's section at
 once), `shops`, `podcasts`, `presse`, `marketing`, `serie`, `informations` — and **the order of the array is
 the order of the page**, a key left out coming after the declared ones, where the bundle puts it. A site
 declaring nothing gets exactly the page it always had.
@@ -817,7 +820,21 @@ The seventh, `book_reader`, reads an illustrated album page by page along its re
 ```twig
 {# Outside a composed page - a story rendered from an entity, say - the component is called directly #}
 <twig:c975LBook:Reader:Reader media="{{ pages }}" audio="{{ recording }}" id="reader" cues="{{ [{page: 1, start: 0}, {page: 2, start: 14.5}] }}"/>
+{# Or the cues read from a WebVTT file - the book's "cues" media, uploaded on its "Page timecodes" field #}
+<twig:c975LBook:Reader:Reader media="{{ book.pages }}" audio="{{ recording }}" id="reader" cuesFile="{{ book.cues }}"/>
 ```
+
+The `cues` file is plain WebVTT, one cue per page, its identifier the page's number and its start time where that page begins — any tool can write it, a speech-to-text alignment included:
+
+```
+WEBVTT
+
+3
+00:00:10.500 --> 00:00:36.290
+Page 3
+```
+
+It is what the listening pages (`book-route-listen`, left empty by default) turn a book's pages by: a book carrying one is played as a reader, a book without one as its cover and the player — a few pages to leaf through before buying being no book to follow along.
 
 ### Structured data
 
@@ -958,7 +975,7 @@ of them sharing a photograph would read as a bug.
 
 ### Backup
 
-`BookBackupPathProvider` declares `public/medias/book` to ConfigBundle's backup, which mirrors it off-server: the covers, extracts, press clippings and marketing files are the only content of this bundle that neither a git clone nor a database dump brings back. Nothing to register.
+`BookBackupPathProvider` declares `public/medias/book` to ConfigBundle's backup, which mirrors it off-server: the covers, pages, press clippings and marketing files are the only content of this bundle that neither a git clone nor a database dump brings back. Nothing to register.
 
 ---
 

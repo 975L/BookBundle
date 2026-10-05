@@ -1,5 +1,35 @@
 [
     {
+        "date": "2026-10-05",
+        "description": [
+            {
+                "en": "A book's recording can now turn its pages by itself: upload the page timecodes file, and the listening page shows each page as the voice reaches it.",
+                "fr": "L'enregistrement d'un livre peut désormais tourner ses pages tout seul : déposez le fichier des timecodes des pages, et la page d'écoute affiche chaque page au moment où la voix l'atteint.",
+                "es": "La grabación de un libro puede ahora pasar sus páginas sola: suba el archivo de códigos de tiempo de las páginas, y la página de escucha muestra cada página en el momento en que la voz llega a ella."
+            },
+            {
+                "en": "A new listening page gathers every book that can be listened to, in the visitor's language.",
+                "fr": "Une nouvelle page d'écoute réunit tous les livres qui s'écoutent, dans la langue du visiteur.",
+                "es": "Una nueva página de escucha reúne todos los libros que se pueden escuchar, en el idioma del visitante."
+            },
+            {
+                "en": "The \"Extracts\" of a book are now called \"Pages\": a few to leaf through, or all of them.",
+                "fr": "Les « Extraits » d'un livre s'appellent désormais « Pages » : quelques-unes à feuilleter, ou toutes.",
+                "es": "Los «Extractos» de un libro se llaman ahora «Páginas»: algunas para hojear, o todas."
+            },
+            {
+                "en": "A new guided tour shows how to let a book be listened to: its pages, its recording and its timecodes, step by step.",
+                "fr": "Un nouveau parcours guidé montre comment faire écouter un livre : ses pages, son enregistrement et ses timecodes, pas à pas.",
+                "es": "Un nuevo recorrido guiado muestra cómo hacer escuchar un libro: sus páginas, su grabación y sus timecodes, paso a paso."
+            },
+            {
+                "en": "Recordings in m4a and wav are now played like mp3 and ogg ones.",
+                "fr": "Les enregistrements en m4a et wav sont désormais joués comme ceux en mp3 et ogg.",
+                "es": "Las grabaciones en m4a y wav se reproducen ahora como las de mp3 y ogg."
+            }
+        ]
+    },
+    {
         "date": "2026-09-29",
         "description": [
             {

@@ -112,12 +112,13 @@ later needs nothing anywhere else.
 
 ## Settings
 
-All sixteen live in `config/configs.json`, group **book**, and are read through ConfigBundle:
+All seventeen live in `config/configs.json`, group **book**, and are read through ConfigBundle:
 
 | Slug | Does |
 | --- | --- |
 | `book-route-books`, `book-route-book`, `book-route-series`, `book-route-contributors`, `book-route-contributor`, `book-route-strips`, `book-route-strip` | the url prefixes |
 | `book-route-book-shortcut`, `book-route-strip-shortcut` | the one-letter short links |
+| `book-route-listen` | the listening pages' prefix, empty by default — no listening page until a site names one |
 | `book-catalog-title` | the word the catalog page carries |
 | `book-gplay-affiliate` | the identifier added to a Google Play address |
 | `book-rating`, `book-confetti` | reader scores, confetti on a book's page |

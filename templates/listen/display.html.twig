@@ -1,0 +1,27 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set title = book.title %}
+{% set summarySocialNetwork = book.summary %}
+{% set ogImage = absolute_url(asset(book_cover(book) ?: "bundles/c975lbook/images/no-cover.webp")) %}
+{% set locale = book.language %}
+
+{# The book played: its pages turning along the recording when it carries their timecodes, its cover and the player alone otherwise - a few pages to leaf through before buying are no book to follow along (see Book::getCues()) #}
+{% block content %}
+    {% set audios = book_audio_medias(book) %}
+    {# Mp3 first when there is one: the one format every browser plays #}
+    {% set audio = audios|filter(media => media.mimeType == 'audio/mpeg')|first ?: audios|first %}
+    <div class="book-listen-page" lang="{{ book.language }}">
+        {% if book.cues and book.pages|length %}
+            <twig:c975LBook:Reader:Reader media="{{ book.pages }}" audio="{{ audio }}" cuesFile="{{ book.cues }}" id="listen-{{ book.id }}" title="{{ book.title }}"/>
+        {% else %}
+            {% set cover = book_cover(book) %}
+            <twig:c975LUi:Image:Image class="img-rounded box-shadow img-300" src="{{ asset(cover ?: 'bundles/c975lbook/images/no-cover.webp') }}" alt="{{ book.title }}" width="300" height="425"/>
+            <twig:c975LUi:Audio:Audio src="{{ vich_uploader_asset(audio) }}" type="{{ audio.mimeType }}" title="{{ book.title }}"/>
+        {% endif %}
+        {% set bookPath = book_path('book_display', {'slug': book.slug}) %}
+        {% if bookPath %}
+            <p class="text-center"><a href="{{ bookPath }}">{{ 'label.listen_book_page'|trans({}, 'book', book_ui_locale(book.language)) }}</a></p>
+        {% endif %}
+    </div>
+{% endblock %}

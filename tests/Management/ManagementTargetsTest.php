@@ -33,14 +33,14 @@ class ManagementTargetsTest extends ManagementTargetsTestCase
     {
         return [
             new MenuProvider($this->createStub(ConfigServiceInterface::class)),
-            new LinkableRouteProvider($this->createRoutePrefix(self::CATEGORY_PREFIX_ENABLED), $this->categoryRepository(), $this->contributorRepository(), $this->serieRepository(), $this->createStub(TranslatorInterface::class)),
+            new LinkableRouteProvider($this->createRoutePrefix(self::OPT_IN_PREFIXES_ENABLED), $this->categoryRepository(), $this->contributorRepository(), $this->serieRepository(), $this->createStub(TranslatorInterface::class)),
             // The recording generator, so the CRUD controllers each project opens on are captured on their way through
             new BookGuidedProjectProvider($this->adminUrlGenerator(), $this->createStub(ConfigServiceInterface::class)),
         ];
     }
 
-    // The categories are the one family a fresh install serves no page for (see config/configs.json): the entry is filled in here, so the route their entries name is checked like every other
-    private const array CATEGORY_PREFIX_ENABLED = ['book-route-categories' => 'categories'];
+    // The categories and the listening pages are the families a fresh install serves no page for (see config/configs.json): their entries are filled in here, so the routes they name are checked like every other
+    private const array OPT_IN_PREFIXES_ENABLED = ['book-route-categories' => 'categories', 'book-route-listen' => 'ecouter'];
 
     // One category, for the same reason as the serie below: an empty repository would leave its index as the only linkable target
     private function categoryRepository(): BookCategoryRepository

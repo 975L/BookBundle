@@ -32,7 +32,7 @@
         {# Which component prints which section: the page's own business. What the site decides is the order, the words and the look of them (see BookCustomizationProviderInterface::getSections()), which is what book_sections() already laid out above #}
         {% set components = {
             'apercu': 'Videos',
-            'extracts': 'Extracts',
+            'pages': 'Pages',
             'crowdfunding': 'Crowdfunding',
             'shops': 'Shops',
             'podcasts': 'Podcasts',
@@ -48,7 +48,7 @@
             {# First of the sections column: the summary is the sentence the book opens on, and it reads under the hero before any section #}
             <twig:c975LBook:Book:Resume book="{{ book }}" editUrl="{{ editUrls.resume|default('') }}"/>
             {# After the summary and outside any card: the flipbook shows the book, it is no section to be announced #}
-            <twig:c975LBook:Book:Flipbook book="{{ book }}" editUrl="{{ editUrls.extracts|default('') }}"/>
+            <twig:c975LBook:Book:Flipbook book="{{ book }}" editUrl="{{ editUrls.pages|default('') }}"/>
             {# The sections have a grid of their own rather than the column having it: the player below rests against the bottom of the screen, which position: sticky only does for a child of a box taller than itself - a grid item's own area is exactly its size, and the player would stop sticking #}
             <div class="book-page__grid">
             {% for section in sections %}

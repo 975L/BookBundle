@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Management\BookGuidedProjectProvider;
+use c975L\BookBundle\Service\BookMediaMoveRowAttrBuilder;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
@@ -55,10 +56,10 @@ class BookGuidedProjectProviderTest extends TestCase
         $projects = $this->projects();
 
         $this->assertSame(
-            ['book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-creation', 'book-media-move', 'book-composition', 'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash', 'book-export'],
+            ['book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-creation', 'book-media-move', 'book-composition', 'book-listen', 'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash', 'book-export'],
             array_column($projects, 'slug')
         );
-        $this->assertSame([6005, 6010, 6015, 6020, 6025, 6030, 6033, 6034, 6035, 6037, 6040, 6045, 6050, 6055, 6060, 6070], array_column($projects, 'order'));
+        $this->assertSame([6005, 6010, 6015, 6020, 6025, 6030, 6031, 6033, 6034, 6035, 6037, 6040, 6045, 6050, 6055, 6060, 6070], array_column($projects, 'order'));
     }
 
     public function testEverySlugIsPrefixedWithTheBundleName(): void
@@ -81,7 +82,7 @@ class BookGuidedProjectProviderTest extends TestCase
     {
         $expected = array_fill_keys([
             'book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-creation', 'book-media-move', 'book-composition',
-            'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash',
+            'book-listen', 'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash',
         ], 'ROLE_EDITOR') + ['book-export' => 'ROLE_ADMIN'];
 
         $roles = array_column($this->projects(), 'role', 'slug');
@@ -122,7 +123,7 @@ class BookGuidedProjectProviderTest extends TestCase
         $this->createProvider($controllers)->getGuidedProjects();
 
         $this->assertSame(
-            ['ContributorCrudController', 'SerieCrudController', 'BookCategoryCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'SerieCrudController', 'CharacterCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController'],
+            ['ContributorCrudController', 'SerieCrudController', 'BookCategoryCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'SerieCrudController', 'CharacterCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController'],
             array_map(static fn (string $fqcn): string => basename(str_replace('\\', '/', $fqcn)), $controllers)
         );
     }
@@ -140,7 +141,7 @@ class BookGuidedProjectProviderTest extends TestCase
             }
         }
 
-        $this->assertCount(12, $saveSteps, 'The parcours saving nothing are those whose gestures are recorded on the spot: the trash, the sorting, the file move and the export');
+        $this->assertCount(13, $saveSteps, 'The parcours saving nothing are those whose gestures are recorded on the spot: the trash, the sorting, the file move and the export');
 
         foreach ($saveSteps as $step) {
             $this->assertSame('.action-saveAndReturn', $step['highlight']);
@@ -241,17 +242,35 @@ class BookGuidedProjectProviderTest extends TestCase
         }
     }
 
-    // A label or description with no translation reads as its own key in the panel, in whichever locale it is missing from
+    // The file move marker is matched on its value too: a target renamed in the builder would leave the name declared and the step highlighting nothing
+    public function testEveryFileMoveTargetHighlightedIsStillLaid(): void
+    {
+        $targets = [BookMediaMoveRowAttrBuilder::TARGET_PAGE, BookMediaMoveRowAttrBuilder::TARGET_FLIPBOOK];
+
+        foreach ($this->highlights() as $highlight) {
+            if (preg_match_all('/\[data-ui-move-target="([^"]+)"\]/', $highlight, $matches)) {
+                foreach ($matches[1] as $target) {
+                    $this->assertContains($target, $targets, sprintf('"%s" names a move target the builder no longer lays', $highlight));
+                }
+            }
+        }
+    }
+
+    // A label, description or narration with no translation reads as its own key in the panel, in whichever locale it is missing from
     public function testEveryLabelAndDescriptionIsTranslatedInEveryLocale(): void
     {
         foreach (['en', 'fr', 'es'] as $locale) {
             $translated = $this->translatedKeys($locale);
+            $narrations = $this->translatedKeys($locale, 'book_narration');
 
             foreach ($this->projects() as $project) {
                 foreach ([$project, ...$project['steps']] as $item) {
                     $this->assertContains($item['label'], $translated, sprintf('"%s" is missing from the %s catalogue', $item['label'], $locale));
                     if (isset($item['description'])) {
                         $this->assertContains($item['description'], $translated, sprintf('"%s" is missing from the %s catalogue', $item['description'], $locale));
+                    }
+                    if (isset($item['narration'])) {
+                        $this->assertContains($item['narration'], $narrations, sprintf('"%s" is missing from the %s narration catalogue', $item['narration'], $locale));
                     }
                 }
             }
@@ -294,10 +313,10 @@ class BookGuidedProjectProviderTest extends TestCase
     }
 
     /** @return list<string> */
-    private function translatedKeys(string $locale): array
+    private function translatedKeys(string $locale, string $domain = 'book'): array
     {
         $xliff = new \DOMDocument();
-        $xliff->load(\dirname(__DIR__, 2) . '/translations/book.' . $locale . '.xlf');
+        $xliff->load(\dirname(__DIR__, 2) . '/translations/' . $domain . '.' . $locale . '.xlf');
 
         $keys = [];
         foreach ($xliff->getElementsByTagName('source') as $source) {

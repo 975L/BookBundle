@@ -46,6 +46,7 @@ abstract class Media implements \Stringable
         'gif' => 'image/gif',
         'jpeg' => 'image/jpeg',
         'jpg' => 'image/jpeg',
+        'm4a' => 'audio/mp4',
         'mp3' => 'audio/mpeg',
         'mp4' => 'video/mp4',
         // A recording can also come in ogg: without it the "Listen" card did not see the file, its type falling back on "application/octet-stream"
@@ -54,6 +55,9 @@ abstract class Media implements \Stringable
         'pdf' => 'application/pdf',
         'png' => 'image/png',
         'svg' => 'image/svg+xml',
+        // The pages' timecodes (BookMediaKind::Cues), read by the Reader
+        'vtt' => 'text/vtt',
+        'wav' => 'audio/wav',
         'webm' => 'video/webm',
         'webp' => 'image/webp',
     ];

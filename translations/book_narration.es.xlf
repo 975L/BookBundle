@@ -274,6 +274,38 @@
                 <source>narration.guided_step_book_hidden_switch</source>
                 <target>Cambie la fila a «Oculto»: un clic retira el libro del sitio, un segundo lo devuelve, sin nada más que guardar.</target>
             </trans-unit>
+            <trans-unit id="iUigQGu">
+                <source>narration.guided_step_book_listen_audios</source>
+                <target>Suba la grabación: la voz que lee el libro, en mp3, ogg, m4a o wav.</target>
+            </trans-unit>
+            <trans-unit id="_rzRkmm">
+                <source>narration.guided_step_book_listen_cues</source>
+                <target>Suba los timecodes, un archivo WebVTT que da el segundo en que empieza cada página. Con él, las páginas pasan al ritmo de la voz.</target>
+            </trans-unit>
+            <trans-unit id="4cz3uxf">
+                <source>narration.guided_step_book_listen_done</source>
+                <target>El libro se puede escuchar. La página de escucha solo responde si el sitio le ha dado una dirección: el «Prefijo URL de los libros para escuchar», en la configuración.</target>
+            </trans-unit>
+            <trans-unit id="vhlfKsq">
+                <source>narration.guided_step_book_listen_edit</source>
+                <target>Modifique un libro ya guardado, cuyas páginas y grabación tiene a mano.</target>
+            </trans-unit>
+            <trans-unit id="OEU9IyK">
+                <source>narration.guided_step_book_listen_open</source>
+                <target>Abra el catálogo de libros: desde aquí se abre el que quiere hacer escuchar.</target>
+            </trans-unit>
+            <trans-unit id="546nyFC">
+                <source>narration.guided_step_book_listen_pages</source>
+                <target>Suba las páginas, una imagen por página, en orden de lectura: son las que pasan durante la escucha.</target>
+            </trans-unit>
+            <trans-unit id="RKDjq85">
+                <source>narration.guided_step_book_listen_save</source>
+                <target>Guarde: los archivos pasan a su ubicación definitiva.</target>
+            </trans-unit>
+            <trans-unit id="Qbz1kai">
+                <source>narration.guided_step_book_listen_tab</source>
+                <target>Abra la pestaña «Página», la que lleva los archivos del libro.</target>
+            </trans-unit>
             <trans-unit id="y85M99i">
                 <source>narration.guided_step_book_media_move_done</source>
                 <target>El archivo ha cambiado de lista, pero permanece en su propio libro: una lista que pertenece a otro libro no es un destino, diga lo que diga el arrastre.</target>
@@ -281,10 +313,6 @@
             <trans-unit id="bJLL5Pj">
                 <source>narration.guided_step_book_media_move_edit</source>
                 <target>Modifique un libro existente. El gesto solo se ofrece en un libro ya guardado: un libro en creación aún no lleva ningún archivo que mover.</target>
-            </trans-unit>
-            <trans-unit id="9zqH322">
-                <source>narration.guided_step_book_media_move_extracts</source>
-                <target>Localice los extractos: es la lista que un archivo deja o a la que llega. El hojeo justo encima acepta los mismos archivos, lo que hace posible el intercambio.</target>
             </trans-unit>
             <trans-unit id="UbQ4E5a">
                 <source>narration.guided_step_book_media_move_handle</source>
@@ -294,9 +322,13 @@
                 <source>narration.guided_step_book_media_move_open</source>
                 <target>El panel le lleva al catálogo, donde se elige el libro que lleva el archivo.</target>
             </trans-unit>
+            <trans-unit id="ES3GqZL">
+                <source>narration.guided_step_book_media_move_pages</source>
+                <target>Localice las páginas: es la lista que un archivo deja o a la que llega. El hojeo justo encima acepta los mismos archivos, lo que hace posible el intercambio.</target>
+            </trans-unit>
             <trans-unit id="dzJebRH">
                 <source>narration.guided_step_book_media_move_tab</source>
-                <target>Abra la pestaña «Página», la que lleva los archivos del libro: el hojeo, los extractos, los audios y los vídeos.</target>
+                <target>Abra la pestaña «Página», la que lleva los archivos del libro: el hojeo, las páginas, los audios y los vídeos.</target>
             </trans-unit>
             <trans-unit id="rSlOmZ3">
                 <source>narration.guided_step_book_reader_add</source>
@@ -325,6 +357,10 @@
             <trans-unit id="SYyThhr">
                 <source>narration.guided_step_book_reader_kind</source>
                 <target>Elija la casilla llamada «Lector»: su silueta muestra una página y una barra de reproducción.</target>
+            </trans-unit>
+            <trans-unit id="pZ8r0.j">
+                <source>narration.guided_step_book_reader_listen</source>
+                <target>¿Y la página de escucha? No lee este bloque: pasa las páginas según el archivo de timecodes subido al libro, pestaña «Página».</target>
             </trans-unit>
             <trans-unit id="ikN9Z5Y">
                 <source>narration.guided_step_book_reader_medias</source>
@@ -493,6 +529,10 @@
             <trans-unit id="Zxix3EA">
                 <source>narration.guided_step_book_version_publication_page_tab</source>
                 <target>Abra la segunda pestaña del formulario, la de la página, donde se declaran los formatos.</target>
+            </trans-unit>
+            <trans-unit id="FsAFUhc">
+                <source>narration.guided_step_book_version_publication_pages</source>
+                <target>Suba las páginas nuevas: las páginas, el hojeado y los timecodes se fueron con el gemelo, mostraban el texto anterior.</target>
             </trans-unit>
             <trans-unit id="Fo9ZTux">
                 <source>narration.guided_step_book_version_publication_previous</source>

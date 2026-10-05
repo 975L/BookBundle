@@ -25,6 +25,8 @@ class BookPublicUrlResolver
     public const array ROUTE_PREFIXES = [
         'book_index' => 'book-route-books',
         'book_display' => 'book-route-book',
+        'book_listen_index' => 'book-route-listen',
+        'book_listen' => 'book-route-listen',
         'book_category_index' => 'book-route-categories',
         'book_category_display' => 'book-route-categories',
         'contributor_index' => 'book-route-contributors',

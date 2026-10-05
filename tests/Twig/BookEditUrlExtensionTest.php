@@ -40,7 +40,7 @@ class BookEditUrlExtensionTest extends TestCase
             'hero' => '/admin/7/title',
             'resume' => '/admin/7/summary',
             'apercu' => '/admin/7/videos',
-            'extracts' => '/admin/7/editions',
+            'pages' => '/admin/7/pages',
             'editions' => '/admin/7/editions',
             'shops' => '/admin/7/buyLinks',
             'podcasts' => '/admin/7/listenLinks',
@@ -136,7 +136,7 @@ class BookEditUrlExtensionTest extends TestCase
         ;
         $book->addVideo(new BookVideo());
         $book->addMedia(new BookMedia()->setName('couverture.webp'));
-        $book->addExtract(new BookMedia()->setName('page-1.webp'));
+        $book->addPage(new BookMedia()->setName('page-1.webp'));
         $book->addEdition(new BookEdition()->setKind('digital')->setIsbn('9791092030143'));
         $book->addLink(new BookLink()->setKind('epub_kobo')->setUrl('https://example.com/kobo'));
         $book->addLink(new BookLink()->setKind('podcast_spotify')->setUrl('https://example.com/spotify'));

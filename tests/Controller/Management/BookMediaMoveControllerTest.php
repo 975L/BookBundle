@@ -43,22 +43,22 @@ class BookMediaMoveControllerTest extends TestCase
         $this->setId($this->book, self::BOOK_ID);
     }
 
-    // A file dragged onto the extracts becomes an extract of the book, whatever it was named before
-    public function testAFileDraggedOntoTheExtractsBecomesOne(): void
+    // A file dragged onto the pages becomes a page of the book, whatever it was named before
+    public function testAFileDraggedOntoThePagesBecomesOne(): void
     {
         $media = $this->media(kind: 'flipbook');
 
-        $response = $this->move($media, BookMediaMoveRowAttrBuilder::TARGET_EXTRACT);
+        $response = $this->move($media, BookMediaMoveRowAttrBuilder::TARGET_PAGE);
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('{"moved":true}', $response->getContent());
-        $this->assertSame(BookMediaMoveRowAttrBuilder::TARGET_EXTRACT, $media->getKind());
+        $this->assertSame(BookMediaMoveRowAttrBuilder::TARGET_PAGE, $media->getKind());
     }
 
     // The flipbook is what the page plays under the summary: a file landing there takes its name
     public function testAFileDraggedOntoTheFlipbookBecomesTheFlipbook(): void
     {
-        $media = $this->media(kind: 'extract');
+        $media = $this->media(kind: 'page');
 
         $this->move($media, BookMediaMoveRowAttrBuilder::TARGET_FLIPBOOK);
 
@@ -70,7 +70,7 @@ class BookMediaMoveControllerTest extends TestCase
     {
         $media = $this->media(kind: 'flipbook');
 
-        $response = $this->move($media, BookMediaMoveRowAttrBuilder::TARGET_EXTRACT, csrfValid: false);
+        $response = $this->move($media, BookMediaMoveRowAttrBuilder::TARGET_PAGE, csrfValid: false);
 
         $this->assertSame(419, $response->getStatusCode());
         $this->assertSame('{"error":"invalid_csrf"}', $response->getContent());
@@ -82,13 +82,13 @@ class BookMediaMoveControllerTest extends TestCase
     {
         $this->expectException(AccessDeniedException::class);
 
-        $this->move($this->media(), BookMediaMoveRowAttrBuilder::TARGET_EXTRACT, granted: false);
+        $this->move($this->media(), BookMediaMoveRowAttrBuilder::TARGET_PAGE, granted: false);
     }
 
     // The id posted is whatever the page held: a row that is gone is no reason to fail on a null
     public function testAnUnknownFileAnswersNotFound(): void
     {
-        $response = $this->move(null, BookMediaMoveRowAttrBuilder::TARGET_EXTRACT);
+        $response = $this->move(null, BookMediaMoveRowAttrBuilder::TARGET_PAGE);
 
         $this->assertSame(404, $response->getStatusCode());
         $this->assertSame('{"error":"unknown_media"}', $response->getContent());
@@ -99,7 +99,7 @@ class BookMediaMoveControllerTest extends TestCase
     {
         $media = $this->media(kind: 'page');
 
-        $response = $this->move($media, BookMediaMoveRowAttrBuilder::TARGET_EXTRACT, ownerId: self::BOOK_ID + 1);
+        $response = $this->move($media, BookMediaMoveRowAttrBuilder::TARGET_PAGE, ownerId: self::BOOK_ID + 1);
 
         $this->assertSame(403, $response->getStatusCode());
         $this->assertSame('{"error":"media_not_owned"}', $response->getContent());
@@ -109,13 +109,13 @@ class BookMediaMoveControllerTest extends TestCase
     // An edition is no target any more: it carries only what the book comes out under, its files belonging to the book (see BookEditionType)
     public function testAFormatIsNoTargetAnyMore(): void
     {
-        $media = $this->media(kind: 'extract');
+        $media = $this->media(kind: 'page');
 
         $response = $this->move($media, 'edition:9');
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('{"error":"unknown_target"}', $response->getContent());
-        $this->assertSame('extract', $media->getKind());
+        $this->assertSame('page', $media->getKind());
     }
 
     // A target this version doesn't know is turned down rather than acted upon

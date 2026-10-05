@@ -274,6 +274,38 @@
                 <source>narration.guided_step_book_hidden_switch</source>
                 <target>Basculez la ligne sur « Masqué » : un clic retire le livre du site, un second l'y remet, sans rien d'autre à enregistrer.</target>
             </trans-unit>
+            <trans-unit id="iUigQGu">
+                <source>narration.guided_step_book_listen_audios</source>
+                <target>Déposez l'enregistrement : la voix qui lit le livre, en mp3, ogg, m4a ou wav.</target>
+            </trans-unit>
+            <trans-unit id="_rzRkmm">
+                <source>narration.guided_step_book_listen_cues</source>
+                <target>Déposez les timecodes, un fichier WebVTT donnant la seconde où chaque page commence. Avec lui, les pages défilent au rythme de la voix.</target>
+            </trans-unit>
+            <trans-unit id="4cz3uxf">
+                <source>narration.guided_step_book_listen_done</source>
+                <target>Le livre s'écoute. La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration.</target>
+            </trans-unit>
+            <trans-unit id="vhlfKsq">
+                <source>narration.guided_step_book_listen_edit</source>
+                <target>Modifiez un livre déjà enregistré, dont vous avez les pages et l'enregistrement sous la main.</target>
+            </trans-unit>
+            <trans-unit id="OEU9IyK">
+                <source>narration.guided_step_book_listen_open</source>
+                <target>Ouvrez le catalogue des livres : c'est d'ici que s'ouvre celui que vous voulez faire écouter.</target>
+            </trans-unit>
+            <trans-unit id="546nyFC">
+                <source>narration.guided_step_book_listen_pages</source>
+                <target>Déposez les pages, une image par page, dans l'ordre de lecture : ce sont elles qui défilent pendant l'écoute.</target>
+            </trans-unit>
+            <trans-unit id="RKDjq85">
+                <source>narration.guided_step_book_listen_save</source>
+                <target>Enregistrez : les fichiers rejoignent leur place définitive.</target>
+            </trans-unit>
+            <trans-unit id="Qbz1kai">
+                <source>narration.guided_step_book_listen_tab</source>
+                <target>Ouvrez l'onglet « Page », celui qui porte les fichiers du livre.</target>
+            </trans-unit>
             <trans-unit id="y85M99i">
                 <source>narration.guided_step_book_media_move_done</source>
                 <target>Le fichier a changé de liste, mais il reste dans son propre livre : une liste appartenant à un autre livre n'est pas une cible, quoi que dise le glissement.</target>
@@ -281,10 +313,6 @@
             <trans-unit id="bJLL5Pj">
                 <source>narration.guided_step_book_media_move_edit</source>
                 <target>Modifiez un livre existant. Le geste n'est proposé que sur un livre déjà enregistré : un livre en cours de création ne porte encore aucun fichier à déplacer.</target>
-            </trans-unit>
-            <trans-unit id="9zqH322">
-                <source>narration.guided_step_book_media_move_extracts</source>
-                <target>Repérez les extraits : c'est la liste qu'un fichier quitte ou rejoint. Le feuilletage juste au-dessus accepte les mêmes fichiers, ce qui rend l'échange possible.</target>
             </trans-unit>
             <trans-unit id="UbQ4E5a">
                 <source>narration.guided_step_book_media_move_handle</source>
@@ -294,9 +322,13 @@
                 <source>narration.guided_step_book_media_move_open</source>
                 <target>Le panneau vous emmène sur le catalogue, où se choisit le livre qui porte le fichier.</target>
             </trans-unit>
+            <trans-unit id="ES3GqZL">
+                <source>narration.guided_step_book_media_move_pages</source>
+                <target>Repérez les pages : c'est la liste qu'un fichier quitte ou rejoint. Le feuilletage juste au-dessus accepte les mêmes fichiers, ce qui rend l'échange possible.</target>
+            </trans-unit>
             <trans-unit id="dzJebRH">
                 <source>narration.guided_step_book_media_move_tab</source>
-                <target>Ouvrez l'onglet « Page », celui qui porte les fichiers du livre : le feuilletage, les extraits, les audios et les vidéos.</target>
+                <target>Ouvrez l'onglet « Page », celui qui porte les fichiers du livre : le feuilletage, les pages, les audios et les vidéos.</target>
             </trans-unit>
             <trans-unit id="rSlOmZ3">
                 <source>narration.guided_step_book_reader_add</source>
@@ -325,6 +357,10 @@
             <trans-unit id="SYyThhr">
                 <source>narration.guided_step_book_reader_kind</source>
                 <target>Choisissez la tuile nommée « Lecteur » : sa silhouette montre une page et une barre de lecture.</target>
+            </trans-unit>
+            <trans-unit id="pZ8r0.j">
+                <source>narration.guided_step_book_reader_listen</source>
+                <target>Et la page d'écoute ? Elle ne lit pas ce block : elle fait défiler les pages sur le fichier de timecodes déposé sur le livre, onglet « Page ».</target>
             </trans-unit>
             <trans-unit id="ikN9Z5Y">
                 <source>narration.guided_step_book_reader_medias</source>
@@ -493,6 +529,10 @@
             <trans-unit id="Zxix3EA">
                 <source>narration.guided_step_book_version_publication_page_tab</source>
                 <target>Ouvrez le deuxième onglet du formulaire, celui de la page, où se déclarent les formats.</target>
+            </trans-unit>
+            <trans-unit id="FsAFUhc">
+                <source>narration.guided_step_book_version_publication_pages</source>
+                <target>Déposez les pages neuves : les pages, le feuilletage et les timecodes sont partis avec le jumeau, ils montraient le texte d'avant.</target>
             </trans-unit>
             <trans-unit id="Fo9ZTux">
                 <source>narration.guided_step_book_version_publication_previous</source>

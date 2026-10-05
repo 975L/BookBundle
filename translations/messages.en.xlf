@@ -18,10 +18,6 @@
                 <source>label.books</source>
                 <target>Books</target>
             </trans-unit>
-            <trans-unit id="L86bICc">
-                <source>label.extracts</source>
-                <target>Extracts</target>
-            </trans-unit>
             <trans-unit id="gv8hrJY">
                 <source>label.format</source>
                 <target>Format</target>

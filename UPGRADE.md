@@ -2,6 +2,22 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.15
+
+**The media kind `extract` is renamed `page`.** A book's pages are one kind whatever a site shows of them: a few
+to leaf through before buying, or the whole book when a recording reads it. Run once on each site, at the very
+moment it updates, or the "Read" section of every book stays empty until then:
+
+```sql
+UPDATE book_media SET kind = 'page' WHERE kind = 'extract' AND owner_type = 'book';
+```
+
+`Book::getExtracts()`, `addExtract()` and `removeExtract()` become `getPages()`, `addPage()` and `removePage()`;
+the `Book:Extracts` component becomes `Book:Pages`, an override in `templates/bundles/c975LBookBundle/` moves
+with it; the section key and the anchor `extracts` become `pages`, in a `getSections()` layout too;
+`BookMediaMoveRowAttrBuilder::TARGET_EXTRACT` becomes `TARGET_PAGE`. A planche's `page` kind is untouched.
+A book archive exported before this version is translated on import, its `extract` files landing as `page`.
+
 ## v2.11
 
 **CoreBundle 1.28 is required.** The localised routes, the language screens and the translations a copy carries

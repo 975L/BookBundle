@@ -102,7 +102,7 @@ class BookCustomizationRegistryTest extends TestCase
         // The ones the bundle lays itself on a dedicated field
         $this->assertArrayHasKey('cover', $kinds);
         $this->assertArrayHasKey('flipbook', $kinds);
-        $this->assertArrayHasKey('extract', $kinds);
+        $this->assertArrayHasKey('page', $kinds);
     }
 
     public function testASiteNamingItsOwnMediaKindsReplacesTheDefaults(): void

@@ -86,6 +86,10 @@
                 <source>description.guided_project_book_hidden</source>
                 <target>A book set aside stays in the catalog with its files, but no public read shows it any more.</target>
             </trans-unit>
+            <trans-unit id="eCev1E_">
+                <source>description.guided_project_book_listen</source>
+                <target>The listening page plays the book's recording and turns its pages along with it, no block to compose.</target>
+            </trans-unit>
             <trans-unit id="FJkrFzq">
                 <source>description.guided_project_book_media_move</source>
                 <target>A file dropped in the wrong list is dragged into the right one, keeping the file itself - no need to delete it and upload it again.</target>
@@ -346,6 +350,34 @@
                 <source>description.guided_step_book_hidden_switch</source>
                 <target>One click takes the book off the site, a second puts it back, with nothing else to save.</target>
             </trans-unit>
+            <trans-unit id="uM1RqSY">
+                <source>description.guided_step_book_listen_audios</source>
+                <target>The voice reading the book, as mp3, ogg, m4a or wav.</target>
+            </trans-unit>
+            <trans-unit id="Nq1TAE5">
+                <source>description.guided_step_book_listen_cues</source>
+                <target>A WebVTT file: the second each page starts at in the recording. With it, the pages turn to the pace of the voice.</target>
+            </trans-unit>
+            <trans-unit id="u7M2BLI">
+                <source>description.guided_step_book_listen_done</source>
+                <target>The listening page answers only once the site has given it an address: the "URL prefix of the books to listen to", in the configuration.</target>
+            </trans-unit>
+            <trans-unit id="GBg0WvF">
+                <source>description.guided_step_book_listen_edit</source>
+                <target>A book already saved, whose pages and recording you have at hand.</target>
+            </trans-unit>
+            <trans-unit id="z1BcUAF">
+                <source>description.guided_step_book_listen_open</source>
+                <target>The list of books, where the one to be listened to opens from.</target>
+            </trans-unit>
+            <trans-unit id="IpcXafE">
+                <source>description.guided_step_book_listen_pages</source>
+                <target>One image per page, in reading order: they are what turns while listening.</target>
+            </trans-unit>
+            <trans-unit id="GpzK0KT">
+                <source>description.guided_step_book_listen_tab</source>
+                <target>The second tab, holding the files of the book.</target>
+            </trans-unit>
             <trans-unit id="xJJ7KLd">
                 <source>description.guided_step_book_media_move_done</source>
                 <target>It stays in its own book: a list belonging to another book is no target, whatever the drag says.</target>
@@ -353,10 +385,6 @@
             <trans-unit id="gn8tH8A">
                 <source>description.guided_step_book_media_move_edit</source>
                 <target>The gesture is offered on a book already saved only: a book being created holds no file to move yet.</target>
-            </trans-unit>
-            <trans-unit id="4nuUM0R">
-                <source>description.guided_step_book_media_move_extracts</source>
-                <target>The list a file leaves or lands in - the leafed-through pages just above accept the same files, which is what makes the swap possible.</target>
             </trans-unit>
             <trans-unit id="MDyaxOd">
                 <source>description.guided_step_book_media_move_handle</source>
@@ -366,9 +394,13 @@
                 <source>description.guided_step_book_media_move_open</source>
                 <target>The catalog, where the book holding the file is picked.</target>
             </trans-unit>
+            <trans-unit id="GTYiCCL">
+                <source>description.guided_step_book_media_move_pages</source>
+                <target>The list a file leaves or lands in - the leafed-through pages just above accept the same files, which is what makes the swap possible.</target>
+            </trans-unit>
             <trans-unit id="WK1Sl_R">
                 <source>description.guided_step_book_media_move_tab</source>
-                <target>The tab holding the files of the book: the leafed-through pages, the extracts, the audios and the videos.</target>
+                <target>The tab holding the files of the book: the flipbook, the pages, the audios and the videos.</target>
             </trans-unit>
             <trans-unit id="rjCPwF3">
                 <source>description.guided_step_book_reader_add</source>
@@ -397,6 +429,10 @@
             <trans-unit id="1LAfhmB">
                 <source>description.guided_step_book_reader_kind</source>
                 <target>In the palette, the tile named "Reader": its silhouette shows a page and a play bar.</target>
+            </trans-unit>
+            <trans-unit id="jHORAYN">
+                <source>description.guided_step_book_reader_listen</source>
+                <target>It does not read this block: it turns the pages on the timecodes file uploaded on the book, "Page" tab.</target>
             </trans-unit>
             <trans-unit id="98v3aXG">
                 <source>description.guided_step_book_reader_medias</source>
@@ -553,6 +589,10 @@
             <trans-unit id="sz4ha5a">
                 <source>description.guided_step_book_version_publication_page_tab</source>
                 <target>The second tab of the form, where the formats are declared.</target>
+            </trans-unit>
+            <trans-unit id="_.gaGuJ">
+                <source>description.guided_step_book_version_publication_pages</source>
+                <target>The pages, the flipbook and the timecodes left with the twin: they showed the text as it was.</target>
             </trans-unit>
             <trans-unit id="BgcIQsS">
                 <source>description.guided_step_book_version_publication_previous</source>
@@ -1218,6 +1258,10 @@
                 <source>label.crowdfunding_support</source>
                 <target>Support the book</target>
             </trans-unit>
+            <trans-unit id="QDj0v.K">
+                <source>label.cues-help</source>
+                <target>A WebVTT file (.vtt): when each page starts in the recording, each cue's identifier being the page's number. With it, the listening page turns the pages along the voice.</target>
+            </trans-unit>
             <trans-unit id="aIZFxNx">
                 <source>label.data</source>
                 <target>Site-specific information</target>
@@ -1289,14 +1333,6 @@
             <trans-unit id="u_a7b8K">
                 <source>label.export_sql</source>
                 <target>SQL</target>
-            </trans-unit>
-            <trans-unit id="4FbGSaQ">
-                <source>label.extract</source>
-                <target>Extracts</target>
-            </trans-unit>
-            <trans-unit id="pUGQ84e">
-                <source>label.extract-help</source>
-                <target>The pages a reader browses before buying. The pages of an album belong to the edition they were published in, and are added on that edition.</target>
             </trans-unit>
             <trans-unit id="LHpZe.c">
                 <source>label.fieldset_this_language</source>
@@ -1393,6 +1429,10 @@
             <trans-unit id="oyXCY_1">
                 <source>label.guided_project_book_hidden</source>
                 <target>Take a book off the site</target>
+            </trans-unit>
+            <trans-unit id="lwr0zp0">
+                <source>label.guided_project_book_listen</source>
+                <target>Let a book be listened to</target>
             </trans-unit>
             <trans-unit id="TJaUAmd">
                 <source>label.guided_project_book_media_move</source>
@@ -1682,6 +1722,38 @@
                 <source>label.guided_step_book_hidden_switch</source>
                 <target>Switch the row to Hidden</target>
             </trans-unit>
+            <trans-unit id="k5fy8jR">
+                <source>label.guided_step_book_listen_audios</source>
+                <target>Upload the recording</target>
+            </trans-unit>
+            <trans-unit id="gqnjuSc">
+                <source>label.guided_step_book_listen_cues</source>
+                <target>Upload the timecodes</target>
+            </trans-unit>
+            <trans-unit id="uXd2u7h">
+                <source>label.guided_step_book_listen_done</source>
+                <target>The book can be listened to</target>
+            </trans-unit>
+            <trans-unit id="FWaDppm">
+                <source>label.guided_step_book_listen_edit</source>
+                <target>Edit an existing book</target>
+            </trans-unit>
+            <trans-unit id="V2owBho">
+                <source>label.guided_step_book_listen_open</source>
+                <target>Open the catalog</target>
+            </trans-unit>
+            <trans-unit id="ezskkFE">
+                <source>label.guided_step_book_listen_pages</source>
+                <target>Upload the pages</target>
+            </trans-unit>
+            <trans-unit id="IPn5pmX">
+                <source>label.guided_step_book_listen_save</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="q3nYC.p">
+                <source>label.guided_step_book_listen_tab</source>
+                <target>Open the "Page" tab</target>
+            </trans-unit>
             <trans-unit id="gyflFGQ">
                 <source>label.guided_step_book_media_move_done</source>
                 <target>The file has changed list</target>
@@ -1690,10 +1762,6 @@
                 <source>label.guided_step_book_media_move_edit</source>
                 <target>Edit an existing book</target>
             </trans-unit>
-            <trans-unit id="sW71L.Q">
-                <source>label.guided_step_book_media_move_extracts</source>
-                <target>Find the extracts</target>
-            </trans-unit>
             <trans-unit id="cbJARJb">
                 <source>label.guided_step_book_media_move_handle</source>
                 <target>Grab a row by its grip</target>
@@ -1701,6 +1769,10 @@
             <trans-unit id="YJB04Qd">
                 <source>label.guided_step_book_media_move_open</source>
                 <target>Open "Books"</target>
+            </trans-unit>
+            <trans-unit id="vwfszAl">
+                <source>label.guided_step_book_media_move_pages</source>
+                <target>Find the pages</target>
             </trans-unit>
             <trans-unit id="tpdpeQW">
                 <source>label.guided_step_book_media_move_tab</source>
@@ -1733,6 +1805,10 @@
             <trans-unit id="RjacHFG">
                 <source>label.guided_step_book_reader_kind</source>
                 <target>Pick the reader</target>
+            </trans-unit>
+            <trans-unit id="Ca.4d_U">
+                <source>label.guided_step_book_reader_listen</source>
+                <target>And the listening page?</target>
             </trans-unit>
             <trans-unit id="p84J8SH">
                 <source>label.guided_step_book_reader_medias</source>
@@ -1902,6 +1978,10 @@
                 <source>label.guided_step_book_version_publication_page_tab</source>
                 <target>Open the "Page" tab</target>
             </trans-unit>
+            <trans-unit id="DMk5Xgn">
+                <source>label.guided_step_book_version_publication_pages</source>
+                <target>Upload the new pages</target>
+            </trans-unit>
             <trans-unit id="IreQ5kh">
                 <source>label.guided_step_book_version_publication_previous</source>
                 <target>Check the twin</target>
@@ -2026,9 +2106,25 @@
                 <source>label.links</source>
                 <target>Links</target>
             </trans-unit>
+            <trans-unit id="cmegPzc">
+                <source>label.listen_book_page</source>
+                <target>See the book's page</target>
+            </trans-unit>
+            <trans-unit id="dlHaEys">
+                <source>label.listen_empty</source>
+                <target>No book to listen to yet.</target>
+            </trans-unit>
+            <trans-unit id="m_ePHcV">
+                <source>label.listen_index</source>
+                <target>Listen</target>
+            </trans-unit>
             <trans-unit id="GJrzplD">
                 <source>label.listen_links-help</source>
                 <target>The podcast apps and audio stores the book is listened to on.</target>
+            </trans-unit>
+            <trans-unit id="3GxSEoz">
+                <source>label.listen_to</source>
+                <target>Listen to %title%</target>
             </trans-unit>
             <trans-unit id="knMSD8.">
                 <source>label.load_more</source>
@@ -2070,9 +2166,9 @@
                 <source>label.media_cover_back</source>
                 <target>Back cover</target>
             </trans-unit>
-            <trans-unit id="yTUio4u">
-                <source>label.media_extract</source>
-                <target>Extract</target>
+            <trans-unit id="UlP8A1b">
+                <source>label.media_cues</source>
+                <target>Page timecodes (VTT)</target>
             </trans-unit>
             <trans-unit id="JkZCnc5">
                 <source>label.media_flipbook</source>
@@ -2141,6 +2237,10 @@
             <trans-unit id="dfCuHTM">
                 <source>label.pages</source>
                 <target>Pages</target>
+            </trans-unit>
+            <trans-unit id="_lq_oHy">
+                <source>label.pages-help</source>
+                <target>The pages the book shows: a few to browse before buying, or all of them. With a timecodes file (VTT), they are the ones the recording turns.</target>
             </trans-unit>
             <trans-unit id="Nupwtac">
                 <source>label.podcasts</source>

@@ -44,7 +44,7 @@ class SectionAnchorsTest extends TestCase
         $templates = $this->templates();
 
         // Resume is not there: the summary is no section, it is the sentence the book opens on, laid under the hero with neither title nor anchor. Nor is the serie: it holds one line of the book's informations (see Book:Informations)
-        foreach (['Videos.html.twig' => 'apercu', 'Extracts.html.twig' => 'extracts', 'Presses.html.twig' => 'presse', 'Marketings.html.twig' => 'marketing', 'Informations.html.twig' => 'informations', 'Shops.html.twig' => 'shops', 'Podcasts.html.twig' => 'podcasts', 'Crowdfunding.html.twig' => 'crowdfunding'] as $file => $anchor) {
+        foreach (['Videos.html.twig' => 'apercu', 'Pages.html.twig' => 'pages', 'Presses.html.twig' => 'presse', 'Marketings.html.twig' => 'marketing', 'Informations.html.twig' => 'informations', 'Shops.html.twig' => 'shops', 'Podcasts.html.twig' => 'podcasts', 'Crowdfunding.html.twig' => 'crowdfunding'] as $file => $anchor) {
             $this->assertStringContainsString(
                 sprintf("{anchor: '%s'", $anchor),
                 $templates[$file],

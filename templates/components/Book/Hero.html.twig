@@ -82,7 +82,7 @@
         {% endif %}
 
         {# The gestures the page offers and nothing else: read, listen, watch, buy, then what has been written and said about the book - the order the page lays them in below (see BookSectionsExtension::book()), a reader tasting the book before paying for it and reading the press after it. Each carries the name of its section, so the button and the card title say the same verb, and only the sections the page actually holds are offered. Buy keeps the full color wherever it sits in the row, and the row is only written when one of them exists #}
-        {% set actionKeys = ['extracts', 'podcasts', 'apercu', 'shops', 'presse', 'marketing']|filter(key => sectionsByKey[key] is defined) %}
+        {% set actionKeys = ['pages', 'podcasts', 'apercu', 'shops', 'presse', 'marketing']|filter(key => sectionsByKey[key] is defined) %}
         {% if actionKeys|length %}
         <div class="book-hero__actions">
             {% for key in actionKeys %}

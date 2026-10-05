@@ -86,6 +86,10 @@
                 <source>description.guided_project_book_hidden</source>
                 <target>Un livre masqué reste au catalogue avec ses fichiers, mais aucune lecture publique ne le montre plus.</target>
             </trans-unit>
+            <trans-unit id="eCev1E_">
+                <source>description.guided_project_book_listen</source>
+                <target>La page d'écoute joue l'enregistrement du livre et en tourne les pages avec lui, sans aucun block à composer.</target>
+            </trans-unit>
             <trans-unit id="FJkrFzq">
                 <source>description.guided_project_book_media_move</source>
                 <target>Un fichier déposé dans la mauvaise liste se glisse dans la bonne, en gardant le fichier lui-même — inutile de le supprimer et de le redéposer.</target>
@@ -346,6 +350,34 @@
                 <source>description.guided_step_book_hidden_switch</source>
                 <target>Un clic retire le livre du site, un second l'y remet, sans rien d'autre à enregistrer.</target>
             </trans-unit>
+            <trans-unit id="uM1RqSY">
+                <source>description.guided_step_book_listen_audios</source>
+                <target>La voix qui lit le livre, en mp3, ogg, m4a ou wav.</target>
+            </trans-unit>
+            <trans-unit id="Nq1TAE5">
+                <source>description.guided_step_book_listen_cues</source>
+                <target>Un fichier WebVTT : la seconde où chaque page commence dans l'enregistrement. Avec lui, les pages défilent au rythme de la voix.</target>
+            </trans-unit>
+            <trans-unit id="u7M2BLI">
+                <source>description.guided_step_book_listen_done</source>
+                <target>La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration.</target>
+            </trans-unit>
+            <trans-unit id="GBg0WvF">
+                <source>description.guided_step_book_listen_edit</source>
+                <target>Un livre déjà enregistré, dont vous avez les pages et l'enregistrement sous la main.</target>
+            </trans-unit>
+            <trans-unit id="z1BcUAF">
+                <source>description.guided_step_book_listen_open</source>
+                <target>La liste des livres, d'où s'ouvre celui à faire écouter.</target>
+            </trans-unit>
+            <trans-unit id="IpcXafE">
+                <source>description.guided_step_book_listen_pages</source>
+                <target>Une image par page, dans l'ordre de lecture : ce sont elles qui défilent pendant l'écoute.</target>
+            </trans-unit>
+            <trans-unit id="GpzK0KT">
+                <source>description.guided_step_book_listen_tab</source>
+                <target>Le deuxième onglet, qui porte les fichiers du livre.</target>
+            </trans-unit>
             <trans-unit id="xJJ7KLd">
                 <source>description.guided_step_book_media_move_done</source>
                 <target>Il reste dans son propre livre : une liste appartenant à un autre livre n'est pas une cible, quoi que dise le glissement.</target>
@@ -353,10 +385,6 @@
             <trans-unit id="gn8tH8A">
                 <source>description.guided_step_book_media_move_edit</source>
                 <target>Le geste n'est proposé que sur un livre déjà enregistré : un livre en cours de création ne porte encore aucun fichier à déplacer.</target>
-            </trans-unit>
-            <trans-unit id="4nuUM0R">
-                <source>description.guided_step_book_media_move_extracts</source>
-                <target>La liste qu'un fichier quitte ou rejoint — le feuilletage juste au-dessus accepte les mêmes fichiers, ce qui rend l'échange possible.</target>
             </trans-unit>
             <trans-unit id="MDyaxOd">
                 <source>description.guided_step_book_media_move_handle</source>
@@ -366,9 +394,13 @@
                 <source>description.guided_step_book_media_move_open</source>
                 <target>Le catalogue, où se choisit le livre qui porte le fichier.</target>
             </trans-unit>
+            <trans-unit id="GTYiCCL">
+                <source>description.guided_step_book_media_move_pages</source>
+                <target>La liste qu'un fichier quitte ou rejoint — le feuilletage juste au-dessus accepte les mêmes fichiers, ce qui rend l'échange possible.</target>
+            </trans-unit>
             <trans-unit id="WK1Sl_R">
                 <source>description.guided_step_book_media_move_tab</source>
-                <target>L'onglet qui porte les fichiers du livre : le feuilletage, les extraits, les audios et les vidéos.</target>
+                <target>L'onglet qui porte les fichiers du livre : le feuilletage, les pages, les audios et les vidéos.</target>
             </trans-unit>
             <trans-unit id="rjCPwF3">
                 <source>description.guided_step_book_reader_add</source>
@@ -397,6 +429,10 @@
             <trans-unit id="1LAfhmB">
                 <source>description.guided_step_book_reader_kind</source>
                 <target>Dans la palette, la tuile nommée « Lecteur » : sa silhouette montre une page et une barre de lecture.</target>
+            </trans-unit>
+            <trans-unit id="jHORAYN">
+                <source>description.guided_step_book_reader_listen</source>
+                <target>Elle ne lit pas ce block : elle fait défiler les pages sur le fichier de timecodes déposé sur le livre, onglet « Page ».</target>
             </trans-unit>
             <trans-unit id="98v3aXG">
                 <source>description.guided_step_book_reader_medias</source>
@@ -553,6 +589,10 @@
             <trans-unit id="sz4ha5a">
                 <source>description.guided_step_book_version_publication_page_tab</source>
                 <target>Le deuxième onglet du formulaire, où se déclarent les formats.</target>
+            </trans-unit>
+            <trans-unit id="_.gaGuJ">
+                <source>description.guided_step_book_version_publication_pages</source>
+                <target>Les pages, le feuilletage et les timecodes sont partis avec le jumeau : ils montraient le texte d'avant.</target>
             </trans-unit>
             <trans-unit id="BgcIQsS">
                 <source>description.guided_step_book_version_publication_previous</source>
@@ -1218,6 +1258,10 @@
                 <source>label.crowdfunding_support</source>
                 <target>Soutenir le livre</target>
             </trans-unit>
+            <trans-unit id="QDj0v.K">
+                <source>label.cues-help</source>
+                <target>Un fichier WebVTT (.vtt) : quand chaque page commence dans l'enregistrement, l'identifiant de chaque repère étant le numéro de la page. Avec lui, la page d'écoute fait défiler les pages au rythme de la voix.</target>
+            </trans-unit>
             <trans-unit id="aIZFxNx">
                 <source>label.data</source>
                 <target>Informations propres au site</target>
@@ -1289,14 +1333,6 @@
             <trans-unit id="u_a7b8K">
                 <source>label.export_sql</source>
                 <target>SQL</target>
-            </trans-unit>
-            <trans-unit id="4FbGSaQ">
-                <source>label.extract</source>
-                <target>Extraits</target>
-            </trans-unit>
-            <trans-unit id="pUGQ84e">
-                <source>label.extract-help</source>
-                <target>Les pages qu'un lecteur feuillette avant d'acheter. Les pages d'un album, elles, appartiennent à l'édition où elles ont paru et s'ajoutent sur celle-ci.</target>
             </trans-unit>
             <trans-unit id="LHpZe.c">
                 <source>label.fieldset_this_language</source>
@@ -1393,6 +1429,10 @@
             <trans-unit id="oyXCY_1">
                 <source>label.guided_project_book_hidden</source>
                 <target>Retirer un livre du site</target>
+            </trans-unit>
+            <trans-unit id="lwr0zp0">
+                <source>label.guided_project_book_listen</source>
+                <target>Faire écouter un livre</target>
             </trans-unit>
             <trans-unit id="TJaUAmd">
                 <source>label.guided_project_book_media_move</source>
@@ -1682,6 +1722,38 @@
                 <source>label.guided_step_book_hidden_switch</source>
                 <target>Basculez la ligne sur Masqué</target>
             </trans-unit>
+            <trans-unit id="k5fy8jR">
+                <source>label.guided_step_book_listen_audios</source>
+                <target>Déposez l'enregistrement</target>
+            </trans-unit>
+            <trans-unit id="gqnjuSc">
+                <source>label.guided_step_book_listen_cues</source>
+                <target>Déposez les timecodes</target>
+            </trans-unit>
+            <trans-unit id="uXd2u7h">
+                <source>label.guided_step_book_listen_done</source>
+                <target>Le livre s'écoute</target>
+            </trans-unit>
+            <trans-unit id="FWaDppm">
+                <source>label.guided_step_book_listen_edit</source>
+                <target>Modifiez un livre existant</target>
+            </trans-unit>
+            <trans-unit id="V2owBho">
+                <source>label.guided_step_book_listen_open</source>
+                <target>Ouvrez le catalogue</target>
+            </trans-unit>
+            <trans-unit id="ezskkFE">
+                <source>label.guided_step_book_listen_pages</source>
+                <target>Déposez les pages</target>
+            </trans-unit>
+            <trans-unit id="IPn5pmX">
+                <source>label.guided_step_book_listen_save</source>
+                <target>Enregistrer</target>
+            </trans-unit>
+            <trans-unit id="q3nYC.p">
+                <source>label.guided_step_book_listen_tab</source>
+                <target>Ouvrez l'onglet « Page »</target>
+            </trans-unit>
             <trans-unit id="gyflFGQ">
                 <source>label.guided_step_book_media_move_done</source>
                 <target>Le fichier a changé de liste</target>
@@ -1690,10 +1762,6 @@
                 <source>label.guided_step_book_media_move_edit</source>
                 <target>Modifiez un livre existant</target>
             </trans-unit>
-            <trans-unit id="sW71L.Q">
-                <source>label.guided_step_book_media_move_extracts</source>
-                <target>Repérez les extraits</target>
-            </trans-unit>
             <trans-unit id="cbJARJb">
                 <source>label.guided_step_book_media_move_handle</source>
                 <target>Saisissez une ligne par sa poignée</target>
@@ -1701,6 +1769,10 @@
             <trans-unit id="YJB04Qd">
                 <source>label.guided_step_book_media_move_open</source>
                 <target>Ouvrez « Livres »</target>
+            </trans-unit>
+            <trans-unit id="vwfszAl">
+                <source>label.guided_step_book_media_move_pages</source>
+                <target>Repérez les pages</target>
             </trans-unit>
             <trans-unit id="tpdpeQW">
                 <source>label.guided_step_book_media_move_tab</source>
@@ -1733,6 +1805,10 @@
             <trans-unit id="RjacHFG">
                 <source>label.guided_step_book_reader_kind</source>
                 <target>Choisir le lecteur</target>
+            </trans-unit>
+            <trans-unit id="Ca.4d_U">
+                <source>label.guided_step_book_reader_listen</source>
+                <target>Et la page d'écoute ?</target>
             </trans-unit>
             <trans-unit id="p84J8SH">
                 <source>label.guided_step_book_reader_medias</source>
@@ -1902,6 +1978,10 @@
                 <source>label.guided_step_book_version_publication_page_tab</source>
                 <target>Ouvrez l'onglet « Page »</target>
             </trans-unit>
+            <trans-unit id="DMk5Xgn">
+                <source>label.guided_step_book_version_publication_pages</source>
+                <target>Déposez les pages neuves</target>
+            </trans-unit>
             <trans-unit id="IreQ5kh">
                 <source>label.guided_step_book_version_publication_previous</source>
                 <target>Vérifiez le jumeau</target>
@@ -2026,9 +2106,25 @@
                 <source>label.links</source>
                 <target>Liens</target>
             </trans-unit>
+            <trans-unit id="cmegPzc">
+                <source>label.listen_book_page</source>
+                <target>Voir la page du livre</target>
+            </trans-unit>
+            <trans-unit id="dlHaEys">
+                <source>label.listen_empty</source>
+                <target>Aucun livre à écouter pour le moment.</target>
+            </trans-unit>
+            <trans-unit id="m_ePHcV">
+                <source>label.listen_index</source>
+                <target>À écouter</target>
+            </trans-unit>
             <trans-unit id="GJrzplD">
                 <source>label.listen_links-help</source>
                 <target>Les applications de podcast et les librairies audio où le livre s'écoute.</target>
+            </trans-unit>
+            <trans-unit id="3GxSEoz">
+                <source>label.listen_to</source>
+                <target>Écouter %title%</target>
             </trans-unit>
             <trans-unit id="knMSD8.">
                 <source>label.load_more</source>
@@ -2070,9 +2166,9 @@
                 <source>label.media_cover_back</source>
                 <target>Quatrième de couverture</target>
             </trans-unit>
-            <trans-unit id="yTUio4u">
-                <source>label.media_extract</source>
-                <target>Extrait</target>
+            <trans-unit id="UlP8A1b">
+                <source>label.media_cues</source>
+                <target>Timecodes des pages (VTT)</target>
             </trans-unit>
             <trans-unit id="JkZCnc5">
                 <source>label.media_flipbook</source>
@@ -2141,6 +2237,10 @@
             <trans-unit id="dfCuHTM">
                 <source>label.pages</source>
                 <target>Pages</target>
+            </trans-unit>
+            <trans-unit id="_lq_oHy">
+                <source>label.pages-help</source>
+                <target>Les pages que le livre montre : quelques-unes à feuilleter avant d'acheter, ou toutes. Avec un fichier de timecodes (VTT), ce sont celles que l'enregistrement fait défiler.</target>
             </trans-unit>
             <trans-unit id="Nupwtac">
                 <source>label.podcasts</source>

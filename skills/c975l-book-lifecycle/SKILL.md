@@ -202,7 +202,7 @@ back out; `SerieResolver` matches a serie and `BookCategoryResolver` the categor
 creating on the fly what this environment doesn't hold yet. **Everything is matched by slug, never by id**,
 and an import never deletes what the archive does not name — a book's `categories` are the one list replaced
 whole, an archive saying which categories the book carries and a category taken off it there coming off it
-here too.
+here too. A book archive exported before 2.15 still lands its `extract` files as `page`.
 
 **A person is the one exception, matched by name** (`ContributorResolver`): a book's archive still carries
 `author`, `authorWebsite`, `illustrator` and `illustratorWebsite` as the plain strings the four columns held

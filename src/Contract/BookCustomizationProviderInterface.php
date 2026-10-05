@@ -29,7 +29,7 @@ interface BookCustomizationProviderInterface
     /** @return array<string, array{label: string, group: string, icon: string}> kind => platform */
     public function getLinkKinds(): array;
 
-    // How this site lays out a book's page, keyed by the section's own key ("resume", "apercu", "extracts", "crowdfunding", "shops", "podcasts", "presse", "marketing", "informations", plus "hero" for the opening): the array's order is the page's, a key left out keeping the rank, name and card the bundle gives it, "anchor" and "label" being read in "domain" in the book's language, "icon" what c975LUi:Card:Card takes, "animation" what animate-scroll.js reads, and "template" a fragment of the site's - a key none of those, carrying one, is a rubric of the site's own, "form" its shape and "field" the property it is written in
+    // How this site lays out a book's page, keyed by the section's own key ("resume", "apercu", "pages", "crowdfunding", "shops", "podcasts", "presse", "marketing", "informations", plus "hero" for the opening): the array's order is the page's, a key left out keeping the rank, name and card the bundle gives it, "anchor" and "label" being read in "domain" in the book's language, "icon" what c975LUi:Card:Card takes, "animation" what animate-scroll.js reads, and "template" a fragment of the site's - a key none of those, carrying one, is a rubric of the site's own, "form" its shape and "field" the property it is written in
     /** @return array<string, array{anchor?: string, label?: string, domain?: string, icon?: array<int, string|int>, animation?: string, template?: string, form?: string, field?: string}> */
     public function getSections(): array;
 

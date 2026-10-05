@@ -110,6 +110,17 @@
         "description": "description.book_route_strip_shortcut"
     },
     {
+        "label": "label.book_route_listen",
+        "slug": "book-route-listen",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_listen"
+    },
+    {
         "label": "label.book_serie_blocks",
         "slug": "book-serie-blocks",
         "sensitive": false,

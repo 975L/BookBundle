@@ -1,0 +1,23 @@
+{% extends 'layout.html.twig' %}
+
+{# Defines specific variables #}
+{% set title = url_metadata_title('label.listen_index'|trans({}, 'book')) %}
+{% set summarySocialNetwork = url_metadata_summary(title) %}
+
+{# The books that can be listened to, each card leading to its own player rather than to the book's page: the gesture asked for here is listening #}
+{% block content %}
+    {% if books|length %}
+        <div class="cards book-cards book-listen-cards">
+            {% for book in books %}
+                {% set cover = book_cover(book) %}
+                <twig:c975LUi:Card:Card tag="article" id="listen-{{ book.id }}" title="{{ book.title }}" lang="{{ book.language }}">
+                    <a href="{{ book_path('book_listen', {'slug': book.slug}) }}" aria-label="{{ 'label.listen_to'|trans({'%title%': book.title}, 'book') }}">
+                        <twig:c975LUi:Image:Image class="img-rounded box-shadow img-300" src="{{ asset(cover ?: 'bundles/c975lbook/images/no-cover.webp') }}" alt="{{ book.title }}" width="300" height="425"/>
+                    </a>
+                </twig:c975LUi:Card:Card>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text text-center">{{ 'label.listen_empty'|trans({}, 'book') }}</p>
+    {% endif %}
+{% endblock %}

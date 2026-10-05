@@ -1,6 +1,6 @@
 ---
 name: c975l-book-display-pages
-description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie, of a planche and of a person the catalog credits, their hero and the row of buttons it offers, their sections and the order they come in, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, contributor_display, contributor_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Extracts, Book:Podcasts, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Contributor:Hero, Contributor:Shops, Contributor:Contributor, Contributor:Contributors, Strip:Card, Strip:Cards, Serie:Characters, Strip:Medias, Strip:Summary, StripMediaKind, getMediasByKind, getThumbnailMedia, strip_highres, BookHighresExtension, Image:Zoom, Book:Books, Serie:Series, infinite, infiniteScroll, displayMore, label.books_more, label.series_more, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, languageName, Languages, book_role_label, getRoles, book_alternates, book_versions, contributor_path, contributor_url, contributor_edit_url, contributor_edit_urls, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css, block-thumbs, ui-block-thumb, ui.management_stylesheet, getManagementStylesheets, BundleStylesheetManagementProviderInterface, StylesheetProvider, BookBlockCacheTagProvider, BookBlockCacheInvalidator, BookCacheInvalidationListener, book_ui_locale, BookTranslator, apply, BookTranslatedLocales, forStrip, BookPublicUrlResolver, resolveLocalizedPath, resolveAlternates, BookLinkLocalizer, _localized, findCharactersBySerie, book_catalog, LinkableRouteCacheTagsInterface, BookCollectionSourceProvider, hasScheduled, cacheable, book_reader, ReaderBlockType, ReaderCueType, cues, linkLabel, linkUrl, AbstractBookListingBlockType, BookSnippetBuilder, BookJsonLdExtension, book_json_ld, serie_json_ld, strip_json_ld, contributor_json_ld, book_breadcrumb_json_ld, level, book-card__title, --book-card-title-size, book_item_list_json_ld, BreadcrumbList, ItemList, Person, ProfilePage, withRating, aggregateRating."
+description: "Use this skill when working on the public pages of a catalog built on the c975L BookBundle — the page of a book, of a serie, of a planche and of a person the catalog credits, their hero and the row of buttons it offers, their sections and the order they come in, the cards a listing prints, the breadcrumb and the arrows a planche is browsed with, the editor's pencil floating over a section, and the CSS tokens a site retunes them all with. Triggers on: book_display, serie_display, strip_display, book_index, serie_index, strip_index, contributor_display, contributor_index, book_sections, serie_sections, book_section_template, BookSectionsExtension, Book:Hero, Serie:Hero, Strip:Hero, Book:Resume, Book:Pages, Book:Podcasts, book_listen, book_listen_index, book-route-listen, ListenController, cues, cuesFile, WebVTT, Book:Videos, Book:Shops, Book:Informations, Book:Card, Book:Flipbook, Book:Crowdfunding, Contributor:Hero, Contributor:Shops, Contributor:Contributor, Contributor:Contributors, Strip:Card, Strip:Cards, Serie:Characters, Strip:Medias, Strip:Summary, StripMediaKind, getMediasByKind, getThumbnailMedia, strip_highres, BookHighresExtension, Image:Zoom, Book:Books, Serie:Series, infinite, infiniteScroll, displayMore, label.books_more, label.series_more, load_more, Pagination, Paginator, Strip:Characters, Strip:Previous, Strip:Next, Breadcrumb, _section.html.twig, toc-target, card--compact, book-page, book-hero, strip-card, book_edit_url, book_edit_urls, serie_edit_urls, strip_edit_urls, BookEditUrlExtension, book_cover, book_media, book_medias_of_kind, book_audio_medias, book_translations, book_language_label, languageName, Languages, book_role_label, getRoles, book_alternates, book_versions, contributor_path, contributor_url, contributor_edit_url, contributor_edit_urls, BookUrlExtension, BookTranslationExtension, BookVersionExtension, book-strip-card, book-confetti, book-rating, sass/_variables.scss, themes/book.css, block-thumbs, ui-block-thumb, ui.management_stylesheet, getManagementStylesheets, BundleStylesheetManagementProviderInterface, StylesheetProvider, BookBlockCacheTagProvider, BookBlockCacheInvalidator, BookCacheInvalidationListener, book_ui_locale, BookTranslator, apply, BookTranslatedLocales, forStrip, BookPublicUrlResolver, resolveLocalizedPath, resolveAlternates, BookLinkLocalizer, _localized, findCharactersBySerie, book_catalog, LinkableRouteCacheTagsInterface, BookCollectionSourceProvider, hasScheduled, cacheable, book_reader, ReaderBlockType, ReaderCueType, cues, linkLabel, linkUrl, AbstractBookListingBlockType, BookSnippetBuilder, BookJsonLdExtension, book_json_ld, serie_json_ld, strip_json_ld, contributor_json_ld, book_breadcrumb_json_ld, level, book-card__title, --book-card-title-size, book_item_list_json_ld, BreadcrumbList, ItemList, Person, ProfilePage, withRating, aggregateRating."
 ---
 
 # c975L BookBundle — display pages
@@ -29,10 +29,12 @@ description: "Use this skill when working on the public pages of a catalog built
 | `strip_index` | `/strips` | the series telling planches, not the planches, growing on scroll |
 | `strip_display` | `/strip/{slug}` | one planche |
 | `book_shortcut` / `strip_shortcut` | `/b3`, `/s3` | 301 to the slug |
+| `book_listen_index` | *unset by default* | the books holding a recording, in the language being read |
+| `book_listen` | *unset by default* | one book played — its pages turning along the voice when it carries a `cues` file |
 
 Every prefix is a ConfigBundle setting (`book-route-books`, `book-route-book`, `book-route-series`,
 `book-route-categories`, `book-route-contributors`, `book-route-contributor`, `book-route-strips`,
-`book-route-strip`, `book-route-book-shortcut`, `book-route-strip-shortcut`) — see
+`book-route-strip`, `book-route-book-shortcut`, `book-route-strip-shortcut`, `book-route-listen`) — see
 `c975l-book-customization`. **A prefix emptied means the site serves that page itself**, and the route
 answers nothing: anything linking to it goes through `BookPublicUrlResolver::resolveLocalizedPath()`, which
 returns null rather than throwing. `book_path()`, `serie_path()`, `serie_url()`, `contributor_path()`,
@@ -48,9 +50,16 @@ goes through `book_path()` and its siblings, which answer in the language being 
 sends a visitor reading "/en" back into the writing language at the first click. `BookPublicUrlResolver::resolvePath()`
 stays the canonical url, the one a sitemap, a hreflang group and a JSON-LD node declare.
 
-**`book-route-categories` is the one prefix shipping empty**: a site serves no category page until it says
+**`book-route-categories` and `book-route-listen` are the two prefixes shipping empty**: a site serves no category page until it says
 under which word it wants them, and the categories a book carries still print on its sheet as plain words —
-which is a site using them as tags rather than as rayons.
+which is a site using them as tags rather than as rayons. The listening pages are a site's choice the same way.
+
+**The listening pages (`ListenController`) play a book by its `cues` media**, a WebVTT file uploaded on the
+"Page timecodes" field — one cue per page, its identifier the page's number. A book carrying one is handed to
+`<twig:c975LBook:Reader:Reader cuesFile="{{ book.cues }}">` with `book.pages`; a book without one is shown as its
+cover and the player, a few pages to leaf through before buying being no book to follow along. A book with no
+recording the player can read — `book_audio_medias()`, an `audio/*` file: mp3, ogg, m4a or wav — answers 404
+there and stays off the index, whatever kind its files were filed under.
 
 `serie_display` is one route for both families: a serie's own `SerieKind` decides which index a serie
 sits under, and one asked under the other segment answers a 301 to its own.
@@ -74,7 +83,7 @@ templates, which render `Book:Hero`, `Serie:Hero` or `Strip:Hero` inside the con
 **The summary is no section.** It is the sentence the page opens on, printed by `Book:Resume` /
 `Serie:Resume` under the hero and outside the sections grid, with no title and no anchor. Neither a book's
 page nor a serie's carries a summary of anchors any more: the hero's row of buttons opens what a reader
-looks for — `extracts`, `podcasts`, `apercu`, `shops`, `presse`, `marketing`, in the order the page lays
+looks for — `pages`, `podcasts`, `apercu`, `shops`, `presse`, `marketing`, in the order the page lays
 them out, and only those it actually holds —
 and the page keeps its whole width. `sass/_book.scss` opens the two-column layout on
 `.book-page:has(> .book-page__toc)` alone — a page with no toc that grows one gets two columns back.
@@ -83,7 +92,7 @@ and the page keeps its whole width. `sass/_book.scss` opens the two-column layou
 
 | Owner | Keys, in the bundle's order |
 | --- | --- |
-| a book | `extracts`, `podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `informations` |
+| a book | `pages`, `podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `informations` |
 | a serie | `characters`, `books`, `strips` |
 
 A section is present only when the book actually holds something for it, `informations` excepted — a book
@@ -120,7 +129,7 @@ They all live in `templates/components/` and are overridden in
 | --- | --- |
 | `<twig:c975LBook:Book:Hero>` | the opening — cover (flipped over on a click given a fourth), backdrop, eyebrow, title, a button per section reached from there |
 | `<twig:c975LBook:Book:Resume>` | the sentence under the hero |
-| `<twig:c975LBook:Book:Extracts>` | the pages, in UiBundle's slider |
+| `<twig:c975LBook:Book:Pages>` | the pages, in UiBundle's slider |
 | `<twig:c975LBook:Book:Flipbook>` | the video turning them, under the hero and outside any card |
 | `<twig:c975LBook:Book:Podcasts>` | one card for everything the book is listened to by |
 | `<twig:c975LBook:Book:Videos>` | one card for everything it is watched by |
@@ -208,7 +217,7 @@ so a filter or a search the visitor came with survives the jump.
 ```twig
 {{ book_cover(book) }}                    {# what stands for the book: its cover field, then its first image #}
 {{ book_media(book, 'flipbook') }}        {# one file of a kind #}
-{{ book_medias_of_kind(book, 'extract') }}
+{{ book_medias_of_kind(book, 'page') }}
 {{ book_audio_medias(book) }}
 {{ book_translations(book) }}             {# read from either end of the family #}
 {{ book_language_label(book.language) }}  {# named in the page's language, via symfony/intl #}

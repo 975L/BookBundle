@@ -125,17 +125,17 @@ class BookVersionPublisherTest extends TestCase
         $book = new Book()->setTitle('Chat et Chocolat');
         $previous = new Book()->setTitle('Chat et Chocolat - Édition originale');
 
-        $extract = new BookMedia()->setKind('extract');
+        $page = new BookMedia()->setKind('page');
         $trailer = new BookMedia()->setKind('trailer');
         $audio = new BookMedia()->setKind('audio_mp3');
-        foreach ([$extract, $trailer, $audio] as $media) {
+        foreach ([$page, $trailer, $audio] as $media) {
             $book->addMedia($media);
         }
 
-        $moved = $this->publisher()->moveMedias($book, $previous, ['extract', 'flipbook']);
+        $moved = $this->publisher()->moveMedias($book, $previous, ['page', 'flipbook']);
 
         $this->assertSame(1, $moved);
-        $this->assertSame($previous, $extract->getBook());
+        $this->assertSame($previous, $page->getBook());
         $this->assertSame($book, $trailer->getBook());
         $this->assertSame($book, $audio->getBook());
     }

@@ -34,7 +34,7 @@ class BookCoversTest extends TestCase
     public function testTheCoverBeatsTheFirstImageOfTheCatalog(): void
     {
         $book = new Book();
-        $book->addMedia(new BookMedia()->setName('page.webp')->setKind('extract'));
+        $book->addMedia(new BookMedia()->setName('page.webp')->setKind('page'));
         $book->addCover(new BookMedia()->setName('cover.webp'));
 
         $this->assertSame('cover.webp', (string) BookSectionsExtension::cover($book));
@@ -45,7 +45,7 @@ class BookCoversTest extends TestCase
     {
         $book = new Book()->setTitle('La Sorcière et les Policiers');
         $previous = new Book()->setTitle('La Sorcière et les Policiers — Édition originale');
-        $previous->addExtract(new BookMedia()->setName('page-1.webp'));
+        $previous->addPage(new BookMedia()->setName('page-1.webp'));
         $previous->setNewerVersion($book);
 
         $this->assertSame('page-1.webp', (string) BookSectionsExtension::cover($book));

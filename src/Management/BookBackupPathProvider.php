@@ -14,14 +14,14 @@ use c975L\BookBundle\Entity\Media;
 use c975L\ConfigBundle\Management\BackupPath;
 use c975L\ConfigBundle\Management\BackupPathProviderInterface;
 
-// Where the covers, extracts, press clippings and marketing files land, the only content of this bundle neither a git clone nor a database dump brings back - ConfigBundle backs up nothing it wasn't declared, so staying silent here means a catalog backed up nowhere
+// Where the covers, pages, press clippings and marketing files land, the only content of this bundle neither a git clone nor a database dump brings back - ConfigBundle backs up nothing it wasn't declared, so staying silent here means a catalog backed up nowhere
 class BookBackupPathProvider implements BackupPathProviderInterface
 {
     // A single root rather than one path per kind: the six subclasses of Media all write under it (see their getVichMediaPath), and the collector drops any path nested in another already declared
     public function getBackupPaths(): array
     {
         return [
-            // Mirrored rather than archived: covers and extracts are written once, and bzip2 gains about nothing on a webp or a pdf
+            // Mirrored rather than archived: covers and pages are written once, and bzip2 gains about nothing on a webp or a pdf
             new BackupPath('public/' . Media::MEDIA_DIRECTORY, BackupPath::MODE_MIRROR),
         ];
     }

@@ -274,6 +274,38 @@
                 <source>narration.guided_step_book_hidden_switch</source>
                 <target>Switch the row to hidden: one click takes the book off the site, a second puts it back, with nothing else to save.</target>
             </trans-unit>
+            <trans-unit id="iUigQGu">
+                <source>narration.guided_step_book_listen_audios</source>
+                <target>Upload the recording: the voice reading the book, as mp3, ogg, m4a or wav.</target>
+            </trans-unit>
+            <trans-unit id="_rzRkmm">
+                <source>narration.guided_step_book_listen_cues</source>
+                <target>Upload the timecodes, a WebVTT file giving the second each page starts at. With it, the pages turn to the pace of the voice.</target>
+            </trans-unit>
+            <trans-unit id="4cz3uxf">
+                <source>narration.guided_step_book_listen_done</source>
+                <target>The book can be listened to. The listening page answers only once the site has given it an address: the "URL prefix of the books to listen to", in the configuration.</target>
+            </trans-unit>
+            <trans-unit id="vhlfKsq">
+                <source>narration.guided_step_book_listen_edit</source>
+                <target>Edit a book already saved, whose pages and recording you have at hand.</target>
+            </trans-unit>
+            <trans-unit id="OEU9IyK">
+                <source>narration.guided_step_book_listen_open</source>
+                <target>Open the catalog of books: the one you want to be listened to opens from here.</target>
+            </trans-unit>
+            <trans-unit id="546nyFC">
+                <source>narration.guided_step_book_listen_pages</source>
+                <target>Upload the pages, one image per page, in reading order: they are what turns while listening.</target>
+            </trans-unit>
+            <trans-unit id="RKDjq85">
+                <source>narration.guided_step_book_listen_save</source>
+                <target>Save: the files are moved to their final place.</target>
+            </trans-unit>
+            <trans-unit id="Qbz1kai">
+                <source>narration.guided_step_book_listen_tab</source>
+                <target>Open the "Page" tab, the one holding the files of the book.</target>
+            </trans-unit>
             <trans-unit id="y85M99i">
                 <source>narration.guided_step_book_media_move_done</source>
                 <target>The file has changed list, but it stays in its own book: a list belonging to another book is no target, whatever the drag says.</target>
@@ -281,10 +313,6 @@
             <trans-unit id="bJLL5Pj">
                 <source>narration.guided_step_book_media_move_edit</source>
                 <target>Edit an existing book. The gesture is only offered on a book already saved: a book being created holds no file to move yet.</target>
-            </trans-unit>
-            <trans-unit id="9zqH322">
-                <source>narration.guided_step_book_media_move_extracts</source>
-                <target>Find the extracts: this is the list a file leaves or lands in. The leafed-through pages just above accept the same files, which is what makes the swap possible.</target>
             </trans-unit>
             <trans-unit id="UbQ4E5a">
                 <source>narration.guided_step_book_media_move_handle</source>
@@ -294,9 +322,13 @@
                 <source>narration.guided_step_book_media_move_open</source>
                 <target>The panel takes you to the catalog, where the book holding the file is picked.</target>
             </trans-unit>
+            <trans-unit id="ES3GqZL">
+                <source>narration.guided_step_book_media_move_pages</source>
+                <target>Find the pages: this is the list a file leaves or lands in. The leafed-through pages just above accept the same files, which is what makes the swap possible.</target>
+            </trans-unit>
             <trans-unit id="dzJebRH">
                 <source>narration.guided_step_book_media_move_tab</source>
-                <target>Open the page tab, the one holding the files of the book: the leafed-through pages, the extracts, the audios and the videos.</target>
+                <target>Open the page tab, the one holding the files of the book: the flipbook, the pages, the audios and the videos.</target>
             </trans-unit>
             <trans-unit id="rSlOmZ3">
                 <source>narration.guided_step_book_reader_add</source>
@@ -325,6 +357,10 @@
             <trans-unit id="SYyThhr">
                 <source>narration.guided_step_book_reader_kind</source>
                 <target>Pick the tile named "Reader": its silhouette shows a page and a play bar.</target>
+            </trans-unit>
+            <trans-unit id="pZ8r0.j">
+                <source>narration.guided_step_book_reader_listen</source>
+                <target>And the listening page? It does not read this block: it turns the pages on the timecodes file uploaded on the book, "Page" tab.</target>
             </trans-unit>
             <trans-unit id="ikN9Z5Y">
                 <source>narration.guided_step_book_reader_medias</source>
@@ -493,6 +529,10 @@
             <trans-unit id="Zxix3EA">
                 <source>narration.guided_step_book_version_publication_page_tab</source>
                 <target>Open the second tab of the form, the page one, where the formats are declared.</target>
+            </trans-unit>
+            <trans-unit id="FsAFUhc">
+                <source>narration.guided_step_book_version_publication_pages</source>
+                <target>Upload the new pages: the pages, the flipbook and the timecodes left with the twin, they showed the text as it was.</target>
             </trans-unit>
             <trans-unit id="Fo9ZTux">
                 <source>narration.guided_step_book_version_publication_previous</source>

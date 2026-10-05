@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 
 class BookBackupPathProviderTest extends TestCase
 {
-    // Mirrored, never archived: covers, extracts and recordings are written once, and bzip2 gains about nothing on a webp or a pdf
+    // Mirrored, never archived: covers, pages and recordings are written once, and bzip2 gains about nothing on a webp or a pdf
     public function testTheMediaRootIsMirrored(): void
     {
         $this->assertSame(['public/medias/book' => BackupPath::MODE_MIRROR], $this->paths());

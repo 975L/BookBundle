@@ -38,6 +38,8 @@ class MediaTest extends TestCase
         $this->assertSame('audio/mpeg', new BookMedia()->setName('medias/book/chapter-01.mp3')->getMimeType());
         $this->assertSame('audio/ogg', new BookMedia()->setName('medias/book/chapter-01.ogg')->getMimeType());
         $this->assertSame('audio/ogg', new BookMedia()->setName('medias/book/chapter-01.OGA')->getMimeType());
+        $this->assertSame('audio/mp4', new BookMedia()->setName('medias/book/chapter-01.m4a')->getMimeType());
+        $this->assertSame('audio/wav', new BookMedia()->setName('medias/book/chapter-01.wav')->getMimeType());
     }
 
     // Ticked from the start: the privacy-respecting address is the only origin the site's security policy allows

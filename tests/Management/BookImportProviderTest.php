@@ -134,6 +134,23 @@ class BookImportProviderTest extends TestCase
         $this->assertSame('Couverture', $kept->getTitle());
     }
 
+    // An archive exported before the "extract" kind became "page" (2.15) still lands its pages where the reading section looks for them
+    public function testImportReadsAPreRenameExtractAsAPage(): void
+    {
+        $existing = new Book()->setSlug('tome-1')->setTitle('Tome 1')->setAuthor(self::contributor('LM', 'lm'))->setSummary('')
+            ->setCreation(new \DateTime())->setModification(new \DateTime());
+        $page = new BookMedia()->setName('medias/book/books/page-tome-1/p1.webp')->setKind('extract')->setUpdatedAt(new \DateTimeImmutable());
+        $existing->addMedia($page);
+
+        $this->createProvider(sys_get_temp_dir(), $existing)->import([[
+            'slug' => 'tome-1',
+            'title' => 'Tome 1',
+            'medias' => [['name' => 'medias/book/books/page-tome-1/p1.webp', 'kind' => 'extract', 'position' => 0]],
+        ]]);
+
+        $this->assertSame('page', (string) $page->getKind());
+    }
+
     // The archive lists the two in whichever order, so the link is made once every book of the run has been read
     public function testImportLinksATranslationToABookOfTheSameArchiveWhicheverComesFirst(): void
     {

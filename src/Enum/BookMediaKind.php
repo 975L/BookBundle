@@ -19,13 +19,14 @@ enum BookMediaKind: string
     case CoverBack = 'cover_back';
     // The image the book's page opens on, behind its header
     case Background = 'background';
+    // The pages the book shows: a few to leaf through before buying, or all of them when a recording reads them (see Cues)
     case Page = 'page';
-    // The pages a reader leafs through before buying
-    case Extract = 'extract';
     // The video flicking through the book, which its page opens on rather than announces
     case Flipbook = 'flipbook';
     case AudioMp3 = 'audio_mp3';
     case AudioOgg = 'audio_ogg';
+    // When each page starts in the recording, as WebVTT - one cue per page, its identifier the page's number - the file the Reader turns the pages by
+    case Cues = 'cues';
 
     // The translation key of the file's name, in the "book" domain
     public function label(): string

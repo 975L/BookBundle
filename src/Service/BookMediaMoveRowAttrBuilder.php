@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-// The attributes UiBundle's ea-sortable.js reads to drag a file from one collection to another - from the flipbook to the extracts, from an edition to the book. Same shape as BlockMoveRowAttrBuilder, whose mechanism this is: the collections of one group swap their rows, and the group names the address that moves them
+// The attributes UiBundle's ea-sortable.js reads to drag a file from one collection to another - from the flipbook to the pages, from an edition to the book. Same shape as BlockMoveRowAttrBuilder, whose mechanism this is: the collections of one group swap their rows, and the group names the address that moves them
 class BookMediaMoveRowAttrBuilder
 {
     public const string ROUTE = 'management_book_media_move';
@@ -26,7 +26,7 @@ class BookMediaMoveRowAttrBuilder
     // The target of a collection, what the controller receives and reads (see BookMediaMoveController)
     public const string TARGET_FLIPBOOK = 'flipbook';
 
-    public const string TARGET_EXTRACT = 'extract';
+    public const string TARGET_PAGE = 'page';
 
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,

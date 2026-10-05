@@ -16,6 +16,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Field\BookDataField;
 use c975L\BookBundle\Form\BookContributorType;
 use c975L\BookBundle\Form\BookCoverType;
+use c975L\BookBundle\Form\BookCuesType;
 use c975L\BookBundle\Form\BookEditionType;
 use c975L\BookBundle\Form\BookFlipbookType;
 use c975L\BookBundle\Form\BookLinkType;
@@ -301,7 +302,7 @@ class BookCrudController extends AbstractCrudController
                 ->allowAdd(self::isEmpty($book?->getBackgrounds()))
                 ->allowDelete()
                 ->setFormTypeOption('by_reference', false),
-            // The flipbook, between the hero's backdrop and the extracts: a video, hence its own row type
+            // The flipbook, between the hero's backdrop and the pages: a video, hence its own row type
             FormField::addFieldset(t('label.flipbook', [], 'book'))
                 ->hideOnIndex(),
             CollectionField::new('flipbooks')
@@ -313,18 +314,18 @@ class BookCrudController extends AbstractCrudController
                 ->allowDelete()
                 ->setFormTypeOption('by_reference', false)
                 ->setFormTypeOption('row_attr', $this->mediaMoveRowAttrBuilder->build($bookId, BookMediaMoveRowAttrBuilder::TARGET_FLIPBOOK)),
-            // The extracts: what the page runs through a slider, after the hero's backdrop. Named by the verb of its section, like the others: the edit screen reads in the page's order and under the same words (see BookSectionsExtension::book()) - the field itself keeps the name of what is dropped in it, pages
+            // The pages: what the page runs through a slider, after the hero's backdrop. Named by the verb of its section, like the others: the edit screen reads in the page's order and under the same words (see BookSectionsExtension::book()) - the field itself keeps the name of what is dropped in it, pages
             FormField::addFieldset(t('label.read', [], 'book'))
                 ->hideOnIndex(),
-            CollectionField::new('extracts')
-                ->setLabel(t('label.extract', [], 'book'))
-                ->setHelp(t('label.extract-help', [], 'book'))
+            CollectionField::new('pages')
+                ->setLabel(t('label.pages', [], 'book'))
+                ->setHelp(t('label.pages-help', [], 'book'))
                 ->hideOnIndex()
                 ->setEntryType(BookCoverType::class)
                 ->allowAdd()
                 ->allowDelete()
                 ->setFormTypeOption('by_reference', false)
-                ->setFormTypeOption('row_attr', $this->mediaMoveRowAttrBuilder->build($bookId, BookMediaMoveRowAttrBuilder::TARGET_EXTRACT)),
+                ->setFormTypeOption('row_attr', $this->mediaMoveRowAttrBuilder->build($bookId, BookMediaMoveRowAttrBuilder::TARGET_PAGE)),
             // "Listen" - the book's recording and the apps it is followed on, in the page's order. The files themselves are the book's audio medias: they belong to the book and not to its audio edition, which only says the ISBN it comes out under
             FormField::addFieldset(t('label.podcasts', [], 'book'))
                 ->hideOnIndex(),
@@ -335,7 +336,18 @@ class BookCrudController extends AbstractCrudController
                 ->setEntryType(BookMediaType::class)
                 ->allowAdd()
                 ->allowDelete()
-                ->setFormTypeOption('by_reference', false),
+                ->setFormTypeOption('by_reference', false)
+                ->setFormTypeOption('row_attr', ['data-book-audios' => '1']),
+            // The pages' timecodes, beside the recording they are set on: one file, which turns the pages along the voice on the listening page (see ListenController)
+            CollectionField::new('cueFiles')
+                ->setLabel(t('label.media_cues', [], 'book'))
+                ->setHelp(t('label.cues-help', [], 'book'))
+                ->hideOnIndex()
+                ->setEntryType(BookCuesType::class)
+                ->allowAdd(self::isEmpty($book?->getCueFiles()))
+                ->allowDelete()
+                ->setFormTypeOption('by_reference', false)
+                ->setFormTypeOption('row_attr', ['data-book-cues' => '1']),
             CollectionField::new('listenLinks')
                 ->setLabel(t('label.links', [], 'book'))
                 ->setHelp(t('label.listen_links-help', [], 'book'))
@@ -598,8 +610,8 @@ class BookCrudController extends AbstractCrudController
             $this->versionPublisher->moveEdition($edition, $previous);
         }
 
-        // And the pages of the text as it came out, which go with it: the one staying gets its own (see BookVersionPublisher::moveMedias())
-        $this->versionPublisher->moveMedias($book, $previous, ['extract', 'flipbook']);
+        // And the pages of the text as it came out, which go with it, their timecodes too - they name those pages: the one staying gets its own (see BookVersionPublisher::moveMedias())
+        $this->versionPublisher->moveMedias($book, $previous, ['page', 'flipbook', 'cues']);
 
         $entityManager->flush();
 

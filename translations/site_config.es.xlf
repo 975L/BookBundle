@@ -46,6 +46,10 @@
                 <source>description.book_route_contributors</source>
                 <target>Primer segmento de la URL que enumera los autores e ilustradores, p. ej. "autores". Vacío, la lista ya no se sirve.</target>
             </trans-unit>
+            <trans-unit id="qIHKFOC">
+                <source>description.book_route_listen</source>
+                <target>Primer segmento de la URL que lista los libros con grabación, p. ej. "escuchar", y del reproductor de cada libro debajo (/escuchar/mi-libro), con sus páginas pasando al ritmo del audio cuando tiene un archivo de códigos de tiempo. Vacío, las páginas no se sirven.</target>
+            </trans-unit>
             <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
                 <target>Primer segmento de la URL que lista las series de libros, p. ej. "series", y de la página de cada serie bajo ella (/series/mi-serie). Vacío, las páginas dejan de servirse.</target>
@@ -121,6 +125,10 @@
             <trans-unit id="Q28nR8K">
                 <source>label.book_route_contributors</source>
                 <target>Prefijo URL de la lista de autores</target>
+            </trans-unit>
+            <trans-unit id="Cn3xAEJ">
+                <source>label.book_route_listen</source>
+                <target>Prefijo URL de los libros para escuchar</target>
             </trans-unit>
             <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>

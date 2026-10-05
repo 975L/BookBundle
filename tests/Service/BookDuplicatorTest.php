@@ -235,8 +235,8 @@ class BookDuplicatorTest extends TestCase
         $book->addEdition($audio);
 
         $book->addCover(new BookMedia()->setName('medias/book/books/cover-tome-1.webp'));
-        $book->addMedia(new BookMedia()->setKind('extract')->setName('medias/book/books/page-1.webp'));
-        $book->addMedia(new BookMedia()->setKind('extract')->setName('medias/book/books/page-2.webp'));
+        $book->addMedia(new BookMedia()->setKind('page')->setName('medias/book/books/page-1.webp'));
+        $book->addMedia(new BookMedia()->setKind('page')->setName('medias/book/books/page-2.webp'));
         $book->addLink(new BookLink()->setKind('epub_kobo')->setUrl('https://example.org/kobo'));
         $book->addLink(new BookLink()->setKind('website')->setUrl('https://example.org'));
 

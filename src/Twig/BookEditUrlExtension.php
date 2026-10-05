@@ -35,8 +35,7 @@ class BookEditUrlExtension
         'hero' => 'title',
         'resume' => 'summary',
         'apercu' => 'videos',
-        // The extracts are the files held under no edition and the editions are the files held under one, both written inside the editions collection - where the platforms used to be written too, before each gesture took a collection of its own (see BookCrudController): the crayon over the shops card then opened the editions
-        'extracts' => 'editions',
+        'pages' => 'pages',
         'editions' => 'editions',
         'shops' => 'buyLinks',
         'podcasts' => 'listenLinks',

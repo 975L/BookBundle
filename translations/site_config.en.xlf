@@ -46,6 +46,10 @@
                 <source>description.book_route_contributors</source>
                 <target>First segment of the url listing the authors and illustrators, e.g. "authors". Left empty, the list is not served at all.</target>
             </trans-unit>
+            <trans-unit id="qIHKFOC">
+                <source>description.book_route_listen</source>
+                <target>First segment of the URL listing the books holding a recording, e.g. "listen", and of each book's player below it (/listen/my-book), its pages turning along the audio when it has a timecodes file. Empty, the pages are not served.</target>
+            </trans-unit>
             <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
                 <target>First segment of the url listing the book series, e.g. "series", and of each serie's own page below it (/series/my-serie). Left empty, the pages are not served at all.</target>
@@ -121,6 +125,10 @@
             <trans-unit id="Q28nR8K">
                 <source>label.book_route_contributors</source>
                 <target>Authors list url prefix</target>
+            </trans-unit>
+            <trans-unit id="Cn3xAEJ">
+                <source>label.book_route_listen</source>
+                <target>URL prefix of the books to listen to</target>
             </trans-unit>
             <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>

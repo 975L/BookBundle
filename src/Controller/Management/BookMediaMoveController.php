@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-// Moves a file of a book from one collection to another, as UiBundle's drag-and-drop asks (see its assets/js/ea-sortable.js): the row is never rewritten in the browser, its id is posted here and the page reloads - which is what lets two collections of different shapes swap rows, an edition row and an extract row not holding the same fields
+// Moves a file of a book from one collection to another, as UiBundle's drag-and-drop asks (see its assets/js/ea-sortable.js): the row is never rewritten in the browser, its id is posted here and the page reloads - which is what lets two collections of different shapes swap rows, an edition row and a page row not holding the same fields
 class BookMediaMoveController extends AbstractController
 {
     public function __construct(
@@ -67,7 +67,7 @@ class BookMediaMoveController extends AbstractController
     // The target says where the file lands, and both belong to the book: what is leafed through before buying, and what runs through the slider. An edition is no target any more: it carries only what the book comes out under, its files belonging to the book (see BookEditionType)
     private function relocate(BookMedia $media, string $target): ?string
     {
-        if (BookMediaMoveRowAttrBuilder::TARGET_FLIPBOOK !== $target && BookMediaMoveRowAttrBuilder::TARGET_EXTRACT !== $target) {
+        if (BookMediaMoveRowAttrBuilder::TARGET_FLIPBOOK !== $target && BookMediaMoveRowAttrBuilder::TARGET_PAGE !== $target) {
             return 'unknown_target';
         }
 

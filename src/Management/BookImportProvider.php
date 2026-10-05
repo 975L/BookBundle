@@ -18,6 +18,7 @@ use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
 use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Enum\BookMediaKind;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\ConfigBundle\Management\ImportProviderInterface;
 use c975L\UiBundle\Management\BlockDataImporter;
@@ -302,7 +303,9 @@ class BookImportProvider implements ImportProviderInterface
         $written = [];
 
         if (array_key_exists('medias', $item)) {
-            $written = [...$written, ...$this->mediaArchiver->sync($book->getMedias(), $item['medias'], static fn (): BookMedia => new BookMedia(), $book->addMedia(...), $book->removeMedia(...))];
+            // An archive exported before the "extract" kind was renamed "page" (2.15) still reads as pages
+            $medias = array_map(static fn (array $media): array => 'extract' === ($media['kind'] ?? null) ? [...$media, 'kind' => BookMediaKind::Page->value] : $media, $item['medias']);
+            $written = [...$written, ...$this->mediaArchiver->sync($book->getMedias(), $medias, static fn (): BookMedia => new BookMedia(), $book->addMedia(...), $book->removeMedia(...))];
         }
 
         if (array_key_exists('videos', $item)) {

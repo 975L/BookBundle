@@ -10,18 +10,25 @@ import { Controller } from "@hotwired/stimulus";
 // Reads an illustrated album page by page along its recording: the voice turns the pages, and turning one by hand moves the playhead to that page's cue.
 // Drives UiBundle's slider through its own dots rather than its controller's methods - the dots are the slider's public surface, so the two stay independent.
 export default class extends Controller {
-    static values = { cues: Array, autoAdvance: Boolean };
+    static values = { cues: Array, cuesUrl: String, autoAdvance: Boolean };
 
-    connect() {
+    async connect() {
         this.audio = this.element.querySelector("audio");
         this.dots = Array.from(this.element.querySelectorAll(".slider-dot"));
-        // Sorted here rather than trusting the order the pages were entered in: currentCue() reads the last cue already passed
-        this.cues = this.cuesValue.filter((cue) => Number.isFinite(cue.start)).sort((a, b) => a.start - b.start);
         this.page = 1;
 
         if (!this.audio || 0 === this.dots.length) {
             return;
         }
+
+        // A WebVTT file wins over the inline cues; one that cannot be read leaves the pages to the reader alone
+        const cues = this.cuesUrlValue ? await this.readCuesFile(this.cuesUrlValue) : this.cuesValue;
+        // Turbo may have taken the page away while the file was on its way: nothing left to listen to
+        if (!this.element.isConnected) {
+            return;
+        }
+        // Sorted here rather than trusting the order the pages were entered in: followVoice() reads the last cue already passed
+        this.cues = cues.filter((cue) => Number.isFinite(cue.start)).sort((a, b) => a.start - b.start);
 
         // Guards the round trip: seeking raises "timeupdate", which would turn the page that just moved the playhead
         this.seeking = false;
@@ -38,6 +45,29 @@ export default class extends Controller {
     disconnect() {
         this.audio?.removeEventListener("timeupdate", this.onTimeUpdate);
         this.dots?.forEach((dot) => { dot.removeEventListener("click", this.onDotClick); });
+    }
+
+    // The cues of a WebVTT file: each cue's identifier is its page's number, its start time where that page begins
+    async readCuesFile(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                return [];
+            }
+            const blocks = (await response.text()).replace(/\r/g, "").split(/\n{2,}/);
+
+            return blocks.flatMap((block) => {
+                const match = block.trim().match(/^(\d+)\n(?:(\d+):)?(\d{2}):(\d{2}(?:\.\d+)?)\s*-->/);
+                if (!match) {
+                    return [];
+                }
+                const [, page, hours, minutes, seconds] = match;
+
+                return [{ page: Number(page), start: Number(hours ?? 0) * 3600 + Number(minutes) * 60 + Number(seconds) }];
+            });
+        } catch {
+            return [];
+        }
     }
 
     // The page the recording has reached - the last cue it has passed

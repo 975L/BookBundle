@@ -30,6 +30,7 @@ class BookLinkLocalizerTest extends TestCase
     private const array PREFIXES = [
         'book-route-books' => 'livres',
         'book-route-book' => 'livre',
+        'book-route-listen' => 'ecouter',
         'book-route-series' => 'series',
         'book-route-categories' => 'categories',
         'book-route-contributors' => 'auteurs',
@@ -53,6 +54,8 @@ class BookLinkLocalizerTest extends TestCase
         $this->assertSame('/en/series/le-fil-rouge', $localizer->localize('/series/le-fil-rouge'));
         $this->assertSame('/en/categories/romans', $localizer->localize('/categories/romans'));
         $this->assertSame('/en/auteur/camille-ferrand', $localizer->localize('/auteur/camille-ferrand'));
+        $this->assertSame('/en/ecouter', $localizer->localize('/ecouter'));
+        $this->assertSame('/en/ecouter/la-licorne', $localizer->localize('/ecouter/la-licorne'));
     }
 
     // A word linked inside a rich text is a link like any other
@@ -116,6 +119,8 @@ class BookLinkLocalizerTest extends TestCase
                 $segments = match ($bare) {
                     'book_index' => [$segment('book-route-books')],
                     'book_display' => [$segment('book-route-book'), $parameters['slug']],
+                    'book_listen_index' => [$segment('book-route-listen')],
+                    'book_listen' => [$segment('book-route-listen'), $parameters['slug']],
                     'serie_index' => [$segment('book-route-series')],
                     'serie_display' => [$segment('book-route-series'), $parameters['slug']],
                     'book_category_index' => [$segment('book-route-categories')],
