@@ -343,7 +343,8 @@ A seventh kind, `book_reader`, holds its own content instead of querying anythin
 stores the album's pages in order then its recording, and a `cues` row for each page the voice turns
 (`Form\Block\ReaderCueType` — the second of the recording it is turned at), none where the pages are turned by
 hand, so its entry goes stale on a Block event alone and it needs no resolver at all. It drives UiBundle's
-`slider` through the slider's own dots, the two staying independent.
+`slider` through the slider's own dots, the two staying independent; its pages crossfade rather than slide
+(`.book-reader` overriding the slider's `animation-name`), with no animation under `prefers-reduced-motion`.
 
 The six listing kinds each carry their own head: anchor, eyebrow, title, paragraph, colored flat and a link
 closing it (`linkLabel` and `linkUrl`, both needed), shared through

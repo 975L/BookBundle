@@ -3,6 +3,11 @@
         "date": "2026-10-05",
         "description": [
             {
+                "en": "On the listening page, pages now fade gently into each other instead of sliding.",
+                "fr": "Sur la page d'écoute, les pages se fondent désormais doucement l'une dans l'autre au lieu de glisser.",
+                "es": "En la página de escucha, las páginas se funden ahora suavemente una en otra en lugar de deslizarse."
+            },
+            {
                 "en": "A book's recording can now turn its pages by itself: upload the page timecodes file, and the listening page shows each page as the voice reaches it.",
                 "fr": "L'enregistrement d'un livre peut désormais tourner ses pages tout seul : déposez le fichier des timecodes des pages, et la page d'écoute affiche chaque page au moment où la voix l'atteint.",
                 "es": "La grabación de un libro puede ahora pasar sus páginas sola: suba el archivo de códigos de tiempo de las páginas, y la página de escucha muestra cada página en el momento en que la voz llega a ella."

@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.15.1
+
+Reader pages fade into each other
+
+- `Reader:Reader` crossfades its pages instead of sliding them, none under reduced motion (05/10/2026)
+
 ## v2.15.0
 
 Listening pages turning a book's pages along its recording

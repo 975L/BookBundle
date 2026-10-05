@@ -97,7 +97,7 @@ $book-bp-row-3: 1025px;
     gap: var(--book-grid-gap);
 }
 
-// The same width as the extracts slider: the two read one under the other, and two measures would show
+// The same width as the pages slider: the two read one under the other, and two measures would show
 .book-page__flipbook video {
     display: block;
     width: 100%;
@@ -107,8 +107,7 @@ $book-bp-row-3: 1025px;
     object-fit: contain;
 }
 
-// SLIDER - the extracts: what a reader comes to leaf through, so no frame around them and a notch larger than the other medias. The same card-less form as the text, with a measure of its own
-// The box follows the picture: its height is computed on its width by the slider itself, so the width is what is bounded - a height ceiling shrank the box without shrinking its width, and the arrows laid on its edges ended up beside the picture rather than over it
+// SLIDER - the pages: what a reader comes to leaf through, so no frame around them and a notch larger than the other medias. The box follows the picture, its height computed on its width by the slider, so the width is what is bounded - a height ceiling left the arrows beside the picture
 .book-section--slider .slider {
     width: 100%;
     max-width: min(100%, var(--book-slider-max-width));
@@ -1078,5 +1077,30 @@ main :is(.blocks, .block-animation, .block-editable) > .book-listing {
 @media print {
     .strip-nav {
         display: none;
+    }
+}
+
+// READER - a page fades into the next rather than sliding, whether the voice or a finger turns it: a slide pulls the eye sideways at every page of a bedtime story. Only the animation's name changes, UiBundle's slider keeping its timing and its classes
+.book-reader .slider-item:is(.slide-in-right, .slide-in-left) {
+    animation-name: bookReaderFadeIn;
+}
+
+.book-reader .slider-item:is(.slide-out-right, .slide-out-left) {
+    animation-name: bookReaderFadeOut;
+}
+
+@keyframes bookReaderFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes bookReaderFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .book-reader .slider-item {
+        animation: none;
     }
 }
