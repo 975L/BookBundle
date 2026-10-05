@@ -284,7 +284,7 @@
             </trans-unit>
             <trans-unit id="4cz3uxf">
                 <source>narration.guided_step_book_listen_done</source>
-                <target>Le livre s'écoute. La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration.</target>
+                <target>Le livre s'écoute. La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration. Le réglage « Son de page » y ajoute un petit son à chaque page tournée par la voix.</target>
             </trans-unit>
             <trans-unit id="vhlfKsq">
                 <source>narration.guided_step_book_listen_edit</source>

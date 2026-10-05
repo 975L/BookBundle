@@ -284,7 +284,7 @@
             </trans-unit>
             <trans-unit id="4cz3uxf">
                 <source>narration.guided_step_book_listen_done</source>
-                <target>The book can be listened to. The listening page answers only once the site has given it an address: the "URL prefix of the books to listen to", in the configuration.</target>
+                <target>The book can be listened to. The listening page answers only once the site has given it an address: the "URL prefix of the books to listen to", in the configuration. The "Page sound" setting there adds a short sound each time the voice turns a page.</target>
             </trans-unit>
             <trans-unit id="vhlfKsq">
                 <source>narration.guided_step_book_listen_edit</source>

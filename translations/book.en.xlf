@@ -360,7 +360,7 @@
             </trans-unit>
             <trans-unit id="u7M2BLI">
                 <source>description.guided_step_book_listen_done</source>
-                <target>The listening page answers only once the site has given it an address: the "URL prefix of the books to listen to", in the configuration.</target>
+                <target>The listening page answers only once the site has given it an address: the "URL prefix of the books to listen to", in the configuration. The "Page sound" setting there adds a short sound each time the voice turns a page.</target>
             </trans-unit>
             <trans-unit id="GBg0WvF">
                 <source>description.guided_step_book_listen_edit</source>

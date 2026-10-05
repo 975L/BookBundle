@@ -18,6 +18,10 @@
                 <source>description.book_isbn_prefixes</source>
                 <target>Les racines ISBN de la maison, une par ligne et avec leurs tirets, ex. « 978-2-488750 ». La coupure d'un ISBN ne se déduit pas du numéro : elle vient des plages officielles de l'Agence internationale de l'ISBN. Un numéro qui ne commence par aucune racine déclarée s'affiche sans tirets.</target>
             </trans-unit>
+            <trans-unit id="J.AoxnV">
+                <source>description.book_page_sound</source>
+                <target>Joue un petit son quand l'enregistrement d'un livre tourne la page sur la page d'écoute</target>
+            </trans-unit>
             <trans-unit id="DXvp5yF">
                 <source>description.book_rating</source>
                 <target>Affiche la note des lecteurs sur la page d'un livre, d'une série et d'une planche, ainsi que sur chaque vignette des listes de livres et de planches. L'icône et l'échelle se règlent dans les réglages d'UiBundle.</target>
@@ -97,6 +101,10 @@
             <trans-unit id="S6xSPpL">
                 <source>label.book_isbn_prefixes</source>
                 <target>Racines ISBN</target>
+            </trans-unit>
+            <trans-unit id="4VFjkIr">
+                <source>label.book_page_sound</source>
+                <target>Son de page</target>
             </trans-unit>
             <trans-unit id="ZRe0eUt">
                 <source>label.book_rating</source>

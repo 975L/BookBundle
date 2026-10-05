@@ -1,8 +1,10 @@
-{# <twig:c975LBook:Reader:Reader media="{{ images }}" audio="{{ audioMedia }}" id="reader" [cues="{{ [{page: 1, start: 0}, ...] }}"] [cuesFile="{{ book.cues }}"] [title=""] [autoAdvance=true] /> #}
+{# <twig:c975LBook:Reader:Reader media="{{ images }}" audio="{{ audioMedia }}" id="reader" [cues="{{ [{page: 1, start: 0}, ...] }}"] [cuesFile="{{ book.cues }}"] [title=""] [autoAdvance=true] [pageSound="url"] /> #}
 {# The recording is the clock: the controller turns the slider's pages at the cues, and moves the playhead when a page is turned by hand. The cues come inline or as a WebVTT file (BookMediaKind::Cues), each cue's identifier being its page's number - the file wins when both are given #}
 {% set cues = cues|default([]) %}
+{# The sound played when the voice turns a page: the one given, else the bundle's own when the site turns "book-page-sound" on #}
+{% set pageSound = pageSound|default(config('book-page-sound')|to_bool ? asset('bundles/c975lbook/sounds/page-turn.mp3') : '') %}
 {% if media|length > 0 %}
-    <div class="book-reader" data-controller="book-reader" data-book-reader-cues-value="{{ cues|json_encode }}"{% if cuesFile|default(null) %} data-book-reader-cues-url-value="{{ vich_uploader_asset(cuesFile) }}"{% endif %} data-book-reader-auto-advance-value="{{ (autoAdvance|default(true) and audio) ? 'true' : 'false' }}">
+    <div class="book-reader" data-controller="book-reader" data-book-reader-cues-value="{{ cues|json_encode }}"{% if cuesFile|default(null) %} data-book-reader-cues-url-value="{{ vich_uploader_asset(cuesFile) }}"{% endif %}{% if audio and pageSound %} data-book-reader-page-sound-url-value="{{ pageSound }}"{% endif %} data-book-reader-auto-advance-value="{{ (autoAdvance|default(true) and audio) ? 'true' : 'false' }}">
         {# Duration 0: nothing else may turn a page while the voice reads #}
         <twig:c975LUi:Slider:Slider media="{{ media }}" id="{{ id }}" duration="0" ratio="free" />
         {% if audio %}

@@ -192,6 +192,17 @@
         "description": "description.book_confetti"
     },
     {
+        "label": "label.book_page_sound",
+        "slug": "book-page-sound",
+        "sensitive": false,
+        "restricted": false,
+        "value": "false",
+        "kind": "bool",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_page_sound"
+    },
+    {
         "label": "label.book_rating",
         "slug": "book-rating",
         "sensitive": false,

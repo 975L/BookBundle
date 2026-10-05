@@ -360,7 +360,7 @@
             </trans-unit>
             <trans-unit id="u7M2BLI">
                 <source>description.guided_step_book_listen_done</source>
-                <target>La página de escucha solo responde si el sitio le ha dado una dirección: el «Prefijo URL de los libros para escuchar», en la configuración.</target>
+                <target>La página de escucha solo responde si el sitio le ha dado una dirección: el «Prefijo URL de los libros para escuchar», en la configuración. El ajuste «Sonido de página» añade allí un breve sonido cada vez que la voz pasa una página.</target>
             </trans-unit>
             <trans-unit id="GBg0WvF">
                 <source>description.guided_step_book_listen_edit</source>

@@ -11,6 +11,11 @@
         {% if medias|length %}
             <div class="book-listen">
                 <twig:c975LUi:Audio:Audio src="{{ vich_uploader_asset(medias|first) }}" type="{{ (medias|first).mimeType }}" title="{{ book.title }}"/>
+                {# The pages turning along the voice need a page of their own, and only a book carrying their timecodes has them (see Book::getCues()). The best way to hear it, so before the files, set apart from their primary buttons #}
+                {% set listenPath = book.cues and book.pages|length ? book_path('book_listen', {'slug': book.slug}) : null %}
+                {% if listenPath %}
+                    <twig:c975LUi:Button:Button label="{{ 'label.listen_with_pages'|trans({}, 'book', book_ui_locale(book.language)) }}" url="{{ listenPath }}" type="secondary" inline="true"/>
+                {% endif %}
                 {# Then the files themselves, named by their format: one button per recording, the one just played included #}
                 <div class="book-listen__files">
                     {% for media in medias %}
@@ -18,11 +23,6 @@
                         <twig:c975LUi:Button:Button label="{{ 'label.download'|trans({}, 'ui', book_ui_locale(book.language)) }} {{ media.name|split('.')|last|upper }}" url="{{ vich_uploader_asset(media) }}" inline="true"/>
                     {% endfor %}
                 </div>
-                {# The pages turning along the voice need a page of their own, and only a book carrying their timecodes has them (see Book::getCues()) #}
-                {% set listenPath = book.cues and book.pages|length ? book_path('book_listen', {'slug': book.slug}) : null %}
-                {% if listenPath %}
-                    <a href="{{ listenPath }}">{{ 'label.listen_with_pages'|trans({}, 'book', book_ui_locale(book.language)) }}</a>
-                {% endif %}
             </div>
         {% endif %}
         {% if links|length %}

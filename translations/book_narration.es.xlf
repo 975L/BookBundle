@@ -284,7 +284,7 @@
             </trans-unit>
             <trans-unit id="4cz3uxf">
                 <source>narration.guided_step_book_listen_done</source>
-                <target>El libro se puede escuchar. La página de escucha solo responde si el sitio le ha dado una dirección: el «Prefijo URL de los libros para escuchar», en la configuración.</target>
+                <target>El libro se puede escuchar. La página de escucha solo responde si el sitio le ha dado una dirección: el «Prefijo URL de los libros para escuchar», en la configuración. El ajuste «Sonido de página» añade allí un breve sonido cada vez que la voz pasa una página.</target>
             </trans-unit>
             <trans-unit id="vhlfKsq">
                 <source>narration.guided_step_book_listen_edit</source>

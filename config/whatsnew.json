@@ -3,6 +3,11 @@
         "date": "2026-10-05",
         "description": [
             {
+                "en": "The listening page can play a little xylophone sound each time the voice turns the page, like a read-along record: turn it on in the settings.",
+                "fr": "La page d'écoute peut jouer un petit son de xylophone chaque fois que la voix tourne la page, comme un livre-disque : activez-le dans les réglages.",
+                "es": "La página de escucha puede reproducir un pequeño sonido de xilófono cada vez que la voz pasa la página, como un libro-disco: actívelo en los ajustes."
+            },
+            {
                 "en": "A book's listening section now offers a link to listen while turning its pages, and turning a page with the arrows or a swipe moves the recording along.",
                 "fr": "La section d'écoute d'un livre propose désormais un lien pour écouter en suivant les pages, et tourner une page avec les flèches ou d'un glissement fait suivre l'enregistrement.",
                 "es": "La sección de escucha de un libro ofrece ahora un enlace para escuchar siguiendo las páginas, y pasar una página con las flechas o deslizando hace avanzar la grabación."

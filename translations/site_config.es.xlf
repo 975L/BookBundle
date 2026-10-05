@@ -18,6 +18,10 @@
                 <source>description.book_isbn_prefixes</source>
                 <target>Las raíces ISBN de la editorial, una por línea y con sus guiones, p. ej. «978-2-488750». El corte de un ISBN no se deduce del número: proviene de los rangos oficiales de la Agencia Internacional del ISBN. Un número que no empieza por ninguna raíz declarada se muestra sin guiones.</target>
             </trans-unit>
+            <trans-unit id="J.AoxnV">
+                <source>description.book_page_sound</source>
+                <target>Reproduce un breve sonido cuando la grabación de un libro pasa la página en la página de escucha</target>
+            </trans-unit>
             <trans-unit id="DXvp5yF">
                 <source>description.book_rating</source>
                 <target>Muestra la nota de los lectores en la página de un libro, de una serie y de una plancha, así como en cada tarjeta de las listas de libros y de planchas. El icono y la escala se ajustan en los ajustes de UiBundle.</target>
@@ -97,6 +101,10 @@
             <trans-unit id="S6xSPpL">
                 <source>label.book_isbn_prefixes</source>
                 <target>Raíces ISBN</target>
+            </trans-unit>
+            <trans-unit id="4VFjkIr">
+                <source>label.book_page_sound</source>
+                <target>Sonido de página</target>
             </trans-unit>
             <trans-unit id="ZRe0eUt">
                 <source>label.book_rating</source>

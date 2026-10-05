@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.15.3
+
+An optional page-turn sound on the listening page
+
+- `book-page-sound` setting: a sound rings when the voice turns to the next page, off by default (05/10/2026)
+- `Reader:Reader` takes `pageSound`, the bundle shipping `sounds/page-turn.mp3` (05/10/2026)
+- `Book:Podcasts` listening link becomes a secondary button, set before the files (05/10/2026)
+
 ## v2.15.2
 
 Podcasts card links to the listening page

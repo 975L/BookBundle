@@ -360,7 +360,7 @@
             </trans-unit>
             <trans-unit id="u7M2BLI">
                 <source>description.guided_step_book_listen_done</source>
-                <target>La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration.</target>
+                <target>La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration. Le réglage « Son de page » y ajoute un petit son à chaque page tournée par la voix.</target>
             </trans-unit>
             <trans-unit id="GBg0WvF">
                 <source>description.guided_step_book_listen_edit</source>

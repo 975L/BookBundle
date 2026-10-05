@@ -10,7 +10,7 @@ import { Controller } from "@hotwired/stimulus";
 // Reads an illustrated album page by page along its recording: the voice turns the pages, and turning one by hand moves the playhead to that page's cue.
 // Talks to UiBundle's slider only through its public surface - its dots to turn a page, its "slider:changed" event to learn one was turned - so the two stay independent.
 export default class extends Controller {
-    static values = { cues: Array, cuesUrl: String, autoAdvance: Boolean };
+    static values = { cues: Array, cuesUrl: String, autoAdvance: Boolean, pageSoundUrl: String };
 
     async connect() {
         this.audio = this.element.querySelector("audio");
@@ -30,8 +30,14 @@ export default class extends Controller {
         // Sorted here rather than trusting the order the pages were entered in: followVoice() reads the last cue already passed
         this.cues = cues.filter((cue) => Number.isFinite(cue.start)).sort((a, b) => a.start - b.start);
 
+        // Loaded ahead, so the sound is ready when the first page turns
+        this.pageSound = this.pageSoundUrlValue ? new Audio(this.pageSoundUrlValue) : null;
+        this.pageSound?.load();
+
         // Guards the round trip: seeking raises "timeupdate", which would turn the page that just moved the playhead
         this.seeking = false;
+        // Where the previous "timeupdate" left the recording: playing moves it a fraction of a second, a jump much further
+        this.lastTime = 0;
 
         this.onTimeUpdate = () => this.followVoice();
         this.onPageTurned = (event) => this.followReader(event);
@@ -73,6 +79,8 @@ export default class extends Controller {
 
     // The page the recording has reached - the last cue it has passed
     followVoice() {
+        const elapsed = this.audio.currentTime - this.lastTime;
+        this.lastTime = this.audio.currentTime;
         if (this.seeking) {
             return;
         }
@@ -85,9 +93,22 @@ export default class extends Controller {
         }
 
         if (page !== this.page) {
+            // Only the voice moving on to the next page rings: a jump along the timeline is not a page being read
+            if (page === this.page + 1 && elapsed < 1) {
+                this.ringPageSound();
+            }
             this.page = page;
             this.dots[page - 1]?.click();
         }
+    }
+
+    // The sound of a page turning, from its start even if the previous one is still ringing
+    ringPageSound() {
+        if (!this.pageSound) {
+            return;
+        }
+        this.pageSound.currentTime = 0;
+        this.pageSound.play().catch(() => {});
     }
 
     // A page turned by hand moves the recording to that page's cue, so the voice never reads a page that is no longer shown. The page the voice has just turned comes back here too, already current: nothing to seek

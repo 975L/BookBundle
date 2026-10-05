@@ -18,6 +18,10 @@
                 <source>description.book_isbn_prefixes</source>
                 <target>The publisher's own ISBN roots, one per line and with their hyphens, e.g. “978-2-488750”. Where an ISBN is cut is not deducible from the number: it comes from the official ranges of the International ISBN Agency. A number starting with none of the declared roots is printed with no hyphen at all.</target>
             </trans-unit>
+            <trans-unit id="J.AoxnV">
+                <source>description.book_page_sound</source>
+                <target>Plays a short sound when a book's recording turns the page on the listening page</target>
+            </trans-unit>
             <trans-unit id="DXvp5yF">
                 <source>description.book_rating</source>
                 <target>Shows the readers' score on the page of a book, of a serie and of a strip, and on every card of the book and strip listings. The icon and the scale are UiBundle's own settings.</target>
@@ -97,6 +101,10 @@
             <trans-unit id="S6xSPpL">
                 <source>label.book_isbn_prefixes</source>
                 <target>ISBN roots</target>
+            </trans-unit>
+            <trans-unit id="4VFjkIr">
+                <source>label.book_page_sound</source>
+                <target>Page sound</target>
             </trans-unit>
             <trans-unit id="ZRe0eUt">
                 <source>label.book_rating</source>
