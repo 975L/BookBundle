@@ -2,6 +2,22 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.16
+
+**A category's code becomes one code per classification.** `BookCategory::getCode()`/`setCode()` become
+`getCodes()`/`setCodes()`, an array keyed by `BookSubjectScheme` (`clil`, `thema`, `bisac`). Run once on each
+site, before `doctrine:schema:update` drops the old column, to keep the codes already typed as CLIL ones:
+
+```sql
+ALTER TABLE book_category ADD codes JSON DEFAULT NULL;
+UPDATE book_category SET codes = JSON_OBJECT('clil', code) WHERE code IS NOT NULL AND code <> '';
+```
+
+An archive exported before this version is read the same way on import, its `code` landing under `clil`.
+
+`BookEdition` gets two columns, `price` (nullable) and `currency` (`EUR` by default): `doctrine:schema:update`
+adds them.
+
 ## v2.15
 
 **The media kind `extract` is renamed `page`.** A book's pages are one kind whatever a site shows of them: a few

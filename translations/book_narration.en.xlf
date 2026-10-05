@@ -20,7 +20,7 @@
             </trans-unit>
             <trans-unit id="N9kKVeh">
                 <source>narration.guided_step_book_category_creation_code</source>
-                <target>If you go through a distributor, put the trade code here. Otherwise leave it empty.</target>
+                <target>If you sell through online bookshops, put the trade codes here, one per classification. Otherwise leave them empty.</target>
             </trans-unit>
             <trans-unit id="3cSe4af">
                 <source>narration.guided_step_book_category_creation_done</source>
@@ -329,6 +329,34 @@
             <trans-unit id="dzJebRH">
                 <source>narration.guided_step_book_media_move_tab</source>
                 <target>Open the page tab, the one holding the files of the book: the flipbook, the pages, the audios and the videos.</target>
+            </trans-unit>
+            <trans-unit id="zKnWbWL">
+                <source>narration.guided_step_book_onix_feed_codes</source>
+                <target>Last, the categories: each carries its CLIL, Thema and BISAC codes. They are what shelve your books in the right sections of the bookshops.</target>
+            </trans-unit>
+            <trans-unit id="C.MMa3m">
+                <source>narration.guided_step_book_onix_feed_done</source>
+                <target>The feed is open. Give its address to your bookshops and distributors. Only the editions holding a thirteen-digit ISBN appear in it.</target>
+            </trans-unit>
+            <trans-unit id="zod5.rm">
+                <source>narration.guided_step_book_onix_feed_edit</source>
+                <target>Start with the feed address: click Edit on its row. You will come back for the publisher afterwards.</target>
+            </trans-unit>
+            <trans-unit id="_Y7_zvp">
+                <source>narration.guided_step_book_onix_feed_open</source>
+                <target>Here is the configuration screen, narrowed to the two ONIX feed settings: the address the bookshops will read it from, and the publisher name it announces.</target>
+            </trans-unit>
+            <trans-unit id="1F8bI.l">
+                <source>narration.guided_step_book_onix_feed_price</source>
+                <target>The price is set book by book, in its editions: a price tax included and a currency for each. An edition without a price is announced as still to come, or to be asked of the publisher once it is out.</target>
+            </trans-unit>
+            <trans-unit id="lgbpNYV">
+                <source>narration.guided_step_book_onix_feed_publisher</source>
+                <target>Do the same for the ONIX publisher: it is the name the bookshops will read. Left empty, the feed takes the site name.</target>
+            </trans-unit>
+            <trans-unit id="C63qkb1">
+                <source>narration.guided_step_book_onix_feed_route</source>
+                <target>Type an address, for instance onix dot xml: the feed will be served at that address of the site. Left empty, it does not exist. Then save.</target>
             </trans-unit>
             <trans-unit id="rSlOmZ3">
                 <source>narration.guided_step_book_reader_add</source>

@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Tests\Entity;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Enum\BookSubjectScheme;
 use PHPUnit\Framework\TestCase;
 
 class BookCategoryTest extends TestCase
@@ -64,5 +65,16 @@ class BookCategoryTest extends TestCase
 
         $this->assertCount(3, $book->getCategories());
         $this->assertSame([$shown], array_values($book->getShownCategories()->toArray()));
+    }
+
+    // A scheme left blank is no key at all, and several codes of one scheme read one by one
+    public function testCodesAreKeptPerSchemeAndReadOneByOne(): void
+    {
+        $category = new BookCategory()->setCodes(['clil' => '3730', 'thema' => ' YBCS1 5AC ', 'bisac' => '']);
+
+        $this->assertSame(['clil' => '3730', 'thema' => 'YBCS1 5AC'], $category->getCodes());
+        $this->assertSame(['YBCS1', '5AC'], $category->getCodesOf(BookSubjectScheme::Thema));
+        $this->assertSame([], $category->getCodesOf(BookSubjectScheme::Bisac));
+        $this->assertSame([], $category->setCodes(['clil' => ' '])->getCodes());
     }
 }

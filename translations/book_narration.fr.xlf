@@ -20,7 +20,7 @@
             </trans-unit>
             <trans-unit id="N9kKVeh">
                 <source>narration.guided_step_book_category_creation_code</source>
-                <target>Si vous passez par un distributeur, indiquez ici le code du métier. Sinon, laissez vide.</target>
+                <target>Si vous vendez sur les librairies en ligne, indiquez ici les codes du métier, un par classification. Sinon, laissez vide.</target>
             </trans-unit>
             <trans-unit id="3cSe4af">
                 <source>narration.guided_step_book_category_creation_done</source>
@@ -329,6 +329,34 @@
             <trans-unit id="dzJebRH">
                 <source>narration.guided_step_book_media_move_tab</source>
                 <target>Ouvrez l'onglet « Page », celui qui porte les fichiers du livre : le feuilletage, les pages, les audios et les vidéos.</target>
+            </trans-unit>
+            <trans-unit id="zKnWbWL">
+                <source>narration.guided_step_book_onix_feed_codes</source>
+                <target>Enfin, les catégories : chacune porte ses codes CLIL, Thema et BISAC. Ce sont eux qui rangent vos livres dans les bons rayons des librairies.</target>
+            </trans-unit>
+            <trans-unit id="C.MMa3m">
+                <source>narration.guided_step_book_onix_feed_done</source>
+                <target>Le flux est ouvert. Donnez son adresse à vos libraires et à vos distributeurs. N'y figurent que les éditions munies d'un ISBN à treize chiffres.</target>
+            </trans-unit>
+            <trans-unit id="zod5.rm">
+                <source>narration.guided_step_book_onix_feed_edit</source>
+                <target>Commencez par l'adresse du flux : cliquez sur Modifier sur sa ligne. Vous reviendrez ensuite pour l'éditeur.</target>
+            </trans-unit>
+            <trans-unit id="_Y7_zvp">
+                <source>narration.guided_step_book_onix_feed_open</source>
+                <target>Voici l'écran de configuration, réduit aux deux réglages du flux ONIX : l'adresse où les librairies viendront le lire, et le nom de l'éditeur qu'il annonce.</target>
+            </trans-unit>
+            <trans-unit id="1F8bI.l">
+                <source>narration.guided_step_book_onix_feed_price</source>
+                <target>Le prix se donne livre par livre, dans ses éditions : un prix TTC et une devise pour chacune. Une édition sans prix est annoncée à paraître, ou à demander à l'éditeur si elle est déjà sortie.</target>
+            </trans-unit>
+            <trans-unit id="lgbpNYV">
+                <source>narration.guided_step_book_onix_feed_publisher</source>
+                <target>Faites de même pour l'éditeur ONIX : c'est le nom que les librairies liront. Si vous le laissez vide, le flux prend le nom du site.</target>
+            </trans-unit>
+            <trans-unit id="C63qkb1">
+                <source>narration.guided_step_book_onix_feed_route</source>
+                <target>Tapez une adresse, par exemple onix point xml : le flux sera servi à cette adresse du site. Laissée vide, il n'existe pas. Puis enregistrez.</target>
             </trans-unit>
             <trans-unit id="rSlOmZ3">
                 <source>narration.guided_step_book_reader_add</source>

@@ -60,7 +60,7 @@ class BookCategoryExportProvider implements ExportProviderInterface
             'slug' => $category->getSlug(),
             'title' => $category->getTitle(),
             'summary' => $category->getSummary(),
-            'code' => $category->getCode(),
+            'codes' => $category->getCodes(),
             'position' => $category->getPosition(),
             'creation' => $category->getCreation()?->format(\DateTimeInterface::ATOM),
             'modification' => $category->getModification()?->format(\DateTimeInterface::ATOM),

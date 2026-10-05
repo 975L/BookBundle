@@ -20,7 +20,7 @@
             </trans-unit>
             <trans-unit id="N9kKVeh">
                 <source>narration.guided_step_book_category_creation_code</source>
-                <target>Si publica a través de un distribuidor, indique aquí el código del sector. Si no, déjelo vacío.</target>
+                <target>Si vende en librerías en línea, indique aquí los códigos del sector, uno por clasificación. Si no, déjelos vacíos.</target>
             </trans-unit>
             <trans-unit id="3cSe4af">
                 <source>narration.guided_step_book_category_creation_done</source>
@@ -329,6 +329,34 @@
             <trans-unit id="dzJebRH">
                 <source>narration.guided_step_book_media_move_tab</source>
                 <target>Abra la pestaña «Página», la que lleva los archivos del libro: el hojeo, las páginas, los audios y los vídeos.</target>
+            </trans-unit>
+            <trans-unit id="zKnWbWL">
+                <source>narration.guided_step_book_onix_feed_codes</source>
+                <target>Por último, las categorías: cada una lleva sus códigos CLIL, Thema y BISAC. Son ellos los que colocan sus libros en las secciones adecuadas de las librerías.</target>
+            </trans-unit>
+            <trans-unit id="C.MMa3m">
+                <source>narration.guided_step_book_onix_feed_done</source>
+                <target>El flujo está abierto. Dé su dirección a sus librerías y distribuidores. Solo figuran las ediciones con un ISBN de trece cifras.</target>
+            </trans-unit>
+            <trans-unit id="zod5.rm">
+                <source>narration.guided_step_book_onix_feed_edit</source>
+                <target>Empiece por la dirección del flujo: haga clic en Modificar en su línea. Después volverá para la editorial.</target>
+            </trans-unit>
+            <trans-unit id="_Y7_zvp">
+                <source>narration.guided_step_book_onix_feed_open</source>
+                <target>Esta es la pantalla de configuración, reducida a los dos ajustes del flujo ONIX: la dirección donde las librerías lo leerán y el nombre de la editorial que anuncia.</target>
+            </trans-unit>
+            <trans-unit id="1F8bI.l">
+                <source>narration.guided_step_book_onix_feed_price</source>
+                <target>El precio se indica libro por libro, en sus ediciones: un precio con impuestos y una moneda para cada una. Una edición sin precio se anuncia como por fijar, o a consultar con la editorial si ya ha salido.</target>
+            </trans-unit>
+            <trans-unit id="lgbpNYV">
+                <source>narration.guided_step_book_onix_feed_publisher</source>
+                <target>Haga lo mismo con la editorial ONIX: es el nombre que leerán las librerías. Si lo deja vacío, el flujo toma el nombre del sitio.</target>
+            </trans-unit>
+            <trans-unit id="C63qkb1">
+                <source>narration.guided_step_book_onix_feed_route</source>
+                <target>Escriba una dirección, por ejemplo onix punto xml: el flujo se servirá en esa dirección del sitio. Vacía, no existe. Luego guarde.</target>
             </trans-unit>
             <trans-unit id="rSlOmZ3">
                 <source>narration.guided_step_book_reader_add</source>

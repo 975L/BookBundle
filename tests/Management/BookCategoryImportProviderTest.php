@@ -38,7 +38,7 @@ class BookCategoryImportProviderTest extends TestCase
             ->setSlug('romans')
             ->setTitle('Romans')
             ->setSummary('Des récits au long cours')
-            ->setCode('3435')
+            ->setCodes(['clil' => '3435', 'thema' => 'FV 1DDF-FR-VG'])
             ->setPosition(2)
             ->setCreation(new \DateTime('2026-01-02 10:00:00'))
             ->setModification(new \DateTime('2026-01-03 11:00:00'));
@@ -54,8 +54,17 @@ class BookCategoryImportProviderTest extends TestCase
         $imported = array_values(array_filter($persisted, static fn (object $e) => $e instanceof BookCategory))[0];
         $this->assertSame('romans', $imported->getSlug());
         $this->assertSame('Romans', $imported->getTitle());
-        $this->assertSame('3435', $imported->getCode());
+        $this->assertSame(['clil' => '3435', 'thema' => 'FV 1DDF-FR-VG'], $imported->getCodes());
         $this->assertSame(2, $imported->getPosition());
+    }
+
+    // An archive written when a category held a single code, which was a CLIL one
+    public function testALegacySingleCodeLandsUnderClil(): void
+    {
+        $persisted = [];
+        $this->createProvider(persisted: $persisted)->import([['slug' => 'romans', 'title' => 'Romans', 'code' => '3435']]);
+
+        $this->assertSame(['clil' => '3435'], array_values(array_filter($persisted, static fn (object $e) => $e instanceof BookCategory))[0]->getCodes());
     }
 
     // The archive is a faithful copy: a category exported out of the trash comes back to the trash rather than onto the site
@@ -74,7 +83,7 @@ class BookCategoryImportProviderTest extends TestCase
         $this->createProvider(persisted: $persisted)->import([['slug' => 'romans', 'title' => 'Romans']]);
 
         $imported = array_values(array_filter($persisted, static fn (object $e) => $e instanceof BookCategory))[0];
-        $this->assertNull($imported->getCode());
+        $this->assertSame([], $imported->getCodes());
         $this->assertSame(0, $imported->getPosition());
         $this->assertFalse($imported->isDeleted());
         $this->assertFalse($imported->isHidden());

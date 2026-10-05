@@ -29,6 +29,7 @@ class BookGuidedProjectProviderTest extends TestCase
             return $generator;
         });
         $generator->method('setAction')->willReturnSelf();
+        $generator->method('set')->willReturnSelf();
         $generator->method('generateUrl')->willReturn('/management/book');
 
         return $generator;
@@ -56,10 +57,10 @@ class BookGuidedProjectProviderTest extends TestCase
         $projects = $this->projects();
 
         $this->assertSame(
-            ['book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-creation', 'book-media-move', 'book-composition', 'book-listen', 'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash', 'book-export'],
+            ['book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-creation', 'book-media-move', 'book-composition', 'book-listen', 'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash', 'book-export', 'book-onix-feed'],
             array_column($projects, 'slug')
         );
-        $this->assertSame([6005, 6010, 6015, 6020, 6025, 6030, 6031, 6033, 6034, 6035, 6037, 6040, 6045, 6050, 6055, 6060, 6070], array_column($projects, 'order'));
+        $this->assertSame([6005, 6010, 6015, 6020, 6025, 6030, 6031, 6033, 6034, 6035, 6037, 6040, 6045, 6050, 6055, 6060, 6070, 6075], array_column($projects, 'order'));
     }
 
     public function testEverySlugIsPrefixedWithTheBundleName(): void
@@ -77,13 +78,13 @@ class BookGuidedProjectProviderTest extends TestCase
         }
     }
 
-    // Every catalog screen sits behind the site's editor role, so a parcours walking them is dropped for anybody else - the exports alone sit a role above, and a parcours highlighting buttons the user never sees is a broken one (see TrashableCrudTrait::configureActions)
+    // Every catalog screen sits behind the site's editor role, so a parcours walking them is dropped for anybody else - the exports and the ONIX feed's settings alone sit a role above, and a parcours highlighting buttons the user never sees is a broken one (see TrashableCrudTrait::configureActions)
     public function testEveryProjectCarriesTheRoleItsOwnScreensState(): void
     {
         $expected = array_fill_keys([
             'book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-creation', 'book-media-move', 'book-composition',
             'book-listen', 'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash',
-        ], 'ROLE_EDITOR') + ['book-export' => 'ROLE_ADMIN'];
+        ], 'ROLE_EDITOR') + ['book-export' => 'ROLE_ADMIN', 'book-onix-feed' => 'ROLE_ADMIN'];
 
         $roles = array_column($this->projects(), 'role', 'slug');
 
@@ -116,14 +117,14 @@ class BookGuidedProjectProviderTest extends TestCase
         }
     }
 
-    // The catalog's own screens, each parcours opening on the one its task belongs to
+    // The catalog's own screens, each parcours opening on the one its task belongs to - ConfigBundle's for the ONIX feed, whose settings live there
     public function testEveryProjectOpensOnACatalogCrudIndex(): void
     {
         $controllers = [];
         $this->createProvider($controllers)->getGuidedProjects();
 
         $this->assertSame(
-            ['ContributorCrudController', 'SerieCrudController', 'BookCategoryCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'SerieCrudController', 'CharacterCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController'],
+            ['ContributorCrudController', 'SerieCrudController', 'BookCategoryCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'SerieCrudController', 'CharacterCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'ConfigCrudController'],
             array_map(static fn (string $fqcn): string => basename(str_replace('\\', '/', $fqcn)), $controllers)
         );
     }
@@ -227,6 +228,8 @@ class BookGuidedProjectProviderTest extends TestCase
         $sources .= file_get_contents(\dirname(__DIR__, 2) . '/vendor/easycorp/easyadmin-bundle/templates/crud/form_theme.html.twig');
         // "data-content-locales" is the language tab strip ConfigBundle lays above every edit screen holding a language screen
         $sources .= file_get_contents(\dirname(__DIR__, 2) . '/vendor/c975l/core-bundle/ConfigBundle/templates/management/_content_locale_tabs.html.twig');
+        // "data-guided-config-value" is laid by ConfigBundle on the value of the setting the ONIX parcours edits
+        $sources .= file_get_contents(\dirname(__DIR__, 2) . '/vendor/c975l/core-bundle/ConfigBundle/src/Controller/Management/ConfigCrudController.php');
 
         $attributes = [];
         foreach ($this->highlights() as $highlight) {

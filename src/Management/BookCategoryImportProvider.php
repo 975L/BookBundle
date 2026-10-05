@@ -63,7 +63,8 @@ class BookCategoryImportProvider implements ImportProviderInterface
             ->setSlug($item['slug'])
             ->setTitle($item['title'])
             ->setSummary($item['summary'] ?? null)
-            ->setCode($item['code'] ?? null)
+            // An archive older than the schemes carries a single code, which was a CLIL one
+            ->setCodes($item['codes'] ?? (isset($item['code']) ? ['clil' => $item['code']] : null))
             ->setPosition($item['position'] ?? 0)
             // Both columns are required, so an archive predating them dates the category from the import rather than leaving it unwritten
             ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())

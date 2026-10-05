@@ -50,7 +50,8 @@ class BookEditionTypeTest extends TestCase
     {
         $added = $this->build();
 
-        $this->assertSame(['position', 'kind', 'isbn', 'pages', 'format'], array_keys($added));
+        $this->assertSame(['position', 'kind', 'isbn', 'pages', 'format', 'price', 'currency'], array_keys($added));
+        $this->assertSame(100, $added['price']['options']['divisor']);
         $this->assertSame(HiddenType::class, $added['position']['type']);
         $this->assertSame(ChoiceType::class, $added['kind']['type']);
         $this->assertSame(TextType::class, $added['isbn']['type']);

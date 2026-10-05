@@ -16,9 +16,11 @@ use c975L\BookBundle\Controller\Management\CharacterCrudController;
 use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
+use c975L\ConfigBundle\Controller\Management\ConfigCrudController;
 use c975L\ConfigBundle\Management\GuidedProjectProviderInterface;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 
 // This bundle's guided projects, running the 6000 block GuidedProjectProviderInterface reserves them - the same docblock stating every other bundle's, so a range is read there rather than recopied here. They follow the order a catalog is actually built in - the people are credited by the series and the books, the serie holds the books, so each comes before what names it. Only the opening step of each carries an url: from there the parcours walks the screen the user has been sent to, highlighting the button or the field they are meant to use next (see ConfigBundle's assets/js/guided-project.js). A field is pointed at through the widget the user actually sees, which is not always the one carrying the id: a choice or an association stays a native select only below UiBundle's autocomplete threshold (ChoiceAutocompleteExtension, 10 options), TomSelect taking it over above and clipping the select away behind "ts-hidden-accessible" - so a field whose option count is the catalog's own is named through its row, ".form-group:has(#Entity_property)", the only form both regimes answer to. An association calling autocomplete() is always a TomSelect, its select printed by CrudAutocompleteType under an inner field named "autocomplete" - hence the "_autocomplete" suffix those steps carry, and the "+ .ts-wrapper" naming the widget drawn next to it. TrixEditorType hides its textarea behind "d-none", and a collection prints no field id at all, being marked on its own row instead (see the "data-*" markers of the CRUD controllers)
@@ -53,6 +55,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->hiddenProject(),
             $this->trashProject(),
             $this->exportProject(),
+            $this->onixFeedProject(),
         ];
     }
 
@@ -233,10 +236,11 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => 'trix-editor[input="BookCategory_summary"]',
                 ],
                 [
+                    // The group of the three classifications, a compound field printing no id of its own
                     'label' => 'label.guided_step_book_category_creation_code',
                     'description' => 'description.guided_step_book_category_creation_code',
                     'narration' => 'narration.guided_step_book_category_creation_code',
-                    'highlight' => '#BookCategory_code',
+                    'highlight' => '[data-book-category-codes]',
                 ],
                 [
                     'label' => 'label.guided_step_book_category_creation_save',
@@ -1115,6 +1119,67 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_export_done',
                     'description' => 'description.guided_step_book_export_done',
                     'narration' => 'narration.guided_step_book_export_done',
+                ],
+            ],
+        ];
+    }
+
+    // The feed the stores read, opened on ConfigBundle's screen where its two settings live - the prices and the codes it carries being named rather than walked to, as they sit on other screens (see BookOnixBuilder)
+    private function onixFeedProject(): array
+    {
+        return [
+            'slug' => 'book-onix-feed',
+            'label' => 'label.guided_project_book_onix_feed',
+            'description' => 'description.guided_project_book_onix_feed',
+            'translation_domain' => 'book',
+            'order' => 6075,
+            // The bar ConfigCrudController states on its own actions
+            'role' => $this->adminRoleNeeded(),
+            'steps' => [
+                [
+                    // Scoped to the book group and searched on "ONIX", both settings carrying it in their translated label (see ConfigCrudController::createIndexQueryBuilder)
+                    'label' => 'label.guided_step_book_onix_feed_open',
+                    'description' => 'description.guided_step_book_onix_feed_open',
+                    'narration' => 'narration.guided_step_book_onix_feed_open',
+                    'url' => $this->adminUrlGenerator
+                        ->unsetAll()
+                        ->setController(ConfigCrudController::class)
+                        ->setAction(Action::INDEX)
+                        ->set('group', 'book')
+                        ->set(EA::QUERY, 'ONIX')
+                        ->generateUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_onix_feed_edit',
+                    'description' => 'description.guided_step_book_onix_feed_edit',
+                    'narration' => 'narration.guided_step_book_onix_feed_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    'label' => 'label.guided_step_book_onix_feed_route',
+                    'description' => 'description.guided_step_book_onix_feed_route',
+                    'narration' => 'narration.guided_step_book_onix_feed_route',
+                    'highlight' => '[data-guided-config-value]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_onix_feed_publisher',
+                    'description' => 'description.guided_step_book_onix_feed_publisher',
+                    'narration' => 'narration.guided_step_book_onix_feed_publisher',
+                ],
+                [
+                    'label' => 'label.guided_step_book_onix_feed_price',
+                    'description' => 'description.guided_step_book_onix_feed_price',
+                    'narration' => 'narration.guided_step_book_onix_feed_price',
+                ],
+                [
+                    'label' => 'label.guided_step_book_onix_feed_codes',
+                    'description' => 'description.guided_step_book_onix_feed_codes',
+                    'narration' => 'narration.guided_step_book_onix_feed_codes',
+                ],
+                [
+                    'label' => 'label.guided_step_book_onix_feed_done',
+                    'description' => 'description.guided_step_book_onix_feed_done',
+                    'narration' => 'narration.guided_step_book_onix_feed_done',
                 ],
             ],
         ];

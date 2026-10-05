@@ -14,8 +14,10 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -54,6 +56,18 @@ class BookEditionType extends AbstractType
                 'label' => 'label.format',
                 'help' => 'label.edition_format-help',
                 'required' => false,
+            ])
+            // What the stores are told it sells for, tax included (see BookOnixBuilder) - in cents like ShopBundle's, the currency beside it
+            ->add('price', MoneyType::class, [
+                'label' => 'label.edition_price',
+                'help' => 'label.edition_price-help',
+                'currency' => false,
+                'divisor' => 100,
+                'required' => false,
+            ])
+            ->add('currency', CurrencyType::class, [
+                'label' => 'label.edition_currency',
+                'preferred_choices' => ['EUR'],
             ])
         ;
     }

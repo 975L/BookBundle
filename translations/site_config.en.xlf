@@ -18,6 +18,10 @@
                 <source>description.book_isbn_prefixes</source>
                 <target>The publisher's own ISBN roots, one per line and with their hyphens, e.g. “978-2-488750”. Where an ISBN is cut is not deducible from the number: it comes from the official ranges of the International ISBN Agency. A number starting with none of the declared roots is printed with no hyphen at all.</target>
             </trans-unit>
+            <trans-unit id="L6F9Rf2">
+                <source>description.book_onix_publisher</source>
+                <target>The publisher's name the ONIX feed announces, e.g. "Éditions Lolant". Empty, the site's name is used.</target>
+            </trans-unit>
             <trans-unit id="J.AoxnV">
                 <source>description.book_page_sound</source>
                 <target>Plays a short sound when a book's recording turns the page on the listening page</target>
@@ -53,6 +57,10 @@
             <trans-unit id="qIHKFOC">
                 <source>description.book_route_listen</source>
                 <target>First segment of the URL listing the books holding a recording, e.g. "listen", and of each book's player below it (/listen/my-book), its pages turning along the audio when it has a timecodes file. Empty, the pages are not served.</target>
+            </trans-unit>
+            <trans-unit id="U0yqlO4">
+                <source>description.book_route_onix</source>
+                <target>Address of the catalog's ONIX 3.0 feed, e.g. "onix.xml" (/onix.xml), forthcoming books included, read by online bookshops and upload scripts. Empty, the feed is not served.</target>
             </trans-unit>
             <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
@@ -102,6 +110,10 @@
                 <source>label.book_isbn_prefixes</source>
                 <target>ISBN roots</target>
             </trans-unit>
+            <trans-unit id="rGKmHO2">
+                <source>label.book_onix_publisher</source>
+                <target>ONIX publisher</target>
+            </trans-unit>
             <trans-unit id="4VFjkIr">
                 <source>label.book_page_sound</source>
                 <target>Page sound</target>
@@ -137,6 +149,10 @@
             <trans-unit id="Cn3xAEJ">
                 <source>label.book_route_listen</source>
                 <target>URL prefix of the books to listen to</target>
+            </trans-unit>
+            <trans-unit id="fOYZtyV">
+                <source>label.book_route_onix</source>
+                <target>ONIX feed address</target>
             </trans-unit>
             <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>

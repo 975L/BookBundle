@@ -41,6 +41,21 @@
                 "en": "Recordings in m4a and wav are now played like mp3 and ogg ones.",
                 "fr": "Les enregistrements en m4a et wav sont désormais joués comme ceux en mp3 et ogg.",
                 "es": "Las grabaciones en m4a y wav se reproducen ahora como las de mp3 y ogg."
+            },
+            {
+                "en": "Your catalog can now be shared with online bookshops and distributors as an ONIX feed, books still to come included: give it an address in the settings, a guided project shows the way.",
+                "fr": "Votre catalogue peut désormais être transmis aux librairies en ligne et aux distributeurs sous forme de flux ONIX, livres à paraître compris : donnez-lui une adresse dans les réglages, un projet guidé montre le chemin.",
+                "es": "Su catálogo puede ahora compartirse con las librerías en línea y los distribuidores como flujo ONIX, libros por publicar incluidos: dele una dirección en los ajustes, un proyecto guiado le muestra el camino."
+            },
+            {
+                "en": "Each edition of a book can now carry its public price and its currency.",
+                "fr": "Chaque édition d'un livre peut désormais porter son prix public et sa devise.",
+                "es": "Cada edición de un libro puede llevar ahora su precio público y su moneda."
+            },
+            {
+                "en": "A category now takes one code per book trade classification — CLIL, Thema and BISAC — so the bookshops file your books on the right shelves.",
+                "fr": "Une catégorie reçoit désormais un code par classification du livre — CLIL, Thema et BISAC — pour que les librairies rangent vos livres dans les bons rayons.",
+                "es": "Una categoría recibe ahora un código por clasificación del libro — CLIL, Thema y BISAC — para que las librerías coloquen sus libros en las secciones adecuadas."
             }
         ]
     },

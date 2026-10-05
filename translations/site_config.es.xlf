@@ -18,6 +18,10 @@
                 <source>description.book_isbn_prefixes</source>
                 <target>Las raíces ISBN de la editorial, una por línea y con sus guiones, p. ej. «978-2-488750». El corte de un ISBN no se deduce del número: proviene de los rangos oficiales de la Agencia Internacional del ISBN. Un número que no empieza por ninguna raíz declarada se muestra sin guiones.</target>
             </trans-unit>
+            <trans-unit id="L6F9Rf2">
+                <source>description.book_onix_publisher</source>
+                <target>El nombre de la editorial que anuncia el flujo ONIX, p. ej. «Éditions Lolant». Vacío, se usa el nombre del sitio.</target>
+            </trans-unit>
             <trans-unit id="J.AoxnV">
                 <source>description.book_page_sound</source>
                 <target>Reproduce un breve sonido cuando la grabación de un libro pasa la página en la página de escucha</target>
@@ -53,6 +57,10 @@
             <trans-unit id="qIHKFOC">
                 <source>description.book_route_listen</source>
                 <target>Primer segmento de la URL que lista los libros con grabación, p. ej. "escuchar", y del reproductor de cada libro debajo (/escuchar/mi-libro), con sus páginas pasando al ritmo del audio cuando tiene un archivo de códigos de tiempo. Vacío, las páginas no se sirven.</target>
+            </trans-unit>
+            <trans-unit id="U0yqlO4">
+                <source>description.book_route_onix</source>
+                <target>Dirección del flujo ONIX 3.0 del catálogo, p. ej. "onix.xml" (/onix.xml), libros por publicar incluidos, que leen las librerías en línea y los scripts de carga. Vacío, el flujo no se sirve.</target>
             </trans-unit>
             <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
@@ -102,6 +110,10 @@
                 <source>label.book_isbn_prefixes</source>
                 <target>Raíces ISBN</target>
             </trans-unit>
+            <trans-unit id="rGKmHO2">
+                <source>label.book_onix_publisher</source>
+                <target>Editorial ONIX</target>
+            </trans-unit>
             <trans-unit id="4VFjkIr">
                 <source>label.book_page_sound</source>
                 <target>Sonido de página</target>
@@ -137,6 +149,10 @@
             <trans-unit id="Cn3xAEJ">
                 <source>label.book_route_listen</source>
                 <target>Prefijo URL de los libros para escuchar</target>
+            </trans-unit>
+            <trans-unit id="fOYZtyV">
+                <source>label.book_route_onix</source>
+                <target>Dirección del flujo ONIX</target>
             </trans-unit>
             <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>

@@ -60,4 +60,19 @@ class BookEditionTest extends TestCase
         $this->assertSame('-', $book->getDataValue('absent', '-'));
         $this->assertSame([], new Book()->getData());
     }
+
+    // A price is optional, the currency is not: ONIX writes it upper case, ShopBundle stores it lower case
+    public function testAnEditionHoldsItsPriceInAnUpperCaseCurrency(): void
+    {
+        $edition = new BookEdition();
+
+        $this->assertNull($edition->getPrice());
+        $this->assertSame('EUR', $edition->getCurrency());
+
+        $edition->setPrice(499)->setCurrency('usd');
+        $this->assertSame(499, $edition->getPrice());
+        $this->assertSame('USD', $edition->getCurrency());
+
+        $this->assertSame('EUR', $edition->setCurrency(null)->getCurrency());
+    }
 }

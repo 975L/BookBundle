@@ -293,7 +293,7 @@ php bin/console c975l:health-check:run --kind=files-book
 - **Do not answer 404 for a trashed row** — 410 is what tells a crawler to drop it.
 - **Do not answer 410 for a row set aside** — nothing was taken away, 404 is what it is worth.
 - **Do not hide a serie that still holds something shown** — set what it holds aside first.
-- **Do not give a category a parent** — it is flat on purpose; the trade's codes go in `BookCategory::getCode()`, the tree does not follow them.
+- **Do not give a category a parent** — it is flat on purpose; the trade's codes go in `BookCategory::getCodes()`, one entry per `BookSubjectScheme`, the tree does not follow them.
 - **Do not trash or hide a person a book or a serie still credits** — credit somebody else first.
 - **Do not credit the same person twice under the same part of one book** — the `book_contributor_role` constraint refuses it, and `Book::$contributors` raises `label.contributor_role_duplicate` before the flush rather than letting the database answer with a 500.
 - **Do not write a public query without the trash and draft filters** — pick a repository read.

@@ -43,6 +43,14 @@ class BookEdition implements \Stringable
     #[ORM\Column(nullable: true)]
     private ?int $position = null;
 
+    // The public price of this edition, tax included and in cents like ShopBundle's - what the ONIX feed announces to the stores. Empty, the edition is announced without a price
+    #[ORM\Column(nullable: true)]
+    private ?int $price = null;
+
+    // ISO 4217, upper case as ONIX writes it
+    #[ORM\Column(length: 3, options: ['default' => 'EUR'])]
+    private string $currency = 'EUR';
+
     public function __toString(): string
     {
         return (string) $this->kind;
@@ -121,6 +129,30 @@ class BookEdition implements \Stringable
     public function setPosition(?int $position): static
     {
         $this->position = $position ?? 0;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?int $price): static
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getCurrency(): string
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency(?string $currency): static
+    {
+        $this->currency = strtoupper(trim((string) $currency)) ?: 'EUR';
 
         return $this;
     }

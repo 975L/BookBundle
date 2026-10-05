@@ -22,7 +22,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 ## Contents
 
 - **Setup** — [requirements](#requirements) · [installation](#installation) · [configuration](#load-the-configuration) · [routes](#enable-routes) · [assets](#install-assets)
-- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
+- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [ONIX feed](#onix-feed) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
 
 ## Features
 
@@ -53,6 +53,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - Live component search for books
 - Books, series and strips are composable in blocks, with the kinds of UiBundle
 - schema.org `Book`, `BookSeries` and `ComicStory` data published as JSON-LD
+- The catalog as an ONIX 3.0 feed for bookshops and distributors, forthcoming books included: each edition's price, the recording's duration, the categories' CLIL, Thema and BISAC codes
 - Sitemap generation, feeding the site's `llms.txt`
 - The platform addresses a catalog sends its readers to, checked weekly on the Health check dashboard
 - Public url prefixes settable from the back office, and settable to nothing — a site reading its books under its own routes serves no page of the bundle's
@@ -178,6 +179,7 @@ showcase — contributes the same file through its own stylesheet provider.
 | `strip_shortcut` | `/s{number}` | `book-route-strip-shortcut` | Short link to a strip, 301 |
 | `book_listen_index` | *unset* | `book-route-listen` | The books holding a recording, in the language being read |
 | `book_listen` | *unset* | `book-route-listen` | A book played: its pages turning along the recording when it carries a `cues` file, its cover and the player otherwise |
+| `book_onix` | *unset* | `book-route-onix` | The catalog as an ONIX 3.0 feed (see [ONIX feed](#onix-feed)) |
 | `book_release_alert_new` | `/book/release-alert/{id}` | — | Where an address is left to be told a book is out — `noindex` |
 | `book_release_alert_unsubscribe` | `/book/release-alert/{token}/unsubscribe` | — | The link the acknowledgement e-mail carries, opening a page with a button — `noindex` |
 | `book_release_alert_unsubscribe_confirm` | `/book/release-alert/{token}/unsubscribe` | — | That button, in `POST` — what actually drops the subscription |
@@ -353,8 +355,9 @@ questions, so a book sits in one serie and carries as many categories as it dese
 classifications — CLIL in France, Thema and BISAC abroad — *are* trees, because a store carrying millions
 of titles has no other way to be walked; a publisher's catalog of a few dozen would get nodes holding three
 books. What such a catalog actually needs is a word, and a book carrying several of them. Where the
-professional code matters — a publisher distributing through a wholesaler is asked for it — it is one
-optional `code` column on the category, stored and never interpreted: the norm without the tree.
+professional code matters — a publisher distributing through a wholesaler is asked for it — the category
+carries one code per classification, CLIL, Thema and BISAC (`BookCategory::getCodes()`, keyed by
+`Enum\BookSubjectScheme`), handed to the stores by the [ONIX feed](#onix-feed): the norm without the tree.
 
 A flat category with a page of its own **is** a tag, once the tag has an address. So the bundle ships one
 family and not two, and which of the two words a site uses is a matter of translation, not of storage:
@@ -430,7 +433,8 @@ row now, the same move `BookLink` made for the stores:
 {{ book.getEdition('audio')?.isbn }}
 ```
 
-**An edition says what the book comes out under and nothing more** — its ISBN, its size, its page count.
+**An edition says what the book comes out under and nothing more** — its ISBN, its size, its page count,
+and the public price the [ONIX feed](#onix-feed) announces (`price`, in cents tax included, and `currency`).
 The files and the platforms belong to the book and are edited under the gesture they serve: the recording
 under "Listen" beside the podcast apps, the stores under "Buy". A paperback and an ebook of the same story
 are sold at the same addresses, and neither has pages of its own to upload.
@@ -865,6 +869,19 @@ The `Person` node of an author and of an illustrator carries the url of their ow
 hold off ours being read on that page rather than in the graph of every book they signed.
 
 Price and availability are deliberately absent: they are an `offers` node, and they belong to whoever sells the book.
+
+### ONIX feed
+
+The stores and the distributors read a catalog as ONIX 3.0, and `book_onix` serves it at the address the
+`book-route-onix` setting names — `onix.xml` for `/onix.xml`. The setting ships empty: a site turns its feed on
+by naming it, and the publisher it speaks for is `book-onix-publisher`, the site's name for want of one.
+
+Each edition holding an ISBN-13 is one product (`BookOnixBuilder`): its form, its title and serie, its
+contributors, its language, its page count — or, for an audio edition, the playing time `AudioDurationReader`
+reads from the book's MP3 files —, the categories' codes as subjects, the publication date and the price. A book
+dated ahead is announced as forthcoming, for the stores to take preorders; an edition with no price is
+announced as one still to come, or to be asked of the publisher once it is out. An ISBN-10 is left out rather
+than sent truncated. The guided project *Ouvrir le catalogue aux librairies* walks the two settings.
 
 ### Sitemap
 

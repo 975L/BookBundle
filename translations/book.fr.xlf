@@ -94,6 +94,10 @@
                 <source>description.guided_project_book_media_move</source>
                 <target>Un fichier déposé dans la mauvaise liste se glisse dans la bonne, en gardant le fichier lui-même — inutile de le supprimer et de le redéposer.</target>
             </trans-unit>
+            <trans-unit id="0usgzut">
+                <source>description.guided_project_book_onix_feed</source>
+                <target>Le flux ONIX 3.0 décrit chaque édition munie d'un ISBN-13 — prix, disponibilité, durée, classification — aux librairies en ligne et aux distributeurs. Réservé à l'administrateur : il se règle dans la configuration.</target>
+            </trans-unit>
             <trans-unit id="qKPaJ8x">
                 <source>description.guided_project_book_reader</source>
                 <target>Le lecteur joue l'enregistrement d'un album et en tourne les pages avec lui, aux secondes que vous lui donnez.</target>
@@ -124,7 +128,7 @@
             </trans-unit>
             <trans-unit id="5kHBelb">
                 <source>description.guided_step_book_category_creation_code</source>
-                <target>Le code du métier (CLIL, Thema, BISAC), demandé par les distributeurs. Laissez vide si vous publiez par vous-même : il est stocké et jamais interprété.</target>
+                <target>Les codes du métier (CLIL, Thema, BISAC), un champ par classification, que le flux ONIX transmet aux librairies en ligne. Laissez vide si vous n'en avez pas besoin.</target>
             </trans-unit>
             <trans-unit id="R8Rp9q8">
                 <source>description.guided_step_book_category_creation_done</source>
@@ -401,6 +405,34 @@
             <trans-unit id="WK1Sl_R">
                 <source>description.guided_step_book_media_move_tab</source>
                 <target>L'onglet qui porte les fichiers du livre : le feuilletage, les pages, les audios et les vidéos.</target>
+            </trans-unit>
+            <trans-unit id="AJb3MDd">
+                <source>description.guided_step_book_onix_feed_codes</source>
+                <target>Chaque catégorie porte ses codes CLIL, Thema et BISAC : ce sont eux qui rangent le livre dans les rayons des librairies.</target>
+            </trans-unit>
+            <trans-unit id="9DG6nJ7">
+                <source>description.guided_step_book_onix_feed_done</source>
+                <target>Donnez son adresse à vos libraires et distributeurs. Seules les éditions munies d'un ISBN-13 y figurent.</target>
+            </trans-unit>
+            <trans-unit id="LZhbLfT">
+                <source>description.guided_step_book_onix_feed_edit</source>
+                <target>Ouvrez d'abord l'adresse du flux, vous reviendrez ensuite pour l'éditeur.</target>
+            </trans-unit>
+            <trans-unit id="bAVzUr_">
+                <source>description.guided_step_book_onix_feed_open</source>
+                <target>L'écran de configuration n'affiche que les deux réglages du flux ONIX : son adresse et le nom de l'éditeur.</target>
+            </trans-unit>
+            <trans-unit id="ndiNCCV">
+                <source>description.guided_step_book_onix_feed_price</source>
+                <target>Dans les éditions d'un livre, chacune reçoit son prix TTC et sa devise. Sans prix, le flux l'annonce à paraître ou à demander à l'éditeur.</target>
+            </trans-unit>
+            <trans-unit id="oAm3W89">
+                <source>description.guided_step_book_onix_feed_publisher</source>
+                <target>Faites de même pour l'éditeur ONIX : le nom annoncé aux librairies. Vide, c'est le nom du site.</target>
+            </trans-unit>
+            <trans-unit id="b3IBzk8">
+                <source>description.guided_step_book_onix_feed_route</source>
+                <target>Une adresse comme « onix.xml » sert le flux sur /onix.xml. Vide, il n'est pas servi. Enregistrez.</target>
             </trans-unit>
             <trans-unit id="rjCPwF3">
                 <source>description.guided_step_book_reader_add</source>
@@ -1148,11 +1180,11 @@
             </trans-unit>
             <trans-unit id="eRCGjDU">
                 <source>label.category_code</source>
-                <target>Code de classification</target>
+                <target>Codes de classification</target>
             </trans-unit>
             <trans-unit id="GmMf4lO">
                 <source>label.category_code-help</source>
-                <target>Le code de la catégorie dans les classifications du métier (CLIL en France, Thema ou BISAC ailleurs), demandé par les distributeurs. Laissez vide si vous n'en avez pas besoin.</target>
+                <target>Les codes de la catégorie dans les classifications du métier, transmis aux librairies en ligne par le flux ONIX. Laissez vide si vous n'en avez pas besoin.</target>
             </trans-unit>
             <trans-unit id="6ewv1y0">
                 <source>label.category_summary-help</source>
@@ -1274,6 +1306,10 @@
                 <source>label.edition_audio</source>
                 <target>Audio</target>
             </trans-unit>
+            <trans-unit id="bCtPwn9">
+                <source>label.edition_currency</source>
+                <target>Devise</target>
+            </trans-unit>
             <trans-unit id="RSLhjze">
                 <source>label.edition_digital</source>
                 <target>Numérique</target>
@@ -1301,6 +1337,14 @@
             <trans-unit id="cC9wtp5">
                 <source>label.edition_paper</source>
                 <target>Papier</target>
+            </trans-unit>
+            <trans-unit id="F3toTwm">
+                <source>label.edition_price</source>
+                <target>Prix</target>
+            </trans-unit>
+            <trans-unit id="cnPlkIL">
+                <source>label.edition_price-help</source>
+                <target>Prix public TTC, annoncé aux librairies en ligne par le flux ONIX. Vide, l'édition est annoncée sans prix.</target>
             </trans-unit>
             <trans-unit id="NbK0Mua">
                 <source>label.editions</source>
@@ -1438,6 +1482,10 @@
                 <source>label.guided_project_book_media_move</source>
                 <target>Déplacer un fichier d'une liste à l'autre</target>
             </trans-unit>
+            <trans-unit id="pid02Cs">
+                <source>label.guided_project_book_onix_feed</source>
+                <target>Ouvrir le catalogue aux librairies (ONIX)</target>
+            </trans-unit>
             <trans-unit id="j9o3bim">
                 <source>label.guided_project_book_reader</source>
                 <target>Mettre en place le lecteur page à page</target>
@@ -1468,7 +1516,7 @@
             </trans-unit>
             <trans-unit id="CsL_Bx8">
                 <source>label.guided_step_book_category_creation_code</source>
-                <target>Le code de classification</target>
+                <target>Les codes de classification</target>
             </trans-unit>
             <trans-unit id="brfTO8G">
                 <source>label.guided_step_book_category_creation_done</source>
@@ -1777,6 +1825,34 @@
             <trans-unit id="tpdpeQW">
                 <source>label.guided_step_book_media_move_tab</source>
                 <target>Ouvrez l'onglet « Page »</target>
+            </trans-unit>
+            <trans-unit id="kqliaXO">
+                <source>label.guided_step_book_onix_feed_codes</source>
+                <target>Les codes des catégories</target>
+            </trans-unit>
+            <trans-unit id="NXtCHE5">
+                <source>label.guided_step_book_onix_feed_done</source>
+                <target>Le flux est ouvert</target>
+            </trans-unit>
+            <trans-unit id="1EEfXJp">
+                <source>label.guided_step_book_onix_feed_edit</source>
+                <target>Modifier un réglage</target>
+            </trans-unit>
+            <trans-unit id="9NwuK0O">
+                <source>label.guided_step_book_onix_feed_open</source>
+                <target>Les réglages du flux</target>
+            </trans-unit>
+            <trans-unit id="MVORvCk">
+                <source>label.guided_step_book_onix_feed_price</source>
+                <target>Le prix de chaque édition</target>
+            </trans-unit>
+            <trans-unit id="g69EUAU">
+                <source>label.guided_step_book_onix_feed_publisher</source>
+                <target>Le nom de l'éditeur</target>
+            </trans-unit>
+            <trans-unit id="wGrW78y">
+                <source>label.guided_step_book_onix_feed_route</source>
+                <target>L'adresse du flux</target>
             </trans-unit>
             <trans-unit id="yilasXR">
                 <source>label.guided_step_book_reader_add</source>
@@ -2501,6 +2577,30 @@
             <trans-unit id="tPc3s5d">
                 <source>label.strips_series_list</source>
                 <target>Liste des séries de planches</target>
+            </trans-unit>
+            <trans-unit id="vE2_pUg">
+                <source>label.subject_scheme_bisac</source>
+                <target>BISAC</target>
+            </trans-unit>
+            <trans-unit id="yBNXJ5e">
+                <source>label.subject_scheme_bisac-help</source>
+                <target>Classification américaine, lue par Apple, Kobo et Google, ex. JUV010000.</target>
+            </trans-unit>
+            <trans-unit id="S0ZcehE">
+                <source>label.subject_scheme_clil</source>
+                <target>CLIL</target>
+            </trans-unit>
+            <trans-unit id="bOqvwUX">
+                <source>label.subject_scheme_clil-help</source>
+                <target>Classification du livre en France, ex. 3730 (Albums).</target>
+            </trans-unit>
+            <trans-unit id="OcszL82">
+                <source>label.subject_scheme_thema</source>
+                <target>Thema</target>
+            </trans-unit>
+            <trans-unit id="zFoM9WY">
+                <source>label.subject_scheme_thema-help</source>
+                <target>Classification internationale : le sujet puis ses qualificatifs, séparés par une espace, ex. YBCS1 5AC.</target>
             </trans-unit>
             <trans-unit id="WuyBhau">
                 <source>label.summary</source>

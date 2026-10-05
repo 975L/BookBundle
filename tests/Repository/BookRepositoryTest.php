@@ -37,6 +37,20 @@ class BookRepositoryTest extends TestCase
         $this->assertStringContainsString('b.newerVersion IS NULL', $this->dql);
     }
 
+    // The ONIX feed announces the current books holding an ISBN, those still to come included, and none without a date
+    public function testTheOnixFeedReadsTheCurrentBooksHoldingAnIsbn(): void
+    {
+        $this->createRepository()->findAllForOnix();
+
+        $this->assertStringContainsString('b.isDeleted = false', $this->dql);
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+        $this->assertStringContainsString('serie.hidden = false', $this->dql);
+        $this->assertStringContainsString('b.newerVersion IS NULL', $this->dql);
+        $this->assertStringContainsString('b.published IS NOT NULL', $this->dql);
+        $this->assertStringContainsString("edition.isbn <> ''", $this->dql);
+        $this->assertStringNotContainsString('b.published <=', $this->dql);
+    }
+
     // A book set aside leaves the catalog, the search and the sitemap alike, and comes back to all three the moment the box is unticked (see Entity\Trait\HideableTrait)
     public function testTheCatalogLeavesOutABookSetAside(): void
     {

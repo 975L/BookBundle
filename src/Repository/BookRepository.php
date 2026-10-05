@@ -269,6 +269,34 @@ class BookRepository extends ServiceEntityRepository
         return $this->withCovers($books);
     }
 
+    // What the ONIX feed announces: every current book holding an edition with an ISBN, the dated ones still to come included - a store takes preorders - and those with no date left out, being announced for no day at all. Editions, categories and medias joined in one query, the feed reading them all
+    /** @return Book[] */
+    public function findAllForOnix(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.serie', 'serie')
+            ->addSelect('serie')
+            ->leftJoin('b.previousVersion', 'previousVersion')
+            ->addSelect('previousVersion')
+            ->innerJoin('b.editions', 'edition')
+            ->addSelect('edition')
+            ->leftJoin('b.categories', 'category', 'WITH', 'category.isDeleted = false')
+            ->addSelect('category')
+            ->leftJoin('b.medias', 'media')
+            ->addSelect('media')
+            ->andWhere('b.isDeleted = false')
+            ->andWhere('b.hidden = false')
+            ->andWhere('serie IS NULL OR serie.hidden = false')
+            ->andWhere('b.newerVersion IS NULL')
+            ->andWhere('b.published IS NOT NULL')
+            ->andWhere("edition.isbn IS NOT NULL AND edition.isbn <> ''")
+            ->orderBy('b.published', \SortDirection::Descending)
+            ->addOrderBy('b.id', \SortDirection::Descending)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // The images the cards of a listing read, loaded in one query for the whole list rather than one per book (see BookSectionsExtension::cover(), which asks each book for its own). Kept out of the listing queries themselves: a to-many join multiplies the rows their setMaxResults() then cuts, and a page of six books would come back short
     /**
      * @param Book[] $books

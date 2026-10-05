@@ -131,7 +131,7 @@ class BookDuplicator
             ->setTitle($this->copyTitle($source->getTitle(), 100))
             ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->categoryRepository->findOneBy(['slug' => $candidate])))
             ->setSummary($source->getSummary())
-            ->setCode($source->getCode())
+            ->setCodes($source->getCodes())
             ->setPosition($source->getPosition())
             ->setCreation($now)
             ->setModification($now)

@@ -94,6 +94,10 @@
                 <source>description.guided_project_book_media_move</source>
                 <target>A file dropped in the wrong list is dragged into the right one, keeping the file itself - no need to delete it and upload it again.</target>
             </trans-unit>
+            <trans-unit id="0usgzut">
+                <source>description.guided_project_book_onix_feed</source>
+                <target>The ONIX 3.0 feed describes each edition holding an ISBN-13 — price, availability, duration, classification — to online bookshops and distributors. For the administrator: it is set in the configuration.</target>
+            </trans-unit>
             <trans-unit id="qKPaJ8x">
                 <source>description.guided_project_book_reader</source>
                 <target>The reader plays the recording of an album and turns its pages along with it, at the seconds you give it.</target>
@@ -124,7 +128,7 @@
             </trans-unit>
             <trans-unit id="5kHBelb">
                 <source>description.guided_step_book_category_creation_code</source>
-                <target>The trade's own code (CLIL, Thema, BISAC), asked for by distributors. Leave it empty if you publish on your own: it is stored and never interpreted.</target>
+                <target>The trade's codes (CLIL, Thema, BISAC), one field per classification, which the ONIX feed passes on to online bookshops. Leave them empty if you have no use for them.</target>
             </trans-unit>
             <trans-unit id="R8Rp9q8">
                 <source>description.guided_step_book_category_creation_done</source>
@@ -401,6 +405,34 @@
             <trans-unit id="WK1Sl_R">
                 <source>description.guided_step_book_media_move_tab</source>
                 <target>The tab holding the files of the book: the flipbook, the pages, the audios and the videos.</target>
+            </trans-unit>
+            <trans-unit id="AJb3MDd">
+                <source>description.guided_step_book_onix_feed_codes</source>
+                <target>Each category carries its CLIL, Thema and BISAC codes: they are what shelves the book in the bookshops.</target>
+            </trans-unit>
+            <trans-unit id="9DG6nJ7">
+                <source>description.guided_step_book_onix_feed_done</source>
+                <target>Give its address to your bookshops and distributors. Only the editions holding an ISBN-13 appear in it.</target>
+            </trans-unit>
+            <trans-unit id="LZhbLfT">
+                <source>description.guided_step_book_onix_feed_edit</source>
+                <target>Open the feed address first, you will come back for the publisher afterwards.</target>
+            </trans-unit>
+            <trans-unit id="bAVzUr_">
+                <source>description.guided_step_book_onix_feed_open</source>
+                <target>The configuration screen shows only the two ONIX feed settings: its address and the publisher's name.</target>
+            </trans-unit>
+            <trans-unit id="ndiNCCV">
+                <source>description.guided_step_book_onix_feed_price</source>
+                <target>Among a book's editions, each one takes its price tax included and its currency. Without a price, the feed announces it as still to come or to be asked of the publisher.</target>
+            </trans-unit>
+            <trans-unit id="oAm3W89">
+                <source>description.guided_step_book_onix_feed_publisher</source>
+                <target>Do the same for the ONIX publisher: the name the bookshops are given. Empty, the site's name is used.</target>
+            </trans-unit>
+            <trans-unit id="b3IBzk8">
+                <source>description.guided_step_book_onix_feed_route</source>
+                <target>An address such as "onix.xml" serves the feed on /onix.xml. Empty, it is not served. Save.</target>
             </trans-unit>
             <trans-unit id="rjCPwF3">
                 <source>description.guided_step_book_reader_add</source>
@@ -1148,11 +1180,11 @@
             </trans-unit>
             <trans-unit id="eRCGjDU">
                 <source>label.category_code</source>
-                <target>Classification code</target>
+                <target>Classification codes</target>
             </trans-unit>
             <trans-unit id="GmMf4lO">
                 <source>label.category_code-help</source>
-                <target>The category's code in the trade's classifications (CLIL in France, Thema or BISAC abroad), asked for by distributors. Leave empty if you have no use for it.</target>
+                <target>The category's codes in the trade's classifications, passed on to online bookshops by the ONIX feed. Leave empty if you have no use for them.</target>
             </trans-unit>
             <trans-unit id="6ewv1y0">
                 <source>label.category_summary-help</source>
@@ -1274,6 +1306,10 @@
                 <source>label.edition_audio</source>
                 <target>Audio</target>
             </trans-unit>
+            <trans-unit id="bCtPwn9">
+                <source>label.edition_currency</source>
+                <target>Currency</target>
+            </trans-unit>
             <trans-unit id="RSLhjze">
                 <source>label.edition_digital</source>
                 <target>Digital</target>
@@ -1301,6 +1337,14 @@
             <trans-unit id="cC9wtp5">
                 <source>label.edition_paper</source>
                 <target>Paperback</target>
+            </trans-unit>
+            <trans-unit id="F3toTwm">
+                <source>label.edition_price</source>
+                <target>Price</target>
+            </trans-unit>
+            <trans-unit id="cnPlkIL">
+                <source>label.edition_price-help</source>
+                <target>Public price including tax, announced to online bookshops by the ONIX feed. Empty, the edition is announced without a price.</target>
             </trans-unit>
             <trans-unit id="NbK0Mua">
                 <source>label.editions</source>
@@ -1438,6 +1482,10 @@
                 <source>label.guided_project_book_media_move</source>
                 <target>Move a file from one list to another</target>
             </trans-unit>
+            <trans-unit id="pid02Cs">
+                <source>label.guided_project_book_onix_feed</source>
+                <target>Open the catalog to bookshops (ONIX)</target>
+            </trans-unit>
             <trans-unit id="j9o3bim">
                 <source>label.guided_project_book_reader</source>
                 <target>Set up the page-turning reader</target>
@@ -1468,7 +1516,7 @@
             </trans-unit>
             <trans-unit id="CsL_Bx8">
                 <source>label.guided_step_book_category_creation_code</source>
-                <target>The classification code</target>
+                <target>The classification codes</target>
             </trans-unit>
             <trans-unit id="brfTO8G">
                 <source>label.guided_step_book_category_creation_done</source>
@@ -1777,6 +1825,34 @@
             <trans-unit id="tpdpeQW">
                 <source>label.guided_step_book_media_move_tab</source>
                 <target>Open the "Page" tab</target>
+            </trans-unit>
+            <trans-unit id="kqliaXO">
+                <source>label.guided_step_book_onix_feed_codes</source>
+                <target>The category codes</target>
+            </trans-unit>
+            <trans-unit id="NXtCHE5">
+                <source>label.guided_step_book_onix_feed_done</source>
+                <target>The feed is open</target>
+            </trans-unit>
+            <trans-unit id="1EEfXJp">
+                <source>label.guided_step_book_onix_feed_edit</source>
+                <target>Edit a setting</target>
+            </trans-unit>
+            <trans-unit id="9NwuK0O">
+                <source>label.guided_step_book_onix_feed_open</source>
+                <target>The feed settings</target>
+            </trans-unit>
+            <trans-unit id="MVORvCk">
+                <source>label.guided_step_book_onix_feed_price</source>
+                <target>The price of each edition</target>
+            </trans-unit>
+            <trans-unit id="g69EUAU">
+                <source>label.guided_step_book_onix_feed_publisher</source>
+                <target>The publisher's name</target>
+            </trans-unit>
+            <trans-unit id="wGrW78y">
+                <source>label.guided_step_book_onix_feed_route</source>
+                <target>The feed address</target>
             </trans-unit>
             <trans-unit id="yilasXR">
                 <source>label.guided_step_book_reader_add</source>
@@ -2501,6 +2577,30 @@
             <trans-unit id="tPc3s5d">
                 <source>label.strips_series_list</source>
                 <target>List of the strip series</target>
+            </trans-unit>
+            <trans-unit id="vE2_pUg">
+                <source>label.subject_scheme_bisac</source>
+                <target>BISAC</target>
+            </trans-unit>
+            <trans-unit id="yBNXJ5e">
+                <source>label.subject_scheme_bisac-help</source>
+                <target>American classification, read by Apple, Kobo and Google, e.g. JUV010000.</target>
+            </trans-unit>
+            <trans-unit id="S0ZcehE">
+                <source>label.subject_scheme_clil</source>
+                <target>CLIL</target>
+            </trans-unit>
+            <trans-unit id="bOqvwUX">
+                <source>label.subject_scheme_clil-help</source>
+                <target>The French book trade's classification, e.g. 3730 (Albums).</target>
+            </trans-unit>
+            <trans-unit id="OcszL82">
+                <source>label.subject_scheme_thema</source>
+                <target>Thema</target>
+            </trans-unit>
+            <trans-unit id="zFoM9WY">
+                <source>label.subject_scheme_thema-help</source>
+                <target>International classification: the subject then its qualifiers, separated by a space, e.g. YBCS1 5AC.</target>
             </trans-unit>
             <trans-unit id="WuyBhau">
                 <source>label.summary</source>

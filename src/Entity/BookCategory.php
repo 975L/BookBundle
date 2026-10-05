@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Entity;
 use c975L\BookBundle\Contract\TrashableInterface;
 use c975L\BookBundle\Entity\Trait\HideableTrait;
 use c975L\BookBundle\Entity\Trait\TrashableTrait;
+use c975L\BookBundle\Enum\BookSubjectScheme;
 use c975L\BookBundle\Repository\BookCategoryRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use c975L\UiBundle\Contract\HasBlocksInterface;
@@ -53,9 +54,10 @@ class BookCategory implements HasBlocksInterface, TrashableInterface, \Stringabl
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $summary = null;
 
-    // The code the same subject wears in the trade's own classifications - CLIL in France, Thema and BISAC abroad - which a publisher distributing through a wholesaler is asked for. Stored and never interpreted here: the bundle serves pages, the code travels with the category through the exports
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $code = null;
+    // The codes the same subject wears in the trade's own classifications, one entry per scheme (see BookSubjectScheme) - CLIL in France, Thema and BISAC abroad, each store reading its own. Several codes of a scheme are written one after the other, a Thema subject followed by its qualifiers
+    /** @var array<string, string>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $codes = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $creation = null;
@@ -145,16 +147,27 @@ class BookCategory implements HasBlocksInterface, TrashableInterface, \Stringabl
         return $this;
     }
 
-    public function getCode(): ?string
+    /** @return array<string, string> */
+    public function getCodes(): array
     {
-        return $this->code;
+        return $this->codes ?? [];
     }
 
-    public function setCode(?string $code): static
+    // Empty codes are dropped, so a scheme left blank in the form is no key at all
+    /** @param array<string, string|null>|null $codes */
+    public function setCodes(?array $codes): static
     {
-        $this->code = $code;
+        $codes = array_filter(array_map(static fn (?string $code): string => trim((string) $code), $codes ?? []), static fn (string $code): bool => '' !== $code);
+        $this->codes = [] === $codes ? null : $codes;
 
         return $this;
+    }
+
+    // The codes of one scheme, split on spaces and commas
+    /** @return list<string> */
+    public function getCodesOf(BookSubjectScheme $scheme): array
+    {
+        return array_values(array_filter(preg_split('/[\s,;]+/', $this->getCodes()[$scheme->value] ?? '') ?: []));
     }
 
     public function getCreation(): ?\DateTimeInterface

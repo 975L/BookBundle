@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.16.0
+
+A public ONIX 3.0 feed of the catalog
+
+- New `OnixController`: the catalog as an ONIX 3.0 feed, one product per edition holding an ISBN-13, forthcoming books included (05/10/2026)
+- `book-route-onix` setting naming the feed's address ("onix.xml"), empty by default (05/10/2026)
+- `book-onix-publisher` setting naming the feed's publisher, the site's name for want of one (05/10/2026)
+- `BookEdition` gets `price` (cents, tax included) and `currency`, edited with the edition **Needs db update** (05/10/2026)
+- `BookCategory::$code` becomes `$codes`, one code per `BookSubjectScheme` (CLIL, Thema, BISAC) [BC-Break] see [UPGRADE.md](UPGRADE.md) **Needs db update** (05/10/2026)
+- New `AudioDurationReader`: an MP3's playing time read from the file, announced as the audio edition's extent (05/10/2026)
+- Guided project `book-onix-feed` walking the feed's settings (05/10/2026)
+
 ## v2.15.3
 
 An optional page-turn sound on the listening page

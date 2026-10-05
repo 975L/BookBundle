@@ -121,6 +121,28 @@
         "description": "description.book_route_listen"
     },
     {
+        "label": "label.book_route_onix",
+        "slug": "book-route-onix",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_onix"
+    },
+    {
+        "label": "label.book_onix_publisher",
+        "slug": "book-onix-publisher",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_onix_publisher"
+    },
+    {
         "label": "label.book_serie_blocks",
         "slug": "book-serie-blocks",
         "sensitive": false,

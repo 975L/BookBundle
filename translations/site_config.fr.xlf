@@ -18,6 +18,10 @@
                 <source>description.book_isbn_prefixes</source>
                 <target>Les racines ISBN de la maison, une par ligne et avec leurs tirets, ex. « 978-2-488750 ». La coupure d'un ISBN ne se déduit pas du numéro : elle vient des plages officielles de l'Agence internationale de l'ISBN. Un numéro qui ne commence par aucune racine déclarée s'affiche sans tirets.</target>
             </trans-unit>
+            <trans-unit id="L6F9Rf2">
+                <source>description.book_onix_publisher</source>
+                <target>Le nom de l'éditeur annoncé dans le flux ONIX, ex. « Éditions Lolant ». Vide, c'est le nom du site.</target>
+            </trans-unit>
             <trans-unit id="J.AoxnV">
                 <source>description.book_page_sound</source>
                 <target>Joue un petit son quand l'enregistrement d'un livre tourne la page sur la page d'écoute</target>
@@ -53,6 +57,10 @@
             <trans-unit id="qIHKFOC">
                 <source>description.book_route_listen</source>
                 <target>Premier segment de l'URL listant les livres qui ont un enregistrement, ex. "ecouter", et du lecteur de chaque livre en dessous (/ecouter/mon-livre), ses pages défilant avec l'audio quand il a un fichier de timecodes. Vide, les pages ne sont pas servies.</target>
+            </trans-unit>
+            <trans-unit id="U0yqlO4">
+                <source>description.book_route_onix</source>
+                <target>Adresse du flux ONIX 3.0 du catalogue, ex. "onix.xml" (/onix.xml), livres à paraître compris, que lisent les librairies en ligne et les scripts de dépôt. Vide, le flux n'est pas servi.</target>
             </trans-unit>
             <trans-unit id=".Lh8WS.">
                 <source>description.book_route_series</source>
@@ -102,6 +110,10 @@
                 <source>label.book_isbn_prefixes</source>
                 <target>Racines ISBN</target>
             </trans-unit>
+            <trans-unit id="rGKmHO2">
+                <source>label.book_onix_publisher</source>
+                <target>Éditeur ONIX</target>
+            </trans-unit>
             <trans-unit id="4VFjkIr">
                 <source>label.book_page_sound</source>
                 <target>Son de page</target>
@@ -137,6 +149,10 @@
             <trans-unit id="Cn3xAEJ">
                 <source>label.book_route_listen</source>
                 <target>Préfixe URL des livres à écouter</target>
+            </trans-unit>
+            <trans-unit id="fOYZtyV">
+                <source>label.book_route_onix</source>
+                <target>Adresse du flux ONIX</target>
             </trans-unit>
             <trans-unit id="2Rx4Gha">
                 <source>label.book_route_series</source>
