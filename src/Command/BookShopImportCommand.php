@@ -37,6 +37,10 @@ use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 )]
 class BookShopImportCommand extends Command
 {
+    // Whether each EPUB is read aloud, by its path - read once per run
+    /** @var array<string, bool> */
+    private array $readAloud = [];
+
     public function __construct(
         private readonly BookRepository $bookRepository,
         private readonly EntityManagerInterface $em,
@@ -61,20 +65,18 @@ class BookShopImportCommand extends Command
         }
 
         $dryRun = (bool) $input->getOption('dry-run');
+        $product = $input->getOption('product');
+        $this->readAloud = [];
         [$bySlug, $byTitle] = $this->index();
         $copied = [];
         $skipped = [];
         $productKeys = [];
         // The slots filled by this very run, which a dry run never writes and would otherwise see empty again
         $taken = [];
-        // The original versions last: a book sold illustrated keeps its illustrated files, its "version originale" then finding the slot taken
-        $items = $this->writer->itemsWithFile();
-        usort($items, static fn (CatalogProductItem $a, CatalogProductItem $b): int => self::isEarlierVersion($a) <=> self::isEarlierVersion($b));
+        // The items not imported yet, of the product asked for if any - then the original versions last, and an EPUB read aloud before a plain one: a book sold illustrated keeps its illustrated files, one sold read aloud its read-aloud EPUB - which holds the text too - the other then finding the slot taken
+        $items = array_filter($this->writer->itemsWithFile(), static fn (CatalogProductItem $item): bool => null === $item->key && (null === $product || $product === $item->productSlug));
+        usort($items, fn (CatalogProductItem $a, CatalogProductItem $b): int => [self::isEarlierVersion($a), !$this->isReadAloud($a->filePath)] <=> [self::isEarlierVersion($b), !$this->isReadAloud($b->filePath)]);
         foreach ($items as $item) {
-            if (null !== $item->key || (null !== $input->getOption('product') && $input->getOption('product') !== $item->productSlug)) {
-                continue;
-            }
-
             $place = $this->place($item, $bySlug, $byTitle, $productKeys, $taken);
             if (\is_string($place)) {
                 $skipped[] = [$item->productSlug, $item->slug, $place];
@@ -180,7 +182,7 @@ class BookShopImportCommand extends Command
     // The shop's file copied into a file of the edition's own, the source left where it is, at the shop's price - the edition then sold in the shop
     private function copy(CatalogProductItem $item, BookEdition $edition, BookEditionFileKind $kind): void
     {
-        $file = new BookEditionFile()->setPrice($item->price);
+        $file = new BookEditionFile()->setPrice($item->price)->setReadAloud($this->isReadAloud($item->filePath));
         $file->setFile(new ReplacingFile($item->filePath));
         $edition->setFileOf($kind, $file)->setChannels([...$edition->getChannels(), BookChannel::Shop->value]);
         $this->em->persist($file);
@@ -203,6 +205,23 @@ class BookShopImportCommand extends Command
             'pdf' === $extension => BookEditionFileKind::Pdf,
             default => null,
         };
+    }
+
+    // An EPUB carrying media overlays - its SMIL files, its pages read aloud along their text - read from the file, the shop's names saying it one way or another
+    private function isReadAloud(string $path): bool
+    {
+        if (!isset($this->readAloud[$path])) {
+            $zip = new \ZipArchive();
+            $this->readAloud[$path] = false;
+            if (str_ends_with(strtolower($path), '.epub') && true === $zip->open($path)) {
+                for ($i = 0; $i < $zip->numFiles && !$this->readAloud[$path]; ++$i) {
+                    $this->readAloud[$path] = str_ends_with(strtolower((string) $zip->getNameIndex($i)), '.smil');
+                }
+                $zip->close();
+            }
+        }
+
+        return $this->readAloud[$path];
     }
 
     private static function isEarlierVersion(CatalogProductItem $item): bool

@@ -301,7 +301,7 @@ class BookImportProvider implements ImportProviderInterface
         return $edition;
     }
 
-    // The files each edition is sold as, written over on their name like the book's own and bound back to their kind, at the price the archive gives them - an archive predating them leaves them alone
+    // The files each edition is sold as, written over on their name like the book's own and bound back to their kind, at the price and the reading aloud the archive gives them - an archive predating them leaves them alone
     /** @return list<array{0: \c975L\BookBundle\Entity\Media, 1: array}> */
     private function syncEditionFiles(Book $book, array $item): array
     {
@@ -320,7 +320,7 @@ class BookImportProvider implements ImportProviderInterface
                 static fn (BookEditionFile $file): bool => $edition->getFiles()->removeElement($file),
             );
             foreach ($files as [$file, $fileData]) {
-                $file->setPrice($fileData['price'] ?? null);
+                $file->setPrice($fileData['price'] ?? null)->setReadAloud($fileData['readAloud'] ?? false);
             }
             $written = [...$written, ...$files];
         }

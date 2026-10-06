@@ -23,11 +23,12 @@ description: "Use this skill when a row of a c975L BookBundle catalog is created
 
 Every format exists for both texts, which is why a new version is a book of its own and never one more
 edition. **An edition holds no platform and no date**: the platforms belong to the book, under the gesture
-they serve, and the date is the book's — the only one there is. The one file it holds is what it is **sold as**
-(`BookEditionFile`, one per `BookEditionFileKind`, kept under `private/` with its price): the slots its kind
+they serve, and the date is the book's — the only one there is. The files it holds are what it is **sold as**, plus its covers
+as drawn, never sold (`BookEditionFile`, one per `BookEditionFileKind`, kept under `private/` with its price, an
+EPUB flagged `readAloud`): the slots its kind
 takes (`BookEditionFileKind::forEdition()`), ticked "Shop" for `BookShopPublisher` to write into the shop, "Google"
-for `GooglePlayFeed`, "ONIX" for `OnixController` (`BookChannel`). The book's own files — covers, pages,
-recording — still belong to the book.
+for `GooglePlayFeed`, "ONIX" for `OnixController` (`BookChannel`). The book's own files — the covers its pages
+show, pages, recording — still belong to the book.
 
 ## Publishing a new version
 
@@ -207,7 +208,7 @@ creating on the fly what this environment doesn't hold yet. **Everything is matc
 and an import never deletes what the archive does not name — a book's `categories` are the one list replaced
 whole, an archive saying which categories the book carries and a category taken off it there coming off it
 here too. A book archive exported before 2.15 still lands its `extract` files as `page`. An edition carries its `files`
-with their price, `MediaArchiver` reading and laying them back under `private/` (`PrivateDirectory::resolve()`).
+with their price and `readAloud` flag, `MediaArchiver` reading and laying them back under `private/` (`PrivateDirectory::resolve()`).
 
 **A person is the one exception, matched by name** (`ContributorResolver`): a book's archive still carries
 `author`, `authorWebsite`, `illustrator` and `illustratorWebsite` as the plain strings the four columns held

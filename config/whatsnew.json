@@ -26,6 +26,21 @@
                 "en": "A new guided tour shows how to sell an edition as files, step by step.",
                 "fr": "Une nouvelle visite guidée montre pas à pas comment vendre une édition en fichiers.",
                 "es": "Una nueva visita guiada muestra paso a paso cómo vender una edición en archivos."
+            },
+            {
+                "en": "An EPUB read aloud can be ticked as such: the shop names it so and tells buyers they can turn the voice off.",
+                "fr": "Un EPUB lu à voix haute peut être coché comme tel : la boutique le nomme ainsi et précise à l'acheteur qu'il peut couper la voix.",
+                "es": "Un EPUB leído en voz alta puede marcarse como tal: la tienda lo nombra así e indica al comprador que puede desactivar la voz."
+            },
+            {
+                "en": "Each edition can hold its front and back covers as drawn: Google Play Books receives them, and the shop shows the front one.",
+                "fr": "Chaque édition peut recevoir sa 1re et sa 4e de couverture telles que dessinées : Google Play Livres les reçoit, et la boutique montre la première.",
+                "es": "Cada edición puede recibir su portada y su contraportada tal como se dibujaron: Google Play Libros las recibe, y la tienda muestra la portada."
+            },
+            {
+                "en": "Audiobooks ticked \"Google\" are now sent to Google Play Books too, as soon as they have their square cover.",
+                "fr": "Les livres audio cochés « Google » partent désormais aussi vers Google Play Livres, dès qu'ils ont leur couverture carrée.",
+                "es": "Los audiolibros marcados «Google» se envían ahora también a Google Play Libros, en cuanto tienen su portada cuadrada."
             }
         ]
     },

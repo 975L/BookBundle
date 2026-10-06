@@ -61,6 +61,35 @@ class BookShopImportCommandTest extends TestCase
         $this->assertMatchesRegularExpression('/format-pdf-version-originale +le-loup \/ digital \/ pdf/', $display);
     }
 
+    // Of two EPUBs of one book, the one read aloud goes into the edition, whatever order the shop lists them in: it holds the text too
+    public function testAReadAloudEpubIsPreferredToAPlainOne(): void
+    {
+        $plain = sys_get_temp_dir() . '/plain-' . uniqid() . '.epub';
+        $readAloud = sys_get_temp_dir() . '/read-aloud-' . uniqid() . '.epub';
+        // The plain one merely names media overlays in its text, the read-aloud one carries its SMIL
+        foreach ([$plain => ['OEBPS/content.opf' => '<package><dc:description>No media-overlay here</dc:description></package>'], $readAloud => ['OEBPS/content.opf' => '<package/>', 'OEBPS/page1.smil' => '<smil/>']] as $path => $entries) {
+            $zip = new \ZipArchive();
+            $zip->open($path, \ZipArchive::CREATE);
+            foreach ($entries as $name => $content) {
+                $zip->addFromString($name, $content);
+            }
+            $zip->close();
+        }
+        $writer = $this->createStub(ProductCatalogWriterInterface::class);
+        $writer->method('itemsWithFile')->willReturn([
+            self::item(9, 'format-epub', $plain),
+            self::item(10, 'epub-lu-a-voix-haute', $readAloud),
+        ]);
+
+        $tester = $this->tester($writer);
+        $tester->execute(['--dry-run' => true]);
+        unlink($plain);
+        unlink($readAloud);
+
+        $this->assertMatchesRegularExpression('/epub-lu-a-voix-haute +le-loup \/ digital \/ epub/', $tester->getDisplay());
+        $this->assertMatchesRegularExpression('/format-epub +already a epub/', $tester->getDisplay());
+    }
+
     // A product matched to no book, or a file of no known kind, stays in the shop
     public function testWhatCannotBeMatchedIsLeftAlone(): void
     {

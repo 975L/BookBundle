@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
-// The folders Google Play Books' crawler reads on its own schedule ("automated content fetching"): plain directory listings as a web server prints them, the ONIX of the ebooks and their files, behind HTTP Basic. Served under the segment the "book-route-google" entry names, empty by default, and only once the collection code, the user and the password are all set - the files being what a buyer pays for, nothing is ever served without them
+// The folders Google Play Books' crawler reads on its own schedule ("automated content fetching"): plain directory listings as a web server prints them, the ONIX of the ebooks and audiobooks and their files, behind HTTP Basic. Served under the segment the "book-route-google" entry names, empty by default, and only once the collection code, the user and the password are all set - the files being what a buyer pays for, nothing is ever served without them
 class GooglePlayFeedController extends AbstractController
 {
     private const string CONDITION = "service('" . BookRoutePrefix::ALIAS . "').matches('book-route-google', params['google_prefix'])";
@@ -31,11 +31,11 @@ class GooglePlayFeedController extends AbstractController
     ) {
     }
 
-    // The two top folders
+    // The three top folders
     #[Route('/{google_prefix}/', name: 'book_google', methods: ['GET'], condition: self::CONDITION)]
     public function root(Request $request): Response
     {
-        return $this->guard($request) ?? $this->listing($request, ['onix/' => null, 'ebooks/' => null]);
+        return $this->guard($request) ?? $this->listing($request, ['onix/' => null, 'ebooks/' => null, 'audio/' => null]);
     }
 
     // The ONIX folder, holding only the rights one: the ebooks are sold, not merely described
@@ -95,7 +95,7 @@ class GooglePlayFeedController extends AbstractController
         }
         $this->checkFolder($folder, $this->feed->collection());
 
-        return $this->listing($request, array_map(static fn (array $file): array => [(int) filesize($file['path']), $file['modified']], $this->feed->ebooks()));
+        return $this->filesListing($request, $this->feed->ebooks());
     }
 
     // An ebook's file or cover, the cover as the JPEG the feed made of it (see GooglePlayFeed)
@@ -107,15 +107,38 @@ class GooglePlayFeedController extends AbstractController
         }
         $this->checkFolder($folder, $this->feed->collection());
 
-        $file = $this->feed->ebooks()[$name] ?? throw new NotFoundHttpException();
-        if (!is_file($file['path'])) {
-            throw new NotFoundHttpException();
+        return $this->served($this->feed->ebooks(), $name);
+    }
+
+    // The folder of the audiobooks' files
+    #[Route('/{google_prefix}/audio/', name: 'book_google_audio', methods: ['GET'], condition: self::CONDITION)]
+    public function audioFolder(Request $request): Response
+    {
+        return $this->guard($request) ?? $this->listing($request, [$this->feed->collection() . '/' => null]);
+    }
+
+    // The collection's folder, every audiobook's recording and cover
+    #[Route('/{google_prefix}/audio/{folder}/', name: 'book_google_audio_collection', methods: ['GET'], condition: self::CONDITION)]
+    public function audioCollection(Request $request, string $folder): Response
+    {
+        if (null !== $denied = $this->guard($request)) {
+            return $denied;
         }
+        $this->checkFolder($folder, $this->feed->collection());
 
-        $response = new BinaryFileResponse($file['path']);
-        $response->setLastModified($file['modified']);
+        return $this->filesListing($request, $this->feed->audiobooks());
+    }
 
-        return $this->private($response);
+    // An audiobook's recording or cover
+    #[Route('/{google_prefix}/audio/{folder}/{name}', name: 'book_google_audiobook', methods: ['GET'], condition: self::CONDITION)]
+    public function audiobook(Request $request, string $folder, string $name): Response
+    {
+        if (null !== $denied = $this->guard($request)) {
+            return $denied;
+        }
+        $this->checkFolder($folder, $this->feed->collection());
+
+        return $this->served($this->feed->audiobooks(), $name);
     }
 
     // Null when the request carries the user and password the settings hold; a 404 while the feed is not set up, so its address says nothing; a 401 asking for them otherwise
@@ -140,6 +163,28 @@ class GooglePlayFeedController extends AbstractController
         if ($folder !== $expected) {
             throw new NotFoundHttpException();
         }
+    }
+
+    // The files of a collection's folder, each with its size and date
+    /** @param array<string, array{path: string, modified: \DateTimeImmutable}> $files */
+    private function filesListing(Request $request, array $files): Response
+    {
+        return $this->listing($request, array_map(static fn (array $file): array => [(int) filesize($file['path']), $file['modified']], $files));
+    }
+
+    // One of the files listed, a 404 for any other name or a file gone from disk
+    /** @param array<string, array{path: string, modified: \DateTimeImmutable}> $files */
+    private function served(array $files, string $name): Response
+    {
+        $file = $files[$name] ?? throw new NotFoundHttpException();
+        if (!is_file($file['path'])) {
+            throw new NotFoundHttpException();
+        }
+
+        $response = new BinaryFileResponse($file['path']);
+        $response->setLastModified($file['modified']);
+
+        return $this->private($response);
     }
 
     // A folder as Apache prints it - a link, the date and the size per entry - which is what the crawler reads to find the files; a sub-folder has neither

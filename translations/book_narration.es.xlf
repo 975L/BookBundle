@@ -234,9 +234,13 @@
                 <source>narration.guided_step_book_edition_sale_channels</source>
                 <target>Marque «Tienda» para venderla en el sitio, ONIX y Google para darla a conocer a las librerías y a Google Play Books.</target>
             </trans-unit>
+            <trans-unit id="msRBCSB">
+                <source>narration.guided_step_book_edition_sale_covers</source>
+                <target>Suba la portada y la contraportada tal como se dibujaron: no se venden, visten el libro en la tienda y en Google. Una edición de audio lleva una portada cuadrada, sin la cual Google no la recibe.</target>
+            </trans-unit>
             <trans-unit id="fdAify4">
                 <source>narration.guided_step_book_edition_sale_done</source>
-                <target>La edición está a la venta: el producto del libro se escribe en la tienda, un artículo por archivo, y Google viene a buscar los ebooks por sí mismo.</target>
+                <target>La edición está a la venta: el producto del libro se escribe en la tienda, un artículo por archivo, y Google viene a buscar los ebooks y los audiolibros por sí mismo.</target>
             </trans-unit>
             <trans-unit id="mtvK8_n">
                 <source>narration.guided_step_book_edition_sale_edit</source>
@@ -244,7 +248,7 @@
             </trans-unit>
             <trans-unit id="TTU68ef">
                 <source>narration.guided_step_book_edition_sale_files</source>
-                <target>Suba cada archivo con su precio con impuestos: el EPUB, el PDF y el folleto para una edición digital, el MP3 para una de audio.</target>
+                <target>Suba cada archivo con su precio con impuestos: el EPUB, el PDF y el folleto para una edición digital, el MP3 para una de audio. Marque «Leído en voz alta» si el EPUB lee su texto.</target>
             </trans-unit>
             <trans-unit id="m0nzkFh">
                 <source>narration.guided_step_book_edition_sale_open</source>

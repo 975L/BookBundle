@@ -322,9 +322,13 @@
                 <source>description.guided_step_book_edition_sale_channels</source>
                 <target>«Tienda» la pone a la venta en el sitio; ONIX y Google la dan a conocer a las librerías y a Google Play Books.</target>
             </trans-unit>
+            <trans-unit id="iXIngu.">
+                <source>description.guided_step_book_edition_sale_covers</source>
+                <target>La portada y la contraportada tal como se dibujaron, nunca vendidas: visten el libro en la tienda y en Google. Una edición de audio lleva una portada cuadrada, sin la cual no se envía a Google.</target>
+            </trans-unit>
             <trans-unit id="S5uubtb">
                 <source>description.guided_step_book_edition_sale_done</source>
-                <target>El producto del libro se escribe en la tienda, un artículo por archivo; Google viene a buscar los ebooks por sí mismo.</target>
+                <target>El producto del libro se escribe en la tienda, un artículo por archivo; Google viene a buscar los ebooks y los audiolibros por sí mismo.</target>
             </trans-unit>
             <trans-unit id="O.G..T1">
                 <source>description.guided_step_book_edition_sale_edit</source>
@@ -332,7 +336,7 @@
             </trans-unit>
             <trans-unit id="LgOc2qn">
                 <source>description.guided_step_book_edition_sale_files</source>
-                <target>Un espacio por archivo que la edición puede vender, cada uno con su precio con impuestos: una edición digital lleva el EPUB, el PDF y el folleto, una de audio el MP3.</target>
+                <target>Un espacio por archivo que la edición vende, cada uno con su precio con impuestos: una edición digital lleva el EPUB (marcado «Leído en voz alta» si lee su texto), el PDF y el folleto, una de audio el MP3.</target>
             </trans-unit>
             <trans-unit id="wdXHhRC">
                 <source>description.guided_step_book_edition_sale_open</source>
@@ -1382,6 +1386,18 @@
                 <source>label.edition_file_booklet</source>
                 <target>Folleto PDF</target>
             </trans-unit>
+            <trans-unit id="jECCFRS">
+                <source>label.edition_file_cover_back</source>
+                <target>Contraportada (JPEG)</target>
+            </trans-unit>
+            <trans-unit id="Ge_gKv4">
+                <source>label.edition_file_cover_front</source>
+                <target>Portada (JPEG)</target>
+            </trans-unit>
+            <trans-unit id="1zVyB1K">
+                <source>label.edition_file_cover_front-help</source>
+                <target>Tal como se dibujó, al menos 1024 píxeles en su lado más corto (Apple): las librerías y la tienda la reciben y la redimensionan ellas mismas</target>
+            </trans-unit>
             <trans-unit id="5sApxF0">
                 <source>label.edition_file_earlier_version</source>
                 <target>%title% versión original</target>
@@ -1389,6 +1405,10 @@
             <trans-unit id="xpZYJz1">
                 <source>label.edition_file_epub</source>
                 <target>Archivo EPUB</target>
+            </trans-unit>
+            <trans-unit id="_nDuLPZ">
+                <source>label.edition_file_epub_read_aloud</source>
+                <target>Archivo EPUB leído en voz alta</target>
             </trans-unit>
             <trans-unit id="61LczxL">
                 <source>label.edition_file_pdf</source>
@@ -1401,6 +1421,18 @@
             <trans-unit id="9gyzQZp">
                 <source>label.edition_file_price-help</source>
                 <target>Precio de este archivo en la tienda del sitio, impuestos incluidos, 0 para un archivo gratuito, tenido en cuenta una vez subido el archivo. El flujo ONIX anuncia el precio de la edición.</target>
+            </trans-unit>
+            <trans-unit id="jcIPZDZ">
+                <source>label.edition_file_read_aloud</source>
+                <target>Leído en voz alta</target>
+            </trans-unit>
+            <trans-unit id="PYHsetH">
+                <source>label.edition_file_read_aloud-help</source>
+                <target>El EPUB lee sus páginas en voz alta junto con el texto. Se indica al comprador en la tienda.</target>
+            </trans-unit>
+            <trans-unit id="8EpoZoD">
+                <source>label.edition_file_read_aloud_description</source>
+                <target>EPUB leído en voz alta: el texto se muestra y una voz lo lee, página tras página. La lectura puede desactivarse en los ajustes del lector.</target>
             </trans-unit>
             <trans-unit id="JsXZydc">
                 <source>label.edition_format-help</source>
@@ -1821,6 +1853,10 @@
             <trans-unit id="8ksUY7n">
                 <source>label.guided_step_book_edition_sale_channels</source>
                 <target>Marque sus canales</target>
+            </trans-unit>
+            <trans-unit id="nyyUER3">
+                <source>label.guided_step_book_edition_sale_covers</source>
+                <target>Suba sus cubiertas</target>
             </trans-unit>
             <trans-unit id="WecJhTI">
                 <source>label.guided_step_book_edition_sale_done</source>

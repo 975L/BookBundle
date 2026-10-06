@@ -35,6 +35,9 @@ class GooglePlayFeedTest extends TestCase
         mkdir($this->projectDir . '/private/medias/book/editions', 0o777, true);
         file_put_contents($this->projectDir . '/private/medias/book/editions/loup-digital.epub', 'epub');
         file_put_contents($this->projectDir . '/private/medias/book/editions/loup-digital.pdf', 'pdf');
+        file_put_contents($this->projectDir . '/private/medias/book/editions/loup-front.jpg', 'jpg');
+        file_put_contents($this->projectDir . '/private/medias/book/editions/loup-back.jpg', 'jpg');
+        file_put_contents($this->projectDir . '/private/medias/book/editions/loup-audio.mp3', 'mp3');
         mkdir($this->projectDir . '/public/medias/book', 0o777, true);
         $image = imagecreatetruecolor(4, 6);
         imagepng($image, $this->projectDir . '/public/medias/book/loup.png');
@@ -91,6 +94,54 @@ class GooglePlayFeedTest extends TestCase
 
         $this->assertSame($this->projectDir . '/cache/book-google/9782488750011_frontcover.jpg', $cover['path']);
         $this->assertSame('image/jpeg', mime_content_type($cover['path']));
+    }
+
+    // The edition's own covers, as drawn, rather than the pages' one
+    public function testTheEditionsCoversAreServedAsTheyAre(): void
+    {
+        $book = $this->book()->addMedia(new BookMedia()->setKind('cover')->setName('medias/book/loup.png'));
+        $book->getEditions()->first()
+            ->setFileOf(BookEditionFileKind::CoverFront, self::file('loup-front.jpg'))
+            ->setFileOf(BookEditionFileKind::CoverBack, self::file('loup-back.jpg'));
+
+        $ebooks = $this->feed([$book])->ebooks();
+
+        $this->assertSame($this->projectDir . '/private/medias/book/editions/loup-front.jpg', $ebooks['9782488750011_frontcover.jpg']['path']);
+        $this->assertSame($this->projectDir . '/private/medias/book/editions/loup-back.jpg', $ebooks['9782488750011_backcover.jpg']['path']);
+    }
+
+    // Covers with no book's file to go along send nothing
+    public function testCoversAloneAreNotListed(): void
+    {
+        $book = new Book()->setTitle('Couvertures');
+        $book->addEdition(new BookEdition()->setKind('digital')->setIsbn('9782488750066')->setChannels(['google'])
+            ->setFileOf(BookEditionFileKind::CoverFront, self::file('loup-front.jpg')));
+
+        $this->assertSame([], $this->feed([$book])->ebooks());
+    }
+
+    // A recording ticked "Google" goes to the audio folder under its ISBN and its own extension, never among the ebooks
+    public function testAnAudiobookIsListedApart(): void
+    {
+        $book = $this->book();
+        $book->addEdition(new BookEdition()->setKind('audio')->setIsbn('9782488750073')->setChannels(['google'])
+            ->setFileOf(BookEditionFileKind::Audio, self::file('loup-audio.mp3'))
+            ->setFileOf(BookEditionFileKind::CoverFront, self::file('loup-front.jpg')));
+
+        $feed = $this->feed([$book]);
+
+        $this->assertSame(['9782488750073.mp3', '9782488750073_frontcover.jpg'], array_keys($feed->audiobooks()));
+        $this->assertArrayNotHasKey('9782488750073.mp3', $feed->ebooks());
+    }
+
+    // A recording without its own square cover stays home rather than going with the pages' portrait one
+    public function testAnAudiobookWithoutItsCoverIsNotListed(): void
+    {
+        $book = $this->book();
+        $book->addEdition(new BookEdition()->setKind('audio')->setIsbn('9782488750073')->setChannels(['google'])
+            ->setFileOf(BookEditionFileKind::Audio, self::file('loup-audio.mp3')));
+
+        $this->assertSame([], $this->feed([$book])->audiobooks());
     }
 
     /** @param list<Book>|null $books */

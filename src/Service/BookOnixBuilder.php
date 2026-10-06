@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Enum\BookContributorRole;
+use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Enum\BookEditionKind;
 use c975L\BookBundle\Enum\BookSubjectScheme;
 use c975L\BookBundle\Twig\BookSectionsExtension;
@@ -356,13 +357,13 @@ class BookOnixBuilder
         return $total;
     }
 
-    // The ONIX form and its detail, from what the site's own word for the kind stands for (see BookEditionKind::of()): a paperback, an MP3 download, or a download whose format says PDF or EPUB
+    // The ONIX form and its detail, from what the site's own word for the kind stands for (see BookEditionKind::of()): a paperback, an MP3 or AAC download as its recording is, or a download whose format says PDF or EPUB
     /** @return array{string, string|null} */
     private static function productForm(BookEdition $edition): array
     {
         return match (BookEditionKind::of($edition->getKind())) {
             BookEditionKind::Paper => ['BC', null],
-            BookEditionKind::Audio => ['AJ', 'A103'],
+            BookEditionKind::Audio => ['AJ', str_ends_with(strtolower((string) $edition->getFileOf(BookEditionFileKind::Audio)?->getName()), '.m4a') ? 'A107' : 'A103'],
             BookEditionKind::Digital => str_contains(strtolower((string) $edition->getFormat()), 'pdf') ? ['ED', 'E107'] : ['ED', 'E101'],
         };
     }
@@ -377,6 +378,12 @@ class BookOnixBuilder
     public static function isEbook(BookEdition $edition): bool
     {
         return 'ED' === self::productForm($edition)[0];
+    }
+
+    // A recorded book, as a store selling audiobooks takes it
+    public static function isAudio(BookEdition $edition): bool
+    {
+        return 'AJ' === self::productForm($edition)[0];
     }
 
     // The book's language as ONIX writes it, from "fr" or "fr_FR"

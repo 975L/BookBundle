@@ -14,7 +14,9 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Enum\BookChannel;
+use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Twig\BookSectionsExtension;
+use c975L\ConfigBundle\Service\SiteLocales;
 use c975L\UiBundle\Contract\ProductCatalogWriterInterface;
 use c975L\UiBundle\Model\CatalogProduct;
 use c975L\UiBundle\Model\CatalogProductItem;
@@ -27,6 +29,7 @@ class BookShopPublisher
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
+        private readonly SiteLocales $siteLocales,
         #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
         private readonly ?ProductCatalogWriterInterface $writer = null,
@@ -62,14 +65,31 @@ class BookShopPublisher
             return;
         }
 
-        $cover = BookSectionsExtension::cover($latest);
         $this->writer->write(new CatalogProduct(
             key: self::productKey($latest),
             title: (string) $latest->getTitle(),
             description: (string) $latest->getSummary(),
             items: $items,
-            coverPath: null === $cover?->getName() ? null : $this->projectDir . '/public/' . ltrim($cover->getName(), '/'),
+            coverPath: $this->coverPath($latest),
         ));
+    }
+
+    // The front cover as drawn, which the shop resizes on its own - a digital edition's first, an audiobook's square one only as a last resort, the pages' one for want of any
+    private function coverPath(Book $book): ?string
+    {
+        $editions = $book->getEditions()->toArray();
+        usort($editions, static fn (BookEdition $a, BookEdition $b): int => (int) !BookOnixBuilder::isEbook($a) <=> (int) !BookOnixBuilder::isEbook($b));
+        foreach ($editions as $edition) {
+            $file = $edition->getFileOf(BookEditionFileKind::CoverFront);
+            $path = null === $file?->getName() ? null : $this->projectDir . '/' . PrivateDirectory::resolve($file) . '/' . $file->getName();
+            if (null !== $path && is_file($path)) {
+                return $path;
+            }
+        }
+
+        $cover = BookSectionsExtension::cover($book);
+
+        return null === $cover?->getName() ? null : $this->projectDir . '/public/' . ltrim($cover->getName(), '/');
     }
 
     // The name the shop finds the book's product under
@@ -91,7 +111,7 @@ class BookShopPublisher
         $items = [];
         foreach ($edition->getFiles() as $file) {
             $path = $this->projectDir . '/' . PrivateDirectory::resolve($file) . '/' . $file->getName();
-            if (null === $file->getName() || !is_file($path)) {
+            if (null === $file->getName() || !is_file($path) || !(BookEditionFileKind::tryFrom((string) $file->getKind())?->isSold() ?? false)) {
                 continue;
             }
 
@@ -101,15 +121,29 @@ class BookShopPublisher
                 filePath: $path,
                 price: $file->getPrice(),
                 currency: $edition->getCurrency(),
+                description: $file->isReadAloud() ? $this->readAloudDescriptions() : [],
             );
         }
 
         return $items;
     }
 
+    // What an EPUB read aloud is, in every language the site offers - the shop writes its own on the row and the others as translations
+    /** @return array<string, string> */
+    private function readAloudDescriptions(): array
+    {
+        $descriptions = [];
+        foreach ($this->siteLocales->all() as $locale) {
+            $descriptions[$locale] = $this->translator->trans('label.edition_file_read_aloud_description', [], 'book', $locale);
+        }
+
+        return $descriptions;
+    }
+
     private function title(BookEditionFile $file, bool $earlierVersion): string
     {
-        $title = $this->translator->trans('label.edition_file_' . $file->getKind(), [], 'book');
+        // An EPUB read aloud says so in its very name, the buyer choosing between files on it
+        $title = $this->translator->trans('label.edition_file_' . $file->getKind() . ($file->isReadAloud() ? '_read_aloud' : ''), [], 'book');
 
         return $earlierVersion ? $this->translator->trans('label.edition_file_earlier_version', ['%title%' => $title], 'book') : $title;
     }

@@ -15,7 +15,7 @@ use c975L\UiBundle\Contract\VichPrivateFileInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
-// A file an edition is sold as - its EPUB, its PDF, its printable booklet, its MP3 (see BookEditionFileKind, stored in Media::$kind) - kept out of public/ since it is what a buyer pays for. The catalog is its one home: the shop gets a copy of it, the stores fetching files read it here (see GooglePlayFeedController)
+// A file an edition holds - its EPUB, its PDF, its printable booklet, its MP3, the covers as drawn (see BookEditionFileKind, stored in Media::$kind) - kept out of public/ since most of it is what a buyer pays for. The catalog is its one home: the shop gets a copy of it, the stores fetching files read it here (see GooglePlayFeedController)
 #[ORM\Entity]
 #[Vich\Uploadable]
 class BookEditionFile extends Media implements VichPrivateFileInterface, VichMediaNamableInterface
@@ -27,6 +27,10 @@ class BookEditionFile extends Media implements VichPrivateFileInterface, VichMed
     // What the file sells for in the shop, tax included and in cents like ShopBundle's - a file of its own, the EPUB and the booklet of one edition rarely going for the same price. The ONIX announces the edition's price, not this one
     #[ORM\Column(nullable: true)]
     private ?int $price = null;
+
+    // An EPUB whose pages are read aloud along their text (media overlays) - what the shop tells the buyer, who can turn the voice off in the reader
+    #[ORM\Column(options: ['default' => false])]
+    private bool $readAloud = false;
 
     public function getEdition(): ?BookEdition
     {
@@ -48,6 +52,18 @@ class BookEditionFile extends Media implements VichPrivateFileInterface, VichMed
     public function setPrice(?int $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function isReadAloud(): bool
+    {
+        return $this->readAloud;
+    }
+
+    public function setReadAloud(bool $readAloud): static
+    {
+        $this->readAloud = $readAloud;
 
         return $this;
     }

@@ -322,9 +322,13 @@
                 <source>description.guided_step_book_edition_sale_channels</source>
                 <target>"Shop" puts it on sale on the site; ONIX and Google make it known to the bookshops and to Google Play Books.</target>
             </trans-unit>
+            <trans-unit id="iXIngu.">
+                <source>description.guided_step_book_edition_sale_covers</source>
+                <target>The front and back covers as drawn, never sold: they dress the book in the shop and on Google. An audio edition takes a square cover, without which it is not sent to Google.</target>
+            </trans-unit>
             <trans-unit id="S5uubtb">
                 <source>description.guided_step_book_edition_sale_done</source>
-                <target>The book's product is written into the shop, one item per file; Google fetches the ebooks on its own.</target>
+                <target>The book's product is written into the shop, one item per file; Google fetches the ebooks and the audiobooks on its own.</target>
             </trans-unit>
             <trans-unit id="O.G..T1">
                 <source>description.guided_step_book_edition_sale_edit</source>
@@ -332,7 +336,7 @@
             </trans-unit>
             <trans-unit id="LgOc2qn">
                 <source>description.guided_step_book_edition_sale_files</source>
-                <target>One slot per file the edition can sell, each with its price tax included: a digital edition takes the EPUB, the PDF and the booklet, an audio edition the MP3.</target>
+                <target>One slot per file the edition sells, each with its price tax included: a digital edition takes the EPUB (ticked "Read aloud" when it reads its text), the PDF and the booklet, an audio edition the MP3.</target>
             </trans-unit>
             <trans-unit id="wdXHhRC">
                 <source>description.guided_step_book_edition_sale_open</source>
@@ -1382,6 +1386,18 @@
                 <source>label.edition_file_booklet</source>
                 <target>PDF booklet</target>
             </trans-unit>
+            <trans-unit id="jECCFRS">
+                <source>label.edition_file_cover_back</source>
+                <target>Back cover (JPEG)</target>
+            </trans-unit>
+            <trans-unit id="Ge_gKv4">
+                <source>label.edition_file_cover_front</source>
+                <target>Front cover (JPEG)</target>
+            </trans-unit>
+            <trans-unit id="1zVyB1K">
+                <source>label.edition_file_cover_front-help</source>
+                <target>As drawn, at least 1024 pixels on its shorter side (Apple): the stores and the shop receive it and resize it themselves</target>
+            </trans-unit>
             <trans-unit id="5sApxF0">
                 <source>label.edition_file_earlier_version</source>
                 <target>%title% original version</target>
@@ -1389,6 +1405,10 @@
             <trans-unit id="xpZYJz1">
                 <source>label.edition_file_epub</source>
                 <target>EPUB file</target>
+            </trans-unit>
+            <trans-unit id="_nDuLPZ">
+                <source>label.edition_file_epub_read_aloud</source>
+                <target>Read-aloud EPUB file</target>
             </trans-unit>
             <trans-unit id="61LczxL">
                 <source>label.edition_file_pdf</source>
@@ -1401,6 +1421,18 @@
             <trans-unit id="9gyzQZp">
                 <source>label.edition_file_price-help</source>
                 <target>Price of this file in the site’s shop, tax included, 0 for a free file, kept once the file is uploaded. The ONIX feed announces the edition’s price.</target>
+            </trans-unit>
+            <trans-unit id="jcIPZDZ">
+                <source>label.edition_file_read_aloud</source>
+                <target>Read aloud</target>
+            </trans-unit>
+            <trans-unit id="PYHsetH">
+                <source>label.edition_file_read_aloud-help</source>
+                <target>The EPUB reads its pages aloud along with the text. Told to the buyer in the shop.</target>
+            </trans-unit>
+            <trans-unit id="8EpoZoD">
+                <source>label.edition_file_read_aloud_description</source>
+                <target>Read-aloud EPUB: the text is shown and a voice reads it, page after page. The reading can be turned off in the e-reader's settings.</target>
             </trans-unit>
             <trans-unit id="JsXZydc">
                 <source>label.edition_format-help</source>
@@ -1821,6 +1853,10 @@
             <trans-unit id="8ksUY7n">
                 <source>label.guided_step_book_edition_sale_channels</source>
                 <target>Tick its channels</target>
+            </trans-unit>
+            <trans-unit id="nyyUER3">
+                <source>label.guided_step_book_edition_sale_covers</source>
+                <target>Upload its covers</target>
             </trans-unit>
             <trans-unit id="WecJhTI">
                 <source>label.guided_step_book_edition_sale_done</source>

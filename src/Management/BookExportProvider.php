@@ -131,7 +131,7 @@ class BookExportProvider implements ExportProviderInterface
             'currency' => $edition->getCurrency(),
             'channels' => $edition->getChannels(),
             'position' => $edition->getPosition(),
-            // The files it is sold as, each with the price the shop sells it at - without them an edition ticked "Shop" would come back with nothing to sell
+            // The files it is sold as, each with the price the shop sells it at and whether it is read aloud - without them an edition ticked "Shop" would come back with nothing to sell
             'files' => $this->exportEditionFiles($edition, $files),
         ];
     }
@@ -142,7 +142,7 @@ class BookExportProvider implements ExportProviderInterface
         foreach ($edition->getFiles() as $file) {
             $fileData = $this->mediaArchiver->export($file, $files);
             if (null !== $fileData) {
-                $data[] = [...$fileData, 'price' => $file->getPrice()];
+                $data[] = [...$fileData, 'price' => $file->getPrice(), 'readAloud' => $file->isReadAloud()];
             }
         }
 

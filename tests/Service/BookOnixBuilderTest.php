@@ -14,9 +14,11 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Service\AudioDurationReader;
 use c975L\BookBundle\Service\BookOnixBuilder;
 use PHPUnit\Framework\TestCase;
@@ -69,6 +71,17 @@ class BookOnixBuilderTest extends TestCase
         $this->assertSame('AJ', $xpath->evaluate('string(//o:Product[2]//o:ProductForm)'));
         $this->assertSame('09', $xpath->evaluate('string(//o:Product[2]//o:Extent/o:ExtentType)'));
         $this->assertSame('300', $xpath->evaluate('string(//o:Product[2]//o:Extent/o:ExtentValue)'));
+    }
+
+    // The recording's detail tells the format of the file Google fetches: MP3 unless an M4A was dropped, which is AAC
+    public function testTheAudioDetailFollowsTheRecordingsFormat(): void
+    {
+        $this->assertSame('A103', $this->read([$this->book()])->evaluate('string(//o:Product[2]//o:ProductFormDetail)'));
+
+        $book = $this->book();
+        $book->getEdition('audio')?->setFileOf(BookEditionFileKind::Audio, new BookEditionFile()->setName('medias/book/editions/loup.M4A'));
+
+        $this->assertSame('A107', $this->read([$book])->evaluate('string(//o:Product[2]//o:ProductFormDetail)'));
     }
 
     // Each scheme's first subject is the main one, a Thema qualifier going under its own scheme

@@ -234,9 +234,13 @@
                 <source>narration.guided_step_book_edition_sale_channels</source>
                 <target>Tick "Shop" to sell it on the site, ONIX and Google to make it known to the bookshops and to Google Play Books.</target>
             </trans-unit>
+            <trans-unit id="msRBCSB">
+                <source>narration.guided_step_book_edition_sale_covers</source>
+                <target>Upload the front and back covers as drawn: they are not sold, they dress the book in the shop and on Google. An audio edition takes a square cover, without which Google does not receive it.</target>
+            </trans-unit>
             <trans-unit id="fdAify4">
                 <source>narration.guided_step_book_edition_sale_done</source>
-                <target>The edition is on sale: the book's product is written into the shop, one item per file, and Google fetches the ebooks on its own.</target>
+                <target>The edition is on sale: the book's product is written into the shop, one item per file, and Google fetches the ebooks and the audiobooks on its own.</target>
             </trans-unit>
             <trans-unit id="mtvK8_n">
                 <source>narration.guided_step_book_edition_sale_edit</source>
@@ -244,7 +248,7 @@
             </trans-unit>
             <trans-unit id="TTU68ef">
                 <source>narration.guided_step_book_edition_sale_files</source>
-                <target>Upload each file with its price tax included: the EPUB, the PDF and the booklet for a digital edition, the MP3 for an audio one.</target>
+                <target>Upload each file with its price tax included: the EPUB, the PDF and the booklet for a digital edition, the MP3 for an audio one. Tick "Read aloud" when the EPUB reads its text.</target>
             </trans-unit>
             <trans-unit id="m0nzkFh">
                 <source>narration.guided_step_book_edition_sale_open</source>

@@ -19,8 +19,8 @@ class BookEditionFileKindTest extends TestCase
     public function testTheFilesFollowTheKindOfTheEdition(): void
     {
         $this->assertSame([], BookEditionFileKind::forEdition('paper'));
-        $this->assertSame([BookEditionFileKind::Audio], BookEditionFileKind::forEdition('audio'));
-        $this->assertSame([BookEditionFileKind::Epub, BookEditionFileKind::Pdf, BookEditionFileKind::Booklet], BookEditionFileKind::forEdition('digital'));
+        $this->assertSame([BookEditionFileKind::Audio, BookEditionFileKind::CoverFront], BookEditionFileKind::forEdition('audio'));
+        $this->assertSame([BookEditionFileKind::Epub, BookEditionFileKind::Pdf, BookEditionFileKind::Booklet, BookEditionFileKind::CoverFront, BookEditionFileKind::CoverBack], BookEditionFileKind::forEdition('digital'));
     }
 
     // An edition whose kind is not chosen yet offers every slot
@@ -35,6 +35,15 @@ class BookEditionFileKindTest extends TestCase
         $this->assertSame(['epub'], BookEditionFileKind::Epub->extensions());
         $this->assertSame(['pdf'], BookEditionFileKind::Booklet->extensions());
         $this->assertSame(['mp3', 'm4a'], BookEditionFileKind::Audio->extensions());
+        $this->assertSame(['jpg', 'jpeg'], BookEditionFileKind::CoverFront->extensions());
         $this->assertSame('label.edition_file_booklet', BookEditionFileKind::Booklet->label());
+    }
+
+    // The covers go to the stores and the shop's pictures, never on sale
+    public function testOnlyTheCoversAreNotSold(): void
+    {
+        $this->assertFalse(BookEditionFileKind::CoverFront->isSold());
+        $this->assertFalse(BookEditionFileKind::CoverBack->isSold());
+        $this->assertTrue(BookEditionFileKind::Epub->isSold());
     }
 }

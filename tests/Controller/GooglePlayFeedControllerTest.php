@@ -69,16 +69,34 @@ class GooglePlayFeedControllerTest extends TestCase
         }
     }
 
+    // An audiobook's recording is served from the audio folder, any other name is not found
+    public function testAnAudiobookIsServedFromItsFolder(): void
+    {
+        $path = (string) tempnam(sys_get_temp_dir(), 'mp3');
+        $controller = $this->createController(self::SETTINGS, audiobooks: ['9782488750073.mp3' => ['path' => $path, 'modified' => new \DateTimeImmutable('2026-01-01')]]);
+
+        $this->assertSame(200, $controller->audiobook($this->request('google', 'secret42'), '337R84F', '9782488750073.mp3')->getStatusCode());
+
+        $this->expectException(NotFoundHttpException::class);
+        try {
+            $controller->audiobook($this->request('google', 'secret42'), '337R84F', '9782488750073.m4a');
+        } finally {
+            unlink($path);
+        }
+    }
+
     private function request(string $user, string $password): Request
     {
         return Request::create('https://example.org/google-livres/onix/337R84F-rights/Test_20260101.xml', server: ['PHP_AUTH_USER' => $user, 'PHP_AUTH_PW' => $password]);
     }
 
     /** @param array<string, string> $configs */
-    private function createController(array $configs, string $collection = '337R84F'): GooglePlayFeedController
+    /** @param array<string, array{path: string, modified: \DateTimeImmutable}> $audiobooks */
+    private function createController(array $configs, string $collection = '337R84F', array $audiobooks = []): GooglePlayFeedController
     {
         $feed = $this->createStub(GooglePlayFeed::class);
         $feed->method('collection')->willReturn($collection);
+        $feed->method('audiobooks')->willReturn($audiobooks);
         $feed->method('onix')->willReturn(['name' => 'Test_20260101.xml', 'content' => '<ONIXMessage/>', 'modified' => new \DateTimeImmutable('2026-01-01 00:00:00 UTC')]);
 
         $configService = $this->createStub(ConfigServiceInterface::class);

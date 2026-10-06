@@ -885,22 +885,26 @@ than sent truncated. The guided project *Ouvrir le catalogue aux librairies* wal
 
 ### Google Play Books feed
 
-Google Play Books fetches a publisher's ebooks on its own schedule ("automated content fetching") from folders
+Google Play Books fetches a publisher's ebooks and audiobooks on its own schedule ("automated content fetching") from folders
 the publisher hands it. `GooglePlayFeedController` serves them under the segment `book-route-google` names, as
 plain directory listings the crawler reads:
 
 ```
 /google-livres/onix/<collection>-rights/<Publisher>_<YYYYMMDD>.xml   the ebooks' ONIX, renamed when the catalog changes
-/google-livres/ebooks/<collection>/<ISBN>.epub                       the file the edition is sold as (or <ISBN>_interior.pdf)
-/google-livres/ebooks/<collection>/<ISBN>_frontcover.jpg             the book's cover, converted to JPEG when needed
+/google-livres/ebooks/<collection>/<ISBN>.epub                       the file the edition is sold as (and <ISBN>.pdf)
+/google-livres/ebooks/<collection>/<ISBN>_frontcover.jpg             the edition's front cover, else the book's one converted to JPEG
+/google-livres/ebooks/<collection>/<ISBN>_backcover.jpg              the edition's back cover, when it has one
+/google-livres/audio/<collection>/<ISBN>.mp3                          an audiobook's recording (or <ISBN>.m4a)
+/google-livres/audio/<collection>/<ISBN>_frontcover.jpg              its own square front cover, Google taking one picture only
 ```
 
 `<collection>` is the code Google gives the publisher (`book-google-collection`), and everything sits behind HTTP
 Basic with `book-google-user` and `book-google-password` — alphanumeric, as Google asks. Until the four settings
 are set, nothing answers. The list of files is cached until the catalog changes, and a cover kept in another
 format is converted once into `var/cache/<env>/book-google/`; the ONIX is renamed only by a change to a book sent
-to Google or to the files of its editions. Only the digital editions ticked "Google" are sent, with their EPUB and PDF — never the
-booklet. An edition priced 0 is announced as free.
+to Google or to the files of its editions. Only the digital and audio editions ticked "Google" are sent: an ebook with its EPUB and PDF — never the
+booklet —, an audiobook with its recording once it has its own square front cover, the pages' portrait one being
+no stand-in. An edition priced 0 is announced as free.
 
 ### Edition files and channels
 
@@ -908,7 +912,14 @@ An edition holds the files it is sold as, one per kind (`BookEditionFileKind`): 
 booklet of a digital edition, which share its ISBN, the MP3 of a recorded one — a printed edition has none, and
 its accordion offers only the slots its kind takes. Each is uploaded there with the price the shop sells it at (a
 price typed with no file is dropped on save), kept under `private/medias/book/` and
-declared to the backups (`BookEditionFile`). The edition's own price is the one the ONIX announces.
+declared to the backups (`BookEditionFile`). The edition's own price is the one the ONIX announces. An EPUB
+whose pages are read aloud along their text is ticked "Lu à voix haute": the shop names its item so and tells the
+buyer the voice can be turned off.
+
+Beside them, a digital edition holds its front and back covers as drawn (JPEG, a recorded one its front cover
+only): never sold, they are what the stores receive under the ISBN, and the front one — a digital edition's
+before a recorded one's — becomes the picture of the shop's product, which the shop resizes itself. The front cover must be at least 1024 pixels on its shorter side,
+Apple's floor. Per edition and not per book: a printed back cover carries its own ISBN's barcode.
 
 Where the edition goes is ticked on it (`BookChannel`): the site's shop, the public ONIX feed, Google Play Books
 (Apple Books is offered too, for the feed to come: ticking it sends nothing yet). A book may be in the ONIX the bookshops read and not on Google, or sold in the shop alone.
@@ -923,7 +934,8 @@ every book at once. The guided project *Vendre une édition en fichiers* walks t
 A shop that held the files before the catalog did hands them over once with `c975l:book:shop:import` — try it
 with `--dry-run`, or on one product with `--product=<slug>`. A product is matched to a book by its slug, then by
 its title; an item to a kind of file by its slug and extension, a "version originale" to the book's earlier
-version, or to the book itself when it has none and no illustrated file takes the slot. What cannot be matched is listed and left in the shop. On an Apache server running
+version, or to the book itself when it has none and no illustrated file takes the slot. Of two EPUBs, the one
+carrying SMIL files is taken as read aloud and preferred. What cannot be matched is listed and left in the shop. On an Apache server running
 PHP-FPM, check the `Authorization` header reaches PHP (the Symfony `.htaccess` passes it on).
 
 Ask Google for the feed through the Partner Center's automated content fetching form (HTTPS, "Droits ONIX" and

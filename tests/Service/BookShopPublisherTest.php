@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Service\BookShopPublisher;
+use c975L\ConfigBundle\Service\SiteLocales;
 use c975L\UiBundle\Contract\ProductCatalogWriterInterface;
 use c975L\UiBundle\Model\CatalogProduct;
 use PHPUnit\Framework\TestCase;
@@ -58,6 +59,19 @@ class BookShopPublisherTest extends TestCase
         $this->assertSame(299, $product->items[0]->price);
     }
 
+    // An EPUB read aloud says so in its name and in its text, which the buyer reads before choosing
+    public function testAReadAloudEpubSaysSo(): void
+    {
+        $written = [];
+        $book = $this->book(1, 'new.epub', ['shop']);
+        $book->getEditions()->first()->getFileOf(BookEditionFileKind::Epub)?->setReadAloud(true);
+
+        $this->publisher($written)->publish($book);
+
+        $this->assertSame('label.edition_file_epub_read_aloud', $written[0]->items[0]->title);
+        $this->assertSame(['fr' => 'label.edition_file_read_aloud_description@fr', 'en' => 'label.edition_file_read_aloud_description@en'], $written[0]->items[0]->description);
+    }
+
     // An edition ticked "Shop" whose files are not on disk yet is no reason to set the product's items aside: nothing is written
     public function testAShopEditionWithoutFilesWritesNothing(): void
     {
@@ -78,9 +92,37 @@ class BookShopPublisherTest extends TestCase
         $this->assertSame([], $written[0]->items);
     }
 
+    // The product takes the digital edition's front cover, an audiobook's square one coming first in the list notwithstanding
+    public function testTheCoverIsTheDigitalEditionsOne(): void
+    {
+        $written = [];
+        file_put_contents($this->projectDir . '/private/medias/square.jpg', 'square');
+        file_put_contents($this->projectDir . '/private/medias/portrait.jpg', 'portrait');
+        $book = new Book()->setTitle('Le Loup');
+        new \ReflectionProperty(Book::class, 'id')->setValue($book, 1);
+        $book->addEdition(new BookEdition()->setKind('audio')->setFileOf(BookEditionFileKind::CoverFront, new BookEditionFile()->setName('medias/square.jpg')));
+        $book->addEdition(new BookEdition()->setKind('digital')->setFileOf(BookEditionFileKind::CoverFront, new BookEditionFile()->setName('medias/portrait.jpg')));
+
+        $this->publisher($written)->publish($book);
+
+        $this->assertStringEndsWith('/medias/portrait.jpg', (string) $written[0]->coverPath);
+    }
+
+    // A file of a kind the bundle no longer knows is left out like a missing one, rather than failing the whole product
+    public function testAFileOfAnUnknownKindIsLeftOut(): void
+    {
+        $written = [];
+        $book = $this->book(1, 'new.epub', ['shop']);
+        $book->getEditions()->first()->getFileOf(BookEditionFileKind::Epub)?->setKind('obsolete');
+
+        $this->publisher($written)->publish($book);
+
+        $this->assertSame([], $written);
+    }
+
     public function testNothingIsWrittenWithoutAShop(): void
     {
-        $publisher = new BookShopPublisher($this->createStub(TranslatorInterface::class), $this->projectDir);
+        $publisher = new BookShopPublisher($this->createStub(TranslatorInterface::class), new SiteLocales(['fr', 'en'], 'fr'), $this->projectDir);
 
         $this->assertFalse($publisher->isAvailable());
         $publisher->publish($this->book(1, 'new.epub', ['shop']));
@@ -105,8 +147,8 @@ class BookShopPublisherTest extends TestCase
             $written[] = $product;
         });
         $translator = $this->createStub(TranslatorInterface::class);
-        $translator->method('trans')->willReturnArgument(0);
+        $translator->method('trans')->willReturnCallback(static fn (string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string => null === $locale ? $id : $id . '@' . $locale);
 
-        return new BookShopPublisher($translator, $this->projectDir, $writer);
+        return new BookShopPublisher($translator, new SiteLocales(['fr', 'en'], 'fr'), $this->projectDir, $writer);
     }
 }

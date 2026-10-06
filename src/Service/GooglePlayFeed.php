@@ -24,10 +24,10 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
-// What Google Play Books' crawler finds in the folders it is handed (see GooglePlayFeedController): the ebooks' ONIX under "onix/<collection>-rights/", their files and covers under "ebooks/<collection>/", each named the way Google matches them - alphanumeric, the ISBN standing for the book
+// What Google Play Books' crawler finds in the folders it is handed (see GooglePlayFeedController): the ONIX under "onix/<collection>-rights/", the ebooks' files and covers under "ebooks/<collection>/", the audiobooks' recording and cover under "audio/<collection>/", each named the way Google matches them - alphanumeric, the ISBN standing for the book
 class GooglePlayFeed
 {
-    private const string CACHE_KEY = 'book_google_ebooks';
+    private const string CACHE_KEY = 'book_google_';
 
     public function __construct(
         private readonly BookRepository $bookRepository,
@@ -63,32 +63,47 @@ class GooglePlayFeed
         ];
     }
 
-    // Each ebook's own files and its front cover, keyed by the name the crawler asks for - "<ISBN>.epub", "<ISBN>_interior.pdf", "<ISBN>_frontcover.jpg" - only those on disk. The booklet stays home: it is printed by a buyer, not read in a store. Kept until the catalog changes, the crawler asking for every file in turn
+    // Each ebook's own files and its front cover, keyed by the name the crawler asks for - "<ISBN>.epub", "<ISBN>.pdf", "<ISBN>_frontcover.jpg", "<ISBN>_backcover.jpg" - only those on disk, the front cover made from the pages' one for want of the edition's own. The booklet stays home: it is printed by a buyer, not read in a store. Kept until the catalog changes, the crawler asking for every file in turn
     /** @return array<string, array{path: string, modified: \DateTimeImmutable}> */
     public function ebooks(): array
     {
-        return $this->cache->get(self::CACHE_KEY, function (ItemInterface $item): array {
+        return $this->files(false);
+    }
+
+    // Each audiobook's recording and its front cover, Google taking one picture only - "<ISBN>.mp3" (or .m4a), "<ISBN>_frontcover.jpg" - an audiobook without its own square cover left home, the pages' portrait one being no stand-in
+    /** @return array<string, array{path: string, modified: \DateTimeImmutable}> */
+    public function audiobooks(): array
+    {
+        return $this->files(true);
+    }
+
+    /** @return array<string, array{path: string, modified: \DateTimeImmutable}> */
+    private function files(bool $audio): array
+    {
+        return $this->cache->get(self::CACHE_KEY . ($audio ? 'audiobooks' : 'ebooks'), function (ItemInterface $item) use ($audio): array {
             $item->tag([BookBlockCacheInvalidator::CACHE_TAG_CATALOG]);
 
-            return $this->collectEbooks();
+            return $this->collect($audio);
         });
     }
 
     /** @return array<string, array{path: string, modified: \DateTimeImmutable}> */
-    private function collectEbooks(): array
+    private function collect(bool $audio): array
     {
         $files = [];
         foreach ($this->bookRepository->findAllForOnix() as $book) {
             foreach ($book->getEditions() as $edition) {
                 $isbn = preg_replace('/\D/', '', (string) $edition->getIsbn()) ?? '';
-                if (13 !== \strlen($isbn) || !self::sent($edition)) {
+                if (13 !== \strlen($isbn) || !self::sent($edition) || $audio !== BookOnixBuilder::isAudio($edition)) {
                     continue;
                 }
 
-                $sent = $this->editionFiles($edition, $isbn);
+                $sent = $this->editionFiles($edition, $isbn, $audio);
                 if ([] !== $sent) {
                     $files += $sent;
-                    $this->addCover($files, $book, $isbn);
+                    if (!isset($files[$isbn . '_frontcover.jpg'])) {
+                        $this->addCover($files, $book, $isbn);
+                    }
                 }
             }
         }
@@ -96,12 +111,16 @@ class GooglePlayFeed
         return $files;
     }
 
-    // The edition's EPUB and PDF found on disk, under the names Google matches them by
+    // The edition's book files and covers as drawn found on disk, under the names Google matches them by
     /** @return array<string, array{path: string, modified: \DateTimeImmutable}> */
-    private function editionFiles(BookEdition $edition, string $isbn): array
+    private function editionFiles(BookEdition $edition, string $isbn, bool $audio): array
     {
+        $kinds = $audio
+            ? [BookEditionFileKind::Audio->value => $isbn, BookEditionFileKind::CoverFront->value => $isbn . '_frontcover.jpg']
+            : [BookEditionFileKind::Epub->value => $isbn . '.epub', BookEditionFileKind::Pdf->value => $isbn . '.pdf', BookEditionFileKind::CoverFront->value => $isbn . '_frontcover.jpg', BookEditionFileKind::CoverBack->value => $isbn . '_backcover.jpg'];
+
         $files = [];
-        foreach ([BookEditionFileKind::Epub->value => $isbn . '.epub', BookEditionFileKind::Pdf->value => $isbn . '_interior.pdf'] as $kind => $name) {
+        foreach ($kinds as $kind => $name) {
             $file = $edition->getFileOf(BookEditionFileKind::from($kind));
             if (null === $file?->getName()) {
                 continue;
@@ -109,20 +128,28 @@ class GooglePlayFeed
 
             $path = $this->projectDir . '/' . PrivateDirectory::resolve($file) . '/' . $file->getName();
             if (is_file($path)) {
+                // The recording keeps its own extension, mp3 or m4a
+                $name = $isbn === $name ? $isbn . '.' . strtolower(pathinfo($path, \PATHINFO_EXTENSION)) : $name;
                 $files[$name] = ['path' => $path, 'modified' => $file->getUpdatedAt() ?? new \DateTimeImmutable('@' . filemtime($path))];
             }
         }
 
-        return $files;
+        // An audiobook goes with its square cover only
+        if ($audio && !isset($files[$isbn . '_frontcover.jpg'])) {
+            return [];
+        }
+
+        // The covers go along a book's file, never alone
+        return [] === array_diff_key($files, array_flip([$isbn . '_frontcover.jpg', $isbn . '_backcover.jpg'])) ? [] : $files;
     }
 
-    // What Google is sent: the ebooks ticked "Google", neither printed nor recorded
+    // What Google is sent: the ebooks and audiobooks ticked "Google", never a printed book
     private static function sent(BookEdition $edition): bool
     {
-        return $edition->hasChannel(BookChannel::Google) && BookOnixBuilder::isEbook($edition);
+        return $edition->hasChannel(BookChannel::Google) && (BookOnixBuilder::isEbook($edition) || BookOnixBuilder::isAudio($edition));
     }
 
-    // The cover the pages show, handed over as a JPEG since Google takes no WebP - converted once into the cache directory, again only when the cover changes
+    // The cover the pages show, for an edition with no cover of its own, handed over as a JPEG since Google takes no WebP - converted once into the cache directory, again only when the cover changes
     /** @param array<string, array{path: string, modified: \DateTimeImmutable}> $files */
     private function addCover(array &$files, Book $book, string $isbn): void
     {

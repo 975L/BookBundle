@@ -1199,7 +1199,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
         ];
     }
 
-    // An edition sold as files: its files and their prices dropped in its panel, its channels ticked, and the book saved - which writes the product into the shop (see BookShopPublishSubscriber). On an existing book, an edition being sold once written
+    // An edition sold as files: its files and their prices dropped in its panel, its covers beside them, its channels ticked, and the book saved - which writes the product into the shop (see BookShopPublishSubscriber). On an existing book, an edition being sold once written
     private function editionSaleProject(): array
     {
         return [
@@ -1241,6 +1241,13 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'description' => 'description.guided_step_book_edition_sale_files',
                     'narration' => 'narration.guided_step_book_edition_sale_files',
                     'highlight' => self::EDITION_OPEN . ' [id*="_file_"]:has(input[type="file"])',
+                ],
+                [
+                    // The front cover's slot, which every kind of edition sold as files takes
+                    'label' => 'label.guided_step_book_edition_sale_covers',
+                    'description' => 'description.guided_step_book_edition_sale_covers',
+                    'narration' => 'narration.guided_step_book_edition_sale_covers',
+                    'highlight' => self::EDITION_OPEN . ' [id$="_file_cover_front"]:has(input[type="file"])',
                 ],
                 [
                     'label' => 'label.guided_step_book_edition_sale_channels',

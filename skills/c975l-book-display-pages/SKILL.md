@@ -32,7 +32,7 @@ description: "Use this skill when working on the public pages of a catalog built
 | `book_listen_index` | *unset by default* | the books holding a recording, in the language being read |
 | `book_listen` | *unset by default* | one book played — its pages turning along the voice when it carries a `cues` file |
 | `book_onix` | *unset by default* | the catalog as an ONIX 3.0 feed for the stores — one product per edition holding an ISBN-13 and ticked "ONIX" (`OnixController`, `BookOnixBuilder`) |
-| `book_google` and below | *unset by default* | the folders Google Play Books fetches, behind HTTP Basic — the ebooks ticked "Google", their ONIX, files and JPEG covers (`GooglePlayFeedController`, `GooglePlayFeed`) |
+| `book_google` and below | *unset by default* | the folders Google Play Books fetches, behind HTTP Basic — the ebooks and audiobooks ticked "Google" — an audiobook only once it has its own square cover —, their ONIX, files and JPEG covers (`GooglePlayFeedController`, `GooglePlayFeed`) |
 
 Every prefix is a ConfigBundle setting (`book-route-books`, `book-route-book`, `book-route-series`,
 `book-route-categories`, `book-route-contributors`, `book-route-contributor`, `book-route-strips`,

@@ -91,9 +91,9 @@ class BookEditionTypeTest extends TestCase
     public static function fileSlots(): iterable
     {
         yield 'paper' => ['paper', []];
-        yield 'audio' => ['audio', ['file_audio']];
-        yield 'digital' => ['digital', ['file_epub', 'file_pdf', 'file_booklet']];
-        yield 'new edition' => [null, ['file_epub', 'file_pdf', 'file_booklet', 'file_audio']];
+        yield 'audio' => ['audio', ['file_audio', 'file_cover_front']];
+        yield 'digital' => ['digital', ['file_epub', 'file_pdf', 'file_booklet', 'file_cover_front', 'file_cover_back']];
+        yield 'new edition' => [null, ['file_epub', 'file_pdf', 'file_booklet', 'file_audio', 'file_cover_front', 'file_cover_back']];
     }
 
     // Neither files nor platforms: they belong to the book and are edited under the gesture they serve - the recording under "Listen" with the podcast apps, the bookshops under "Buy" (see BookCrudController). An edition says only what the book comes out under

@@ -1,11 +1,24 @@
 # Changelog
 
-## v2.17.1
+## v2.18.0
 
-A book never redone takes its own "version originale" files
+EPUBs read aloud, edition covers and audiobooks sent to Google
 
+- `BookEditionFile::$readAloud`: an EPUB read aloud along its text, a checkbox on the edition's EPUB **Needs db update** (06/10/2026)
+- The shop's item of an EPUB read aloud is named so and tells the buyer the voice can be turned off, in every language the site offers (06/10/2026)
+- `c975l:book:shop:import` prefers an EPUB read aloud to a plain one, read from its SMIL files, and ticks it (06/10/2026)
 - `c975l:book:shop:import` copies a "version originale" into a book having no earlier version (06/10/2026)
 - `c975l:book:shop:import` places the illustrated files before the "version originale" ones (06/10/2026)
+- An edition's front and back covers kept as drawn (`BookEditionFileKind::CoverFront|CoverBack`), never sold: Google Play Books receives them as `<ISBN>_frontcover.jpg` and `<ISBN>_backcover.jpg`, the shop's product its front one (06/10/2026)
+- Google Play Books receives the PDF as `<ISBN>.pdf` instead of `<ISBN>_interior.pdf` (06/10/2026)
+- Google Play Books receives the audiobooks ticked "Google" too: in the ONIX, and under `audio/<collection>/` their recording and front cover (06/10/2026)
+- The catalog's export and import carry an EPUB's read-aloud flag (06/10/2026)
+- An audiobook without its own front cover is not sent to Google Play Books (06/10/2026)
+- The ONIX announces an M4A recording as AAC (`A107`) (06/10/2026)
+- The shop's product takes a digital edition's front cover before an audiobook's (06/10/2026)
+- `BookShopPublisher` leaves out a file of an unknown kind (06/10/2026)
+- Guided project `book-edition-sale` tells the covers and the read-aloud EPUB, in a new covers step (06/10/2026)
+- Requires `c975l/core-bundle` ^1.56 (06/10/2026)
 
 ## v2.17.0
 
