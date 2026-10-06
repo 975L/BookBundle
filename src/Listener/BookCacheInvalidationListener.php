@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Listener;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\Serie;
@@ -24,7 +25,7 @@ use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 
-// Drops the cached renders of this bundle's blocks whenever the catalog they read changes - a book published, a serie renamed, a planche put online, a person credited, a cover replaced - postPersist as much as postUpdate, a book added to a cached listing being an INSERT
+// Drops the cached renders of this bundle's blocks whenever the catalog they read changes - a book published, a serie renamed, a planche put online, a person credited, a cover replaced, an edition's channels ticked (see GooglePlayFeed::ebooks()) - postPersist as much as postUpdate, a book added to a cached listing being an INSERT
 #[AsDoctrineListener(event: Events::postPersist)]
 #[AsDoctrineListener(event: Events::postUpdate)]
 #[AsDoctrineListener(event: Events::preRemove)]
@@ -54,6 +55,7 @@ class BookCacheInvalidationListener
     {
         match (true) {
             $entity instanceof Book,
+            $entity instanceof BookEdition,
             $entity instanceof BookCategory,
             $entity instanceof Serie,
             $entity instanceof Strip,

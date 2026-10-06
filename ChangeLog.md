@@ -1,5 +1,29 @@
 # Changelog
 
+## v2.17.0
+
+The catalog holds the files the editions are sold as, and Google Play Books fetches the ebooks on its own
+
+- New `BookEditionFile`: the private files an edition is sold as (`BookEditionFileKind`), one per kind, each with its shop price **Needs db update** (06/10/2026)
+- `BookEdition::$channels`: where the edition is handed out (`BookChannel`) **Needs db update** (06/10/2026)
+- The public ONIX feed sends only the editions ticked "ONIX" [BC-Break] (06/10/2026)
+- New `GooglePlayFeedController` and `GooglePlayFeed`: the folders Google Play Books fetches, behind HTTP Basic (06/10/2026)
+- `book-route-google`, `book-google-collection`, `book-google-user` and `book-google-password` settings (06/10/2026)
+- `BookOnixBuilder` writes `SalesRights` and `EpubTechnicalProtection`, and `build()` takes the editions a feed keeps (06/10/2026)
+- A price of 0 is announced as free (`UnpricedItemType` 01) (06/10/2026)
+- The catalog's export and import carry each edition's price, currency, channels and files (06/10/2026)
+- New `BookShopPublisher`: a saved book is written into the shop through `ProductCatalogWriterInterface` (06/10/2026)
+- `c975l:book:shop:publish` writes every book into the shop at once (06/10/2026)
+- `c975l:book:shop:import` (`--dry-run`, `--product`): the one-shot copy of the shop's files into the editions (06/10/2026)
+- An edition offers only the file slots its kind takes (`BookEditionFileKind::forEdition()`) (06/10/2026)
+- New `BookEditionKind::of()`: an edition kind naming no file reads as printed in the ONIX and the JSON-LD [BC-Break] (06/10/2026)
+- The shop is left alone while an edition ticked "Shop" has no file on disk (06/10/2026)
+- The Google feed caches its file list and converts a cover once into the cache directory (06/10/2026)
+- The Google ONIX is renamed only by a change to a book sent to Google or to its files (06/10/2026)
+- The PDF thumbnail check skips the private files (06/10/2026)
+- New `Book::getLatestVersion()` (06/10/2026)
+- Guided project `book-edition-sale`, and a channels step in `book-creation` (06/10/2026)
+
 ## v2.16.0
 
 A public ONIX 3.0 feed of the catalog

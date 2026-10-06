@@ -16,18 +16,13 @@ use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Enum\BookContributorRole;
+use c975L\BookBundle\Enum\BookEditionKind;
 use c975L\UiBundle\Service\JsonLdBuilder;
 use c975L\UiBundle\Service\RatingSnippetBuilder;
 
 // Builds the schema.org graph a book's, a serie's or a strip's page publishes as JSON-LD, out of the fields those pages already show. Assembled here rather than as microdata on the rendered elements, for the same reason as UiBundle's ContactSnippetBuilder: an itemprop pinned to an element leaves an empty node behind when the field is empty, where a graph simply drops what wasn't filled in - and it can carry what no template displays (the two ISBNs as two editions, the rank of a volume in its serie). Price and availability are deliberately absent: they are an "offers" node, which belongs to whoever sells the book - emitted twice, they would diverge.
 class BookSnippetBuilder
 {
-    // What schema.org calls the edition a kind names. A kind is the site's own word (see c975L\BookBundle\Contract\BookCustomizationProviderInterface), so it is matched on rather than mapped: any kind holding "paper" is a paperback, one holding "audio" an audiobook, and anything else - an epub, a pdf, a web edition - an ebook
-    private const array BOOK_FORMATS = [
-        'paper' => 'Paperback',
-        'audio' => 'AudiobookFormat',
-    ];
-
     public function __construct(
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly RatingSnippetBuilder $ratingSnippetBuilder,
@@ -288,18 +283,14 @@ class BookSnippetBuilder
         return $editions;
     }
 
-    // The schema.org format an edition's kind stands for, an ebook being what a kind naming neither paper nor audio describes. A guess, and the only one left here: the vocabulary is the site's own (see BookCustomizationProviderInterface), so a site naming its editions in another language gets EBook - which is what a decorated service of its own overrides
+    // The schema.org format an edition's kind stands for, read the way the ONIX reads it (see BookEditionKind::of()) - the kind being the site's own word, one naming no file is taken for a printed book, which a decorated service of a site's own overrides
     private function editionFormat(BookEdition $edition): string
     {
-        $kind = (string) $edition->getKind();
-
-        foreach (self::BOOK_FORMATS as $needle => $format) {
-            if (str_contains($kind, $needle)) {
-                return $format;
-            }
-        }
-
-        return 'EBook';
+        return match (BookEditionKind::of($edition->getKind())) {
+            BookEditionKind::Paper => 'Paperback',
+            BookEditionKind::Audio => 'AudiobookFormat',
+            BookEditionKind::Digital => 'EBook',
+        };
     }
 
     // The addresses this edition is found at: the book's own, taken in the gesture the edition serves - a recording is listened to where the podcast apps carry it, a printed or digital book is bought where the bookshops sell it. The platforms belong to the book, an edition saying only what it comes out under (see BookEditionType)

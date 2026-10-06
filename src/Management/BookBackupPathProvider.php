@@ -23,6 +23,8 @@ class BookBackupPathProvider implements BackupPathProviderInterface
         return [
             // Mirrored rather than archived: covers and pages are written once, and bzip2 gains about nothing on a webp or a pdf
             new BackupPath('public/' . Media::MEDIA_DIRECTORY, BackupPath::MODE_MIRROR),
+            // The files the editions are sold as, private (see BookEditionFile) - what no re-upload from the stores brings back
+            new BackupPath('private/' . Media::MEDIA_DIRECTORY, BackupPath::MODE_MIRROR),
         ];
     }
 }

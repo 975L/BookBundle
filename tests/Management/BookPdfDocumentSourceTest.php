@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
@@ -77,6 +78,12 @@ class BookPdfDocumentSourceTest extends TestCase
     public function testACatalogWithNoDocumentDeclaresNothing(): void
     {
         $this->assertSame([], $this->source([])->getPdfDocuments());
+    }
+
+    // An edition's PDF sold in the shop lives out of public/ and never gets a thumbnail: it is not declared
+    public function testAFileSoldPrivatelyIsNotDeclared(): void
+    {
+        $this->assertSame([], $this->source([new BookEditionFile()->setName('medias/book/editions/loup-pdf.pdf')])->getPdfDocuments());
     }
 
     /** @param list<Media> $medias */

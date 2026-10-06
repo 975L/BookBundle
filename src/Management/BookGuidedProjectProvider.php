@@ -26,6 +26,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 // This bundle's guided projects, running the 6000 block GuidedProjectProviderInterface reserves them - the same docblock stating every other bundle's, so a range is read there rather than recopied here. They follow the order a catalog is actually built in - the people are credited by the series and the books, the serie holds the books, so each comes before what names it. Only the opening step of each carries an url: from there the parcours walks the screen the user has been sent to, highlighting the button or the field they are meant to use next (see ConfigBundle's assets/js/guided-project.js). A field is pointed at through the widget the user actually sees, which is not always the one carrying the id: a choice or an association stays a native select only below UiBundle's autocomplete threshold (ChoiceAutocompleteExtension, 10 options), TomSelect taking it over above and clipping the select away behind "ts-hidden-accessible" - so a field whose option count is the catalog's own is named through its row, ".form-group:has(#Entity_property)", the only form both regimes answer to. An association calling autocomplete() is always a TomSelect, its select printed by CrudAutocompleteType under an inner field named "autocomplete" - hence the "_autocomplete" suffix those steps carry, and the "+ .ts-wrapper" naming the widget drawn next to it. TrixEditorType hides its textarea behind "d-none", and a collection prints no field id at all, being marked on its own row instead (see the "data-*" markers of the CRUD controllers)
 class BookGuidedProjectProvider implements GuidedProjectProviderInterface
 {
+    // The edition just added: EasyAdmin unfolds the last row of a complex collection when it adds one
+    private const string EDITION_ADDED = '[data-book-editions] .field-collection-item:last-child';
+
+    // The edition the user unfolded among those already saved, which EasyAdmin prints folded
+    private const string EDITION_OPEN = '[data-book-editions] .accordion-collapse.show';
+
     // The reader block just added: the last row of the open pane holding an "_data_autoAdvance", which is that kind's own field (see bookReaderProject())
     private const string READER_ROW = '.tab-pane.active .field-collection-item:has([id$="_data_autoAdvance"]):last-child';
 
@@ -56,6 +62,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->trashProject(),
             $this->exportProject(),
             $this->onixFeedProject(),
+            $this->editionSaleProject(),
         ];
     }
 
@@ -333,11 +340,18 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => '[data-book-editions]',
                 ],
                 [
-                    // The button unfolding one more edition, its files and its platforms added inside the panel it opens
+                    // The button unfolding one more edition, its price, the files it is sold as and its channels set inside the panel it opens
                     'label' => 'label.guided_step_book_creation_editions_add',
                     'description' => 'description.guided_step_book_creation_editions_add',
                     'narration' => 'narration.guided_step_book_creation_editions_add',
                     'highlight' => '[data-book-editions] .field-collection-add-button',
+                ],
+                [
+                    // Where the edition just added goes, EasyAdmin unfolding a new row of a complex collection (see BookChannel)
+                    'label' => 'label.guided_step_book_creation_edition_channels',
+                    'description' => 'description.guided_step_book_creation_edition_channels',
+                    'narration' => 'narration.guided_step_book_creation_edition_channels',
+                    'highlight' => self::EDITION_ADDED . ' [id$="_channels"]',
                 ],
                 [
                     'label' => 'label.guided_step_book_creation_save',
@@ -1180,6 +1194,69 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_onix_feed_done',
                     'description' => 'description.guided_step_book_onix_feed_done',
                     'narration' => 'narration.guided_step_book_onix_feed_done',
+                ],
+            ],
+        ];
+    }
+
+    // An edition sold as files: its files and their prices dropped in its panel, its channels ticked, and the book saved - which writes the product into the shop (see BookShopPublishSubscriber). On an existing book, an edition being sold once written
+    private function editionSaleProject(): array
+    {
+        return [
+            'slug' => 'book-edition-sale',
+            'label' => 'label.guided_project_book_edition_sale',
+            'description' => 'description.guided_project_book_edition_sale',
+            'translation_domain' => 'book',
+            'order' => 6080,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_edition_sale_open',
+                    'description' => 'description.guided_step_book_edition_sale_open',
+                    'narration' => 'narration.guided_step_book_edition_sale_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_sale_edit',
+                    'description' => 'description.guided_step_book_edition_sale_edit',
+                    'narration' => 'narration.guided_step_book_edition_sale_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_sale_tab',
+                    'description' => 'description.guided_step_book_edition_sale_tab',
+                    'narration' => 'narration.guided_step_book_edition_sale_tab',
+                    'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
+                ],
+                [
+                    // The editions are printed folded: the user unfolds the one to sell by its title
+                    'label' => 'label.guided_step_book_edition_sale_unfold',
+                    'description' => 'description.guided_step_book_edition_sale_unfold',
+                    'narration' => 'narration.guided_step_book_edition_sale_unfold',
+                    'highlight' => '[data-book-editions]',
+                ],
+                [
+                    // The first slot of the open edition, its file and its price together - the slots being those its kind takes (see BookEditionFileKind::forEdition())
+                    'label' => 'label.guided_step_book_edition_sale_files',
+                    'description' => 'description.guided_step_book_edition_sale_files',
+                    'narration' => 'narration.guided_step_book_edition_sale_files',
+                    'highlight' => self::EDITION_OPEN . ' [id*="_file_"]:has(input[type="file"])',
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_sale_channels',
+                    'description' => 'description.guided_step_book_edition_sale_channels',
+                    'narration' => 'narration.guided_step_book_edition_sale_channels',
+                    'highlight' => self::EDITION_OPEN . ' [id$="_channels"]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_sale_save',
+                    'narration' => 'narration.guided_step_book_edition_sale_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_sale_done',
+                    'description' => 'description.guided_step_book_edition_sale_done',
+                    'narration' => 'narration.guided_step_book_edition_sale_done',
                 ],
             ],
         ];

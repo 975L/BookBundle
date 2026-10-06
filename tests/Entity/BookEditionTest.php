@@ -12,6 +12,9 @@ namespace c975L\BookBundle\Tests\Entity;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookEditionFile;
+use c975L\BookBundle\Enum\BookChannel;
+use c975L\BookBundle\Enum\BookEditionFileKind;
 use PHPUnit\Framework\TestCase;
 
 class BookEditionTest extends TestCase
@@ -74,5 +77,33 @@ class BookEditionTest extends TestCase
         $this->assertSame('USD', $edition->getCurrency());
 
         $this->assertSame('EUR', $edition->setCurrency(null)->getCurrency());
+    }
+
+    // One file per kind: a second EPUB takes the place of the first, a file emptied with its checkbox or null takes the kind's file away
+    public function testAnEditionHoldsOneFileOfEachKind(): void
+    {
+        $edition = new BookEdition()->setKind('digital');
+        $first = new BookEditionFile()->setName('medias/book/editions/loup-epub-1.epub');
+        $second = new BookEditionFile()->setName('medias/book/editions/loup-epub-2.epub');
+        $booklet = new BookEditionFile()->setName('medias/book/editions/loup-booklet.pdf');
+
+        $edition->setFileOf(BookEditionFileKind::Epub, $first)->setFileOf(BookEditionFileKind::Booklet, $booklet)->setFileOf(BookEditionFileKind::Epub, $second);
+        $this->assertSame($second, $edition->getFileOf(BookEditionFileKind::Epub));
+        $this->assertSame('epub', $second->getKind());
+        $this->assertSame($edition, $second->getEdition());
+        $this->assertCount(2, $edition->getFiles());
+
+        $edition->setFileOf(BookEditionFileKind::Booklet, $booklet->setName(null));
+        $edition->setFileOf(BookEditionFileKind::Epub, null);
+        $this->assertCount(0, $edition->getFiles());
+    }
+
+    public function testAnEditionTellsTheChannelsItIsSentTo(): void
+    {
+        $edition = new BookEdition()->setChannels(['shop', 'google', 'shop']);
+
+        $this->assertSame(['shop', 'google'], $edition->getChannels());
+        $this->assertTrue($edition->hasChannel(BookChannel::Google));
+        $this->assertFalse($edition->hasChannel(BookChannel::Onix));
     }
 }

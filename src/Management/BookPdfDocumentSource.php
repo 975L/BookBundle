@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookPresse;
 use c975L\BookBundle\Repository\MediaRepository;
 use c975L\UiBundle\Contract\PdfDocumentSourceInterface;
+use c975L\UiBundle\Contract\VichPrivateFileInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 
@@ -37,6 +38,11 @@ class BookPdfDocumentSource implements PdfDocumentSourceInterface
     {
         $documents = [];
         foreach ($this->mediaRepository->findPdfs() as $media) {
+            // A file kept out of public/ never gets a thumbnail (see VichPdfThumbnailListener): listed, it would be missing one for good
+            if ($media instanceof VichPrivateFileInterface) {
+                continue;
+            }
+
             $name = (string) $media->getName();
 
             $documents[] = [

@@ -170,13 +170,17 @@
                 <source>narration.guided_step_book_creation_done</source>
                 <target>El libro está publicado: su página está en línea, y el sitemap la declarará en la siguiente regeneración, cuyo acceso directo está en el tablero.</target>
             </trans-unit>
+            <trans-unit id="7yPzUkf">
+                <source>narration.guided_step_book_creation_edition_channels</source>
+                <target>Marque adónde va la edición: la tienda del sitio, el flujo ONIX que leen las librerías, o Google Play Books.</target>
+            </trans-unit>
             <trans-unit id="N_8xm9n">
                 <source>narration.guided_step_book_creation_editions</source>
                 <target>Añada sus ediciones: cada forma publicada del libro, papel, digital o audio, con su ISBN y su fecha de publicación, desplegada en el sitio.</target>
             </trans-unit>
             <trans-unit id="ueX4rE0">
                 <source>narration.guided_step_book_creation_editions_add</source>
-                <target>El botón de añadir abre una edición más, cuyos archivos y plataformas se añaden en el propio panel.</target>
+                <target>El botón de añadir abre una edición más: su precio, los archivos con los que se vende y los canales por los que sale se ajustan en el propio panel.</target>
             </trans-unit>
             <trans-unit id="4.DDKjm">
                 <source>narration.guided_step_book_creation_new</source>
@@ -225,6 +229,38 @@
             <trans-unit id="V1qHxl5">
                 <source>narration.guided_step_book_duplication_title</source>
                 <target>Renombre la copia. El título y la dirección llegan marcados como copia, para no chocar con el original: los dos están para que los reescriba.</target>
+            </trans-unit>
+            <trans-unit id="qZkZRwj">
+                <source>narration.guided_step_book_edition_sale_channels</source>
+                <target>Marque «Tienda» para venderla en el sitio, ONIX y Google para darla a conocer a las librerías y a Google Play Books.</target>
+            </trans-unit>
+            <trans-unit id="fdAify4">
+                <source>narration.guided_step_book_edition_sale_done</source>
+                <target>La edición está a la venta: el producto del libro se escribe en la tienda, un artículo por archivo, y Google viene a buscar los ebooks por sí mismo.</target>
+            </trans-unit>
+            <trans-unit id="mtvK8_n">
+                <source>narration.guided_step_book_edition_sale_edit</source>
+                <target>Modifique el libro cuya edición digital o de audio está lista para vender.</target>
+            </trans-unit>
+            <trans-unit id="TTU68ef">
+                <source>narration.guided_step_book_edition_sale_files</source>
+                <target>Suba cada archivo con su precio con impuestos: el EPUB, el PDF y el folleto para una edición digital, el MP3 para una de audio.</target>
+            </trans-unit>
+            <trans-unit id="m0nzkFh">
+                <source>narration.guided_step_book_edition_sale_open</source>
+                <target>El panel le lleva al catálogo, donde se elige el libro que vender.</target>
+            </trans-unit>
+            <trans-unit id="x3NUfjZ">
+                <source>narration.guided_step_book_edition_sale_save</source>
+                <target>Guarde el libro.</target>
+            </trans-unit>
+            <trans-unit id="fxUtwSN">
+                <source>narration.guided_step_book_edition_sale_tab</source>
+                <target>Abra la pestaña «Página», la que lleva las ediciones del libro.</target>
+            </trans-unit>
+            <trans-unit id="_I4YNdk">
+                <source>narration.guided_step_book_edition_sale_unfold</source>
+                <target>Haga clic en el título de la edición que vender para abrir su panel.</target>
             </trans-unit>
             <trans-unit id="iPiRr1O">
                 <source>narration.guided_step_book_export_done</source>

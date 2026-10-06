@@ -32,4 +32,17 @@ class BookPublicationTest extends TestCase
         $this->assertFalse(new Book()->setPublished(new \DateTime('today'))->isToBePublished());
         $this->assertFalse(new Book()->setPublished(new \DateTime('-1 day'))->isToBePublished());
     }
+
+    // The last of the chain of versions, the book itself when nothing replaces it
+    public function testTheLatestVersionIsTheEndOfTheChain(): void
+    {
+        $first = new Book();
+        $second = new Book();
+        $third = new Book();
+        $first->setNewerVersion($second);
+        $second->setNewerVersion($third);
+
+        $this->assertSame($third, $first->getLatestVersion());
+        $this->assertSame($third, $third->getLatestVersion());
+    }
 }

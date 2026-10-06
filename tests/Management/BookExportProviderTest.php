@@ -107,7 +107,7 @@ class BookExportProviderTest extends TestCase
 
         $item = $this->createProvider($projectDir)->serialize([$book])['items'][0];
 
-        $this->assertSame([['kind' => 'paperback', 'isbn' => '9781234567897', 'pages' => 48, 'format' => '15 x 21 cm', 'position' => 0]], $item['editions']);
+        $this->assertSame([['kind' => 'paperback', 'isbn' => '9781234567897', 'pages' => 48, 'format' => '15 x 21 cm', 'price' => null, 'currency' => 'EUR', 'channels' => [], 'position' => 0, 'files' => []]], $item['editions']);
         // The whole address is stored and carried, the affiliate identifier included
         $this->assertSame('https://kobo.example/livre?aff=975l', $item['links'][0]['url']);
         // Neither the file nor the platform names an edition: they belong to the book (see BookEditionType)

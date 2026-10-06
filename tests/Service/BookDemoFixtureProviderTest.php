@@ -191,13 +191,24 @@ class BookDemoFixtureProviderTest extends TestCase
             if ($entity instanceof Book && 'le-fil-rouge-1' === $entity->getSlug()) {
                 $kinds = array_map(static fn (\c975L\BookBundle\Entity\Media $media): ?string => $media->getKind(), $entity->getMedias()->toArray());
 
-                $this->assertSame(['cover', 'cover_back', 'background'], array_values($kinds));
+                // The pages come after, from the generic pool (see testEveryBookHoldsTwoPages())
+                $this->assertSame(['cover', 'cover_back', 'background', 'page', 'page'], array_values($kinds));
 
                 return;
             }
         }
 
         $this->fail('no book "le-fil-rouge-1"');
+    }
+
+    // A book's "Page" list holds rows for the guided project moving a file to another list to grab
+    public function testEveryBookHoldsTwoPages(): void
+    {
+        $books = array_filter($this->fixtures($this->createProvider([self::IMAGE])), static fn (object $e): bool => $e instanceof Book);
+
+        foreach ($books as $book) {
+            $this->assertCount(2, $book->getPages(), $book->getSlug());
+        }
     }
 
     // A catalog with no picture to show is still a catalog: the card falls back on the bundle's own "no-cover.webp"

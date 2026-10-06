@@ -905,6 +905,17 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this->newerVersion;
     }
 
+    // The last of the versions this one leads to, itself when none replaces it
+    public function getLatestVersion(): self
+    {
+        $latest = $this;
+        while (null !== $latest->newerVersion) {
+            $latest = $latest->newerVersion;
+        }
+
+        return $latest;
+    }
+
     // Both ends are laid together: the link reads from either side, and leaving the reverse empty until the next load would deprive the old version's page of the button leading to the new one
     public function setNewerVersion(?self $newerVersion): self
     {

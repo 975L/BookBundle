@@ -14,8 +14,10 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Enum\BookContributorRole;
+use c975L\BookBundle\Enum\BookEditionKind;
 use c975L\BookBundle\Enum\BookSubjectScheme;
 use c975L\BookBundle\Twig\BookSectionsExtension;
+use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Service\JsonLdBuilder;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Intl\Languages;
@@ -39,9 +41,9 @@ class BookOnixBuilder
     ) {
     }
 
-    // $baseUrl turns a stored file name into the address a store downloads the cover from; $sender names the publisher in the header and on each product
-    /** @param Book[] $books */
-    public function build(array $books, string $sender, string $baseUrl): string
+    // $baseUrl turns a stored file name into the address a store downloads the cover from; $sender names the publisher in the header and on each product; $keep picks the editions a feed sends, by the channels ticked on them (see OnixController and GooglePlayFeed)
+    /** @param Book[] $books @param (\Closure(BookEdition): bool)|null $keep */
+    public function build(array $books, string $sender, string $baseUrl, ?\Closure $keep = null): string
     {
         $xml = new \XMLWriter();
         $xml->openMemory();
@@ -60,7 +62,7 @@ class BookOnixBuilder
 
         foreach ($books as $book) {
             foreach ($book->getEditions() as $edition) {
-                if ('' !== $this->isbn($edition)) {
+                if ('' !== $this->isbn($edition) && (null === $keep || $keep($edition))) {
                     $this->product($xml, $book, $edition, $sender, rtrim($baseUrl, '/'));
                 }
             }
@@ -104,6 +106,10 @@ class BookOnixBuilder
         $xml->writeElement('ProductForm', $form);
         if (null !== $detail) {
             $xml->writeElement('ProductFormDetail', $detail);
+        }
+        // The files the shop sells carry no DRM, and a store asks before putting a lock of its own on them
+        if ('ED' === $form) {
+            $xml->writeElement('EpubTechnicalProtection', '00');
         }
 
         $serie = $book->getSerie();
@@ -294,10 +300,17 @@ class BookOnixBuilder
         $xml->writeElement('PublishingDateRole', '01');
         $xml->writeElement('Date', (string) $book->getPublished()?->format('Ymd'));
         $xml->endElement();
+        // The publisher holds the rights everywhere, which a store reads before offering the book for sale at all
+        $xml->startElement('SalesRights');
+        $xml->writeElement('SalesRightsType', '01');
+        $xml->startElement('Territory');
+        $xml->writeElement('RegionsIncluded', 'WORLD');
+        $xml->endElement();
+        $xml->endElement();
         $xml->endElement();
     }
 
-    // Sold everywhere, by the publisher, at the edition's price tax included when it has one - without one, a price still to come for a forthcoming book, a store to ask the publisher otherwise
+    // Sold everywhere, by the publisher, at the edition's price tax included when it has one, free when it is 0 - without one, a price still to come for a forthcoming book, a store to ask the publisher otherwise
     private function productSupply(\XMLWriter $xml, BookEdition $edition, string $sender, bool $forthcoming): void
     {
         $xml->startElement('ProductSupply');
@@ -313,7 +326,10 @@ class BookOnixBuilder
         $xml->writeElement('SupplierName', $sender);
         $xml->endElement();
         $xml->writeElement('ProductAvailability', $forthcoming ? '10' : '20');
-        if (null !== $edition->getPrice()) {
+        // Free is said in so many words rather than as a price of nothing, which the stores refuse
+        if (0 === $edition->getPrice()) {
+            $xml->writeElement('UnpricedItemType', '01');
+        } elseif (null !== $edition->getPrice()) {
             $xml->startElement('Price');
             $xml->writeElement('PriceType', '02');
             $xml->writeElement('PriceAmount', number_format($edition->getPrice() / 100, 2, '.', ''));
@@ -340,18 +356,27 @@ class BookOnixBuilder
         return $total;
     }
 
-    // The ONIX form and its detail, matched on the site's own word for the kind as the JSON-LD does (see BookSnippetBuilder::BOOK_FORMATS): "paper" is a paperback, "audio" an MP3 download, anything else a download whose format says PDF or EPUB
+    // The ONIX form and its detail, from what the site's own word for the kind stands for (see BookEditionKind::of()): a paperback, an MP3 download, or a download whose format says PDF or EPUB
     /** @return array{string, string|null} */
     private static function productForm(BookEdition $edition): array
     {
-        $kind = (string) $edition->getKind();
-
-        return match (true) {
-            str_contains($kind, 'paper') => ['BC', null],
-            str_contains($kind, 'audio') => ['AJ', 'A103'],
-            str_contains(strtolower((string) $edition->getFormat()), 'pdf') => ['ED', 'E107'],
-            default => ['ED', 'E101'],
+        return match (BookEditionKind::of($edition->getKind())) {
+            BookEditionKind::Paper => ['BC', null],
+            BookEditionKind::Audio => ['AJ', 'A103'],
+            BookEditionKind::Digital => str_contains(strtolower((string) $edition->getFormat()), 'pdf') ? ['ED', 'E107'] : ['ED', 'E101'],
         };
+    }
+
+    // The publisher a feed speaks for, the "book-onix-publisher" entry or the site's name for want of one
+    public static function publisher(ConfigServiceInterface $configService): string
+    {
+        return trim((string) $configService->get('book-onix-publisher')) ?: trim((string) $configService->get('site-name'));
+    }
+
+    // A digital book, as a store selling files takes it - neither printed nor recorded
+    public static function isEbook(BookEdition $edition): bool
+    {
+        return 'ED' === self::productForm($edition)[0];
     }
 
     // The book's language as ONIX writes it, from "fr" or "fr_FR"

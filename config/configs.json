@@ -143,6 +143,50 @@
         "description": "description.book_onix_publisher"
     },
     {
+        "label": "label.book_route_google",
+        "slug": "book-route-google",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_route_google"
+    },
+    {
+        "label": "label.book_google_collection",
+        "slug": "book-google-collection",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_google_collection"
+    },
+    {
+        "label": "label.book_google_user",
+        "slug": "book-google-user",
+        "sensitive": true,
+        "restricted": true,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_google_user"
+    },
+    {
+        "label": "label.book_google_password",
+        "slug": "book-google-password",
+        "sensitive": true,
+        "restricted": true,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_google_password"
+    },
+    {
         "label": "label.book_serie_blocks",
         "slug": "book-serie-blocks",
         "sensitive": false,

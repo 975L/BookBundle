@@ -11,6 +11,8 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
@@ -22,21 +24,22 @@ use c975L\BookBundle\Entity\StripMedia;
 use c975L\BookBundle\Management\BookBackupPathProvider;
 use c975L\ConfigBundle\Management\BackupPath;
 use c975L\UiBundle\Contract\VichMediaNamableInterface;
+use c975L\UiBundle\Contract\VichPrivateFileInterface;
 use PHPUnit\Framework\TestCase;
 
 class BookBackupPathProviderTest extends TestCase
 {
-    // Mirrored, never archived: covers, pages and recordings are written once, and bzip2 gains about nothing on a webp or a pdf
-    public function testTheMediaRootIsMirrored(): void
+    // Mirrored, never archived: covers, pages and recordings are written once, and bzip2 gains about nothing on a webp or a pdf - the public root and the private one the editions' files are sold from
+    public function testTheMediaRootsAreMirrored(): void
     {
-        $this->assertSame(['public/medias/book' => BackupPath::MODE_MIRROR], $this->paths());
+        $this->assertSame(['public/medias/book' => BackupPath::MODE_MIRROR, 'private/medias/book' => BackupPath::MODE_MIRROR], $this->paths());
     }
 
     // The declared root is what every subclass of Media is actually written under - a file stored elsewhere would be backed up nowhere, and nothing would say so
     public function testTheDeclaredRootCoversWhereEveryKindOfMediaIsStored(): void
     {
         foreach ($this->medias() as $media) {
-            $path = 'public/' . $media->getVichMediaPath();
+            $path = ($media instanceof VichPrivateFileInterface ? $media->getPrivateDirectory() : 'public') . '/' . $media->getVichMediaPath();
             $declared = array_filter(array_keys($this->paths()), static fn (string $root): bool => str_starts_with($path, $root . '/'));
 
             $this->assertNotEmpty($declared, sprintf('"%s" is backed up nowhere.', $path));
@@ -69,6 +72,7 @@ class BookBackupPathProviderTest extends TestCase
             new BookMarketing()->setKind('marketing')->setBook($book),
             new SerieMedia()->setKind('cover')->setSerie($serie),
             new StripMedia()->setKind('plate')->setStrip($strip),
+            new BookEditionFile()->setEdition(new BookEdition()->setKind('digital')->setBook($book)),
         ];
     }
 }

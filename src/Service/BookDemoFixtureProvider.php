@@ -160,7 +160,31 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
             }
         }
 
+        // A few pages, so a book's "Page" list holds rows to reorder or to move to another list (see the "book-media-move" guided project)
+        foreach ($this->pages($spec['slug']) as $position => $image) {
+            $media = $this->media($image, 'page', $position + 1);
+
+            if (null !== $media) {
+                $book->addMedia($media);
+            }
+        }
+
         return $book;
+    }
+
+    // Two pictures of the generic pool, read off the slug as pictures() does, none on a site declaring no pool
+    /** @return list<string> */
+    private function pages(string $slug): array
+    {
+        $pool = $this->placeholderMediaRegistry->getImages();
+
+        if ([] === $pool) {
+            return [];
+        }
+
+        $first = crc32($slug . '-page') % \count($pool);
+
+        return [$pool[$first], $pool[($first + 1) % \count($pool)]];
     }
 
     // The row's own pictures where the site declares them, keyed "book/<slug>" or "serie/<slug>" (see PlaceholderMediaProviderInterface), failing which one of the generic pool, rotated: a shelf of identical covers says less than a shelf of different ones

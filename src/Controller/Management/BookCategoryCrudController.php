@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Controller\Management;
 use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Field\BookDataField;
 use c975L\BookBundle\Form\BookSubjectCodesType;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
 use c975L\BookBundle\Management\BookCategoryExportProvider;
@@ -33,7 +34,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
@@ -125,9 +125,7 @@ class BookCategoryCrudController extends AbstractCrudController
                 ->setHelp(t('label.category_summary-help', [], 'book'))
                 ->setFormType(TrixEditorType::class),
             // The codes the trade files this subject under, one per classification - what the ONIX feed hands each store. A site publishing on its own leaves them empty
-            Field::new('codes')
-                ->hideOnIndex()
-                ->setLabel(t('label.category_code', [], 'book'))
+            BookDataField::new('codes', t('label.category_code', [], 'book'))
                 ->setHelp(t('label.category_code-help', [], 'book'))
                 ->setFormType(BookSubjectCodesType::class)
                 ->setFormTypeOption('row_attr', ['data-book-category-codes' => '1']),

@@ -1,5 +1,35 @@
 [
     {
+        "date": "2026-10-06",
+        "description": [
+            {
+                "en": "Each edition can now hold the files it is sold as - EPUB, PDF, booklet, MP3 - each with its shop price, kept private, and say where it is sent: the shop, the ONIX feed for bookshops, Google Play Books.",
+                "fr": "Chaque édition peut désormais recevoir les fichiers sous lesquels elle est vendue - EPUB, PDF, livret, MP3 - chacun avec son prix boutique, gardés privés, et indiquer où elle est diffusée : la boutique, le flux ONIX des librairies, Google Play Livres.",
+                "es": "Cada edición puede ahora recibir los archivos con los que se vende - EPUB, PDF, folleto, MP3 - cada uno con su precio en la tienda, guardados en privado, e indicar dónde se difunde: la tienda, el flujo ONIX de las librerías, Google Play Libros."
+            },
+            {
+                "en": "Google Play Books can fetch your ebooks by itself: set the folder, the collection code, the user and the password in the settings, then ask Google for the feed.",
+                "fr": "Google Play Livres peut venir chercher vos ebooks de lui-même : renseignez le dossier, le code de collection, l'identifiant et le mot de passe dans les réglages, puis demandez le flux à Google.",
+                "es": "Google Play Libros puede venir a buscar sus ebooks por sí mismo: indique la carpeta, el código de colección, el usuario y la contraseña en los ajustes, y luego solicite el flujo a Google."
+            },
+            {
+                "en": "Saving a book puts the files of its editions ticked \"Shop\" on sale in your shop, at the price set for each file.",
+                "fr": "Enregistrer un livre met en vente dans votre boutique les fichiers de ses éditions cochées « Boutique », au prix fixé pour chaque fichier.",
+                "es": "Guardar un libro pone a la venta en su tienda los archivos de sus ediciones marcadas «Tienda», al precio fijado para cada archivo."
+            },
+            {
+                "en": "An edition now only offers the files that suit it: none for a printed book, the MP3 for an audio one.",
+                "fr": "Une édition ne propose plus que les fichiers qui lui conviennent : aucun pour un livre imprimé, le MP3 pour une édition audio.",
+                "es": "Una edición solo propone ya los archivos que le corresponden: ninguno para un libro impreso, el MP3 para una edición de audio."
+            },
+            {
+                "en": "A new guided tour shows how to sell an edition as files, step by step.",
+                "fr": "Une nouvelle visite guidée montre pas à pas comment vendre une édition en fichiers.",
+                "es": "Una nueva visita guiada muestra paso a paso cómo vender una edición en archivos."
+            }
+        ]
+    },
+    {
         "date": "2026-10-05",
         "description": [
             {

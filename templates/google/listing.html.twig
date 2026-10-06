@@ -1,0 +1,18 @@
+{# A folder as a web server prints it, which Google Play Books' crawler reads to find the files (see GooglePlayFeedController) #}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<title>Index of {{ path }}</title>
+</head>
+<body>
+<h1>Index of {{ path }}</h1>
+<pre>
+{% for name, file in entries %}
+<a href="{{ name }}">{{ name }}</a>{% if file is not null %}    {{ file[1]|date('Y-m-d H:i', 'UTC') }}    {{ file[0] }}{% else %}    -    -{% endif %}
+
+{% endfor %}
+</pre>
+</body>
+</html>

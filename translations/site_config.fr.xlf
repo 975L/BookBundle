@@ -10,6 +10,18 @@
                 <source>description.book_confetti</source>
                 <target>Lance une pluie de confettis à l'ouverture de la page d'un livre. Rien ne se déclenche chez un visiteur ayant demandé moins d'animations.</target>
             </trans-unit>
+            <trans-unit id="kH1_oBJ">
+                <source>description.book_google_collection</source>
+                <target>Le code de collection que Google Play Livres a attribué à l’éditeur (Centre des partenaires, Gérer les modèles, Avancé), par ex. « 337R84F ». Il nomme les dossiers relevés.</target>
+            </trans-unit>
+            <trans-unit id="UocoDeC">
+                <source>description.book_google_password</source>
+                <target>Le mot de passe donné à Google avec l’identifiant, en lettres et chiffres seulement. Sans identifiant ni mot de passe, rien n’est servi.</target>
+            </trans-unit>
+            <trans-unit id="17JmN_c">
+                <source>description.book_google_user</source>
+                <target>L’identifiant que l’éditeur donne à Google pour relever ses dossiers, en lettres et chiffres seulement.</target>
+            </trans-unit>
             <trans-unit id="HC5m5kS">
                 <source>description.book_gplay_affiliate</source>
                 <target>Ajoutée aux adresses Google Play des livres, pour que les ventes venues du site vous soient rattachées. Laissée vide, une adresse s'ouvre telle qu'elle est enregistrée</target>
@@ -53,6 +65,10 @@
             <trans-unit id="jPP.wp2">
                 <source>description.book_route_contributors</source>
                 <target>Premier segment de l'URL listant les auteurs et illustrateurs, ex. "auteurs". Vide, la liste n'est plus servie du tout.</target>
+            </trans-unit>
+            <trans-unit id="jXRXnlN">
+                <source>description.book_route_google</source>
+                <target>Segment d’adresse des dossiers que Google Play Livres relève de lui-même (« automated content fetching »), par ex. « google-livres » (/google-livres/onix/ et /google-livres/ebooks/). Vide, rien n’est servi.</target>
             </trans-unit>
             <trans-unit id="qIHKFOC">
                 <source>description.book_route_listen</source>
@@ -102,6 +118,18 @@
                 <source>label.book_confetti</source>
                 <target>Confettis à l'ouverture</target>
             </trans-unit>
+            <trans-unit id="mnx3AbU">
+                <source>label.book_google_collection</source>
+                <target>Code de collection Google</target>
+            </trans-unit>
+            <trans-unit id="C1QsqbV">
+                <source>label.book_google_password</source>
+                <target>Mot de passe Google Play Livres</target>
+            </trans-unit>
+            <trans-unit id="OoLCZk_">
+                <source>label.book_google_user</source>
+                <target>Identifiant Google Play Livres</target>
+            </trans-unit>
             <trans-unit id="pasNlFf">
                 <source>label.book_gplay_affiliate</source>
                 <target>Identifiant d'affiliation Google Play</target>
@@ -145,6 +173,10 @@
             <trans-unit id="Q28nR8K">
                 <source>label.book_route_contributors</source>
                 <target>Préfixe URL de la liste des auteurs</target>
+            </trans-unit>
+            <trans-unit id="drYsZpv">
+                <source>label.book_route_google</source>
+                <target>Dossier Google Play Livres</target>
             </trans-unit>
             <trans-unit id="Cn3xAEJ">
                 <source>label.book_route_listen</source>

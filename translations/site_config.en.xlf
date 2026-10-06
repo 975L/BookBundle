@@ -10,6 +10,18 @@
                 <source>description.book_confetti</source>
                 <target>Drops a burst of confetti when a book's page opens. Nothing fires for a visitor who asked for reduced motion.</target>
             </trans-unit>
+            <trans-unit id="kH1_oBJ">
+                <source>description.book_google_collection</source>
+                <target>The collection code Google Play Books gave the publisher (Partner Center, Manage templates, Advanced), e.g. "337R84F". It names the folders fetched.</target>
+            </trans-unit>
+            <trans-unit id="UocoDeC">
+                <source>description.book_google_password</source>
+                <target>The password given to Google with the user name, letters and digits only. Without a user and a password, nothing is served.</target>
+            </trans-unit>
+            <trans-unit id="17JmN_c">
+                <source>description.book_google_user</source>
+                <target>The user name the publisher gives Google to fetch its folders, letters and digits only.</target>
+            </trans-unit>
             <trans-unit id="HC5m5kS">
                 <source>description.book_gplay_affiliate</source>
                 <target>Added to the books' Google Play addresses, so the sales coming from the site are credited to you. Left empty, an address opens exactly as it is stored</target>
@@ -53,6 +65,10 @@
             <trans-unit id="jPP.wp2">
                 <source>description.book_route_contributors</source>
                 <target>First segment of the url listing the authors and illustrators, e.g. "authors". Left empty, the list is not served at all.</target>
+            </trans-unit>
+            <trans-unit id="jXRXnlN">
+                <source>description.book_route_google</source>
+                <target>Address segment of the folders Google Play Books fetches on its own (automated content fetching), e.g. "google-books" (/google-books/onix/ and /google-books/ebooks/). Empty, nothing is served.</target>
             </trans-unit>
             <trans-unit id="qIHKFOC">
                 <source>description.book_route_listen</source>
@@ -102,6 +118,18 @@
                 <source>label.book_confetti</source>
                 <target>Confetti on opening</target>
             </trans-unit>
+            <trans-unit id="mnx3AbU">
+                <source>label.book_google_collection</source>
+                <target>Google collection code</target>
+            </trans-unit>
+            <trans-unit id="C1QsqbV">
+                <source>label.book_google_password</source>
+                <target>Google Play Books password</target>
+            </trans-unit>
+            <trans-unit id="OoLCZk_">
+                <source>label.book_google_user</source>
+                <target>Google Play Books user</target>
+            </trans-unit>
             <trans-unit id="pasNlFf">
                 <source>label.book_gplay_affiliate</source>
                 <target>Google Play affiliate identifier</target>
@@ -145,6 +173,10 @@
             <trans-unit id="Q28nR8K">
                 <source>label.book_route_contributors</source>
                 <target>Authors list url prefix</target>
+            </trans-unit>
+            <trans-unit id="drYsZpv">
+                <source>label.book_route_google</source>
+                <target>Google Play Books folder</target>
             </trans-unit>
             <trans-unit id="Cn3xAEJ">
                 <source>label.book_route_listen</source>

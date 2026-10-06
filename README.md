@@ -22,7 +22,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 ## Contents
 
 - **Setup** — [requirements](#requirements) · [installation](#installation) · [configuration](#load-the-configuration) · [routes](#enable-routes) · [assets](#install-assets)
-- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [ONIX feed](#onix-feed) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
+- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [ONIX feed](#onix-feed) · [Google Play Books feed](#google-play-books-feed) · [edition files and channels](#edition-files-and-channels) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
 
 ## Features
 
@@ -876,12 +876,58 @@ The stores and the distributors read a catalog as ONIX 3.0, and `book_onix` serv
 `book-route-onix` setting names — `onix.xml` for `/onix.xml`. The setting ships empty: a site turns its feed on
 by naming it, and the publisher it speaks for is `book-onix-publisher`, the site's name for want of one.
 
-Each edition holding an ISBN-13 is one product (`BookOnixBuilder`): its form, its title and serie, its
+Each edition holding an ISBN-13 and ticked "ONIX" in its channels is one product (`BookOnixBuilder`): its form, its title and serie, its
 contributors, its language, its page count — or, for an audio edition, the playing time `AudioDurationReader`
 reads from the book's MP3 files —, the categories' codes as subjects, the publication date and the price. A book
 dated ahead is announced as forthcoming, for the stores to take preorders; an edition with no price is
 announced as one still to come, or to be asked of the publisher once it is out. An ISBN-10 is left out rather
 than sent truncated. The guided project *Ouvrir le catalogue aux librairies* walks the two settings.
+
+### Google Play Books feed
+
+Google Play Books fetches a publisher's ebooks on its own schedule ("automated content fetching") from folders
+the publisher hands it. `GooglePlayFeedController` serves them under the segment `book-route-google` names, as
+plain directory listings the crawler reads:
+
+```
+/google-livres/onix/<collection>-rights/<Publisher>_<YYYYMMDD>.xml   the ebooks' ONIX, renamed when the catalog changes
+/google-livres/ebooks/<collection>/<ISBN>.epub                       the file the edition is sold as (or <ISBN>_interior.pdf)
+/google-livres/ebooks/<collection>/<ISBN>_frontcover.jpg             the book's cover, converted to JPEG when needed
+```
+
+`<collection>` is the code Google gives the publisher (`book-google-collection`), and everything sits behind HTTP
+Basic with `book-google-user` and `book-google-password` — alphanumeric, as Google asks. Until the four settings
+are set, nothing answers. The list of files is cached until the catalog changes, and a cover kept in another
+format is converted once into `var/cache/<env>/book-google/`; the ONIX is renamed only by a change to a book sent
+to Google or to the files of its editions. Only the digital editions ticked "Google" are sent, with their EPUB and PDF — never the
+booklet. An edition priced 0 is announced as free.
+
+### Edition files and channels
+
+An edition holds the files it is sold as, one per kind (`BookEditionFileKind`): the EPUB, the PDF and the printable
+booklet of a digital edition, which share its ISBN, the MP3 of a recorded one — a printed edition has none, and
+its accordion offers only the slots its kind takes. Each is uploaded there with the price the shop sells it at (a
+price typed with no file is dropped on save), kept under `private/medias/book/` and
+declared to the backups (`BookEditionFile`). The edition's own price is the one the ONIX announces.
+
+Where the edition goes is ticked on it (`BookChannel`): the site's shop, the public ONIX feed, Google Play Books
+(Apple Books is offered too, for the feed to come: ticking it sends nothing yet). A book may be in the ONIX the bookshops read and not on Google, or sold in the shop alone.
+
+When ShopBundle is installed, a book saved in the back-office is written into the shop (`BookShopPublisher`,
+through UiBundle's `ProductCatalogWriterInterface`): one product per family of versions, created once and then
+the shop's to edit, with one item per file of the editions ticked "Shop" — the file copied, the price the file's.
+An earlier version's files sit in the same product, named "version originale". An edition ticked "Shop" whose files
+are not on disk yet leaves the product alone rather than hiding its items. `c975l:book:shop:publish` writes
+every book at once. The guided project *Vendre une édition en fichiers* walks the gesture.
+
+A shop that held the files before the catalog did hands them over once with `c975l:book:shop:import` — try it
+with `--dry-run`, or on one product with `--product=<slug>`. A product is matched to a book by its slug, then by
+its title; an item to a kind of file by its slug and extension, a "version originale" to the book's earlier
+version. What cannot be matched is listed and left in the shop. On an Apache server running
+PHP-FPM, check the `Authorization` header reaches PHP (the Symfony `.htaccess` passes it on).
+
+Ask Google for the feed through the Partner Center's automated content fetching form (HTTPS, "Droits ONIX" and
+"ePub/PDF"), giving the ONIX folder's address and the user and password.
 
 ### Sitemap
 
@@ -964,7 +1010,8 @@ Blocks travel with their own medias and are replaced wholesale on import, the sa
 replaces a page's. Files, on the other hand, **travel with their names** and are laid straight back under
 them: the upload pipeline is skipped entirely, so an imported catalog answers at the very same urls, and
 re-importing an archive over the catalog it came from rewrites nothing that is already on disk. A name coming
-out of an archive is only honoured under `public/medias/book/`, as a plain relative name — anything climbing
+out of an archive is only honoured under `medias/book/`, as a plain relative name — the files an edition is sold as
+travel with their price and come back under `private/` — anything climbing
 out of it is refused. A media whose file has left the disk is dropped from the export rather than travelling
 as a broken reference; one standing for a YouTube url holds no file and travels all the same.
 

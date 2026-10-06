@@ -10,6 +10,18 @@
                 <source>description.book_confetti</source>
                 <target>Lanza una lluvia de confeti al abrirse la página de un libro. No se activa nada si el visitante ha pedido menos animaciones.</target>
             </trans-unit>
+            <trans-unit id="kH1_oBJ">
+                <source>description.book_google_collection</source>
+                <target>El código de colección que Google Play Libros asignó a la editorial (Centro de partners, Gestionar plantillas, Avanzado), p. ej. "337R84F". Nombra las carpetas recogidas.</target>
+            </trans-unit>
+            <trans-unit id="UocoDeC">
+                <source>description.book_google_password</source>
+                <target>La contraseña dada a Google con el usuario, solo letras y cifras. Sin usuario ni contraseña, no se sirve nada.</target>
+            </trans-unit>
+            <trans-unit id="17JmN_c">
+                <source>description.book_google_user</source>
+                <target>El usuario que la editorial da a Google para recoger sus carpetas, solo letras y cifras.</target>
+            </trans-unit>
             <trans-unit id="HC5m5kS">
                 <source>description.book_gplay_affiliate</source>
                 <target>Se añade a las direcciones de Google Play de los libros, para que las ventas procedentes del sitio se le atribuyan. Si se deja vacío, una dirección se abre tal como está guardada</target>
@@ -53,6 +65,10 @@
             <trans-unit id="jPP.wp2">
                 <source>description.book_route_contributors</source>
                 <target>Primer segmento de la URL que enumera los autores e ilustradores, p. ej. "autores". Vacío, la lista ya no se sirve.</target>
+            </trans-unit>
+            <trans-unit id="jXRXnlN">
+                <source>description.book_route_google</source>
+                <target>Segmento de dirección de las carpetas que Google Play Libros recoge por sí mismo (automated content fetching), p. ej. "google-libros" (/google-libros/onix/ y /google-libros/ebooks/). Vacío, no se sirve nada.</target>
             </trans-unit>
             <trans-unit id="qIHKFOC">
                 <source>description.book_route_listen</source>
@@ -102,6 +118,18 @@
                 <source>label.book_confetti</source>
                 <target>Confeti al abrir</target>
             </trans-unit>
+            <trans-unit id="mnx3AbU">
+                <source>label.book_google_collection</source>
+                <target>Código de colección Google</target>
+            </trans-unit>
+            <trans-unit id="C1QsqbV">
+                <source>label.book_google_password</source>
+                <target>Contraseña Google Play Libros</target>
+            </trans-unit>
+            <trans-unit id="OoLCZk_">
+                <source>label.book_google_user</source>
+                <target>Usuario Google Play Libros</target>
+            </trans-unit>
             <trans-unit id="pasNlFf">
                 <source>label.book_gplay_affiliate</source>
                 <target>Identificador de afiliado de Google Play</target>
@@ -145,6 +173,10 @@
             <trans-unit id="Q28nR8K">
                 <source>label.book_route_contributors</source>
                 <target>Prefijo URL de la lista de autores</target>
+            </trans-unit>
+            <trans-unit id="drYsZpv">
+                <source>label.book_route_google</source>
+                <target>Carpeta Google Play Libros</target>
             </trans-unit>
             <trans-unit id="Cn3xAEJ">
                 <source>label.book_route_listen</source>

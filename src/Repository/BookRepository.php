@@ -280,6 +280,8 @@ class BookRepository extends ServiceEntityRepository
             ->addSelect('previousVersion')
             ->innerJoin('b.editions', 'edition')
             ->addSelect('edition')
+            ->leftJoin('edition.files', 'editionFile')
+            ->addSelect('editionFile')
             ->leftJoin('b.categories', 'category', 'WITH', 'category.isDeleted = false')
             ->addSelect('category')
             ->leftJoin('b.medias', 'media')

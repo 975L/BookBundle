@@ -31,6 +31,7 @@ use Vich\UploaderBundle\Mapping\Attribute as Vich;
     'book_video' => BookVideo::class,
     'strip' => StripMedia::class,
     'character' => CharacterMedia::class,
+    'book_edition_file' => BookEditionFile::class,
 ])]
 abstract class Media implements \Stringable
 {

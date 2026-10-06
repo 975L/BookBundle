@@ -13,11 +13,13 @@ namespace c975L\BookBundle\Tests\Management;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Management\BookCategoryResolver;
 use c975L\BookBundle\Management\BookExportProvider;
 use c975L\BookBundle\Management\BookImportProvider;
@@ -87,6 +89,32 @@ class BookImportProviderTest extends TestCase
 
         // A media standing for a YouTube url carries no file and travels all the same
         $this->assertSame('https://youtu.be/abc', $book->getVideos()->first()->getYoutubeUrl());
+
+        $this->removeDir($sourceDir);
+        $this->removeDir($filesDir);
+        $this->removeDir($targetDir);
+    }
+
+    // The files an edition is sold as travel with their price and come back out of public/, where the shop and the stores read them
+    public function testRoundTripRebuildsTheFilesAnEditionIsSoldAs(): void
+    {
+        $sourceDir = $this->createProjectDir([]);
+        $this->write($sourceDir . '/private/medias/book/editions/tome-1-epub.epub', 'epub-bytes');
+        $book = new Book()->setSlug('tome-1')->setTitle('Tome 1');
+        $book->addEdition(new BookEdition()->setKind('digital')->setChannels(['shop'])
+            ->setFileOf(BookEditionFileKind::Epub, new BookEditionFile()->setName('medias/book/editions/tome-1-epub.epub')->setPrice(499)));
+        $export = $this->createExportProvider($sourceDir)->serialize([$book]);
+
+        $filesDir = $this->extractArchive($export['files']);
+        $targetDir = $this->createProjectDir([]);
+        $persisted = [];
+        $this->createProvider($targetDir, persisted: $persisted)->import($export['items'], $filesDir);
+
+        $file = $this->firstOf($persisted, Book::class)->getEdition('digital')?->getFileOf(BookEditionFileKind::Epub);
+        $this->assertSame('medias/book/editions/tome-1-epub.epub', $file?->getName());
+        $this->assertSame(499, $file?->getPrice());
+        $this->assertSame('epub-bytes', file_get_contents($targetDir . '/private/medias/book/editions/tome-1-epub.epub'));
+        $this->assertFileDoesNotExist($targetDir . '/public/medias/book/editions/tome-1-epub.epub');
 
         $this->removeDir($sourceDir);
         $this->removeDir($filesDir);

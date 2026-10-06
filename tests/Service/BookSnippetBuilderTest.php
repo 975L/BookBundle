@@ -125,7 +125,7 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertCount(1, $this->builder->buildBook($book)['workExample']);
     }
 
-    // The kind is the site's own word, matched on rather than mapped - anything naming neither paper nor audio is an ebook
+    // The kind is the site's own word, matched on rather than mapped - one naming a file is an ebook, one naming neither a file nor audio a printed book
     public function testTheKindOfAnEditionDecidesItsSchemaFormat(): void
     {
         $book = new Book()->setTitle('Tome 1')

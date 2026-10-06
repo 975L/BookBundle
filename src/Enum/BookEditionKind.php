@@ -23,6 +23,18 @@ enum BookEditionKind: string
         return 'label.edition_' . $this->value;
     }
 
+    // What a kind the site names stands for, matched on its words: "audio" is a recording, "digital", "ebook", "epub" or "pdf" a file, anything else a printed book - the safe guess, a file being what a store sells and a printed book never handed one
+    public static function of(?string $kind): self
+    {
+        $kind = strtolower((string) $kind);
+
+        return match (true) {
+            str_contains($kind, 'audio') => self::Audio,
+            str_contains($kind, 'digital'), str_contains($kind, 'ebook'), str_contains($kind, 'epub'), str_contains($kind, 'pdf') => self::Digital,
+            default => self::Paper,
+        };
+    }
+
     /** @return array<string, string> kind => label */
     public static function defaults(): array
     {

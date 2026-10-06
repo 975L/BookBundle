@@ -170,13 +170,17 @@
                 <source>narration.guided_step_book_creation_done</source>
                 <target>Le livre est publié : sa page est en ligne, et le sitemap la déclarera à la prochaine régénération, dont le raccourci est sur le tableau de bord.</target>
             </trans-unit>
+            <trans-unit id="7yPzUkf">
+                <source>narration.guided_step_book_creation_edition_channels</source>
+                <target>Cochez où part l'édition : la boutique du site, le flux ONIX lu par les librairies, ou Google Play Books.</target>
+            </trans-unit>
             <trans-unit id="N_8xm9n">
                 <source>narration.guided_step_book_creation_editions</source>
                 <target>Ajoutez ses éditions : chaque forme publiée du livre, papier, numérique ou audio, avec son ISBN et sa date de parution, dépliée sur place.</target>
             </trans-unit>
             <trans-unit id="ueX4rE0">
                 <source>narration.guided_step_book_creation_editions_add</source>
-                <target>Le bouton d'ajout ouvre une édition de plus, dont les fichiers et les plateformes s'ajoutent dans le panneau même.</target>
+                <target>Le bouton d'ajout ouvre une édition de plus : son prix, les fichiers sous lesquels elle se vend et les canaux où elle part se règlent dans le panneau même.</target>
             </trans-unit>
             <trans-unit id="4.DDKjm">
                 <source>narration.guided_step_book_creation_new</source>
@@ -225,6 +229,38 @@
             <trans-unit id="V1qHxl5">
                 <source>narration.guided_step_book_duplication_title</source>
                 <target>Renommez la copie. Le titre et l'adresse arrivent marqués comme copie, pour ne pas heurter l'original : les deux sont à vous de réécrire.</target>
+            </trans-unit>
+            <trans-unit id="qZkZRwj">
+                <source>narration.guided_step_book_edition_sale_channels</source>
+                <target>Cochez « Boutique » pour la vendre sur le site, ONIX et Google pour la faire connaître aux librairies et à Google Play Books.</target>
+            </trans-unit>
+            <trans-unit id="fdAify4">
+                <source>narration.guided_step_book_edition_sale_done</source>
+                <target>L'édition est en vente : le produit du livre est écrit dans la boutique, un article par fichier, et Google vient chercher les ebooks de lui-même.</target>
+            </trans-unit>
+            <trans-unit id="mtvK8_n">
+                <source>narration.guided_step_book_edition_sale_edit</source>
+                <target>Modifiez le livre dont une édition numérique ou audio est prête à vendre.</target>
+            </trans-unit>
+            <trans-unit id="TTU68ef">
+                <source>narration.guided_step_book_edition_sale_files</source>
+                <target>Déposez chaque fichier avec son prix TTC : l'EPUB, le PDF et le livret pour une édition numérique, le MP3 pour une édition audio.</target>
+            </trans-unit>
+            <trans-unit id="m0nzkFh">
+                <source>narration.guided_step_book_edition_sale_open</source>
+                <target>Le panneau vous emmène sur le catalogue, où se choisit le livre à vendre.</target>
+            </trans-unit>
+            <trans-unit id="x3NUfjZ">
+                <source>narration.guided_step_book_edition_sale_save</source>
+                <target>Enregistrez le livre.</target>
+            </trans-unit>
+            <trans-unit id="fxUtwSN">
+                <source>narration.guided_step_book_edition_sale_tab</source>
+                <target>Ouvrez l'onglet « Page », celui qui porte les éditions du livre.</target>
+            </trans-unit>
+            <trans-unit id="_I4YNdk">
+                <source>narration.guided_step_book_edition_sale_unfold</source>
+                <target>Cliquez sur le titre de l'édition à vendre pour en ouvrir le panneau.</target>
             </trans-unit>
             <trans-unit id="iPiRr1O">
                 <source>narration.guided_step_book_export_done</source>

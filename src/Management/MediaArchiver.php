@@ -11,13 +11,13 @@
 namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Entity\Media;
+use c975L\UiBundle\Storage\PrivateDirectory;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 
-// What the export and import providers of this bundle do alike with a file: the six subclasses of Media carry the same columns and the same stored name, whether they hang off a serie, a book, one of its versions or a strip
-// The name is this hierarchy's own natural key - unique across the table, and the very path the file is served under - so an archive puts its files straight back where they were rather than re-uploading them: a catalog carried to another site answers at the same urls, and an import re-encodes nothing
+// What the export and import providers of this bundle do alike with a file: the six subclasses of Media carry the same columns and the same stored name, whether they hang off a serie, a book, one of its versions or a strip. The name is this hierarchy's own natural key - unique across the table, and the very path the file is served under - so an archive puts its files straight back where they were rather than re-uploading them: a catalog carried to another site answers at the same urls, and an import re-encodes nothing
 class MediaArchiver
 {
     private readonly Filesystem $filesystem;
@@ -36,7 +36,7 @@ class MediaArchiver
         $name = $media->getName();
         $holdsFile = null !== $name && str_starts_with($name, Media::MEDIA_DIRECTORY . '/');
 
-        $file = $holdsFile ? $this->registerFile($name, $files) : null;
+        $file = $holdsFile ? $this->registerFile($media, $name, $files) : null;
         if ($holdsFile && null === $file) {
             return null;
         }
@@ -114,7 +114,7 @@ class MediaArchiver
 
             $archivedPath = $filesDir . '/' . $entry;
             if (is_file($archivedPath)) {
-                $this->filesystem->copy($archivedPath, $this->projectDir . '/public/' . $name, true);
+                $this->filesystem->copy($archivedPath, $this->path($media, $name), true);
             }
         }
     }
@@ -137,11 +137,10 @@ class MediaArchiver
             ->setUpdatedAt(isset($mediaData['updatedAt']) ? new \DateTimeImmutable($mediaData['updatedAt']) : new \DateTimeImmutable());
     }
 
-    // Registers one physical file for the zip archive and returns the reference the metadata carries, null for a file that has since left the disk so an archive never points at bytes it doesn't hold
-    // The random prefix keeps the same-named files of two medias apart, an archive laying every file of every kind in one flat directory
-    private function registerFile(string $name, array &$files): ?string
+    // Registers one physical file for the zip archive and returns the reference the metadata carries, null for a file that has since left the disk so an archive never points at bytes it doesn't hold. The random prefix keeps the same-named files of two medias apart, an archive laying every file of every kind in one flat directory
+    private function registerFile(Media $media, string $name, array &$files): ?string
     {
-        $path = $this->projectDir . '/public/' . $name;
+        $path = $this->path($media, $name);
         if (!is_file($path)) {
             return null;
         }
@@ -150,6 +149,12 @@ class MediaArchiver
         $files[$archivePath] = $path;
 
         return $archivePath;
+    }
+
+    // Where the file is on disk: under public/, or under the private directory of a file the web server must not hand out (see BookEditionFile)
+    private function path(Media $media, string $name): string
+    {
+        return $this->projectDir . '/' . (PrivateDirectory::resolve($media) ?? 'public') . '/' . $name;
     }
 
     // Whether a name out of an archive is one this bundle would write: it is only honoured under this bundle's own media directory, and only as a plain relative name - a "../" or an absolute path would have an import lay files anywhere the process can write, and a null byte would have PHP stop reading the name where C does

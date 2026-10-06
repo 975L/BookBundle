@@ -91,6 +91,17 @@ class BookOnixBuilderTest extends TestCase
         $this->assertSame('04', $xpath->evaluate('string(//o:Product[2]//o:UnpricedItemType)'));
     }
 
+    // A price of 0 is a free book, which the stores want said as such rather than priced at nothing
+    public function testAZeroPriceIsFree(): void
+    {
+        $book = $this->book();
+        $book->getEditions()->first()->setPrice(0);
+        $xpath = $this->read([$book]);
+
+        $this->assertSame('01', $xpath->evaluate('string(//o:Product[1]//o:UnpricedItemType)'));
+        $this->assertSame(0.0, $xpath->evaluate('count(//o:Product[1]//o:Price)'));
+    }
+
     // A book dated ahead is announced, for the stores to take preorders
     public function testABookStillToComeIsForthcoming(): void
     {
@@ -101,6 +112,38 @@ class BookOnixBuilderTest extends TestCase
         $this->assertSame('10', $xpath->evaluate('string(//o:Product[1]//o:ProductAvailability)'));
         $this->assertSame('02', $xpath->evaluate('string(//o:Product[2]//o:UnpricedItemType)'));
         $this->assertSame(new \DateTime('+1 month')->format('Ymd'), $xpath->evaluate('string(//o:Product[1]//o:PublishingDate/o:Date)'));
+    }
+
+    // A store reads the rights before offering the book at all, and whether the file is locked before adding a lock of its own
+    public function testAProductCarriesItsRightsAndNoDrm(): void
+    {
+        $xpath = $this->read([$this->book()]);
+
+        $this->assertSame('01', $xpath->evaluate('string(//o:Product[1]/o:PublishingDetail/o:SalesRights/o:SalesRightsType)'));
+        $this->assertSame('WORLD', $xpath->evaluate('string(//o:Product[1]/o:PublishingDetail/o:SalesRights/o:Territory/o:RegionsIncluded)'));
+        $this->assertSame('00', $xpath->evaluate('string(//o:Product[1]/o:DescriptiveDetail/o:EpubTechnicalProtection)'));
+        $this->assertSame(0.0, $xpath->evaluate('count(//o:Product[2]/o:DescriptiveDetail/o:EpubTechnicalProtection)'));
+    }
+
+    // A feed sends only the editions it keeps - those ticked for its channel
+    public function testTheEditionsAFeedKeepsAreTheOnlyProducts(): void
+    {
+        $document = new \DOMDocument();
+        $document->loadXML($this->builder->build([$this->book()], 'Éditions Test', 'https://example.org/', BookOnixBuilder::isEbook(...)));
+        $xpath = new \DOMXPath($document);
+        $xpath->registerNamespace('o', 'http://ns.editeur.org/onix/3.0/reference');
+
+        $this->assertSame(['9782488750011'], $this->values($xpath, '//o:Product/o:ProductIdentifier/o:IDValue'));
+    }
+
+    // A kind the site names on its own and that names no file is a printed book, never an ebook a store would sell as a file
+    public function testAnUnknownKindIsAPrintedBook(): void
+    {
+        $edition = new BookEdition()->setKind('hardcover')->setIsbn('9782488750011');
+        $book = new Book()->setTitle('Relié')->setPublished(new \DateTime('2026-01-01'))->addEdition($edition);
+
+        $this->assertFalse(BookOnixBuilder::isEbook($edition));
+        $this->assertSame('BC', $this->read([$book])->evaluate('string(//o:Product/o:DescriptiveDetail/o:ProductForm)'));
     }
 
     public function testAnEditionWithoutIsbnIsNoProduct(): void

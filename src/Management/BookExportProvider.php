@@ -92,7 +92,9 @@ class BookExportProvider implements ExportProviderInterface
             // The book that replaces this one, named the same way and resolved in the same second pass (see Book::$newerVersion)
             'newerVersion' => $book->getNewerVersion()?->getSlug(),
             'blocks' => $this->blockDataExporter->exportBlocks($book->getBlocks(), $files),
-            'editions' => array_map($this->exportEditionData(...), $book->getEditions()->toArray()),
+            'editions' => array_map(function (BookEdition $edition) use (&$files): array {
+                return $this->exportEditionData($edition, $files);
+            }, $book->getEditions()->toArray()),
             // The parts held by a row rather than by a column, each naming its person the way the author is named - by name, which is the key the resolver matches on
             'contributors' => array_map($this->exportContributorData(...), $book->getContributors()->toArray()),
             // Flat rather than nested inside the versions they belong to: a link and a file both name their version by kind, and the ones a book carries as a whole - its covers, its backdrop - name none
@@ -118,15 +120,33 @@ class BookExportProvider implements ExportProviderInterface
         return $data;
     }
 
-    private function exportEditionData(BookEdition $edition): array
+    private function exportEditionData(BookEdition $edition, array &$files): array
     {
         return [
             'kind' => $edition->getKind(),
             'isbn' => $edition->getIsbn(),
             'pages' => $edition->getPages(),
             'format' => $edition->getFormat(),
+            'price' => $edition->getPrice(),
+            'currency' => $edition->getCurrency(),
+            'channels' => $edition->getChannels(),
             'position' => $edition->getPosition(),
+            // The files it is sold as, each with the price the shop sells it at - without them an edition ticked "Shop" would come back with nothing to sell
+            'files' => $this->exportEditionFiles($edition, $files),
         ];
+    }
+
+    private function exportEditionFiles(BookEdition $edition, array &$files): array
+    {
+        $data = [];
+        foreach ($edition->getFiles() as $file) {
+            $fileData = $this->mediaArchiver->export($file, $files);
+            if (null !== $fileData) {
+                $data[] = [...$fileData, 'price' => $file->getPrice()];
+            }
+        }
+
+        return $data;
     }
 
     private function exportContributorData(BookContributor $credit): array

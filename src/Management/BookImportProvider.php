@@ -13,11 +13,13 @@ namespace c975L\BookBundle\Management;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
 use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Enum\BookMediaKind;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\ConfigBundle\Management\ImportProviderInterface;
@@ -68,6 +70,7 @@ class BookImportProvider implements ImportProviderInterface
             $this->replaceBlocks($book, $item['blocks'] ?? [], $filesDir);
 
             $this->syncEditions($book, $item['editions'] ?? []);
+            $written = [...$written, ...$this->syncEditionFiles($book, $item)];
             $this->syncContributors($book, $item['contributors'] ?? [], $contributors);
             $written = [...$written, ...$this->syncMedias($book, $item)];
             $this->syncLinks($book, $item['links'] ?? []);
@@ -280,17 +283,49 @@ class BookImportProvider implements ImportProviderInterface
     // One version written over, whether it was already on the book or is joining it now
     private function writeEdition(Book $book, BookEdition $edition, string $kind, array $editionData): BookEdition
     {
+        // Every field an older archive may not carry yet falls back on what a new edition holds
+        $editionData += ['isbn' => null, 'pages' => null, 'format' => null, 'price' => null, 'currency' => null, 'channels' => [], 'position' => 0];
         $edition
             ->setKind($kind)
-            ->setIsbn($editionData['isbn'] ?? null)
-            ->setPages($editionData['pages'] ?? null)
-            ->setFormat($editionData['format'] ?? null)
-            ->setPosition($editionData['position'] ?? 0);
+            ->setIsbn($editionData['isbn'])
+            ->setPages($editionData['pages'])
+            ->setFormat($editionData['format'])
+            ->setPrice($editionData['price'])
+            ->setCurrency($editionData['currency'])
+            ->setChannels($editionData['channels'])
+            ->setPosition($editionData['position']);
 
         $this->em->persist($edition);
         $book->addEdition($edition);
 
         return $edition;
+    }
+
+    // The files each edition is sold as, written over on their name like the book's own and bound back to their kind, at the price the archive gives them - an archive predating them leaves them alone
+    /** @return list<array{0: \c975L\BookBundle\Entity\Media, 1: array}> */
+    private function syncEditionFiles(Book $book, array $item): array
+    {
+        $written = [];
+        foreach ($item['editions'] ?? [] as $editionData) {
+            $edition = $book->getEdition((string) ($editionData['kind'] ?? ''));
+            if (null === $edition || !array_key_exists('files', $editionData)) {
+                continue;
+            }
+
+            $files = $this->mediaArchiver->sync(
+                $edition->getFiles(),
+                $editionData['files'],
+                static fn (): BookEditionFile => new BookEditionFile(),
+                static fn (BookEditionFile $file): BookEdition => $edition->setFileOf(BookEditionFileKind::from((string) $file->getKind()), $file),
+                static fn (BookEditionFile $file): bool => $edition->getFiles()->removeElement($file),
+            );
+            foreach ($files as [$file, $fileData]) {
+                $file->setPrice($fileData['price'] ?? null);
+            }
+            $written = [...$written, ...$files];
+        }
+
+        return $written;
     }
 
     // The book's five families of files, each written over on the name it is served under (see MediaArchiver::sync()) - a version's own files then bound back to it by its kind

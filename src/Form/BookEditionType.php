@@ -11,6 +11,9 @@
 namespace c975L\BookBundle\Form;
 
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookEditionFile;
+use c975L\BookBundle\Enum\BookChannel;
+use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -20,10 +23,11 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-// An edition a book comes out under - paper, digital, audio - edited where it reads, in the accordion the book's form unfolds
-// Nothing but what belongs to it: its ISBN, its size, its pagination, its release date. The files and the platforms belong to the book and are edited under the gesture they serve - the recording under "Listen" with the podcast apps, the bookshops under "Buy" (see BookCrudController)
+// An edition a book comes out under - paper, digital, audio - edited where it reads, in the accordion the book's form unfolds. Nothing but what belongs to it: its ISBN, its size, its pagination, its price, the files it is sold as and where it is handed out. The other files and the platforms belong to the book and are edited under the gesture they serve - the recording under "Listen" with the podcast apps, the bookshops under "Buy" (see BookCrudController)
 class BookEditionType extends AbstractType
 {
     public function __construct(
@@ -69,7 +73,34 @@ class BookEditionType extends AbstractType
                 'label' => 'label.edition_currency',
                 'preferred_choices' => ['EUR'],
             ])
+            // Where the edition is handed out - the shop, the public ONIX, Google... (see BookChannel)
+            ->add('channels', ChoiceType::class, [
+                'label' => 'label.edition_channels',
+                'help' => 'label.edition_channels-help',
+                'choices' => BookChannel::choices(),
+                'multiple' => true,
+                'expanded' => true,
+                'required' => false,
+            ])
         ;
+
+        // The files it is sold as, one slot per kind the edition can be sold as (see BookEditionFileKind::forEdition()), read and written through the edition's own accessors: a slot left empty or emptied with its checkbox takes the kind's file away (see BookEdition::setFileOf())
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
+            $edition = $event->getData();
+            foreach (BookEditionFileKind::forEdition($edition instanceof BookEdition ? $edition->getKind() : null) as $kind) {
+                $event->getForm()->add('file_' . $kind->value, BookEditionFileType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'kind' => $kind,
+                    // Written back even when the same file comes back, so that one emptied with its checkbox still reaches setFileOf()
+                    'by_reference' => false,
+                    'getter' => static fn (BookEdition $edition): ?BookEditionFile => $edition->getFileOf($kind),
+                    'setter' => static function (BookEdition $edition, ?BookEditionFile $file) use ($kind): void {
+                        $edition->setFileOf($kind, $file);
+                    },
+                ]);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

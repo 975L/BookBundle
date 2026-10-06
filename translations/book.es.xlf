@@ -78,6 +78,10 @@
                 <source>description.guided_project_book_duplication</source>
                 <target>Un libro parecido a otro —la misma serie, la misma forma, los mismos enlaces— se copia en un clic y luego se renombra. El mismo botón está en las series, las páginas y las personas.</target>
             </trans-unit>
+            <trans-unit id="HjeId48">
+                <source>description.guided_project_book_edition_sale</source>
+                <target>Una edición digital o de audio se vende en sus archivos — EPUB, PDF, folleto, MP3: subidos con su precio y marcados «Tienda», se escriben en la tienda del sitio al guardar el libro.</target>
+            </trans-unit>
             <trans-unit id="jlCH.8q">
                 <source>description.guided_project_book_export</source>
                 <target>El catálogo sale del sitio en SQL, CSV o JSON: una copia de seguridad, una mudanza a otro sitio, una lectura en una hoja de cálculo. Reservado al administrador: es toda la tabla la que sale.</target>
@@ -262,13 +266,17 @@
                 <source>description.guided_step_book_creation_done</source>
                 <target>Su página está en línea, y el sitemap la declara en la siguiente regeneración, cuyo acceso directo está en el panel.</target>
             </trans-unit>
+            <trans-unit id="9uBK1xq">
+                <source>description.guided_step_book_creation_edition_channels</source>
+                <target>Marque adónde va la edición: la tienda del sitio, el flujo ONIX que leen las librerías, Google Play Books</target>
+            </trans-unit>
             <trans-unit id="QLpGkWa">
                 <source>description.guided_step_book_creation_editions</source>
                 <target>Cada forma publicada del libro — papel, digital, audio — con su ISBN y su fecha de publicación, desplegada en el sitio</target>
             </trans-unit>
             <trans-unit id="6qon4AP">
                 <source>description.guided_step_book_creation_editions_add</source>
-                <target>El botón despliega una edición más, cuyos archivos y plataformas se añaden en el propio panel</target>
+                <target>El botón despliega una edición más: su precio, los archivos con los que se vende y los canales por los que sale se ajustan en el propio panel</target>
             </trans-unit>
             <trans-unit id=".KDAbfg">
                 <source>description.guided_step_book_creation_new</source>
@@ -309,6 +317,34 @@
             <trans-unit id="5z2N2SP">
                 <source>description.guided_step_book_duplication_title</source>
                 <target>El título y la dirección llegan marcados como copia, para no chocar con el original: los dos están para que los reescriba.</target>
+            </trans-unit>
+            <trans-unit id="ScFOzvw">
+                <source>description.guided_step_book_edition_sale_channels</source>
+                <target>«Tienda» la pone a la venta en el sitio; ONIX y Google la dan a conocer a las librerías y a Google Play Books.</target>
+            </trans-unit>
+            <trans-unit id="S5uubtb">
+                <source>description.guided_step_book_edition_sale_done</source>
+                <target>El producto del libro se escribe en la tienda, un artículo por archivo; Google viene a buscar los ebooks por sí mismo.</target>
+            </trans-unit>
+            <trans-unit id="O.G..T1">
+                <source>description.guided_step_book_edition_sale_edit</source>
+                <target>Aquel cuya edición digital o de audio está lista para vender.</target>
+            </trans-unit>
+            <trans-unit id="LgOc2qn">
+                <source>description.guided_step_book_edition_sale_files</source>
+                <target>Un espacio por archivo que la edición puede vender, cada uno con su precio con impuestos: una edición digital lleva el EPUB, el PDF y el folleto, una de audio el MP3.</target>
+            </trans-unit>
+            <trans-unit id="wdXHhRC">
+                <source>description.guided_step_book_edition_sale_open</source>
+                <target>El catálogo, donde se elige el libro que vender.</target>
+            </trans-unit>
+            <trans-unit id="4_lptoQ">
+                <source>description.guided_step_book_edition_sale_tab</source>
+                <target>La pestaña que lleva las ediciones del libro.</target>
+            </trans-unit>
+            <trans-unit id="FRdlJpz">
+                <source>description.guided_step_book_edition_sale_unfold</source>
+                <target>Haga clic en el título de la edición que vender: su panel se abre.</target>
             </trans-unit>
             <trans-unit id="_tWJalT">
                 <source>description.guided_step_book_export_done</source>
@@ -1190,6 +1226,22 @@
                 <source>label.category_summary-help</source>
                 <target>La frase que presenta la categoría, en la cabecera de su página y en los resultados de búsqueda.</target>
             </trans-unit>
+            <trans-unit id="DvKtdHA">
+                <source>label.channel_apple</source>
+                <target>Apple Books</target>
+            </trans-unit>
+            <trans-unit id="1pJuIYl">
+                <source>label.channel_google</source>
+                <target>Google Play Libros</target>
+            </trans-unit>
+            <trans-unit id="Pjyoz6K">
+                <source>label.channel_onix</source>
+                <target>Flujo ONIX público (librerías)</target>
+            </trans-unit>
+            <trans-unit id="eUavIn2">
+                <source>label.channel_shop</source>
+                <target>Tienda del sitio</target>
+            </trans-unit>
             <trans-unit id="OcWTEKZ">
                 <source>label.character</source>
                 <target>Personaje</target>
@@ -1306,6 +1358,14 @@
                 <source>label.edition_audio</source>
                 <target>Audio</target>
             </trans-unit>
+            <trans-unit id="m_M6n_4">
+                <source>label.edition_channels</source>
+                <target>Difusión</target>
+            </trans-unit>
+            <trans-unit id="vIcKNIZ">
+                <source>label.edition_channels-help</source>
+                <target>Dónde se envía esta edición. Los archivos se guardan fuera del acceso público y se copian a cada canal marcado.</target>
+            </trans-unit>
             <trans-unit id="bCtPwn9">
                 <source>label.edition_currency</source>
                 <target>Moneda</target>
@@ -1313,6 +1373,34 @@
             <trans-unit id="RSLhjze">
                 <source>label.edition_digital</source>
                 <target>Digital</target>
+            </trans-unit>
+            <trans-unit id="Kfl8WNl">
+                <source>label.edition_file_audio</source>
+                <target>Archivo de audio (MP3)</target>
+            </trans-unit>
+            <trans-unit id="Pi3nbdx">
+                <source>label.edition_file_booklet</source>
+                <target>Folleto PDF</target>
+            </trans-unit>
+            <trans-unit id="5sApxF0">
+                <source>label.edition_file_earlier_version</source>
+                <target>%title% versión original</target>
+            </trans-unit>
+            <trans-unit id="xpZYJz1">
+                <source>label.edition_file_epub</source>
+                <target>Archivo EPUB</target>
+            </trans-unit>
+            <trans-unit id="61LczxL">
+                <source>label.edition_file_pdf</source>
+                <target>Archivo PDF</target>
+            </trans-unit>
+            <trans-unit id="m8NP.UV">
+                <source>label.edition_file_price</source>
+                <target>Precio en la tienda</target>
+            </trans-unit>
+            <trans-unit id="9gyzQZp">
+                <source>label.edition_file_price-help</source>
+                <target>Precio de este archivo en la tienda del sitio, impuestos incluidos, 0 para un archivo gratuito, tenido en cuenta una vez subido el archivo. El flujo ONIX anuncia el precio de la edición.</target>
             </trans-unit>
             <trans-unit id="JsXZydc">
                 <source>label.edition_format-help</source>
@@ -1344,7 +1432,7 @@
             </trans-unit>
             <trans-unit id="cnPlkIL">
                 <source>label.edition_price-help</source>
-                <target>Precio de venta al público con impuestos, anunciado a las librerías en línea por el flujo ONIX. Vacío, la edición se anuncia sin precio.</target>
+                <target>Precio de venta al público con impuestos, anunciado a las librerías en línea por el flujo ONIX. 0 para un libro gratuito. Vacío, la edición se anuncia sin precio.</target>
             </trans-unit>
             <trans-unit id="NbK0Mua">
                 <source>label.editions</source>
@@ -1465,6 +1553,10 @@
             <trans-unit id="2Cx7Ddy">
                 <source>label.guided_project_book_duplication</source>
                 <target>Copiar un libro en vez de volver a escribirlo</target>
+            </trans-unit>
+            <trans-unit id="_2ZkC5e">
+                <source>label.guided_project_book_edition_sale</source>
+                <target>Vender una edición en archivos</target>
             </trans-unit>
             <trans-unit id="TUyJ6vi">
                 <source>label.guided_project_book_export</source>
@@ -1666,6 +1758,10 @@
                 <source>label.guided_step_book_creation_done</source>
                 <target>El libro está publicado</target>
             </trans-unit>
+            <trans-unit id="GgaitM0">
+                <source>label.guided_step_book_creation_edition_channels</source>
+                <target>Elija sus canales</target>
+            </trans-unit>
             <trans-unit id="PwRtO8d">
                 <source>label.guided_step_book_creation_editions</source>
                 <target>Añada sus ediciones</target>
@@ -1721,6 +1817,38 @@
             <trans-unit id="t8L9Ndy">
                 <source>label.guided_step_book_duplication_title</source>
                 <target>Renombre la copia</target>
+            </trans-unit>
+            <trans-unit id="8ksUY7n">
+                <source>label.guided_step_book_edition_sale_channels</source>
+                <target>Marque sus canales</target>
+            </trans-unit>
+            <trans-unit id="WecJhTI">
+                <source>label.guided_step_book_edition_sale_done</source>
+                <target>La edición está a la venta</target>
+            </trans-unit>
+            <trans-unit id="1iQb8Z2">
+                <source>label.guided_step_book_edition_sale_edit</source>
+                <target>Modifique el libro</target>
+            </trans-unit>
+            <trans-unit id="XhoSfGm">
+                <source>label.guided_step_book_edition_sale_files</source>
+                <target>Suba sus archivos y sus precios</target>
+            </trans-unit>
+            <trans-unit id="4Pewzfi">
+                <source>label.guided_step_book_edition_sale_open</source>
+                <target>Abra «Libros»</target>
+            </trans-unit>
+            <trans-unit id="lXoSolY">
+                <source>label.guided_step_book_edition_sale_save</source>
+                <target>Guardar el libro</target>
+            </trans-unit>
+            <trans-unit id="DYcLftq">
+                <source>label.guided_step_book_edition_sale_tab</source>
+                <target>Abra la pestaña «Página»</target>
+            </trans-unit>
+            <trans-unit id="tghcDPW">
+                <source>label.guided_step_book_edition_sale_unfold</source>
+                <target>Despliegue la edición</target>
             </trans-unit>
             <trans-unit id="._biBpn">
                 <source>label.guided_step_book_export_done</source>

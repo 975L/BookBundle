@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Listener;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\ContributorMedia;
@@ -39,10 +40,10 @@ class BookCacheInvalidationListenerTest extends TestCase
         $this->invalidated = [];
     }
 
-    // The four rows the five kinds are drawn from, each dropping the one catalog tag
+    // The four rows the five kinds are drawn from, each dropping the one catalog tag - and an edition, whose channels decide what the Google feed lists
     public function testACatalogChangeDropsTheBlocks(): void
     {
-        foreach ([new Book(), new Serie(), new Strip(), new Contributor()] as $entity) {
+        foreach ([new Book(), new Serie(), new Strip(), new Contributor(), new BookEdition()] as $entity) {
             $this->invalidated = [];
             $this->listen($entity);
 

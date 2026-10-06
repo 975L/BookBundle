@@ -10,10 +10,14 @@
 
 namespace c975L\BookBundle\Entity;
 
+use c975L\BookBundle\Enum\BookChannel;
+use c975L\BookBundle\Enum\BookEditionFileKind;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-// An edition a book comes out under - paper, digital, audio - each with its ISBN and its release date. These were three "isbn_*" columns on the book itself, which said nothing of when each came out and could hold no fourth: an edition is a row now, its name a value the site can redeclare (see c975L\BookBundle\Contract\BookCustomizationProviderInterface), the same gesture as BookLink for the shops
-// An edition is not a version of the text: a rewritten, revised or newly illustrated book comes out in all those editions too, and is therefore a book apart (see Book::$newerVersion)
+// An edition a book comes out under - paper, digital, audio - each with its ISBN and its release date. These were three "isbn_*" columns on the book itself, which said nothing of when each came out and could hold no fourth: an edition is a row now, its name a value the site can redeclare (see c975L\BookBundle\Contract\BookCustomizationProviderInterface), the same gesture as BookLink for the shops. An edition is not a version of the text: a rewritten, revised or newly illustrated book comes out in all those editions too, and is therefore a book apart (see Book::$newerVersion)
 #[ORM\Entity]
 #[ORM\Table(name: 'book_edition')]
 class BookEdition implements \Stringable
@@ -50,6 +54,21 @@ class BookEdition implements \Stringable
     // ISO 4217, upper case as ONIX writes it
     #[ORM\Column(length: 3, options: ['default' => 'EUR'])]
     private string $currency = 'EUR';
+
+    // The files this edition is sold as, private, one per kind at most (see BookEditionFile and BookEditionFileKind)
+    /** @var Collection<int, BookEditionFile> */
+    #[ORM\OneToMany(targetEntity: BookEditionFile::class, mappedBy: 'edition', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $files;
+
+    // Where the edition is handed out (see BookChannel) - none ticked, it is shown on the site and sent nowhere
+    /** @var list<string> */
+    #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
+    private array $channels = [];
+
+    public function __construct()
+    {
+        $this->files = new ArrayCollection();
+    }
 
     public function __toString(): string
     {
@@ -155,5 +174,66 @@ class BookEdition implements \Stringable
         $this->currency = strtoupper(trim((string) $currency)) ?: 'EUR';
 
         return $this;
+    }
+
+    /** @return Collection<int, BookEditionFile> */
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    // The file of one kind, null when the edition is not sold as it
+    public function getFileOf(BookEditionFileKind $kind): ?BookEditionFile
+    {
+        foreach ($this->files as $file) {
+            if ($kind->value === $file->getKind()) {
+                return $file;
+            }
+        }
+
+        return null;
+    }
+
+    // Puts a file in the place of its kind - null, or a file whose upload was deleted, taking the kind's file away (orphanRemoval drops its row)
+    public function setFileOf(BookEditionFileKind $kind, ?BookEditionFile $file): static
+    {
+        $current = $this->getFileOf($kind);
+        if (null !== $current && $current !== $file) {
+            $this->files->removeElement($current);
+        }
+
+        if (null === $file || (null === $file->getName() && null === $file->getFile())) {
+            if (null !== $file) {
+                $this->files->removeElement($file);
+            }
+
+            return $this;
+        }
+
+        $file->setKind($kind->value)->setEdition($this);
+        if (!$this->files->contains($file)) {
+            $this->files->add($file);
+        }
+
+        return $this;
+    }
+
+    /** @return list<string> */
+    public function getChannels(): array
+    {
+        return $this->channels;
+    }
+
+    /** @param list<string> $channels */
+    public function setChannels(array $channels): static
+    {
+        $this->channels = array_values(array_unique($channels));
+
+        return $this;
+    }
+
+    public function hasChannel(BookChannel $channel): bool
+    {
+        return \in_array($channel->value, $this->channels, true);
     }
 }

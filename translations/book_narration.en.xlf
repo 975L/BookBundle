@@ -170,13 +170,17 @@
                 <source>narration.guided_step_book_creation_done</source>
                 <target>The book is published: its page is online, and the sitemap will declare it at the next rebuild, whose shortcut sits on the dashboard.</target>
             </trans-unit>
+            <trans-unit id="7yPzUkf">
+                <source>narration.guided_step_book_creation_edition_channels</source>
+                <target>Tick where the edition goes: the site's shop, the ONIX feed the bookshops read, or Google Play Books.</target>
+            </trans-unit>
             <trans-unit id="N_8xm9n">
                 <source>narration.guided_step_book_creation_editions</source>
                 <target>Add its editions: each published form of the book, paper, digital or audio, with its ISBN and its release date, unfolded in place.</target>
             </trans-unit>
             <trans-unit id="ueX4rE0">
                 <source>narration.guided_step_book_creation_editions_add</source>
-                <target>The add button unfolds one more edition, whose files and platforms are added inside the panel itself.</target>
+                <target>The add button unfolds one more edition: its price, the files it is sold as and the channels it goes out on are set inside the panel itself.</target>
             </trans-unit>
             <trans-unit id="4.DDKjm">
                 <source>narration.guided_step_book_creation_new</source>
@@ -225,6 +229,38 @@
             <trans-unit id="V1qHxl5">
                 <source>narration.guided_step_book_duplication_title</source>
                 <target>Rename the copy. The title and the address arrive marked as a copy, so as not to collide with the original: both are yours to rewrite.</target>
+            </trans-unit>
+            <trans-unit id="qZkZRwj">
+                <source>narration.guided_step_book_edition_sale_channels</source>
+                <target>Tick "Shop" to sell it on the site, ONIX and Google to make it known to the bookshops and to Google Play Books.</target>
+            </trans-unit>
+            <trans-unit id="fdAify4">
+                <source>narration.guided_step_book_edition_sale_done</source>
+                <target>The edition is on sale: the book's product is written into the shop, one item per file, and Google fetches the ebooks on its own.</target>
+            </trans-unit>
+            <trans-unit id="mtvK8_n">
+                <source>narration.guided_step_book_edition_sale_edit</source>
+                <target>Edit the book whose digital or audio edition is ready to sell.</target>
+            </trans-unit>
+            <trans-unit id="TTU68ef">
+                <source>narration.guided_step_book_edition_sale_files</source>
+                <target>Upload each file with its price tax included: the EPUB, the PDF and the booklet for a digital edition, the MP3 for an audio one.</target>
+            </trans-unit>
+            <trans-unit id="m0nzkFh">
+                <source>narration.guided_step_book_edition_sale_open</source>
+                <target>The panel takes you to the catalog, where the book to sell is picked.</target>
+            </trans-unit>
+            <trans-unit id="x3NUfjZ">
+                <source>narration.guided_step_book_edition_sale_save</source>
+                <target>Save the book.</target>
+            </trans-unit>
+            <trans-unit id="fxUtwSN">
+                <source>narration.guided_step_book_edition_sale_tab</source>
+                <target>Open the page tab, the one holding the editions of the book.</target>
+            </trans-unit>
+            <trans-unit id="_I4YNdk">
+                <source>narration.guided_step_book_edition_sale_unfold</source>
+                <target>Click the title of the edition to sell to open its panel.</target>
             </trans-unit>
             <trans-unit id="iPiRr1O">
                 <source>narration.guided_step_book_export_done</source>
