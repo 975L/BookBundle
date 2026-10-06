@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.18.1
+
+Document how to ask Google Play Books for the feed
+
+- README: how to ask Google Play Books for the feed, field by field (06/10/2026)
+
 ## v2.18.0
 
 EPUBs read aloud, edition covers and audiobooks sent to Google

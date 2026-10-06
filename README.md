@@ -904,7 +904,27 @@ are set, nothing answers. The list of files is cached until the catalog changes,
 format is converted once into `var/cache/<env>/book-google/`; the ONIX is renamed only by a change to a book sent
 to Google or to the files of its editions. Only the digital and audio editions ticked "Google" are sent: an ebook with its EPUB and PDF — never the
 booklet —, an audiobook with its recording once it has its own square front cover, the pages' portrait one being
-no stand-in. An edition priced 0 is announced as free.
+no stand-in. An edition priced 0 is announced as free. On an Apache server running PHP-FPM, check the
+`Authorization` header reaches PHP (the Symfony `.htaccess` passes it on).
+
+#### Asking Google for the feed
+
+Once the four settings are set and `/<book-route-google>/` answers 401, the feed is asked for through Google's
+form "Send your books to Google Play with automated content fetching", reached from the
+[Partner Center help](https://support.google.com/books/partner/answer/2763162) (audiobooks:
+[answer 7504302](https://support.google.com/books/partner/answer/7504302)). Its key fields:
+
+| Field | Answer |
+|---|---|
+| Collection code | `book-google-collection` |
+| Files to send | ePub/PDF, Audiobook/PDF when audio editions are ticked, and ONIX rights — the rights create the books and set their prices on Google Play, where ONIX bibliographic data alone would not |
+| Sample ONIX URL | `https://<site>/<book-route-google>/onix/<collection>-rights/` — at least 10 records must be there |
+| Action / server type | Create a feed, HTTPS |
+| Server URL / port | `https://<site>/<book-route-google>/`, 443 |
+| User / password | `book-google-user`, `book-google-password` |
+| Delete files after fetching | No — the folders are read only |
+
+Google answers within three working days, and setting the feed up takes two to three weeks.
 
 ### Edition files and channels
 
@@ -935,11 +955,7 @@ A shop that held the files before the catalog did hands them over once with `c97
 with `--dry-run`, or on one product with `--product=<slug>`. A product is matched to a book by its slug, then by
 its title; an item to a kind of file by its slug and extension, a "version originale" to the book's earlier
 version, or to the book itself when it has none and no illustrated file takes the slot. Of two EPUBs, the one
-carrying SMIL files is taken as read aloud and preferred. What cannot be matched is listed and left in the shop. On an Apache server running
-PHP-FPM, check the `Authorization` header reaches PHP (the Symfony `.htaccess` passes it on).
-
-Ask Google for the feed through the Partner Center's automated content fetching form (HTTPS, "Droits ONIX" and
-"ePub/PDF"), giving the ONIX folder's address and the user and password.
+carrying SMIL files is taken as read aloud and preferred. What cannot be matched is listed and left in the shop.
 
 ### Sitemap
 
