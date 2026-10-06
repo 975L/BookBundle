@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.17.1
+
+A book never redone takes its own "version originale" files
+
+- `c975l:book:shop:import` copies a "version originale" into a book having no earlier version (06/10/2026)
+- `c975l:book:shop:import` places the illustrated files before the "version originale" ones (06/10/2026)
+
 ## v2.17.0
 
 The catalog holds the files the editions are sold as, and Google Play Books fetches the ebooks on its own

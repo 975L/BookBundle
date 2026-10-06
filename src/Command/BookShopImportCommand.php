@@ -67,7 +67,10 @@ class BookShopImportCommand extends Command
         $productKeys = [];
         // The slots filled by this very run, which a dry run never writes and would otherwise see empty again
         $taken = [];
-        foreach ($this->writer->itemsWithFile() as $item) {
+        // The original versions last: a book sold illustrated keeps its illustrated files, its "version originale" then finding the slot taken
+        $items = $this->writer->itemsWithFile();
+        usort($items, static fn (CatalogProductItem $a, CatalogProductItem $b): int => self::isEarlierVersion($a) <=> self::isEarlierVersion($b));
+        foreach ($items as $item) {
             if (null !== $item->key || (null !== $input->getOption('product') && $input->getOption('product') !== $item->productSlug)) {
                 continue;
             }
@@ -110,8 +113,7 @@ class BookShopImportCommand extends Command
      */
     private function place(CatalogProductItem $item, array $bySlug, array $byTitle, array $productKeys, array $taken): array | string
     {
-        $book = $bySlug[$item->productSlug] ?? $byTitle[self::normalize($item->productTitle)] ?? null;
-        $book = null !== $book && self::isEarlierVersion($item) ? $book->getPreviousVersion() : $book;
+        $book = self::book($item, $bySlug, $byTitle);
         $kind = self::kind($item);
         if (null === $book || null === $kind) {
             return null === $book ? 'no book' : 'unknown kind of file';
@@ -125,6 +127,21 @@ class BookShopImportCommand extends Command
         $edition = $this->edition($book, $kind);
 
         return null === $edition->getFileOf($kind) && !isset($taken[self::slot($edition, $kind)]) ? [$edition, $kind, $productKey] : 'already a ' . $kind->value . ' on "' . $book->getSlug() . '"';
+    }
+
+    // The book an item belongs to, by its product's slug then its title. A "version originale" belongs to the earlier version of the book, or to the book itself when it never had another one
+    /**
+     * @param array<string, Book> $bySlug
+     * @param array<string, Book> $byTitle
+     */
+    private static function book(CatalogProductItem $item, array $bySlug, array $byTitle): ?Book
+    {
+        $book = $bySlug[$item->productSlug] ?? $byTitle[self::normalize($item->productTitle)] ?? null;
+        if (null === $book || !self::isEarlierVersion($item)) {
+            return $book;
+        }
+
+        return $book->getPreviousVersion() ?? $book;
     }
 
     // The books by slug and by title, the latest version answering for a title several versions share

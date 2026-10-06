@@ -41,6 +41,26 @@ class BookShopImportCommandTest extends TestCase
         $this->assertStringContainsString('already a pdf on "le-loup"', $display);
     }
 
+    // A book never redone takes its "version originale" itself; one sold illustrated keeps the illustrated file, whatever order the shop lists them in
+    public function testAnOriginalVersionGoesToTheBookOnlyWhenNothingIllustratedTakesItsPlace(): void
+    {
+        $writer = $this->createStub(ProductCatalogWriterInterface::class);
+        $writer->method('itemsWithFile')->willReturn([
+            self::item(6, 'format-epub-version-originale', '/shop/loup-vo.epub'),
+            self::item(7, 'format-epub', '/shop/loup.epub'),
+            self::item(8, 'format-pdf-version-originale', '/shop/loup-vo.pdf'),
+        ]);
+
+        $tester = $this->tester($writer);
+        $tester->execute(['--dry-run' => true]);
+        $display = $tester->getDisplay();
+
+        $this->assertStringContainsString('2 file(s) would be copied', $display);
+        $this->assertMatchesRegularExpression('/format-epub +le-loup \/ digital \/ epub/', $display);
+        $this->assertMatchesRegularExpression('/format-epub-version-originale +already a epub/', $display);
+        $this->assertMatchesRegularExpression('/format-pdf-version-originale +le-loup \/ digital \/ pdf/', $display);
+    }
+
     // A product matched to no book, or a file of no known kind, stays in the shop
     public function testWhatCannotBeMatchedIsLeftAlone(): void
     {

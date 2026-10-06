@@ -923,7 +923,7 @@ every book at once. The guided project *Vendre une édition en fichiers* walks t
 A shop that held the files before the catalog did hands them over once with `c975l:book:shop:import` — try it
 with `--dry-run`, or on one product with `--product=<slug>`. A product is matched to a book by its slug, then by
 its title; an item to a kind of file by its slug and extension, a "version originale" to the book's earlier
-version. What cannot be matched is listed and left in the shop. On an Apache server running
+version, or to the book itself when it has none and no illustrated file takes the slot. What cannot be matched is listed and left in the shop. On an Apache server running
 PHP-FPM, check the `Authorization` header reaches PHP (the Symfony `.htaccess` passes it on).
 
 Ask Google for the feed through the Partner Center's automated content fetching form (HTTPS, "Droits ONIX" and
