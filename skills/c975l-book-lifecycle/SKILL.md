@@ -250,7 +250,8 @@ character is deleted outright, its planches simply losing the link, so there is 
 ## A catalog to browse before there is one
 
 `BookDemoFixtureProvider` (UiBundle's `DemoFixtureProviderInterface`) seeds a demo site with the made-up
-catalog `BookSampleCatalog` holds — two series of two books, three out and one still to come. Every title
+catalog `BookSampleCatalog` holds — two series of two books, three out and one still to come, each holding
+one digital `BookEdition` to unfold in its form. Every title
 and summary is a key of the `book` domain, so a site seeded in Spanish reads as a Spanish catalog; the two
 credited names are literal, and so is the age each book is read at, digits carrying no language. A site
 declaring several languages is seeded with each of them: `BookDemoFixtureProvider::getLinkedDemoFixtures()`

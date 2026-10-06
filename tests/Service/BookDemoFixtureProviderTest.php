@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Tests\Service;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Enum\BookEditionKind;
 use c975L\BookBundle\Service\BookDemoFixtureProvider;
 use c975L\BookBundle\Service\BookSampleCatalog;
 use c975L\BookBundle\Service\BookTranslator;
@@ -208,6 +209,17 @@ class BookDemoFixtureProviderTest extends TestCase
 
         foreach ($books as $book) {
             $this->assertCount(2, $book->getPages(), $book->getSlug());
+        }
+    }
+
+    // A book's editions hold one to unfold, sold as files, for the guided project putting an edition on sale
+    public function testEveryBookHoldsADigitalEdition(): void
+    {
+        $books = array_filter($this->fixtures($this->createProvider([self::IMAGE])), static fn (object $e): bool => $e instanceof Book);
+
+        foreach ($books as $book) {
+            $this->assertCount(1, $book->getEditions(), (string) $book->getSlug());
+            $this->assertSame(BookEditionKind::Digital->value, $book->getEditions()->first()->getKind(), (string) $book->getSlug());
         }
     }
 

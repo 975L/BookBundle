@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.18.2
+
+Demo books hold a digital edition
+
+- Demo fixtures: every book holds a digital edition, for the `book-edition-sale` guided project (06/10/2026)
+
 ## v2.18.1
 
 Document how to ask Google Play Books for the feed

@@ -1047,7 +1047,7 @@ as a broken reference; one standing for a YouTube url holds no file and travels 
 
 `BookDemoFixtureProvider` implements UiBundle's `DemoFixtureProviderInterface`, so a demo site loading its
 fixtures gets a catalog to browse straight away: **two series of two books**, three of them out and one still
-to come, held once in `BookSampleCatalog`. Nothing to register — implementing the interface is what tags it.
+to come, held once in `BookSampleCatalog`, each book holding a digital edition priced 4.99. Nothing to register — implementing the interface is what tags it.
 
 Titles and summaries are translation keys of the `book` domain, so a site seeded in Spanish reads as a
 Spanish catalog, and a site declaring several languages is seeded with each of them, the same keys read once

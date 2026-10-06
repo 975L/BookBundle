@@ -11,10 +11,12 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
+use c975L\BookBundle\Enum\BookEditionKind;
 use c975L\BookBundle\Enum\SerieKind;
 use c975L\UiBundle\Contract\DemoFixtureLinkerInterface;
 use c975L\UiBundle\Contract\DemoFixtureProviderInterface;
@@ -35,6 +37,9 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
 
     // The same three read off a serie: its cover, the emblem above its title, the picture its page opens on (see Serie::addCover(), addLogo() and addBackground(), the kind telling them apart)
     private const array SERIE_KINDS = ['cover', 'logo', 'background'];
+
+    // The public price of the demo's ebook, in cents like BookEdition::$price
+    private const int EBOOK_PRICE = 499;
 
     // The day both series were opened, written down like the rest of the dataset rather than taken from the clock
     private const string CREATION = '2024-05-14';
@@ -168,6 +173,12 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
                 $book->addMedia($media);
             }
         }
+
+        // A digital edition, folded in the form, so a book's editions hold one to unfold with its file slots (see the "book-edition-sale" guided project)
+        $book->addEdition(new BookEdition()
+            ->setKind(BookEditionKind::Digital->value)
+            ->setPrice(self::EBOOK_PRICE)
+            ->setPosition(1));
 
         return $book;
     }
