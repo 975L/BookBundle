@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.18.8
+
+Contributors described in a full sentence
+
+- A contributor without a biography is described by a sentence naming them and the site (07/10/2026)
+- Added the `text.meta_contributor` translation (07/10/2026)
+- Added `ContributorDescriptionTest` (07/10/2026)
+
 ## v2.18.7
 
 Planches described in a full sentence

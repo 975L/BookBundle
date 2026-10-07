@@ -2810,6 +2810,10 @@
                 <source>text.meta_categories</source>
                 <target>The book categories of %site%, to browse the whole catalog by genre and theme.</target>
             </trans-unit>
+            <trans-unit id="9zvmHg9">
+                <source>text.meta_contributor</source>
+                <target>%name%, published by %site%: an introduction and the list of their books.</target>
+            </trans-unit>
             <trans-unit id="GG.83Id">
                 <source>text.meta_contributors</source>
                 <target>The authors and illustrators published by %site%, with their biography and the list of their books.</target>

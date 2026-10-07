@@ -2810,6 +2810,10 @@
                 <source>text.meta_categories</source>
                 <target>Las categorías de libros de %site%, para recorrer todo el catálogo por género y por tema.</target>
             </trans-unit>
+            <trans-unit id="9zvmHg9">
+                <source>text.meta_contributor</source>
+                <target>%name%, publicado por %site%: su presentación y la lista de sus libros.</target>
+            </trans-unit>
             <trans-unit id="GG.83Id">
                 <source>text.meta_contributors</source>
                 <target>Los autores e ilustradores publicados por %site%, con su biografía y la lista de sus libros.</target>

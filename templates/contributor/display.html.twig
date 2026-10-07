@@ -2,7 +2,8 @@
 
 {# Defines specific variables #}
 {% set title = contributor.name %}
-{% set summarySocialNetwork = contributor.summary %}
+{# A contributor filed without a biography falls back on a sentence naming them and the site, rather than an empty description #}
+{% set summarySocialNetwork = contributor.summary|striptags|trim is not empty ? contributor.summary : 'text.meta_contributor'|trans({'%name%': contributor.name, '%site%': config('site-name')}, 'book') %}
 {# The card a social network builds of this page, falling back on the same silhouette the page itself shows rather than on a book's cover #}
 {% set ogImage = absolute_url(asset(contributor.portraits|first != false ? contributor.portraits|first : "bundles/c975lbook/images/no-portrait.webp")) %}
 
