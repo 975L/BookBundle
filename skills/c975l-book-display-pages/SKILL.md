@@ -195,7 +195,7 @@ a search's results sitting on the same page would otherwise answer in its place.
 the same way (`serie/display.html.twig`).
 
 `priority` is the third: `:priority="true"` has the listing's first cover fetched first (`loading="eager"
-fetchpriority="high"`) instead of lazily. Only the listing opening its page carries it — the three index pages
+fetchpriority="high"`) instead of lazily — its first two in `Book:Books`, the row a phone shows. Only the listing opening its page carries it — the three index pages
 do; a second listing lower down would compete for the LCP.
 
 `displayMore` is the other prop those three take: it prints a last tile leading to the whole listing. Pass it

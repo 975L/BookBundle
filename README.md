@@ -281,7 +281,7 @@ points at and appends the cards found there. That link is an ordinary link to th
 without javascript, and a crawler, follow it as they always did. A site rendering its own listing marks the
 grid the cards land in by passing `infinite="true"` to `Book:Books`, `Serie:Series` or `Strip:Cards` — the
 attribute the controller reads the fetched page through, which only the listing that grows may carry.
-Passing `:priority="true"` as well has the listing's first cover fetched first rather than lazily: set it only on
+Passing `:priority="true"` as well has the listing's first cover (two for `Book:Books`) fetched first rather than lazily: set it only on
 the listing opening its page, as the three index pages do.
 
 The summary is not one of those sections: it is the sentence a book opens on, printed by `Book:Resume` under

@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.18.9
+
+First row of a book listing fetched eagerly
+
+- `Book:Books` with `priority` fetches its first two covers eagerly (07/10/2026)
+
 ## v2.18.8
 
 Contributors described in a full sentence
