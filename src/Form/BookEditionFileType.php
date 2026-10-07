@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Form;
 
+use c975L\BookBundle\Controller\Management\BookEditionFileController;
 use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Enum\BookEditionFileKind;
 use Symfony\Component\Form\AbstractType;
@@ -17,24 +18,38 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Image;
 use Vich\UploaderBundle\Form\Type\VichFileType;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
-// One file an edition holds, of the kind the "kind" option names, and the price the shop sells it at - no download link, the file living outside public/ (see BookEditionFile). Left empty, no row is written: the form, not required, hands back null rather than an empty file
+// One file an edition holds, of the kind the "kind" option names, and the price the shop sells it at - linked through the admin route serving it, the file living outside public/ (see BookEditionFile), a cover shown as its preview. Left empty, no row is written: the form, not required, hands back null rather than an empty file
 class BookEditionFileType extends AbstractType
 {
+    public function __construct(
+        private readonly UrlGeneratorInterface $urlGenerator,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var BookEditionFileKind $kind */
         $kind = $options['kind'];
 
+        // The admin route serving the file, and its own name as the link's text: the stored one carries the edition's path
+        $uri = fn (BookEditionFile $file): string => $this->urlGenerator->generate(BookEditionFileController::ROUTE, ['id' => $file->getId()]);
+        $label = static fn (BookEditionFile $file): array => ['download_label' => basename((string) $file->getName()), 'download_label_translation_domain' => false];
+        $isCover = !$kind->isSold();
+
         $builder
-            ->add('file', VichFileType::class, [
+            ->add('file', $isCover ? VichImageType::class : VichFileType::class, [
                 'label' => $kind->label(),
                 'required' => false,
                 'allow_delete' => true,
-                'download_uri' => false,
+                'download_uri' => $uri,
+                'download_label' => $label,
+                ...($isCover ? ['image_uri' => $uri] : []),
                 'help' => BookEditionFileKind::CoverFront === $kind ? 'label.edition_file_cover_front-help' : null,
                 'constraints' => [
                     new File(maxSize: '500M', extensions: $kind->extensions()),

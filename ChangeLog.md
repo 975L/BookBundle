@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.18.3
+
+Edition files linked and previewed in the back-office
+
+- New `BookEditionFileController`: an edition's private file opened by the editor (07/10/2026)
+- An edition's form links each stored file by its name, a cover shown as its preview (07/10/2026)
+
 ## v2.18.2
 
 Demo books hold a digital edition

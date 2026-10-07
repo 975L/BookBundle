@@ -1,5 +1,15 @@
 [
     {
+        "date": "2026-10-07",
+        "description": [
+            {
+                "en": "The files of an edition now show up in its form under their name, its covers as a preview: one click opens them.",
+                "fr": "Les fichiers d'une édition apparaissent désormais dans son formulaire sous leur nom, ses couvertures en aperçu : un clic suffit pour les ouvrir.",
+                "es": "Los archivos de una edición aparecen ahora en su formulario con su nombre, y sus portadas en vista previa: un clic basta para abrirlos."
+            }
+        ]
+    },
+    {
         "date": "2026-10-06",
         "description": [
             {

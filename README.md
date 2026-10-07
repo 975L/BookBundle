@@ -932,7 +932,8 @@ An edition holds the files it is sold as, one per kind (`BookEditionFileKind`): 
 booklet of a digital edition, which share its ISBN, the MP3 of a recorded one — a printed edition has none, and
 its accordion offers only the slots its kind takes. Each is uploaded there with the price the shop sells it at (a
 price typed with no file is dropped on save), kept under `private/medias/book/` and
-declared to the backups (`BookEditionFile`). The edition's own price is the one the ONIX announces. An EPUB
+declared to the backups (`BookEditionFile`). The form links each stored file by its name, a cover shown as its
+preview, through the editor-only `management_book_edition_file` route, the web server never reaching them. The edition's own price is the one the ONIX announces. An EPUB
 whose pages are read aloud along their text is ticked "Lu à voix haute": the shop names its item so and tells the
 buyer the voice can be turned off.
 
