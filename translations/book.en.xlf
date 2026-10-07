@@ -1206,10 +1206,6 @@
                 <source>label.categories_more</source>
                 <target>Discover all our categories</target>
             </trans-unit>
-            <trans-unit id="Sz26b2N">
-                <source>label.categories_summary</source>
-                <target>List of the categories</target>
-            </trans-unit>
             <trans-unit id="xS4pB3k">
                 <source>label.category</source>
                 <target>Category</target>
@@ -1309,10 +1305,6 @@
             <trans-unit id="s7LRnf0">
                 <source>label.contributors_more</source>
                 <target>Discover all our authors</target>
-            </trans-unit>
-            <trans-unit id="yOnfBxK">
-                <source>label.contributors_summary</source>
-                <target>List of the authors and illustrators</target>
             </trans-unit>
             <trans-unit id="eyjXZ2b">
                 <source>label.copy_suffix</source>
@@ -2666,10 +2658,6 @@
                 <source>label.series_more</source>
                 <target>Discover all our series</target>
             </trans-unit>
-            <trans-unit id="9P9hTcI">
-                <source>label.series_summary</source>
-                <target>List of the series</target>
-            </trans-unit>
             <trans-unit id="0kGqgMZ">
                 <source>label.slug</source>
                 <target>Slug</target>
@@ -2737,10 +2725,6 @@
             <trans-unit id="rU_RhF3">
                 <source>label.strips_series</source>
                 <target>Strip series</target>
-            </trans-unit>
-            <trans-unit id="tPc3s5d">
-                <source>label.strips_series_list</source>
-                <target>List of the strip series</target>
             </trans-unit>
             <trans-unit id="vE2_pUg">
                 <source>label.subject_scheme_bisac</source>
@@ -2817,6 +2801,30 @@
             <trans-unit id="mRRxT4w">
                 <source>text.books_explanation</source>
                 <target>These books are available on several platforms and in several formats. Select a book to read its own informations.</target>
+            </trans-unit>
+            <trans-unit id="fuR_yEp">
+                <source>text.meta_books</source>
+                <target>Every book published by %site%: read their summary, browse their pages and order them online.</target>
+            </trans-unit>
+            <trans-unit id="KBPaYJS">
+                <source>text.meta_categories</source>
+                <target>The book categories of %site%, to browse the whole catalog by genre and theme.</target>
+            </trans-unit>
+            <trans-unit id="GG.83Id">
+                <source>text.meta_contributors</source>
+                <target>The authors and illustrators published by %site%, with their biography and the list of their books.</target>
+            </trans-unit>
+            <trans-unit id="a8Qr9ym">
+                <source>text.meta_listen</source>
+                <target>The audiobooks of %site%: stories read aloud, to listen to directly online.</target>
+            </trans-unit>
+            <trans-unit id="Xd9p5cD">
+                <source>text.meta_series</source>
+                <target>Every book series from %site%, each with its volumes, its world and its summary.</target>
+            </trans-unit>
+            <trans-unit id="P.DE_dT">
+                <source>text.meta_strips</source>
+                <target>Every comic strip series from %site%, to read online strip after strip.</target>
             </trans-unit>
             <trans-unit id="SYzuLh_">
                 <source>text.release_alert_already_published</source>

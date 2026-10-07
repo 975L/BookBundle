@@ -1206,10 +1206,6 @@
                 <source>label.categories_more</source>
                 <target>Découvrez toutes nos catégories</target>
             </trans-unit>
-            <trans-unit id="Sz26b2N">
-                <source>label.categories_summary</source>
-                <target>Liste des catégories</target>
-            </trans-unit>
             <trans-unit id="xS4pB3k">
                 <source>label.category</source>
                 <target>Catégorie</target>
@@ -1309,10 +1305,6 @@
             <trans-unit id="s7LRnf0">
                 <source>label.contributors_more</source>
                 <target>Découvrez tous nos auteurs</target>
-            </trans-unit>
-            <trans-unit id="yOnfBxK">
-                <source>label.contributors_summary</source>
-                <target>Liste des auteurs et des illustrateurs</target>
             </trans-unit>
             <trans-unit id="eyjXZ2b">
                 <source>label.copy_suffix</source>
@@ -2666,10 +2658,6 @@
                 <source>label.series_more</source>
                 <target>Découvrez toutes nos séries</target>
             </trans-unit>
-            <trans-unit id="9P9hTcI">
-                <source>label.series_summary</source>
-                <target>Liste des séries</target>
-            </trans-unit>
             <trans-unit id="0kGqgMZ">
                 <source>label.slug</source>
                 <target>Slug</target>
@@ -2737,10 +2725,6 @@
             <trans-unit id="rU_RhF3">
                 <source>label.strips_series</source>
                 <target>Séries de planches</target>
-            </trans-unit>
-            <trans-unit id="tPc3s5d">
-                <source>label.strips_series_list</source>
-                <target>Liste des séries de planches</target>
             </trans-unit>
             <trans-unit id="vE2_pUg">
                 <source>label.subject_scheme_bisac</source>
@@ -2817,6 +2801,30 @@
             <trans-unit id="mRRxT4w">
                 <source>text.books_explanation</source>
                 <target>Ces livres sont disponibles sous différentes plateformes et formats. Retrouvez les informations pour chaque livre en le sélectionnant.</target>
+            </trans-unit>
+            <trans-unit id="fuR_yEp">
+                <source>text.meta_books</source>
+                <target>Tous les livres publiés par %site% : découvrez leur résumé, feuilletez leurs pages et commandez-les en ligne.</target>
+            </trans-unit>
+            <trans-unit id="KBPaYJS">
+                <source>text.meta_categories</source>
+                <target>Les catégories de livres de %site%, pour parcourir tout le catalogue par genre et par thème.</target>
+            </trans-unit>
+            <trans-unit id="GG.83Id">
+                <source>text.meta_contributors</source>
+                <target>Les auteurs et illustrateurs publiés par %site%, avec leur biographie et la liste de leurs livres.</target>
+            </trans-unit>
+            <trans-unit id="a8Qr9ym">
+                <source>text.meta_listen</source>
+                <target>Les livres à écouter de %site% : des histoires lues à voix haute, à écouter directement en ligne.</target>
+            </trans-unit>
+            <trans-unit id="Xd9p5cD">
+                <source>text.meta_series</source>
+                <target>Toutes les séries de livres de %site%, chacune avec ses tomes, son univers et son résumé.</target>
+            </trans-unit>
+            <trans-unit id="P.DE_dT">
+                <source>text.meta_strips</source>
+                <target>Toutes les séries de planches de bande dessinée de %site%, à lire en ligne planche après planche.</target>
             </trans-unit>
             <trans-unit id="SYzuLh_">
                 <source>text.release_alert_already_published</source>

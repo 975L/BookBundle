@@ -2,7 +2,7 @@
 
 {# Defines specific variables. The word the site gives its catalog, the bundle's own otherwise (see BookCatalogProviderInterface) - and above both, the row an editor wrote for this url (see ConfigBundle's UrlMetadata), the layouts only reading a row for what the template left unsaid #}
 {% set title = url_metadata_title(book_catalog_title()) %}
-{% set summarySocialNetwork = url_metadata_summary(title) %}
+{% set summarySocialNetwork = url_metadata_summary('text.meta_books'|trans({'%site%': config('site-name')}, 'book')) %}
 
 {# Editor-only: the pencil UiBundle floats over each card leads to that book's own edit screen (see its assets/js/block-edit-overlay.js). Gated on the very role the edit screen asks for, a pencil leading to a 403 being worse than no pencil #}
 {% set canEdit = is_granted(config('site-role-editor')) %}

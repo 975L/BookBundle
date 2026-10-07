@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.18.5
+
+Listing pages described in a full sentence
+
+- Listing pages fall back on a sentence naming the site as meta description (07/10/2026)
+- Added the `text.meta_*` translations (07/10/2026)
+- Removed the `label.*_summary` and `label.strips_series_list` translations (07/10/2026)
+
 ## v2.18.4
 
 Edition files saved again without a duplicate row

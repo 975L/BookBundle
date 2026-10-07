@@ -2,7 +2,7 @@
 
 {# Defines specific variables #}
 {% set title = url_metadata_title('label.listen_index'|trans({}, 'book')) %}
-{% set summarySocialNetwork = url_metadata_summary(title) %}
+{% set summarySocialNetwork = url_metadata_summary('text.meta_listen'|trans({'%site%': config('site-name')}, 'book')) %}
 
 {# The books that can be listened to, each card leading to its own player rather than to the book's page: the gesture asked for here is listening #}
 {% block content %}
