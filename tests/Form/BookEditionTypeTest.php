@@ -11,6 +11,8 @@
 namespace c975L\BookBundle\Tests\Form;
 
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookEditionFile;
+use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Form\BookEditionType;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -21,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -62,20 +65,26 @@ class BookEditionTypeTest extends TestCase
         $this->assertSame(TextType::class, $added['format']['type']);
     }
 
-    // The slots of the files follow what the edition is: none for a printed book, the MP3 for a recording, the three files of an ebook, the four while the kind is not chosen yet
-    #[DataProvider('fileSlots')]
-    public function testTheFileSlotsFollowTheKindOfTheEdition(?string $kind, array $expected): void
+    /** @return array<string, callable> */
+    private function listeners(): array
     {
-        $listener = null;
+        $listeners = [];
         $builder = $this->createStub(FormBuilderInterface::class);
         $builder->method('add')->willReturnSelf();
-        $builder->method('addEventListener')->willReturnCallback(function (string $event, callable $callback) use (&$listener, $builder) {
-            $listener = $callback;
+        $builder->method('addEventListener')->willReturnCallback(function (string $event, callable $callback) use (&$listeners, $builder) {
+            $listeners[$event] = $callback;
 
             return $builder;
         });
         self::type()->buildForm($builder, []);
 
+        return $listeners;
+    }
+
+    // The slots of the files follow what the edition is: none for a printed book, the MP3 for a recording, the three files of an ebook, the four while the kind is not chosen yet
+    #[DataProvider('fileSlots')]
+    public function testTheFileSlotsFollowTheKindOfTheEdition(?string $kind, array $expected): void
+    {
         $added = [];
         $form = $this->createStub(FormInterface::class);
         $form->method('add')->willReturnCallback(function (string $name) use (&$added, $form) {
@@ -83,7 +92,7 @@ class BookEditionTypeTest extends TestCase
 
             return $form;
         });
-        $listener(new FormEvent($form, null === $kind ? null : new BookEdition()->setKind($kind)));
+        $this->listeners()[FormEvents::PRE_SET_DATA](new FormEvent($form, null === $kind ? null : new BookEdition()->setKind($kind)));
 
         $this->assertSame($expected, $added);
     }
@@ -94,6 +103,44 @@ class BookEditionTypeTest extends TestCase
         yield 'audio' => ['audio', ['file_audio', 'file_cover_front']];
         yield 'digital' => ['digital', ['file_epub', 'file_pdf', 'file_booklet', 'file_cover_front', 'file_cover_back']];
         yield 'new edition' => [null, ['file_epub', 'file_pdf', 'file_booklet', 'file_audio', 'file_cover_front', 'file_cover_back']];
+    }
+
+    // A slot is edited by reference: a clone of the stored file would be a new row to Doctrine, inserted over the one it copies and refused by the unique name
+    public function testTheFileSlotsAreEditedByReference(): void
+    {
+        $options = [];
+        $form = $this->createStub(FormInterface::class);
+        $form->method('add')->willReturnCallback(function (string $name, ?string $type = null, array $opts = []) use (&$options, $form) {
+            $options[$name] = $opts;
+
+            return $form;
+        });
+        $this->listeners()[FormEvents::PRE_SET_DATA](new FormEvent($form, new BookEdition()->setKind('digital')));
+
+        $this->assertArrayNotHasKey('by_reference', $options['file_epub']);
+    }
+
+    // The stored file coming back is kept as the very same object, and one whose upload was deleted with its checkbox leaves the edition
+    public function testTheSubmittedSlotsAreHandedBackToTheEdition(): void
+    {
+        $epub = new BookEditionFile()->setName('medias/book/editions/a.epub');
+        $pdf = new BookEditionFile()->setName('medias/book/editions/a.pdf');
+        $edition = new BookEdition()->setKind('digital')->setFileOf(BookEditionFileKind::Epub, $epub)->setFileOf(BookEditionFileKind::Pdf, $pdf);
+        $pdf->setName(null);
+
+        $children = ['file_epub' => $epub, 'file_pdf' => $pdf];
+        $form = $this->createStub(FormInterface::class);
+        $form->method('has')->willReturnCallback(fn (string $name): bool => array_key_exists($name, $children));
+        $form->method('get')->willReturnCallback(function (string $name) use ($children) {
+            $child = $this->createStub(FormInterface::class);
+            $child->method('getData')->willReturn($children[$name]);
+
+            return $child;
+        });
+        $this->listeners()[FormEvents::POST_SUBMIT](new FormEvent($form, $edition));
+
+        $this->assertSame($epub, $edition->getFileOf(BookEditionFileKind::Epub));
+        $this->assertNull($edition->getFileOf(BookEditionFileKind::Pdf));
     }
 
     // Neither files nor platforms: they belong to the book and are edited under the gesture they serve - the recording under "Listen" with the podcast apps, the bookshops under "Buy" (see BookCrudController). An edition says only what the book comes out under

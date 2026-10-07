@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.18.4
+
+Edition files saved again without a duplicate row
+
+- An edition's file slots edited by reference, a stored file no longer inserted again on save (07/10/2026)
+- A file emptied with its checkbox leaves the edition on submit (07/10/2026)
+
 ## v2.18.3
 
 Edition files linked and previewed in the back-office

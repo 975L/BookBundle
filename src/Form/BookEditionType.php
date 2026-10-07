@@ -84,7 +84,7 @@ class BookEditionType extends AbstractType
             ])
         ;
 
-        // The files it is sold as, one slot per kind the edition can be sold as (see BookEditionFileKind::forEdition()), read and written through the edition's own accessors: a slot left empty or emptied with its checkbox takes the kind's file away (see BookEdition::setFileOf())
+        // The files it is sold as, one slot per kind the edition can be sold as (see BookEditionFileKind::forEdition()), read and written through the edition's own accessors: a slot left empty or emptied with its checkbox takes the kind's file away (see BookEdition::setFileOf()). Edited by reference, a clone of the stored file being a new row to Doctrine, inserted over the one it copies
         $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
             $edition = $event->getData();
             foreach (BookEditionFileKind::forEdition($edition instanceof BookEdition ? $edition->getKind() : null) as $kind) {
@@ -92,13 +92,25 @@ class BookEditionType extends AbstractType
                     'label' => false,
                     'required' => false,
                     'kind' => $kind,
-                    // Written back even when the same file comes back, so that one emptied with its checkbox still reaches setFileOf()
-                    'by_reference' => false,
                     'getter' => static fn (BookEdition $edition): ?BookEditionFile => $edition->getFileOf($kind),
                     'setter' => static function (BookEdition $edition, ?BookEditionFile $file) use ($kind): void {
                         $edition->setFileOf($kind, $file);
                     },
                 ]);
+            }
+        });
+
+        // The same file coming back skips the setter, so a slot emptied with its checkbox reaches setFileOf() here, once the upload has been deleted
+        $builder->addEventListener(FormEvents::POST_SUBMIT, static function (FormEvent $event): void {
+            $edition = $event->getData();
+            if (!$edition instanceof BookEdition) {
+                return;
+            }
+
+            foreach (BookEditionFileKind::cases() as $kind) {
+                if ($event->getForm()->has('file_' . $kind->value)) {
+                    $edition->setFileOf($kind, $event->getForm()->get('file_' . $kind->value)->getData());
+                }
             }
         });
     }
