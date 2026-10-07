@@ -17,6 +17,7 @@ use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
+use c975L\UiBundle\Contract\VichImageResizableInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
@@ -30,6 +31,15 @@ class MediaTest extends TestCase
         $this->assertSame('image/webp', new BookMedia()->setName('medias/book/cover.webp')->getMimeType());
         $this->assertSame('video/mp4', new BookMedia()->setName('medias/book/trailer.MP4')->getMimeType());
         $this->assertSame('application/epub+zip', new BookMedia()->setName('medias/book/book.epub')->getMimeType());
+    }
+
+    // A hero's background and a reader's page are brought down to the hero's width, every other picture to a block image's - through UiBundle's resize pipeline, which the image subclasses opt into
+    public function testAnImageIsResizedToTheWidthItsKindCallsFor(): void
+    {
+        $this->assertInstanceOf(VichImageResizableInterface::class, new BookMedia());
+        $this->assertSame(1200, new BookMedia()->setKind('background')->getImageWidth());
+        $this->assertSame(1200, new BookMedia()->setKind('page')->getImageWidth());
+        $this->assertSame(800, new BookMedia()->setKind('cover')->getImageWidth());
     }
 
     // A recording can also arrive as ogg: without it the "Listen" card did not see the file, its type falling back on a binary one

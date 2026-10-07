@@ -10,13 +10,15 @@
 
 namespace c975L\BookBundle\Entity;
 
+use c975L\UiBundle\Contract\VichImageResizableInterface;
 use c975L\UiBundle\Contract\VichMediaNamableInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
+// Resized and converted to webp on upload, at the width its kind calls for (see Media::getImageWidth)
 #[ORM\Entity]
 #[Vich\Uploadable]
-class BookMedia extends Media implements VichMediaNamableInterface
+class BookMedia extends Media implements VichImageResizableInterface, VichMediaNamableInterface
 {
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'medias')]
     #[ORM\JoinColumn(nullable: true)]

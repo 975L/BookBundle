@@ -12,7 +12,7 @@
     <twig:c975LBook:Book:Search/>
     {# The catalog grows instead of turning pages: UiBundle's controller fetches the page the link below already points to and appends its covers. Nothing here is written for it alone - without javascript, and for a crawler, that link is the ordinary link to the next page it looks like #}
     <div id="books" data-controller="infiniteScroll{{ canEdit ? ' blockEditOverlay' : '' }}"{% if canEdit %} data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
-        <twig:c975LBook:Book:Books books="{{ books }}" :rating="true" :editable="canEdit" :infinite="true"/>
+        <twig:c975LBook:Book:Books books="{{ books }}" :rating="true" :editable="canEdit" :infinite="true" :priority="true"/>
 
         <div class="text-center">
             {% if books.getTotalItemCount > books.getItemNumberPerPage %}

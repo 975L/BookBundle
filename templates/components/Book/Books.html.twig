@@ -11,7 +11,8 @@
 {# "infinite" marks the list for UiBundle's infiniteScroll controller, which reads the page it fetches through this very attribute - only the listing that grows carries it, another listing sitting on the same page would otherwise answer in its place #}
 <div class="cards book-cards{{ variant }}"{% if infinite|default(false) %} data-infiniteScroll-target="list"{% endif %}>
     {% for book in books %}
-        <twig:c975LBook:Book:Book book="{{ book }}" :rating="rating" :aggregate="rating ? ratings[book.id] : null" :editable="editable|default(false)" level="{{ level }}"/>
+        {# "priority": a listing opening its page has its first cover fetched first, the likeliest LCP element #}
+        <twig:c975LBook:Book:Book book="{{ book }}" :rating="rating" :aggregate="rating ? ratings[book.id] : null" :editable="editable|default(false)" level="{{ level }}" :priority="priority|default(false) and loop.first"/>
     {% endfor %}
     {% if displayMore %}
         <article class="text-center">

@@ -281,6 +281,8 @@ points at and appends the cards found there. That link is an ordinary link to th
 without javascript, and a crawler, follow it as they always did. A site rendering its own listing marks the
 grid the cards land in by passing `infinite="true"` to `Book:Books`, `Serie:Series` or `Strip:Cards` — the
 attribute the controller reads the fetched page through, which only the listing that grows may carry.
+Passing `:priority="true"` as well has the listing's first cover fetched first rather than lazily: set it only on
+the listing opening its page, as the three index pages do.
 
 The summary is not one of those sections: it is the sentence a book opens on, printed by `Book:Resume` under
 the hero and outside the grid, with no title and no anchor — a summary is not a destination anyone jumps to.
@@ -1008,6 +1010,8 @@ php bin/console c975l:health-check:run --kind=files-book
 ```
 
 Four owners share the one media table, so each row links to the screen its own file is re-uploaded from — a book, a serie, a strip or a contributor — never merely the one it happens to be listed on.
+
+A book's, a serie's, a character's and a contributor's pictures are resized and converted to webp on upload by UiBundle's `VichImageResizeListener`: a backdrop and a reader's page at 1200 pixels wide, every other picture at 800, never enlarged (`Media::getImageWidth()`). A planche goes through its own multi-size pipeline instead (`VichMultiSizeImageInterface`).
 
 A platform answering `401`, `403`, `405` or `429` is reported **skipped**, not broken: most stores turn down a `HEAD` request carrying no browser behind it, and there is nothing there for an editor to fix. `404`/`410`, any other error code, and a host that never answered at all are reported as errors, the http code being kept in the row's details. The provider enumerates every link each run, so an address that is deleted or corrected drops off the dashboard instead of leaving its last red row behind.
 

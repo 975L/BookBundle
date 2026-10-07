@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Entity;
 
+use c975L\BookBundle\Enum\BookMediaKind;
 use c975L\BookBundle\Repository\MediaRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -178,6 +179,15 @@ abstract class Media implements \Stringable
         $this->name = $name;
 
         return $this;
+    }
+
+    // The width UiBundle's VichImageResizeListener brings an upload down to, for the subclasses opting in with VichImageResizableInterface: a hero's background and a reader's page at the hero's 1200px, everything else at the 800px of a block image - never enlarged, the listener capping at the file's own width
+    public function getImageWidth(): int
+    {
+        return match ($this->kind) {
+            BookMediaKind::Background->value, BookMediaKind::Page->value => 1200,
+            default => 800,
+        };
     }
 
     public function getKind(): ?string

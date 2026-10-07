@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.18.6
+
+Catalog pictures resized to webp on upload
+
+- Book, serie, character and contributor pictures resized and converted to webp on upload (07/10/2026)
+- Added `Media::getImageWidth()`: 1200px for a background or a page, 800px otherwise (07/10/2026)
+- Added the `priority` prop to `Book:Books`, `Book:Book`, `Serie:Series` and `Serie:Serie` (07/10/2026)
+- The index pages fetch their first cover eagerly (07/10/2026)
+
 ## v2.18.5
 
 Listing pages described in a full sentence

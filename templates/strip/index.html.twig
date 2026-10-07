@@ -12,7 +12,7 @@
     {# The listing grows instead of turning pages, as the catalog's does (see book/index.html.twig) #}
     <div id="series" data-controller="infiniteScroll{{ canEdit ? ' blockEditOverlay' : '' }}"{% if canEdit %} data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
         {# No heading between the layout's <h1> and the cards, so their titles are the page's <h2> #}
-        <twig:c975LBook:Serie:Series series="{{ series }}" :editable="canEdit" :infinite="true" level="h2"/>
+        <twig:c975LBook:Serie:Series series="{{ series }}" :editable="canEdit" :infinite="true" level="h2" :priority="true"/>
 
         <div class="text-center">
             {% if series.getTotalItemCount > series.getItemNumberPerPage %}

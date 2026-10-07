@@ -11,6 +11,11 @@
                 "en": "Saving an edition whose files are already uploaded no longer fails.",
                 "fr": "Enregistrer une édition dont les fichiers sont déjà envoyés ne provoque plus d'erreur.",
                 "es": "Guardar una edición cuyos archivos ya están subidos ya no provoca un error."
+            },
+            {
+                "en": "Pictures sent for a book, a serie, a character or a contributor are now resized and lightened automatically, so pages load faster.",
+                "fr": "Les images envoyées pour un livre, une série, un personnage ou un contributeur sont désormais redimensionnées et allégées automatiquement : les pages s'affichent plus vite.",
+                "es": "Las imágenes enviadas para un libro, una serie, un personaje o un colaborador ahora se redimensionan y aligeran automáticamente: las páginas se cargan más rápido."
             }
         ]
     },
