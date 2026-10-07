@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.18.7
+
+Planches described in a full sentence
+
+- A planche whose summary is shorter than 50 characters is described by a sentence naming it and the site (07/10/2026)
+- Added the `text.meta_strip` translation (07/10/2026)
+- Added `StripDescriptionTest` (07/10/2026)
+
 ## v2.18.6
 
 Catalog pictures resized to webp on upload

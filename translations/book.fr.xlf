@@ -2822,6 +2822,10 @@
                 <source>text.meta_series</source>
                 <target>Toutes les séries de livres de %site%, chacune avec ses tomes, son univers et son résumé.</target>
             </trans-unit>
+            <trans-unit id="mF9uVqb">
+                <source>text.meta_strip</source>
+                <target>%title%, une planche de %site% à lire en ligne. %summary%</target>
+            </trans-unit>
             <trans-unit id="P.DE_dT">
                 <source>text.meta_strips</source>
                 <target>Toutes les séries de planches de bande dessinée de %site%, à lire en ligne planche après planche.</target>

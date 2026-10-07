@@ -2822,6 +2822,10 @@
                 <source>text.meta_series</source>
                 <target>Every book series from %site%, each with its volumes, its world and its summary.</target>
             </trans-unit>
+            <trans-unit id="mF9uVqb">
+                <source>text.meta_strip</source>
+                <target>%title%, a strip from %site% to read online. %summary%</target>
+            </trans-unit>
             <trans-unit id="P.DE_dT">
                 <source>text.meta_strips</source>
                 <target>Every comic strip series from %site%, to read online strip after strip.</target>
