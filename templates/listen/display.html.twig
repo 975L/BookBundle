@@ -19,6 +19,16 @@
             <twig:c975LUi:Image:Image class="img-rounded box-shadow img-300" src="{{ asset(cover ?: 'bundles/c975lbook/images/no-cover.webp') }}" alt="{{ book.title }}" width="300" height="425"/>
             <twig:c975LUi:Audio:Audio src="{{ vich_uploader_asset(audio) }}" type="{{ audio.mimeType }}"/>
         {% endif %}
+        {# Everything the player needs again with no network: the recording, each page, their timecodes and the page-turn sound, plus the cover the downloads list shows (see UiBundle's Pwa:Download) #}
+        {% set coverUrl = asset(book_cover(book) ?: 'bundles/c975lbook/images/no-cover.webp') %}
+        {% set offlineUrls = [vich_uploader_asset(audio), coverUrl] %}
+        {% if book.cues and book.pages|length %}
+            {% set offlineUrls = offlineUrls|merge(book.pages|map(page => vich_uploader_asset(page)))|merge([vich_uploader_asset(book.cues)]) %}
+            {% if config('book-page-sound')|to_bool %}
+                {% set offlineUrls = offlineUrls|merge([asset('bundles/c975lbook/sounds/page-turn.mp3')]) %}
+            {% endif %}
+        {% endif %}
+        <twig:c975LUi:Pwa:Download name="book-listen-{{ book.id }}" title="{{ book.title }}" label="{{ 'label.listen_download'|trans({}, 'book', book_ui_locale(book.language)) }}" image="{{ coverUrl }}" urls="{{ offlineUrls }}"/>
         {% set bookPath = book_path('book_display', {'slug': book.slug}) %}
         {% if bookPath %}
             <p class="text-center"><a href="{{ bookPath }}">{{ 'label.listen_book_page'|trans({}, 'book', book_ui_locale(book.language)) }}</a></p>

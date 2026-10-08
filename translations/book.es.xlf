@@ -2342,6 +2342,10 @@
                 <source>label.listen_book_page</source>
                 <target>Ver la página del libro</target>
             </trans-unit>
+            <trans-unit id="lEOK178">
+                <source>label.listen_download</source>
+                <target>Descargar para escuchar sin conexión</target>
+            </trans-unit>
             <trans-unit id="dlHaEys">
                 <source>label.listen_empty</source>
                 <target>Todavía no hay ningún libro para escuchar.</target>

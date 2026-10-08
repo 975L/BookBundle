@@ -20,4 +20,8 @@
     {% else %}
         <p class="text text-center">{{ 'label.listen_empty'|trans({}, 'book') }}</p>
     {% endif %}
+    {# The stories kept for offline use, when the site is an installable app (see UiBundle's PwaController) #}
+    {% if pwa_enabled() %}
+        <p class="text-center"><a href="{{ path('ui_pwa_downloads') }}">{{ 'label.pwa_downloads'|trans({}, 'ui') }}</a></p>
+    {% endif %}
 {% endblock %}

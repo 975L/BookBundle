@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.19
+
+Listening pages downloadable for offline use
+
+- `book_listen` mounts UiBundle's `Pwa:Download` button with the recording, pages, timecodes and cover (08/10/2026)
+- `book_listen_index` links to the downloads page when the PWA is enabled (08/10/2026)
+- Added the `label.listen_download` translation (08/10/2026)
+- Added `ListenDownloadTest` (08/10/2026)
+
 ## v2.18.10
 
 Throttled stores asked once more by the link health check

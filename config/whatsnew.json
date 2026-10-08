@@ -6,6 +6,11 @@
                 "en": "Store links are no longer reported as broken when the store was only briefly busy.",
                 "fr": "Les liens vers les boutiques ne sont plus signalés comme cassés quand la boutique était seulement momentanément occupée.",
                 "es": "Los enlaces a las tiendas ya no se señalan como rotos cuando la tienda solo estaba ocupada momentáneamente."
+            },
+            {
+                "en": "Your readers can now download a story to listen to it offline, pages included.",
+                "fr": "Vos lecteurs peuvent désormais télécharger une histoire pour l'écouter hors connexion, pages comprises.",
+                "es": "Sus lectores ya pueden descargar una historia para escucharla sin conexión, páginas incluidas."
             }
         ]
     },

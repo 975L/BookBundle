@@ -43,7 +43,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - A new version of a book published in one click: the book keeps its address and its readers, a twin carries what came out so far
 - A book still to come tells its readers when it is out: an address left on its page, one e-mail sent the day it appears, and the row deleted with it
 - Books and planches handed to SocialBundle's scheduled publication, where the site installs it
-- Listening pages: the books holding a recording, each one played with its pages turning along the voice when it carries their timecodes (a WebVTT file)
+- Listening pages: the books holding a recording, each one played with its pages turning along the voice when it carries their timecodes (a WebVTT file), and kept for offline listening where the site is an installable app
 - Reader reviews on a book's page, behind UiBundle's `ui-enable-reviews` setting
 - The site's age warning stated on a book declaring an age — one sentence written once in the back office (CoreBundle's `site-age-warning`), printed on every such book and said in the book's own language where the site translated it
 - The four catalog indexes describable from the back office — title and shared sentence written in *Descriptions d'urls*, over the bundle's own labels

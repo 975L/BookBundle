@@ -2342,6 +2342,10 @@
                 <source>label.listen_book_page</source>
                 <target>See the book's page</target>
             </trans-unit>
+            <trans-unit id="lEOK178">
+                <source>label.listen_download</source>
+                <target>Download to listen offline</target>
+            </trans-unit>
             <trans-unit id="dlHaEys">
                 <source>label.listen_empty</source>
                 <target>No book to listen to yet.</target>
