@@ -1001,6 +1001,8 @@ Every book is checked, published or not — a book to be published shows its pre
 
 An address of the site itself — the site's own shop, written as the page reads it (`/shop/...`) — is probed under the address the site declares in `site-url`, and reported as nothing to probe when the site declares none.
 
+A store answering 429 or 503 — throttling a burst of probes, as Google Play does — is asked once more after a pause, and only that second answer is reported.
+
 #### A file the database declares and the server no longer has
 
 `Management\BookFilesHealthCheckProvider` (kind `files-book`) reports, as an error, every file a row of this bundle names and the server no longer holds: the covers, videos, press and marketing files of a book, plus a serie's, a strip's and a contributor's own pictures. Everything it does is CoreBundle's `AbstractDeclaredFilesHealthCheckProvider`, this only names the rows to look at.

@@ -63,6 +63,24 @@ class BookLinkHealthCheckProviderTest extends TestCase
         $this->assertSame('label.health_check_link_refused', $rows[0]['summary']);
     }
 
+    // A store throttling the burst of probes answers 503 to a few of them: asked once more, the page answering then is what is reported
+    public function testAStoreAskingToComeBackLaterIsAskedOnceMore(): void
+    {
+        $rows = $this->retriedProvider(503, 200)->runChecks();
+
+        $this->assertSame(HealthCheckResult::STATUS_OK, $rows[0]['status']);
+        $this->assertSame(200, $rows[0]['details']['httpCode']);
+    }
+
+    // A store still unavailable once asked again is reported, a check that would let it through checking nothing
+    public function testAStoreStillUnavailableOnceAskedAgainIsAnError(): void
+    {
+        $rows = $this->retriedProvider(503, 503)->runChecks();
+
+        $this->assertSame(HealthCheckResult::STATUS_ERROR, $rows[0]['status']);
+        $this->assertSame('label.health_check_link_broken', $rows[0]['summary']);
+    }
+
     // A host that never answered at all is not a page answering 404, and the two read differently on the dashboard
     public function testAHostThatNeverAnsweredIsToldFromAPageAnswering(): void
     {
@@ -183,6 +201,24 @@ class BookLinkHealthCheckProviderTest extends TestCase
             $this->configService($siteUrl),
             $this->adminUrlGenerator(),
             $this->translator(),
+        );
+    }
+
+    // One book whose store answers $first, then $second when asked again, with no pause between the two
+    private function retriedProvider(int $first, int $second): BookLinkHealthCheckProvider
+    {
+        $checker = $this->createMock(UrlStatusChecker::class);
+        $checker->expects($this->exactly(2))->method('status')->willReturnOnConsecutiveCalls($first, $second);
+
+        return new BookLinkHealthCheckProvider(
+            $this->bookService([$this->book('Contes du Soir', 'contes-du-soir', ['google' => 'https://play.google.com/store/books/details?id=1'])]),
+            $this->contributorService([]),
+            $this->registry(),
+            $checker,
+            $this->configService('https://editions.example'),
+            $this->adminUrlGenerator(),
+            $this->translator(),
+            0,
         );
     }
 

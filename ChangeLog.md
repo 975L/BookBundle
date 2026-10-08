@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.18.10
+
+Throttled stores asked once more by the link health check
+
+- `BookLinkHealthCheckProvider` re-probes a link answering 429 or 503 after a pause (08/10/2026)
+
 ## v2.18.9
 
 First row of a book listing fetched eagerly
