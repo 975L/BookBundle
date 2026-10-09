@@ -244,4 +244,23 @@ class BookRepositoryTest extends TestCase
 
         return new BookRepository($registry);
     }
+
+    // What a post's book is chosen among: the published ones, those already posted left out, the latest first
+    public function testThePostableLatestLeaveOutTheExcludedAndReadLatestFirst(): void
+    {
+        $this->createRepository()->findPostableLatest(['7'], 48);
+
+        $this->assertStringContainsString('b.id NOT IN (:excluded)', $this->dql);
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+        $this->assertStringContainsString('b.newerVersion IS NULL', $this->dql);
+        $this->assertStringContainsString('ORDER BY b.published DESC, b.id DESC', $this->dql);
+    }
+
+    // Nothing posted yet: no empty NOT IN, which no database accepts
+    public function testThePostableLatestWithNothingExcludedHasNoExclusion(): void
+    {
+        $this->createRepository()->findPostableLatest([], 48);
+
+        $this->assertStringNotContainsString('NOT IN', $this->dql);
+    }
 }

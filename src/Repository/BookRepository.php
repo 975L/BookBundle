@@ -80,6 +80,26 @@ class BookRepository extends ServiceEntityRepository
         return $this->withCovers($query->getQuery()->getResult());
     }
 
+    // The catalog's books not posted yet, the most recently published first - what a post's content is chosen among
+    /**
+     * @param list<string> $excludedIds
+     *
+     * @return list<Book>
+     */
+    public function findPostableLatest(array $excludedIds, int $limit): array
+    {
+        $query = $this->publishedQueryBuilder()
+            ->addOrderBy('b.id', \SortDirection::Descending)
+            ->setMaxResults($limit)
+        ;
+
+        if ([] !== $excludedIds) {
+            $query->andWhere('b.id NOT IN (:excluded)')->setParameter('excluded', array_map(intval(...), $excludedIds));
+        }
+
+        return array_values($this->withCovers($query->getQuery()->getResult()));
+    }
+
     // The catalog cut down to one category, in the very order the whole catalog reads (see findAllPublished()) - what a "books" block narrowed down to a category prints, and nothing when the slug names no category
     /**
      * @return Book[]

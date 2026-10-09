@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookSettings;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Media;
@@ -20,7 +21,7 @@ use c975L\BookBundle\Entity\Strip;
 use c975L\ConfigBundle\Service\SiteLocales;
 use c975L\UiBundle\Service\ContentTranslator;
 
-// What this catalog says in another language, one row in every language with its translations beside it as a page's are (see SiteBundle's PageTranslator) - only what a visitor reads, never a slug, an ISBN or a person's own name
+// What this catalog says in another language, one row in every language with its translations beside it as a page's are (see SiteBundle's PageTranslator), the line the catalog's index opens on included - only what a visitor reads, never a slug, an ISBN or a person's own name
 class BookTranslator
 {
     // The vocabulary this bundle's rows are named with, the way Page and Product name theirs - a plain string, no foreign key ever pointing at it (see UiBundle's Translation)
@@ -39,6 +40,8 @@ class BookTranslator
     // A picture's own title, which is what a press cutting and a promotional visual print under themselves (see Book:Presse and Book:Marketing)
     public const string OWNER_MEDIA = 'book_media';
 
+    public const string OWNER_SETTINGS = 'book_settings';
+
     // What a translation may cover of a book: the title it is read under, and the summary printed under it
     public const array BOOK_FIELDS = ['title', 'summary'];
 
@@ -56,6 +59,9 @@ class BookTranslator
 
     // What a translation may cover of a picture: the title printed under it, which stands as its alternative text too
     public const array MEDIA_FIELDS = ['title'];
+
+    // The catalog's own line above the listing, the only prose the settings row holds that a visitor reads
+    public const array SETTINGS_FIELDS = ['intro'];
 
     // The texts a language screen offers as a line rather than as prose: a row's own name, which a listing, a card and a <title> read
     public const array LINE_FIELDS = ['title', 'name'];
@@ -79,7 +85,7 @@ class BookTranslator
     }
 
     // Lays the language being rendered over each row's own texts for the render being built, called by whatever renders them rather than on postLoad: the back office has to go on showing the text a row was written in
-    /** @param iterable<Book|BookCategory|Character|Contributor|Media|Serie|Strip> $rows */
+    /** @param iterable<Book|BookCategory|BookSettings|Character|Contributor|Media|Serie|Strip> $rows */
     public function apply(iterable $rows, ?string $locale = null): void
     {
         // Tested before the collection is touched: on a single-language site the proxy behind it is never initialised, and a listing costs no query at all here
@@ -107,7 +113,7 @@ class BookTranslator
     }
 
     // Reads ahead a whole set of rows, so a catalog of a dozen books costs one query rather than a dozen
-    /** @param iterable<Book|BookCategory|Character|Contributor|Media|Serie|Strip> $rows */
+    /** @param iterable<Book|BookCategory|BookSettings|Character|Contributor|Media|Serie|Strip> $rows */
     public function preload(iterable $rows, ?string $locale = null): void
     {
         if (!$this->contentTranslator->isActive()) {
@@ -130,7 +136,7 @@ class BookTranslator
 
     // The languages this row really says something in, its own included - the moment its own name does, which url answers being BookTranslatedLocales' question
     /** @return list<string> */
-    public function translatedLocales(Book | BookCategory | Character | Contributor | Media | Serie | Strip $row): array
+    public function translatedLocales(Book | BookCategory | BookSettings | Character | Contributor | Media | Serie | Strip $row): array
     {
         $id = $row->getId();
         $locales = [$this->siteLocales->getDefaultLocale()];
@@ -152,7 +158,7 @@ class BookTranslator
 
     // Every language this row has been given, for the screen that writes them
     /** @return array<string, array<string, string|null>> locale => field => value */
-    public function all(Book | BookCategory | Character | Contributor | Media | Serie | Strip $row): array
+    public function all(Book | BookCategory | BookSettings | Character | Contributor | Media | Serie | Strip $row): array
     {
         $id = $row->getId();
 
@@ -161,7 +167,7 @@ class BookTranslator
 
     // What a language screen offers for each translatable text: what that language already says, or the source text between brackets where it says nothing yet
     /** @return array<string, string|null> field => value */
-    public function promptValues(Book | BookCategory | Character | Contributor | Media | Serie | Strip $row, string $locale): array
+    public function promptValues(Book | BookCategory | BookSettings | Character | Contributor | Media | Serie | Strip $row, string $locale): array
     {
         $written = $this->all($row)[$locale] ?? [];
 
@@ -178,7 +184,7 @@ class BookTranslator
 
     // Hands what a language screen wrote over to be stored on the flush that saves the row, a field left holding the bracketed source counting as nothing written (see ContentTranslator::stage)
     /** @param array<string, string|null> $values field => value */
-    public function stage(Book | BookCategory | Character | Contributor | Media | Serie | Strip $row, string $locale, array $values): void
+    public function stage(Book | BookCategory | BookSettings | Character | Contributor | Media | Serie | Strip $row, string $locale, array $values): void
     {
         $id = $row->getId();
         if (null === $id) {
@@ -201,7 +207,7 @@ class BookTranslator
 
     // Writes a translation straight away rather than staging it - what a seeder or a bulk pass does, having no form to wait for
     /** @param array<string, string|null> $values field => value */
-    public function store(Book | BookCategory | Character | Contributor | Media | Serie | Strip $row, string $locale, array $values): void
+    public function store(Book | BookCategory | BookSettings | Character | Contributor | Media | Serie | Strip $row, string $locale, array $values): void
     {
         $id = $row->getId();
         if (null !== $id) {
@@ -209,7 +215,7 @@ class BookTranslator
         }
     }
 
-    public function owner(Book | BookCategory | Character | Contributor | Media | Serie | Strip $row): string
+    public function owner(Book | BookCategory | BookSettings | Character | Contributor | Media | Serie | Strip $row): string
     {
         return match (true) {
             $row instanceof Book => self::OWNER_BOOK,
@@ -218,12 +224,13 @@ class BookTranslator
             $row instanceof Strip => self::OWNER_STRIP,
             $row instanceof Character => self::OWNER_CHARACTER,
             $row instanceof Media => self::OWNER_MEDIA,
+            $row instanceof BookSettings => self::OWNER_SETTINGS,
             default => self::OWNER_CONTRIBUTOR,
         };
     }
 
     /** @return list<string> */
-    public function fields(Book | BookCategory | Character | Contributor | Media | Serie | Strip $row): array
+    public function fields(Book | BookCategory | BookSettings | Character | Contributor | Media | Serie | Strip $row): array
     {
         return match (true) {
             $row instanceof Book => self::BOOK_FIELDS,
@@ -232,6 +239,7 @@ class BookTranslator
             $row instanceof Strip => self::STRIP_FIELDS,
             $row instanceof Character => self::CHARACTER_FIELDS,
             $row instanceof Media => self::MEDIA_FIELDS,
+            $row instanceof BookSettings => self::SETTINGS_FIELDS,
             default => self::CONTRIBUTOR_FIELDS,
         };
     }

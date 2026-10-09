@@ -20,6 +20,7 @@ use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookSnippetBuilder;
+use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Service\RatingSnippetBuilder;
 use PHPUnit\Framework\TestCase;
 
@@ -32,6 +33,9 @@ class BookSnippetBuilderTest extends TestCase
 
     /** @var array<string, mixed> */
     private array $aggregateRating = [];
+
+    /** @var array<string, string> */
+    private array $configs = ['site-name' => 'Editions Lolant'];
 
     protected function setUp(): void
     {
@@ -46,13 +50,29 @@ class BookSnippetBuilderTest extends TestCase
         $this->ratingSnippetBuilder = $this->createStub(RatingSnippetBuilder::class);
         $this->ratingSnippetBuilder->method('build')->willReturnCallback(fn (): array => $this->aggregateRating);
 
-        $this->builder = new BookSnippetBuilder($publicUrlResolver, $this->ratingSnippetBuilder);
+        // The site as its config describes it, a test changing $configs to play another one
+        $configService = $this->createStub(ConfigServiceInterface::class);
+        $configService->method('get')->willReturnCallback(fn (string $slug): string => $this->configs[$slug] ?? '');
+
+        $this->builder = new BookSnippetBuilder($publicUrlResolver, $this->ratingSnippetBuilder, $configService);
     }
 
     public function testABookWithoutTitlePublishesNothing(): void
     {
         $this->assertSame([], $this->builder->buildBook(new Book()));
         $this->assertSame('', $this->builder->buildJson($this->builder->buildBook(new Book())));
+    }
+
+    // The publisher the ONIX feed speaks for, its own entry winning over the site's name
+    public function testABookNamesItsPublisher(): void
+    {
+        $this->assertSame(['@type' => 'Organization', 'name' => 'Editions Lolant'], $this->builder->buildBook($this->book())['publisher']);
+
+        $this->configs['book-onix-publisher'] = 'Editions Delabande';
+        $this->assertSame('Editions Delabande', $this->builder->buildBook($this->book())['publisher']['name']);
+
+        $this->configs = [];
+        $this->assertArrayNotHasKey('publisher', $this->builder->buildBook($this->book()));
     }
 
     public function testAFilledBookCarriesItsOwnFields(): void
@@ -152,7 +172,30 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertSame('https://schema.org/AudiobookFormat', $this->builder->buildBook($book)['bookFormat']);
     }
 
-    // The platforms are given as identities, never as offers: a price and a stock belong to whoever sells the book. They belong to the book and are read by the gesture the edition serves - a recording is listened to where the podcast apps carry it, a book is bought where the bookshops sell it
+    // The edition's price is its offer, the same the ONIX feed announces; free is a price of 0.00 and no price is no offer
+    public function testAPricedEditionCarriesItsOffer(): void
+    {
+        $book = $this->book();
+        $book->getEdition('paper')->setPrice(500);
+        $book->getEdition('digital')->setPrice(0);
+
+        $editions = $this->builder->buildBook($book, null, 'https://example.org/livre/tome-1')['workExample'];
+
+        $this->assertSame(['@type' => 'Offer', 'url' => 'https://example.org/livre/tome-1', 'price' => '5.00', 'priceCurrency' => 'EUR', 'availability' => 'https://schema.org/InStock'], $editions[0]['offers']);
+        $this->assertSame('0.00', $editions[1]['offers']['price']);
+        $this->assertArrayNotHasKey('offers', $this->builder->buildBook($this->book())['workExample'][0]);
+    }
+
+    // A book still to come is pre-ordered, not in stock
+    public function testAForthcomingEditionIsOfferedForPreOrder(): void
+    {
+        $book = $this->book()->setPublished(new \DateTime('+1 year'));
+        $book->getEdition('paper')->setPrice(500);
+
+        $this->assertSame('https://schema.org/PreOrder', $this->builder->buildBook($book)['workExample'][0]['offers']['availability']);
+    }
+
+    // The platforms are given as identities, the offer being the publisher's own price. They belong to the book and are read by the gesture the edition serves - a recording is listened to where the podcast apps carry it, a book is bought where the bookshops sell it
     public function testAFormatIsReachedWhereTheGestureItServesIsOffered(): void
     {
         $book = $this->book();
@@ -259,6 +302,7 @@ class BookSnippetBuilderTest extends TestCase
     // An empty field would publish a blank property, which says less than no property at all
     public function testUnfilledFieldsNeverReachTheGraph(): void
     {
+        $this->configs = [];
         $snippet = $this->builder->buildBook(new Book()->setTitle('Sans rien d\'autre'));
 
         $this->assertSame(['@context', '@type', 'name'], array_keys($snippet));

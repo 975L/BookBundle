@@ -6,8 +6,8 @@
 {# A planche's summary is often its reply alone, a line too short to describe the page (ConfigBundle's ContentQualityAnalyzer::DESCRIPTION_MIN_LENGTH, 50): it is then said inside a sentence naming the planche and the site. Its paragraphs are parted by a space, stripped they would glue #}
 {% set summaryText = strip.summary|default('')|replace({'</p>': ' '})|striptags|trim %}
 {% set summarySocialNetwork = summaryText|length >= 50 ? strip.summary : ('text.meta_strip'|trans({'%title%': strip.title, '%site%': config('site-name'), '%summary%': summaryText}, 'book'))|trim %}
-{# What a share shows: the whole page where the planche is a drawing, the square card where it is words, and only failing both whatever the planche carries first. Read by role and no longer by rank - the back-office numbers each collection apart (see StripCrudController), so the first media of the whole set is no longer the one meant to stand for the planche #}
-{% set ogMedia = strip.getMediasByKind('page')|first ?: strip.getMediasByKind('card')|first ?: strip.medias|first %}
+{# What a share shows, read by role and no longer by rank (see Strip::getShareMedia()) #}
+{% set ogMedia = strip.shareMedia %}
 {% set ogImage = absolute_url(asset(ogMedia ?: "bundles/c975lbook/images/no-cover.webp")) %}
 {% set language = strip.serie ? strip.serie.language : null %}
 

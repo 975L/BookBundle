@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Controller\Management\Trait;
 use c975L\BookBundle\Contract\TrashableInterface;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookSettings;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
@@ -33,10 +34,10 @@ use Symfony\Component\Intl\Locales;
 
 use function Symfony\Component\Translation\t;
 
-// The same edit screen opened on another language, written once for the six screens holding prose - which texts it carries is BookTranslator::fields(), each one unmapped so it never overwrites the text the row was written in
+// The same edit screen opened on another language, written once for the seven screens holding prose - which texts it carries is BookTranslator::fields(), each one unmapped so it never overwrites the text the row was written in
 trait ContentLocaleCrudTrait
 {
-    // Subscribed rather than injected, so the six screens using this trait do not each carry its collaborators in their constructor - EasyAdmin already subscribes the admin context
+    // Subscribed rather than injected, so the seven screens using this trait do not each carry its collaborators in their constructor - EasyAdmin already subscribes the admin context
     #[\Override]
     public static function getSubscribedServices(): array
     {
@@ -70,7 +71,7 @@ trait ContentLocaleCrudTrait
     }
 
     // The row the screen is open on, and null on a "new" screen or on anything this catalog does not translate
-    private function translatableRow(): Book | BookCategory | Character | Contributor | Serie | Strip | null
+    private function translatableRow(): Book | BookCategory | BookSettings | Character | Contributor | Serie | Strip | null
     {
         $entity = $this->adminContextProvider()->getContext()?->getEntity()?->getInstance();
 
@@ -78,7 +79,7 @@ trait ContentLocaleCrudTrait
     }
 
     // The same reading of one entity, for the form's own submission: what a screen hands over is the row it was open on, and this is what says so in a type the translator accepts
-    private function asTranslatableRow(object $entity): Book | BookCategory | Character | Contributor | Serie | Strip | null
+    private function asTranslatableRow(object $entity): Book | BookCategory | BookSettings | Character | Contributor | Serie | Strip | null
     {
         return $entity instanceof Book
             || $entity instanceof Serie
@@ -86,6 +87,7 @@ trait ContentLocaleCrudTrait
             || $entity instanceof Strip
             || $entity instanceof Character
             || $entity instanceof Contributor
+            || $entity instanceof BookSettings
             ? $entity
             : null;
     }

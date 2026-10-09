@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Controller\Management;
 
 use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
+use c975L\BookBundle\Controller\Management\Trait\SocialStatusCrudTrait;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Form\StripMediaType;
@@ -22,6 +23,7 @@ use c975L\BookBundle\Service\BookDuplicator;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookTrashManager;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
+use c975L\UiBundle\Contract\SocialContentStatusProviderInterface;
 use c975L\UiBundle\Form\BlockType;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
@@ -53,6 +55,8 @@ class StripCrudController extends AbstractCrudController
 {
     use ContentLocaleCrudTrait;
 
+    use SocialStatusCrudTrait;
+
     use TrashableCrudTrait;
 
     // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
@@ -83,12 +87,19 @@ class StripCrudController extends AbstractCrudController
         private readonly RequestStack $requestStack,
         private readonly StripExportProvider $stripExportProvider,
         private readonly TranslatorInterface $translator,
+        private readonly ?SocialContentStatusProviderInterface $socialStatuses = null,
     ) {
     }
 
     public static function getEntityFqcn(): string
     {
         return Strip::class;
+    }
+
+    // The type SocialBundle files the planches under (see Trait\SocialStatusCrudTrait)
+    private function socialSourceType(): string
+    {
+        return 'strip';
     }
 
     public function configureFields(string $pageName): iterable
@@ -129,6 +140,7 @@ class StripCrudController extends AbstractCrudController
                 ->setHelp(t('label.hidden-help', [], 'book')),
             DateField::new('published')
                 ->setLabel(t('label.published', [], 'book')),
+            ...$this->socialStatusFields(),
             // Who speaks in the planche, picked among the people its serie is peopled with rather than typed (see Entity\Character). Narrowed to that serie once the planche is filed under one: on the creation screen there is no serie yet, so the whole catalog's people are offered and who speaks is picked back on the edit screen
             // No autocomplete() here, but the field is multiple, so ChoiceAutocompleteExtension turns it into a TomSelect all the same: the guided tour outlines its row and not the clipped select (see BookGuidedProjectProvider)
             AssociationField::new('characters')

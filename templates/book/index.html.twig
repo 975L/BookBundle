@@ -8,7 +8,16 @@
 {% set canEdit = is_granted(config('site-role-editor')) %}
 
 {% block content %}
-    <twig:c975LBook:Book:Explanation/>
+    {# The catalog's own line, written in the back office on the books index screen, and defaulting to the sentence the index has always printed #}
+    <twig:c975LBook:Book:Explanation :intro="bookIntro"/>
+
+    {# What the catalog says above its listing - a welcome message, a new release, arguments - composed in the back office with UiBundle's kinds, nothing to add here when the catalog holds no block. Their own overlay container, #books carrying the pencils of the cards only #}
+    {% if bookSettings %}
+        <div{% if canEdit %} data-controller="blockEditOverlay" data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>
+            {{ render_owned_blocks(bookSettings) }}
+        </div>
+    {% endif %}
+
     <twig:c975LBook:Book:Search/>
     {# The catalog grows instead of turning pages: UiBundle's controller fetches the page the link below already points to and appends its covers. Nothing here is written for it alone - without javascript, and for a crawler, that link is the ordinary link to the next page it looks like #}
     <div id="books" data-controller="infiniteScroll{{ canEdit ? ' blockEditOverlay' : '' }}"{% if canEdit %} data-edit-label="{{ 'label.edit'|trans({}, 'ui') }}"{% endif %}>

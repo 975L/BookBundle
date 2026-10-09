@@ -90,6 +90,10 @@
                 <source>description.guided_project_book_hidden</source>
                 <target>Un livre masqué reste au catalogue avec ses fichiers, mais aucune lecture publique ne le montre plus.</target>
             </trans-unit>
+            <trans-unit id="kQFItdn">
+                <source>description.guided_project_book_index</source>
+                <target>La page sur laquelle le catalogue s'ouvre : la phrase qui accueille le visiteur, et les blocs composés au-dessus de la liste.</target>
+            </trans-unit>
             <trans-unit id="eCev1E_">
                 <source>description.guided_project_book_listen</source>
                 <target>La page d'écoute joue l'enregistrement du livre et en tourne les pages avec lui, sans aucun block à composer.</target>
@@ -393,6 +397,22 @@
             <trans-unit id="nlryHN4">
                 <source>description.guided_step_book_hidden_switch</source>
                 <target>Un clic retire le livre du site, un second l'y remet, sans rien d'autre à enregistrer.</target>
+            </trans-unit>
+            <trans-unit id="7lewQY3">
+                <source>description.guided_step_book_index_blocks</source>
+                <target>Nouveauté, arguments, message d'accueil : les mêmes types que ceux d'une page du site.</target>
+            </trans-unit>
+            <trans-unit id="gLdlRhn">
+                <source>description.guided_step_book_index_intro</source>
+                <target>La phrase propre au catalogue, affichée au-dessus de tout le reste ; laissée vide, la page reprend celle qu'elle a toujours affichée.</target>
+            </trans-unit>
+            <trans-unit id="TbW_RRv">
+                <source>description.guided_step_book_index_open</source>
+                <target>Un écran pour une seule ligne, ouvert directement sur son formulaire : il n'y a rien à lister ici.</target>
+            </trans-unit>
+            <trans-unit id="u4mVPl1">
+                <source>description.guided_step_book_index_save</source>
+                <target>La page des livres affiche la phrase et les blocs dès que la ligne est enregistrée.</target>
             </trans-unit>
             <trans-unit id="uM1RqSY">
                 <source>description.guided_step_book_listen_audios</source>
@@ -1162,9 +1182,33 @@
                 <source>label.book_search</source>
                 <target>Chercher un livre</target>
             </trans-unit>
+            <trans-unit id="du_dLxG">
+                <source>label.book_social</source>
+                <target>Réseaux sociaux</target>
+            </trans-unit>
+            <trans-unit id="u9gMY6p">
+                <source>label.book_social_date_format</source>
+                <target>d/m</target>
+            </trans-unit>
+            <trans-unit id="8.5cP6T">
+                <source>label.book_social_published</source>
+                <target>Publié %date%</target>
+            </trans-unit>
+            <trans-unit id="g_ZrDBE">
+                <source>label.book_social_reserved</source>
+                <target>Réservé %date%</target>
+            </trans-unit>
             <trans-unit id="QMoEfWk">
                 <source>label.books</source>
                 <target>Livres</target>
+            </trans-unit>
+            <trans-unit id="sKLYBAY">
+                <source>label.books_index</source>
+                <target>Page des livres</target>
+            </trans-unit>
+            <trans-unit id="pSpJ2NZ">
+                <source>label.books_index_blocks-help</source>
+                <target>Ce que la page des livres dit au-dessus de sa liste</target>
             </trans-unit>
             <trans-unit id="sZVAwlI">
                 <source>label.books_more</source>
@@ -1490,6 +1534,14 @@
                 <source>label.export_sql</source>
                 <target>SQL</target>
             </trans-unit>
+            <trans-unit id="FY6ur3b">
+                <source>label.feed_books</source>
+                <target>Nouveaux livres</target>
+            </trans-unit>
+            <trans-unit id="3fSWto9">
+                <source>label.feed_strips</source>
+                <target>Dernières planches</target>
+            </trans-unit>
             <trans-unit id="LHpZe.c">
                 <source>label.fieldset_this_language</source>
                 <target>Dans cette langue (%language%)</target>
@@ -1589,6 +1641,10 @@
             <trans-unit id="oyXCY_1">
                 <source>label.guided_project_book_hidden</source>
                 <target>Retirer un livre du site</target>
+            </trans-unit>
+            <trans-unit id="pn5Sg_O">
+                <source>label.guided_project_book_index</source>
+                <target>Régler la page des livres</target>
             </trans-unit>
             <trans-unit id="lwr0zp0">
                 <source>label.guided_project_book_listen</source>
@@ -1925,6 +1981,22 @@
             <trans-unit id="gVP4uae">
                 <source>label.guided_step_book_hidden_switch</source>
                 <target>Basculez la ligne sur Masqué</target>
+            </trans-unit>
+            <trans-unit id="31MTdyQ">
+                <source>label.guided_step_book_index_blocks</source>
+                <target>Composer ce qui surmonte la liste</target>
+            </trans-unit>
+            <trans-unit id="pn9Tn0T">
+                <source>label.guided_step_book_index_intro</source>
+                <target>Écrire la phrase d'accueil</target>
+            </trans-unit>
+            <trans-unit id="LUl78yT">
+                <source>label.guided_step_book_index_open</source>
+                <target>Ouvrir la page des livres</target>
+            </trans-unit>
+            <trans-unit id="wRYLiMx">
+                <source>label.guided_step_book_index_save</source>
+                <target>Enregistrer</target>
             </trans-unit>
             <trans-unit id="k5fy8jR">
                 <source>label.guided_step_book_listen_audios</source>
@@ -2278,6 +2350,10 @@
                 <source>label.info_book</source>
                 <target>Liste de tous les livres publiés. Créez, modifiez ou supprimez un livre : informations, auteur, illustrateur, liens de vente, marketing, presse et blocs de contenu.</target>
             </trans-unit>
+            <trans-unit id="4A6KvGV">
+                <source>label.info_books_index</source>
+                <target>La page d'index des livres : ce qu'elle dit au-dessus des livres qu'elle liste, composé avec les mêmes blocs qu'une fiche livre.</target>
+            </trans-unit>
             <trans-unit id="rBI9eRF">
                 <source>label.info_category</source>
                 <target>Liste de toutes les catégories du catalogue. Créez, modifiez ou supprimez une catégorie ; les blocs de contenu de sa page s'y gèrent aussi. Un livre en reçoit autant que nécessaire depuis sa propre fiche.</target>
@@ -2305,6 +2381,14 @@
             <trans-unit id="4meBJqw">
                 <source>label.informations</source>
                 <target>Informations</target>
+            </trans-unit>
+            <trans-unit id="YtqDGiK">
+                <source>label.intro</source>
+                <target>Phrase d'introduction</target>
+            </trans-unit>
+            <trans-unit id="e9WnV3E">
+                <source>label.intro-help</source>
+                <target>La phrase que le catalogue dit au-dessus de tout le reste ; laissée vide, la page affiche celle par défaut</target>
             </trans-unit>
             <trans-unit id="epzp_XV">
                 <source>label.isbn</source>
@@ -2717,6 +2801,22 @@
             <trans-unit id="DSj269.">
                 <source>label.strip_search</source>
                 <target>Chercher une planche</target>
+            </trans-unit>
+            <trans-unit id="iXv7ipA">
+                <source>label.strip_social</source>
+                <target>Réseaux sociaux</target>
+            </trans-unit>
+            <trans-unit id="O3AIz2a">
+                <source>label.strip_social_date_format</source>
+                <target>d/m</target>
+            </trans-unit>
+            <trans-unit id="DeDP9.R">
+                <source>label.strip_social_published</source>
+                <target>Publiée %date%</target>
+            </trans-unit>
+            <trans-unit id="RyLMKF9">
+                <source>label.strip_social_reserved</source>
+                <target>Réservée %date%</target>
             </trans-unit>
             <trans-unit id="D88P91q">
                 <source>label.strip_transcription</source>

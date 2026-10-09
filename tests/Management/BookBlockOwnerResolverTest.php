@@ -12,23 +12,27 @@ namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookSettings;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
 use c975L\BookBundle\Repository\BookCategoryRepository;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Repository\BookSettingsRepository;
 use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Repository\StripRepository;
 use PHPUnit\Framework\TestCase;
 
-// The five families of this bundle that compose a page out of blocks, named once here so a controller and a drag-and-drop agree on the word
+// The six owners of this bundle that compose a page out of blocks - five families and the catalog's index, named once here so a controller and a drag-and-drop agree on the word
 class BookBlockOwnerResolverTest extends TestCase
 {
     private Book $book;
 
     private BookCategory $category;
+
+    private BookSettings $settings;
 
     private Contributor $contributor;
 
@@ -40,6 +44,7 @@ class BookBlockOwnerResolverTest extends TestCase
     {
         $this->book = new Book();
         $this->category = new BookCategory();
+        $this->settings = new BookSettings();
         $this->contributor = new Contributor();
         $this->serie = new Serie();
         $this->strip = new Strip();
@@ -48,6 +53,8 @@ class BookBlockOwnerResolverTest extends TestCase
         $categoryRepository->method('find')->willReturn($this->category);
         $bookRepository = $this->createStub(BookRepository::class);
         $bookRepository->method('find')->willReturn($this->book);
+        $settingsRepository = $this->createStub(BookSettingsRepository::class);
+        $settingsRepository->method('findSingle')->willReturn($this->settings);
         $contributorRepository = $this->createStub(ContributorRepository::class);
         $contributorRepository->method('find')->willReturn($this->contributor);
         $serieRepository = $this->createStub(SerieRepository::class);
@@ -55,10 +62,10 @@ class BookBlockOwnerResolverTest extends TestCase
         $stripRepository = $this->createStub(StripRepository::class);
         $stripRepository->method('find')->willReturn($this->strip);
 
-        return new BookBlockOwnerResolver($categoryRepository, $bookRepository, $contributorRepository, $serieRepository, $stripRepository);
+        return new BookBlockOwnerResolver($categoryRepository, $bookRepository, $settingsRepository, $contributorRepository, $serieRepository, $stripRepository);
     }
 
-    public function testTheFiveFamiliesOfThisBundleAreSupported(): void
+    public function testTheSixOwnersOfThisBundleAreSupported(): void
     {
         $resolver = $this->resolver();
 
@@ -68,6 +75,7 @@ class BookBlockOwnerResolverTest extends TestCase
             BookBlockOwnerResolver::TYPE_STRIP,
             BookBlockOwnerResolver::TYPE_CONTRIBUTOR,
             BookBlockOwnerResolver::TYPE_CATEGORY,
+            BookBlockOwnerResolver::TYPE_SETTINGS,
         ];
 
         foreach ($types as $type) {
@@ -94,6 +102,20 @@ class BookBlockOwnerResolverTest extends TestCase
         $this->assertSame($this->strip, $resolver->find(BookBlockOwnerResolver::TYPE_STRIP, 1));
         $this->assertSame($this->contributor, $resolver->find(BookBlockOwnerResolver::TYPE_CONTRIBUTOR, 1));
         $this->assertSame($this->category, $resolver->find(BookBlockOwnerResolver::TYPE_CATEGORY, 1));
+    }
+
+    // The catalog's index holds a single row, whichever id it was created with: a block dragged onto it lands on that one, the id handed over being ignored
+    public function testTheCatalogsIndexIsItsSingleRow(): void
+    {
+        $resolver = $this->resolver();
+
+        $this->assertSame($this->settings, $resolver->find(BookBlockOwnerResolver::TYPE_SETTINGS, 42));
+    }
+
+    // The settings carry the bundle's own prefix too: ShopBundle has settings of its own, and a site running both would have the two fighting over a bare word
+    public function testTheSettingsAreNamedApartFromAnotherBundlesOwn(): void
+    {
+        $this->assertSame('book_settings', BookBlockOwnerResolver::TYPE_SETTINGS);
     }
 
     // The category carries the bundle's own prefix: "category" alone is ShopBundle's, and a site running both would have the two fighting over it

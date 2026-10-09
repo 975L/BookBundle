@@ -1,5 +1,23 @@
 # Changelog
 
+## v2.20.0
+
+Books index composed in the back office, catalog Atom feeds
+
+- New `BookSettings`: the books index's intro line and blocks, edited on the *Books page* screen **Needs db update** (09/10/2026)
+- Added the *Books page* guided project and its translations (09/10/2026)
+- New `BookFeedProvider` and `StripFeedProvider`: `/feed/book.xml` and `/feed/strip.xml` (09/10/2026)
+- Book feed limited to the language it is read in (09/10/2026)
+- Added `Strip::getShareMedia()`, read by the share image, the feed and the posts (09/10/2026)
+- Planche medias loaded in one query by `findAllPublished()` and `findPostableLatest()` (09/10/2026)
+- Book and strip sources implement `BrowsableSocialContentSourceInterface` (09/10/2026)
+- Social post badge column on the books and planches lists, for the rows of the page shown (09/10/2026)
+- Removed `BookRepository::findAllIds()` and `StripRepository::findAllIds()` (09/10/2026)
+- Book JSON-LD carries the publisher and each edition's offer (09/10/2026)
+- Creator relations set to null when the user is deleted **Needs db update** (09/10/2026)
+- Link health check retries 500, 502 and 504 answers too (09/10/2026)
+- Requires `c975l/core-bundle` ^1.61 (09/10/2026)
+
 ## v2.19
 
 Listening pages downloadable for offline use

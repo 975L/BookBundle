@@ -14,12 +14,13 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Twig\BookSectionsExtension;
 use c975L\ConfigBundle\Service\SiteUrlResolver;
+use c975L\UiBundle\Contract\BrowsableSocialContentSourceInterface;
 use c975L\UiBundle\Contract\SocialContentSourceInterface;
 use c975L\UiBundle\Model\SocialContent;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 // Hands SocialBundle's publication the catalog's books, oldest published first - a site without SocialBundle simply never asks. What went out where is SocialBundle's to record
-class BookSocialContentSource implements SocialContentSourceInterface
+class BookSocialContentSource implements BrowsableSocialContentSourceInterface, SocialContentSourceInterface
 {
     // A book is worth recalling a season later, the catalog of a publisher changing slowly
     private const int REPEAT_AFTER_DAYS = 90;
@@ -55,6 +56,18 @@ class BookSocialContentSource implements SocialContentSourceInterface
             }
         }
 
+        return null;
+    }
+
+    // The books not posted yet, the latest first, for a post's content to be chosen among - no groups here, so the scope is ignored
+    public function findContents(array $excludedIds, array $scopeIds, int $limit): array
+    {
+        return array_values(array_filter(array_map($this->toContent(...), $this->bookRepository->findPostableLatest($excludedIds, $limit))));
+    }
+
+    // Always null: the books are not split into groups to draw from
+    public function getContentScope(string $sourceId): ?string
+    {
         return null;
     }
 

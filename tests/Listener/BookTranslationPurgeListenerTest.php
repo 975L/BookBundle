@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Listener;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookSettings;
 use c975L\BookBundle\Listener\BookTranslationPurgeListener;
 use c975L\BookBundle\Service\BookTranslator;
 use c975L\UiBundle\Entity\Block;
@@ -32,6 +33,20 @@ class BookTranslationPurgeListenerTest extends TestCase
             ->with(BookTranslator::OWNER_BOOK, 3);
 
         $this->remove($repository, $this->createBook(3));
+    }
+
+    // The catalog's index takes its intro's translations with it the same way, under an owner type of its own
+    public function testTheCatalogsIndexTakesItsTranslationsWithIt(): void
+    {
+        $repository = $this->createMock(TranslationRepository::class);
+        $repository->expects($this->once())
+            ->method('deleteByOwner')
+            ->with(BookTranslator::OWNER_SETTINGS, 1);
+
+        $settings = new BookSettings();
+        new \ReflectionProperty(BookSettings::class, 'id')->setValue($settings, 1);
+
+        $this->remove($repository, $settings);
     }
 
     // A block is UiBundle's own listener's business, and would otherwise be purged twice under two owner types

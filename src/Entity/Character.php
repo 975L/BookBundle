@@ -54,7 +54,9 @@ class Character implements \Stringable
     #[ORM\JoinColumn(nullable: false)]
     private ?Serie $serie = null;
 
+    // "SET NULL" and not the default: this only records who created the character, and deleting that account must not be blocked by it
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?UserInterface $user = null;
 
     #[Assert\Valid]

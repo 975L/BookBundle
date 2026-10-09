@@ -57,10 +57,10 @@ class BookGuidedProjectProviderTest extends TestCase
         $projects = $this->projects();
 
         $this->assertSame(
-            ['book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-creation', 'book-media-move', 'book-composition', 'book-listen', 'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash', 'book-export', 'book-onix-feed', 'book-edition-sale'],
+            ['book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-index', 'book-creation', 'book-media-move', 'book-composition', 'book-listen', 'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash', 'book-export', 'book-onix-feed', 'book-edition-sale'],
             array_column($projects, 'slug')
         );
-        $this->assertSame([6005, 6010, 6015, 6020, 6025, 6030, 6031, 6033, 6034, 6035, 6037, 6040, 6045, 6050, 6055, 6060, 6070, 6075, 6080], array_column($projects, 'order'));
+        $this->assertSame([6005, 6010, 6015, 6017, 6020, 6025, 6030, 6031, 6033, 6034, 6035, 6037, 6040, 6045, 6050, 6055, 6060, 6070, 6075, 6080], array_column($projects, 'order'));
     }
 
     public function testEverySlugIsPrefixedWithTheBundleName(): void
@@ -82,7 +82,7 @@ class BookGuidedProjectProviderTest extends TestCase
     public function testEveryProjectCarriesTheRoleItsOwnScreensState(): void
     {
         $expected = array_fill_keys([
-            'book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-creation', 'book-media-move', 'book-composition',
+            'book-contributor-creation', 'book-serie-creation', 'book-category-creation', 'book-index', 'book-creation', 'book-media-move', 'book-composition',
             'book-listen', 'book-reader', 'book-translation', 'book-sorting', 'book-character-creation', 'book-strip-creation', 'book-duplication', 'book-version-publication', 'book-hidden', 'book-trash',
         ], 'ROLE_EDITOR') + ['book-export' => 'ROLE_ADMIN', 'book-onix-feed' => 'ROLE_ADMIN', 'book-edition-sale' => 'ROLE_EDITOR'];
 
@@ -117,14 +117,14 @@ class BookGuidedProjectProviderTest extends TestCase
         }
     }
 
-    // The catalog's own screens, each parcours opening on the one its task belongs to - ConfigBundle's for the ONIX feed, whose settings live there
+    // The catalog's own screens, each parcours opening on the one its task belongs to - ConfigBundle's for the ONIX feed, whose settings live there, and the catalog index's own, which opens straight on the single row it edits
     public function testEveryProjectOpensOnACatalogCrudIndex(): void
     {
         $controllers = [];
         $this->createProvider($controllers)->getGuidedProjects();
 
         $this->assertSame(
-            ['ContributorCrudController', 'SerieCrudController', 'BookCategoryCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'SerieCrudController', 'CharacterCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'ConfigCrudController', 'BookCrudController'],
+            ['ContributorCrudController', 'SerieCrudController', 'BookCategoryCrudController', 'BookSettingsCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'SerieCrudController', 'CharacterCrudController', 'StripCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'BookCrudController', 'ConfigCrudController', 'BookCrudController'],
             array_map(static fn (string $fqcn): string => basename(str_replace('\\', '/', $fqcn)), $controllers)
         );
     }
@@ -142,7 +142,7 @@ class BookGuidedProjectProviderTest extends TestCase
             }
         }
 
-        $this->assertCount(14, $saveSteps, 'The parcours saving nothing are those whose gestures are recorded on the spot: the trash, the sorting, the file move and the export');
+        $this->assertCount(15, $saveSteps, 'The parcours saving nothing are those whose gestures are recorded on the spot: the trash, the sorting, the file move and the export');
 
         foreach ($saveSteps as $step) {
             $this->assertSame('.action-saveAndReturn', $step['highlight']);

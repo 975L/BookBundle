@@ -15,10 +15,14 @@ use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookSocialContentSource;
 use c975L\ConfigBundle\Service\SiteUrlResolver;
+use c975L\UiBundle\Model\SocialContent;
 use PHPUnit\Framework\TestCase;
 
 class BookSocialContentSourceTest extends TestCase
 {
+    /** @var list<string> */
+    private array $excludedIds = [];
+
     private function createBook(int $id, string $published = '-1 year'): Book
     {
         $book = new Book()->setTitle('Livre ' . $id)->setSlug('livre-' . $id)->setSummary('<p>Une histoire</p>')->setPublished(new \DateTime($published));
@@ -35,6 +39,11 @@ class BookSocialContentSourceTest extends TestCase
         $repository = $this->createStub(BookRepository::class);
         $repository->method('findAllPublished')->willReturn($books);
         $repository->method('find')->willReturn($books[0] ?? null);
+        $repository->method('findPostableLatest')->willReturnCallback(function (array $excludedIds, int $limit) use ($books): array {
+            $this->excludedIds = $excludedIds;
+
+            return $books;
+        });
 
         $urlResolver = $this->createStub(BookPublicUrlResolver::class);
         $urlResolver->method('resolve')->willReturnCallback(static fn (string $route, array $parameters): ?string => null === $siteUrl ? null : $siteUrl . '/livres/' . $parameters['slug']);
@@ -78,5 +87,21 @@ class BookSocialContentSourceTest extends TestCase
     public function testABookNotPublishedYetIsNotReadAgain(): void
     {
         $this->assertNull($this->createSource([$this->createBook(1, '+1 month')])->getContent('1'));
+    }
+
+    // What a post's book is chosen among: the ones still free, the latest first, those without a public url left out
+    public function testTheContentsToChooseAreTheFreeBooksLatestFirst(): void
+    {
+        $contents = $this->createSource([$this->createBook(3), $this->createBook(2)])->findContents(['1'], ['9'], 48);
+
+        $this->assertSame(['3', '2'], array_map(static fn (SocialContent $content): string => $content->sourceId, $contents));
+        $this->assertSame(['1'], $this->excludedIds);
+        $this->assertSame([], $this->createSource([$this->createBook(3)], null)->findContents([], [], 48));
+    }
+
+    // The catalog is not split into groups: a book has no scope to be drawn again from
+    public function testABookHasNoScope(): void
+    {
+        $this->assertNull($this->createSource([$this->createBook(1)])->getContentScope('1'));
     }
 }

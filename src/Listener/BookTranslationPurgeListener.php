@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Listener;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookSettings;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Media;
@@ -78,6 +79,7 @@ class BookTranslationPurgeListener
             $entity instanceof Character => BookTranslator::OWNER_CHARACTER,
             $entity instanceof Media => BookTranslator::OWNER_MEDIA,
             $entity instanceof Contributor => BookTranslator::OWNER_CONTRIBUTOR,
+            $entity instanceof BookSettings => BookTranslator::OWNER_SETTINGS,
             default => null,
         };
     }

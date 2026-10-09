@@ -80,7 +80,9 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\JoinColumn(nullable: false)]
     private ?Serie $serie = null;
 
+    // "SET NULL" and not the default: this only records who created the strip, and deleting that account must not be blocked by it
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?UserInterface $user = null;
 
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
@@ -291,10 +293,26 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
         );
     }
 
-    // What stands for the planche in a listing, read by role and not by rank: since the roles, the first media of the collection is no longer the one meant to represent it, and a wall of thumbnails would show a panel instead of the planche. A different order from the one the share image goes by (see strip/display.html.twig), which reaches for the whole page first
+    // What stands for the planche in a listing, read by role and not by rank: since the roles, the first media of the collection is no longer the one meant to represent it, and a wall of thumbnails would show a panel instead of the planche. A different order from the one the share image goes by (see getShareMedia()), which reaches for the whole page first
     public function getThumbnailMedia(): ?StripMedia
     {
         foreach ([StripMediaKind::Thumbnail->value, StripMediaKind::Card->value] as $kind) {
+            $media = $this->getMediasByKind($kind)->first();
+
+            if ($media instanceof StripMedia) {
+                return $media;
+            }
+        }
+
+        $media = $this->medias->first();
+
+        return $media instanceof StripMedia ? $media : null;
+    }
+
+    // What a share shows - the page, the feed and the social posts alike: the whole page where the planche is a drawing, the square card where it is words, and only failing both whatever the planche carries first
+    public function getShareMedia(): ?StripMedia
+    {
+        foreach ([StripMediaKind::Page->value, StripMediaKind::Card->value] as $kind) {
             $media = $this->getMediasByKind($kind)->first();
 
             if ($media instanceof StripMedia) {

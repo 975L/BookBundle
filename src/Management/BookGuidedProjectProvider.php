@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Controller\Management\BookCategoryCrudController;
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\BookSettingsCrudController;
 use c975L\BookBundle\Controller\Management\CharacterCrudController;
 use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
@@ -47,6 +48,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->contributorCreationProject(),
             $this->serieCreationProject(),
             $this->categoryCreationProject(),
+            $this->indexProject(),
             $this->bookCreationProject(),
             $this->mediaMoveProject(),
             $this->bookCompositionProject(),
@@ -258,6 +260,48 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_category_creation_done',
                     'description' => 'description.guided_step_book_category_creation_done',
                     'narration' => 'narration.guided_step_book_category_creation_done',
+                ],
+            ],
+        ];
+    }
+
+    // The page the catalog opens on, set once before the books are filled in: its sentence and the blocks under it are the first thing a visitor reads, and the only screen of this bundle editing a single row rather than a list
+    private function indexProject(): array
+    {
+        return [
+            'slug' => 'book-index',
+            'label' => 'label.guided_project_book_index',
+            'description' => 'description.guided_project_book_index',
+            'translation_domain' => 'book',
+            // Between the categories and the book: the catalog's own page is what one settles before filling the listing it prints
+            'order' => 6017,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_index_open',
+                    'description' => 'description.guided_step_book_index_open',
+                    'narration' => 'narration.guided_step_book_index_open',
+                    // The index action redirects straight to the single row, so the screen this opens on is already the form - no edit step to walk through
+                    'url' => $this->indexUrl(BookSettingsCrudController::class),
+                ],
+                [
+                    'label' => 'label.guided_step_book_index_intro',
+                    'description' => 'description.guided_step_book_index_intro',
+                    'narration' => 'narration.guided_step_book_index_intro',
+                    'highlight' => '#BookSettings_intro',
+                ],
+                [
+                    // The collection's own row, a collection printing no field id at all
+                    'label' => 'label.guided_step_book_index_blocks',
+                    'description' => 'description.guided_step_book_index_blocks',
+                    'narration' => 'narration.guided_step_book_index_blocks',
+                    'highlight' => '[data-book-settings-blocks]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_index_save',
+                    'description' => 'description.guided_step_book_index_save',
+                    'narration' => 'narration.guided_step_book_index_save',
+                    'highlight' => '.action-saveAndReturn',
                 ],
             ],
         ];

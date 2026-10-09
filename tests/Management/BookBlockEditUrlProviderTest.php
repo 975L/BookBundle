@@ -11,14 +11,17 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\BookSettingsCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookSettings;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Management\BookBlockEditUrlProvider;
 use c975L\BookBundle\Repository\BookCategoryRepository;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Repository\BookSettingsRepository;
 use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Repository\StripRepository;
@@ -65,10 +68,23 @@ class BookBlockEditUrlProviderTest extends TestCase
         ], $urls);
     }
 
-    // The three classes the provider hands BlockFocusUrl - ManagementTargetsTest cannot reach them, its test case walking a provider only by the five management interfaces this one implements none of, and EasyAdmin throws on the public page rather than in the back office when handed a class that is no longer a CRUD controller
+    // A block composed on the catalog's index resolves to the single row holding it
+    public function testABlockOwnedByTheCatalogsIndexResolvesToItsSingleRow(): void
+    {
+        $block = $this->blockWithId(13);
+        $settings = new BookSettings();
+        $settings->addBlock($block);
+        $this->withId($settings, 1);
+
+        $urls = $this->provider(settings: [$settings])->getEditUrls([$block]);
+
+        $this->assertSame([13 => 'BookSettingsCrudController/1/13'], $urls);
+    }
+
+    // The four classes the provider hands BlockFocusUrl - ManagementTargetsTest cannot reach them, its test case walking a provider only by the five management interfaces this one implements none of, and EasyAdmin throws on the public page rather than in the back office when handed a class that is no longer a CRUD controller
     public function testEveryFamilyNamesACrudController(): void
     {
-        foreach ([BookCrudController::class, SerieCrudController::class, StripCrudController::class] as $controller) {
+        foreach ([BookCrudController::class, SerieCrudController::class, StripCrudController::class, BookSettingsCrudController::class] as $controller) {
             $this->assertTrue(
                 is_subclass_of($controller, AbstractCrudController::class),
                 sprintf('"%s" is no longer a CRUD controller, and EasyAdmin cannot generate an edit url for it', $controller)
@@ -92,6 +108,7 @@ class BookBlockEditUrlProviderTest extends TestCase
             $this->adminUrlGenerator(),
             $this->createStub(BookCategoryRepository::class),
             $repository,
+            $this->createStub(BookSettingsRepository::class),
             $this->createStub(ContributorRepository::class),
             $this->createStub(SerieRepository::class),
             $this->createStub(StripRepository::class),
@@ -100,12 +117,13 @@ class BookBlockEditUrlProviderTest extends TestCase
         $this->assertSame([], $provider->getEditUrls([new Block()]));
     }
 
-    private function provider(array $books = [], array $series = [], array $strips = [], array $contributors = [], array $categories = []): BookBlockEditUrlProvider
+    private function provider(array $books = [], array $series = [], array $strips = [], array $contributors = [], array $categories = [], array $settings = []): BookBlockEditUrlProvider
     {
         return new BookBlockEditUrlProvider(
             $this->adminUrlGenerator(),
             $this->repository(BookCategoryRepository::class, $categories),
             $this->repository(BookRepository::class, $books),
+            $this->repository(BookSettingsRepository::class, $settings),
             $this->repository(ContributorRepository::class, $contributors),
             $this->repository(SerieRepository::class, $series),
             $this->repository(StripRepository::class, $strips),

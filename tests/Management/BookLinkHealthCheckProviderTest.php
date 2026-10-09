@@ -72,6 +72,15 @@ class BookLinkHealthCheckProviderTest extends TestCase
         $this->assertSame(200, $rows[0]['details']['httpCode']);
     }
 
+    // A store failing on its own side (Google Play answers 500 now and then) is asked once more too, the error being its own and not the page's
+    public function testAStoreFailingOnItsOwnSideIsAskedOnceMore(): void
+    {
+        $rows = $this->retriedProvider(500, 200)->runChecks();
+
+        $this->assertSame(HealthCheckResult::STATUS_OK, $rows[0]['status']);
+        $this->assertSame(200, $rows[0]['details']['httpCode']);
+    }
+
     // A store still unavailable once asked again is reported, a check that would let it through checking nothing
     public function testAStoreStillUnavailableOnceAskedAgainIsAnError(): void
     {

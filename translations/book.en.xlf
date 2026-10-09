@@ -90,6 +90,10 @@
                 <source>description.guided_project_book_hidden</source>
                 <target>A book set aside stays in the catalog with its files, but no public read shows it any more.</target>
             </trans-unit>
+            <trans-unit id="kQFItdn">
+                <source>description.guided_project_book_index</source>
+                <target>The page the catalog opens on: the sentence it greets a visitor with, and the blocks composed above the listing.</target>
+            </trans-unit>
             <trans-unit id="eCev1E_">
                 <source>description.guided_project_book_listen</source>
                 <target>The listening page plays the book's recording and turns its pages along with it, no block to compose.</target>
@@ -393,6 +397,22 @@
             <trans-unit id="nlryHN4">
                 <source>description.guided_step_book_hidden_switch</source>
                 <target>One click takes the book off the site, a second puts it back, with nothing else to save.</target>
+            </trans-unit>
+            <trans-unit id="7lewQY3">
+                <source>description.guided_step_book_index_blocks</source>
+                <target>A new release, arguments, a welcome message: the same kinds a page of the site is composed with.</target>
+            </trans-unit>
+            <trans-unit id="gLdlRhn">
+                <source>description.guided_step_book_index_intro</source>
+                <target>The catalog's own sentence, printed above everything else; left empty, the page falls back to the one it has always printed.</target>
+            </trans-unit>
+            <trans-unit id="TbW_RRv">
+                <source>description.guided_step_book_index_open</source>
+                <target>One screen for one row, opened straight on its form - there is nothing to list here.</target>
+            </trans-unit>
+            <trans-unit id="u4mVPl1">
+                <source>description.guided_step_book_index_save</source>
+                <target>The books page shows the line and the blocks as soon as the row is saved.</target>
             </trans-unit>
             <trans-unit id="uM1RqSY">
                 <source>description.guided_step_book_listen_audios</source>
@@ -1162,9 +1182,33 @@
                 <source>label.book_search</source>
                 <target>Search for a book</target>
             </trans-unit>
+            <trans-unit id="du_dLxG">
+                <source>label.book_social</source>
+                <target>Social networks</target>
+            </trans-unit>
+            <trans-unit id="u9gMY6p">
+                <source>label.book_social_date_format</source>
+                <target>m/d</target>
+            </trans-unit>
+            <trans-unit id="8.5cP6T">
+                <source>label.book_social_published</source>
+                <target>Published %date%</target>
+            </trans-unit>
+            <trans-unit id="g_ZrDBE">
+                <source>label.book_social_reserved</source>
+                <target>Reserved %date%</target>
+            </trans-unit>
             <trans-unit id="QMoEfWk">
                 <source>label.books</source>
                 <target>Books</target>
+            </trans-unit>
+            <trans-unit id="sKLYBAY">
+                <source>label.books_index</source>
+                <target>Books page</target>
+            </trans-unit>
+            <trans-unit id="pSpJ2NZ">
+                <source>label.books_index_blocks-help</source>
+                <target>What the books page says above its listing</target>
             </trans-unit>
             <trans-unit id="sZVAwlI">
                 <source>label.books_more</source>
@@ -1490,6 +1534,14 @@
                 <source>label.export_sql</source>
                 <target>SQL</target>
             </trans-unit>
+            <trans-unit id="FY6ur3b">
+                <source>label.feed_books</source>
+                <target>New books</target>
+            </trans-unit>
+            <trans-unit id="3fSWto9">
+                <source>label.feed_strips</source>
+                <target>Latest strips</target>
+            </trans-unit>
             <trans-unit id="LHpZe.c">
                 <source>label.fieldset_this_language</source>
                 <target>In this language (%language%)</target>
@@ -1589,6 +1641,10 @@
             <trans-unit id="oyXCY_1">
                 <source>label.guided_project_book_hidden</source>
                 <target>Take a book off the site</target>
+            </trans-unit>
+            <trans-unit id="pn5Sg_O">
+                <source>label.guided_project_book_index</source>
+                <target>Set up the books page</target>
             </trans-unit>
             <trans-unit id="lwr0zp0">
                 <source>label.guided_project_book_listen</source>
@@ -1925,6 +1981,22 @@
             <trans-unit id="gVP4uae">
                 <source>label.guided_step_book_hidden_switch</source>
                 <target>Switch the row to Hidden</target>
+            </trans-unit>
+            <trans-unit id="31MTdyQ">
+                <source>label.guided_step_book_index_blocks</source>
+                <target>Compose what stands above the listing</target>
+            </trans-unit>
+            <trans-unit id="pn9Tn0T">
+                <source>label.guided_step_book_index_intro</source>
+                <target>Write the welcome line</target>
+            </trans-unit>
+            <trans-unit id="LUl78yT">
+                <source>label.guided_step_book_index_open</source>
+                <target>Open the books page</target>
+            </trans-unit>
+            <trans-unit id="wRYLiMx">
+                <source>label.guided_step_book_index_save</source>
+                <target>Save</target>
             </trans-unit>
             <trans-unit id="k5fy8jR">
                 <source>label.guided_step_book_listen_audios</source>
@@ -2278,6 +2350,10 @@
                 <source>label.info_book</source>
                 <target>List of all published books. Create, edit or delete a book: information, author, illustrator, sales links, marketing, press and content blocks.</target>
             </trans-unit>
+            <trans-unit id="4A6KvGV">
+                <source>label.info_books_index</source>
+                <target>The books' own index page: what it says above the books it lists, composed with the same blocks a book page holds.</target>
+            </trans-unit>
             <trans-unit id="rBI9eRF">
                 <source>label.info_category</source>
                 <target>List of all the catalog categories. Create, edit or delete a category; the content blocks of its page are also managed here. A book is given as many as needed from its own screen.</target>
@@ -2305,6 +2381,14 @@
             <trans-unit id="4meBJqw">
                 <source>label.informations</source>
                 <target>Information</target>
+            </trans-unit>
+            <trans-unit id="YtqDGiK">
+                <source>label.intro</source>
+                <target>Intro sentence</target>
+            </trans-unit>
+            <trans-unit id="e9WnV3E">
+                <source>label.intro-help</source>
+                <target>The line the catalog says above everything else; left empty, the page shows the default one</target>
             </trans-unit>
             <trans-unit id="epzp_XV">
                 <source>label.isbn</source>
@@ -2717,6 +2801,22 @@
             <trans-unit id="DSj269.">
                 <source>label.strip_search</source>
                 <target>Search for a strip</target>
+            </trans-unit>
+            <trans-unit id="iXv7ipA">
+                <source>label.strip_social</source>
+                <target>Social networks</target>
+            </trans-unit>
+            <trans-unit id="O3AIz2a">
+                <source>label.strip_social_date_format</source>
+                <target>m/d</target>
+            </trans-unit>
+            <trans-unit id="DeDP9.R">
+                <source>label.strip_social_published</source>
+                <target>Published %date%</target>
+            </trans-unit>
+            <trans-unit id="RyLMKF9">
+                <source>label.strip_social_reserved</source>
+                <target>Reserved %date%</target>
             </trans-unit>
             <trans-unit id="D88P91q">
                 <source>label.strip_transcription</source>

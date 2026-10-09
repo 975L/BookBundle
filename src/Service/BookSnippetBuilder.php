@@ -17,15 +17,17 @@ use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Enum\BookContributorRole;
 use c975L\BookBundle\Enum\BookEditionKind;
+use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Service\JsonLdBuilder;
 use c975L\UiBundle\Service\RatingSnippetBuilder;
 
-// Builds the schema.org graph a book's, a serie's or a strip's page publishes as JSON-LD, out of the fields those pages already show. Assembled here rather than as microdata on the rendered elements, for the same reason as UiBundle's ContactSnippetBuilder: an itemprop pinned to an element leaves an empty node behind when the field is empty, where a graph simply drops what wasn't filled in - and it can carry what no template displays (the two ISBNs as two editions, the rank of a volume in its serie). Price and availability are deliberately absent: they are an "offers" node, which belongs to whoever sells the book - emitted twice, they would diverge.
+// Builds the schema.org graph a book's, a serie's or a strip's page publishes as JSON-LD, out of the fields those pages already show. Assembled here rather than as microdata on the rendered elements, for the same reason as UiBundle's ContactSnippetBuilder: an itemprop pinned to an element leaves an empty node behind when the field is empty, where a graph simply drops what wasn't filled in - and it can carry what no template displays (the two ISBNs as two editions, the rank of a volume in its serie). Each edition carries its own offer, at the price the ONIX feed announces, so an ISBN and its price are read together.
 class BookSnippetBuilder
 {
     public function __construct(
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly RatingSnippetBuilder $ratingSnippetBuilder,
+        private readonly ConfigServiceInterface $configService,
         private readonly JsonLdBuilder $jsonLdBuilder = new JsonLdBuilder(),
     ) {
     }
@@ -51,6 +53,8 @@ class BookSnippetBuilder
             'illustrator' => $this->person($book->getEffectiveIllustrator()),
             // The one part of a book's credits schema.org names on a CreativeWork: the voice reading it is "readBy", which belongs to an Audiobook and not to the Book node this is (see BookContributorRole), so it stays on the page and out of the graph
             'translator' => $this->persons($book->getContributorsOf(BookContributorRole::Translator->value)),
+            // The publishing house, the very name the ONIX feed speaks for so the page and the feed never disagree
+            'publisher' => $this->publisher(),
             'inLanguage' => trim((string) $book->getLanguage()),
             'datePublished' => $book->getPublished()?->format('Y-m-d') ?? '',
             'bookFormat' => $this->bookFormat($book),
@@ -58,7 +62,7 @@ class BookSnippetBuilder
             // What the book is about, said with the word schema.org has for it - the categories the site shows, a hidden one being off the site and out of the graph with it
             'genre' => $this->genres($book),
             // One workExample per edition rather than a single "isbn": a paperback and an ebook are two editions of the same work, and schema.org has no way to say which of two ISBNs belongs to which
-            'workExample' => $this->editions($book),
+            'workExample' => $this->editions($book, trim((string) $url)),
             // The same work in another language, said as a pair rather than as two unrelated books: a translation is not an edition, and carries neither the ISBNs nor the pages of the one it translates
             'translationOfWork' => $this->translation($book->getTranslationBook()),
             'workTranslation' => $this->translations($book),
@@ -200,6 +204,14 @@ class BookSnippetBuilder
         return $characters;
     }
 
+    // The publisher as an organization, empty when neither the ONIX entry nor the site's name is filled in
+    private function publisher(): array
+    {
+        $name = BookOnixBuilder::publisher($this->configService);
+
+        return '' === $name ? [] : ['@type' => 'Organization', 'name' => $name];
+    }
+
     // A named person, with their site as their identity when they have one - a bare name would leave two authors called the same indistinguishable. The categories the book carries, as plain names: schema.org's "genre" takes a text or an url, and a category page of ours is a listing rather than a thing to point at
     /**
      * @return list<string>
@@ -253,7 +265,7 @@ class BookSnippetBuilder
     }
 
     // One node per edition carrying an ISBN, each a Book of its own as schema.org expects of a workExample. An edition not out yet is left out: its ISBN names a book nobody can get
-    private function editions(Book $book): array
+    private function editions(Book $book, string $url = ''): array
     {
         $editions = [];
 
@@ -275,12 +287,31 @@ class BookSnippetBuilder
                 'inLanguage' => trim((string) $book->getLanguage()),
                 'datePublished' => $book->getPublished()?->format('Y-m-d') ?? '',
                 'numberOfPages' => $edition->getPages() ?? 0,
-                // The platforms carrying this edition, as identities and not as offers: what it costs and whether it is in stock belong to whoever sells it (see the note at the top)
+                // The platforms carrying this edition, as identities: the offer below is the publisher's own price, not theirs
                 'sameAs' => $this->editionLinks($book, $edition),
+                'offers' => $this->offer($book, $edition, $url),
             ]);
         }
 
         return $editions;
+    }
+
+    // The edition's public price as the ONIX feed announces it, pre-ordered until the book comes out; none without a price
+    private function offer(Book $book, BookEdition $edition, string $url): array
+    {
+        if (null === $edition->getPrice()) {
+            return [];
+        }
+
+        $published = $book->getPublished();
+
+        return $this->clean([
+            '@type' => 'Offer',
+            'url' => $url,
+            'price' => number_format($edition->getPrice() / 100, 2, '.', ''),
+            'priceCurrency' => $edition->getCurrency(),
+            'availability' => 'https://schema.org/' . (null !== $published && $published > new \DateTime() ? 'PreOrder' : 'InStock'),
+        ]);
     }
 
     // The schema.org format an edition's kind stands for, read the way the ONIX reads it (see BookEditionKind::of()) - the kind being the site's own word, one naming no file is taken for a printed book, which a decorated service of a site's own overrides

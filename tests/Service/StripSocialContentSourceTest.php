@@ -17,10 +17,14 @@ use c975L\BookBundle\Repository\StripRepository;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\StripSocialContentSource;
 use c975L\ConfigBundle\Service\SiteUrlResolver;
+use c975L\UiBundle\Model\SocialContent;
 use PHPUnit\Framework\TestCase;
 
 class StripSocialContentSourceTest extends TestCase
 {
+    /** @var list<string> */
+    private array $excludedIds = [];
+
     private function createStrip(int $id, string $published = '-1 month'): Strip
     {
         $strip = new Strip()->setTitle('Planche ' . $id)->setSlug('planche-' . $id)->setSummary('<p>Le loup</p>')->setPublished(new \DateTime($published));
@@ -38,6 +42,11 @@ class StripSocialContentSourceTest extends TestCase
         $repository = $this->createStub(StripRepository::class);
         $repository->method('findAllPublished')->willReturn($strips);
         $repository->method('find')->willReturn($strips[0] ?? null);
+        $repository->method('findPostableLatest')->willReturnCallback(function (array $excludedIds, int $limit) use ($strips): array {
+            $this->excludedIds = $excludedIds;
+
+            return $strips;
+        });
 
         $urlResolver = $this->createStub(BookPublicUrlResolver::class);
         $urlResolver->method('resolve')->willReturnCallback(static fn (string $route, array $parameters): ?string => null === $siteUrl ? null : $siteUrl . '/strips/' . $parameters['slug']);
@@ -75,5 +84,20 @@ class StripSocialContentSourceTest extends TestCase
 
         $strip->setSerie(new Serie()->setHidden(true));
         $this->assertNull($this->createSource([$strip])->getContent('1'));
+    }
+
+    // What a post's planche is chosen among: the ones still free, the latest first
+    public function testTheContentsToChooseAreTheFreePlanchesLatestFirst(): void
+    {
+        $contents = $this->createSource([$this->createStrip(3), $this->createStrip(2)])->findContents(['1'], ['9'], 48);
+
+        $this->assertSame(['3', '2'], array_map(static fn (SocialContent $content): string => $content->sourceId, $contents));
+        $this->assertSame(['1'], $this->excludedIds);
+    }
+
+    // The planches are not split into groups: a planche has no scope to be drawn again from
+    public function testAPlancheHasNoScope(): void
+    {
+        $this->assertNull($this->createSource([$this->createStrip(1)])->getContentScope('1'));
     }
 }

@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Controller\Management\BookCategoryCrudController;
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\BookSettingsCrudController;
 use c975L\BookBundle\Controller\Management\CharacterCrudController;
 use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
@@ -58,6 +59,17 @@ class MenuProvider implements MenuProviderInterface
                 // The very text the catalog screen opens on (see book_crud_index.html.twig), reused as-is for the onboarding tour rather than written again for it
                 'description' => 'label.info_book',
                 // The bar BookCrudController states on its own rows
+                'role' => $this->configService->get('site-role-editor'),
+            ],
+            'book_settings' => [
+                'controller' => BookSettingsCrudController::class,
+                'label' => 'label.books_index',
+                'narration' => 'narration.books_index',
+                'translation_domain' => 'book',
+                'icon' => 'fas fa-book-open',
+                // The very text the screen opens on (see book_settings_crud_edit.html.twig), reused as-is for the onboarding tour rather than written again for it
+                'description' => 'label.info_books_index',
+                // The bar BookSettingsCrudController states on its single row
                 'role' => $this->configService->get('site-role-editor'),
             ],
             'category' => [

@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Tests\Service;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookSettings;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
@@ -34,7 +35,7 @@ class BookTranslatorTest extends TestCase
         $translator = $this->createTranslator();
 
         $named = [];
-        foreach ([new Book(), new Serie(), new BookCategory(), new Strip(), new Character(), new Contributor()] as $row) {
+        foreach ([new Book(), new Serie(), new BookCategory(), new Strip(), new Character(), new Contributor(), new BookSettings()] as $row) {
             $named[$row::class] = $translator->owner($row);
         }
 
@@ -45,10 +46,11 @@ class BookTranslatorTest extends TestCase
             Strip::class => 'book_strip',
             Character::class => 'book_character',
             Contributor::class => 'book_contributor',
+            BookSettings::class => 'book_settings',
         ], $named);
 
         // Two rows sharing an owner type would share their translations the day their ids met
-        $this->assertCount(6, array_unique($named));
+        $this->assertCount(7, array_unique($named));
     }
 
     // The first field of each list is the row's own name: it is what a listing, a card and a <title> read, and what translatedLocales() asks before saying a language says anything at all
@@ -67,6 +69,12 @@ class BookTranslatorTest extends TestCase
     public function testAPersonsOwnNameIsNotTranslated(): void
     {
         $this->assertSame(['summary'], $this->createTranslator()->fields(new Contributor()));
+    }
+
+    // The catalog's index carries one line of prose a visitor reads, its blocks being translated on their own screens
+    public function testTheCatalogsIndexTranslatesItsIntroAlone(): void
+    {
+        $this->assertSame(['intro'], $this->createTranslator()->fields(new BookSettings()));
     }
 
     // A character is: a translated book renames the people in it, and the page reading them has to follow

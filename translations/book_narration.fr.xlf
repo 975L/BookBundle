@@ -6,6 +6,10 @@
                 <source>narration.books</source>
                 <target>« Livres » liste tout le catalogue : informations, auteur, illustrateur, éditions, liens de vente et blocks de contenu.</target>
             </trans-unit>
+            <trans-unit id="xCBpw1_">
+                <source>narration.books_index</source>
+                <target>« Page des livres » est ce que le catalogue dit au-dessus des livres qu'il liste, composé avec les mêmes blocs qu'une fiche livre.</target>
+            </trans-unit>
             <trans-unit id="DNxHSeJ">
                 <source>narration.categories</source>
                 <target>« Catégories » découpe le catalogue par sujet : un livre en porte autant qu'il en mérite, et une catégorie a sa propre page si le site lui en donne une.</target>
@@ -313,6 +317,22 @@
             <trans-unit id="xgT0vnD">
                 <source>narration.guided_step_book_hidden_switch</source>
                 <target>Basculez la ligne sur « Masqué » : un clic retire le livre du site, un second l'y remet, sans rien d'autre à enregistrer.</target>
+            </trans-unit>
+            <trans-unit id="xE0CAQT">
+                <source>narration.guided_step_book_index_blocks</source>
+                <target>Composez ce qui surmonte la liste. Nouveauté, arguments, message d'accueil : les mêmes types que ceux d'une page du site.</target>
+            </trans-unit>
+            <trans-unit id="aLKomUp">
+                <source>narration.guided_step_book_index_intro</source>
+                <target>Écrivez la phrase d'accueil. C'est la phrase propre au catalogue, affichée au-dessus de tout le reste ; laissée vide, la page reprend celle qu'elle a toujours affichée.</target>
+            </trans-unit>
+            <trans-unit id="eK_dXAs">
+                <source>narration.guided_step_book_index_open</source>
+                <target>Ouvrez la page des livres, dans le menu de gauche. C'est un écran pour une seule ligne, et il s'ouvre directement sur son formulaire.</target>
+            </trans-unit>
+            <trans-unit id="pBiM.Hu">
+                <source>narration.guided_step_book_index_save</source>
+                <target>Enregistrez. La page des livres affiche la phrase et les blocs dès que la ligne est enregistrée.</target>
             </trans-unit>
             <trans-unit id="iUigQGu">
                 <source>narration.guided_step_book_listen_audios</source>

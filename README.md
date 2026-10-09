@@ -22,7 +22,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 ## Contents
 
 - **Setup** — [requirements](#requirements) · [installation](#installation) · [configuration](#load-the-configuration) · [routes](#enable-routes) · [assets](#install-assets)
-- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [ONIX feed](#onix-feed) · [Google Play Books feed](#google-play-books-feed) · [edition files and channels](#edition-files-and-channels) · [sitemap](#sitemap) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
+- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [ONIX feed](#onix-feed) · [Google Play Books feed](#google-play-books-feed) · [edition files and channels](#edition-files-and-channels) · [sitemap](#sitemap) · [Atom feeds](#atom-feeds) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
 
 ## Features
 
@@ -55,6 +55,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - schema.org `Book`, `BookSeries` and `ComicStory` data published as JSON-LD
 - The catalog as an ONIX 3.0 feed for bookshops and distributors, forthcoming books included: each edition's price, the recording's duration, the categories' CLIL, Thema and BISAC codes
 - Sitemap generation, feeding the site's `llms.txt`
+- Atom feeds of the latest books and planches, announced in every page's `<head>`
 - The platform addresses a catalog sends its readers to, checked weekly on the Health check dashboard
 - Public url prefixes settable from the back office, and settable to nothing — a site reading its books under its own routes serves no page of the bundle's
 - Guided projects and linkable routes contributed to the management interface
@@ -238,7 +239,7 @@ A site declaring more than one language reads its catalog in each of them, and *
 every language**: one number, one slug, one set of editions and sales links. What an editor typed on it is
 translated beside it, in UiBundle's `site_translation` table (`Service\BookTranslator`): the title and the
 summary of a book, a serie, a category and a planche, a character's name and presentation, a person's
-presentation, the title of a press cutting or a promotional visual. A slug, an ISBN, an edition's format, an
+presentation, the title of a press cutting or a promotional visual, and the line the books index opens on. A slug, an ISBN, an edition's format, an
 age range and a person's own name are not translated.
 
 Every public route has a localised twin — `book_display_localized` beside `book_display`, and so on for the
@@ -255,7 +256,8 @@ over the row for the render being built and never persisted, which is why it run
 paths rather than on `postLoad` — the back office goes on showing what a row was written in.
 
 The six screens of the back office gain a **Traduire** action and a tab strip above each edit screen
-(`?contenu=xx`, ConfigBundle's `ContentLocaleScreen`), offering that language's texts alone. A duplicate and a
+(`?contenu=xx`, ConfigBundle's `ContentLocaleScreen`), offering that language's texts alone - the **Books page**
+screen gets the tab strip alone, a single row having no list to carry the action. A duplicate and a
 new version carry the translations of what they copy, a row removed for good takes its own away
 (`Listener\BookTranslationPurgeListener`), and the trash keeps them.
 
@@ -556,6 +558,8 @@ serie. A row with no public address — `site-url` unset, or its pages not serve
 handed out, and a row taken off the site since its post was prepared is dropped. Which rows went out where
 is SocialBundle's to record; a site without it never asks.
 
+Both sources also implement `BrowsableSocialContentSourceInterface`, so a post's content can be changed on its screen with SocialBundle's "Changer le contenu": another book or planche still free is picked among the latest published, and since the catalog has no groups, `getContentScope()` is always null. Where SocialBundle is installed, the books and planches admin lists gain a "Réseaux sociaux" column whose badge says whether a post holds the row — reserved by a draft or published, with the date — read through the optional `SocialContentStatusProviderInterface` for the rows of the page shown (`Controller\Management\Trait\SocialStatusCrudTrait`); on a site without SocialBundle the column simply isn't there.
+
 ### Trash, redirects and 410
 
 **Deleting takes a row off the site, it does not lose it.** A serie, a book, a strip or a person deleted
@@ -801,9 +805,18 @@ Format a raw ISBN string in Twig:
 <twig:c975LUi:Blocks:Blocks blocks="{{ book.blocks }}"/>
 ```
 
-A saved block moves from one container to another by drag and drop, `BookBlockOwnerResolver` being what lets UiBundle's move screen find the book, serie, strip, person or category holding it.
+The books index has no row of its own to hang its blocks on, so it gets one: `BookSettings`, a single row edited on the dashboard's **Books page** screen (`BookSettingsCrudController`), whose blocks `book/index.html.twig` prints above the listing with `render_owned_blocks()`. The row is created the first time the screen is opened: a catalog that never opened it renders no block above its listing rather than failing on a row that was never created. That same screen carries the one line the index prints above its blocks, `BookSettings::$intro`, as plain text rather than as a block, translated like the rest of the catalog: left empty, `Book:Explanation` falls back to `text.books_explanation`, the sentence the index has always printed.
+
+A saved block moves from one container to another by drag and drop, `BookBlockOwnerResolver` being what lets UiBundle's move screen find the book, serie, strip, person, category or books index holding it - `book_settings` naming the latter, which always resolves to the single row.
 
 A block hovers the same editing pencil as the sections above it (see *Display pages*): `BookBlockEditUrlProvider` answers UiBundle which screen composes a given block row, and the link opens it on that very row (`focusBlock`).
+
+The books index's blocks live in the `book_settings_block` join table, beside the `book_settings` table holding its row, so an existing installation needs a migration:
+
+```bash
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
+```
 
 ![BookBundle blocks](.github/images/BookBlocks.png)
 
@@ -959,6 +972,10 @@ with `--dry-run`, or on one product with `--product=<slug>`. A product is matche
 its title; an item to a kind of file by its slug and extension, a "version originale" to the book's earlier
 version, or to the book itself when it has none and no illustrated file takes the slot. Of two EPUBs, the one
 carrying SMIL files is taken as read aloud and preferred. What cannot be matched is listed and left in the shop.
+
+### Atom feeds
+
+`BookFeedProvider` and `StripFeedProvider` implement ConfigBundle's `FeedProviderInterface`: the latest books are served at `/feed/book.xml`, the latest planches at `/feed/strip.xml`, each entry carrying its public url, its summary and its image - a book's cover, a planche's share image (`Strip::getShareMedia()`). The books are those of the language the feed is read in. A family whose pages are not served (`BookRoutePrefix` empty) or a site without `site-url` gets no feed. Nothing to register.
 
 ### Sitemap
 

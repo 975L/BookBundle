@@ -24,6 +24,16 @@ class StripRepositoryTest extends TestCase
     private string $dql = '';
 
     /**
+     * @var list<string>
+     */
+    private array $dqls = [];
+
+    /**
+     * @var list<list<Strip>>
+     */
+    private array $results = [];
+
+    /**
      * @var array<string, mixed>
      */
     private array $parameters = [];
@@ -132,6 +142,36 @@ class StripRepositoryTest extends TestCase
         $this->assertStringContainsString('s.isDeleted = false', $this->dql);
     }
 
+    // The images a feed reads, in one query for the whole list: the collection cannot be joined into the listing itself, whose setMaxResults() would then cut rows and not planches
+    public function testTheMediasOfAListingAreReadInOneQueryForTheWholeList(): void
+    {
+        $repository = $this->createRepository();
+        $this->results = [[$this->strip(1), $this->strip(2)]];
+
+        $repository->findAllPublished(20);
+
+        $this->assertCount(2, $this->dqls);
+        $this->assertStringContainsString('LEFT JOIN s.medias medias', $this->dql);
+        $this->assertStringContainsString('s.id IN (:ids)', $this->dql);
+    }
+
+    // Nothing listed, nothing to read
+    public function testAnEmptyListingAsksForNoMediaAtAll(): void
+    {
+        $this->createRepository()->findPostableLatest([], 48);
+
+        $this->assertCount(1, $this->dqls);
+    }
+
+    // A planche as the listing hands it over: only its id is read
+    private function strip(int $id): Strip
+    {
+        $strip = new Strip();
+        new \ReflectionProperty(Strip::class, 'id')->setValue($strip, $id);
+
+        return $strip;
+    }
+
     // The query the repository builds is read back through the DQL the entity manager is handed, the rest of it being Doctrine's own
     private function createRepository(): StripRepository
     {
@@ -142,6 +182,7 @@ class StripRepositoryTest extends TestCase
         $entityManager->method('createQueryBuilder')->willReturnCallback(fn (): QueryBuilder => new QueryBuilder($entityManager));
         $entityManager->method('createQuery')->willReturnCallback(function (string $dql): Query {
             $this->dql = $dql;
+            $this->dqls[] = $dql;
 
             $query = $this->createStub(Query::class);
             $query->method('setParameters')->willReturnCallback(function (mixed $parameters) use ($query): Query {
@@ -153,7 +194,7 @@ class StripRepositoryTest extends TestCase
             });
             $query->method('setFirstResult')->willReturnSelf();
             $query->method('setMaxResults')->willReturnSelf();
-            $query->method('getResult')->willReturn([]);
+            $query->method('getResult')->willReturnCallback(fn (): array => array_shift($this->results) ?? []);
             $query->method('getOneOrNullResult')->willReturn(null);
 
             return $query;
@@ -182,5 +223,23 @@ class StripRepositoryTest extends TestCase
 
         $this->assertStringNotContainsString('s.serie = :serie', $this->dql);
         $this->assertStringContainsString('serie IS NULL OR serie.hidden = false', $this->dql);
+    }
+
+    // What a post's planche is chosen among: the published ones, those already posted left out, the latest first
+    public function testThePostableLatestLeaveOutTheExcludedAndReadLatestFirst(): void
+    {
+        $this->createRepository()->findPostableLatest(['7'], 48);
+
+        $this->assertStringContainsString('s.id NOT IN (:excluded)', $this->dql);
+        $this->assertStringContainsString('s.hidden = false', $this->dql);
+        $this->assertStringContainsString('ORDER BY s.published DESC, s.id DESC', $this->dql);
+    }
+
+    // Nothing posted yet: no empty NOT IN, which no database accepts
+    public function testThePostableLatestWithNothingExcludedHasNoExclusion(): void
+    {
+        $this->createRepository()->findPostableLatest([], 48);
+
+        $this->assertStringNotContainsString('NOT IN', $this->dql);
     }
 }

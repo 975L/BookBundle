@@ -38,8 +38,8 @@ class BookLinkHealthCheckProvider implements HealthCheckExhaustiveInterface
     // A platform answering one of these is up and simply refuses to be probed - most stores turn down a HEAD carrying no browser behind it. Reported as skipped rather than as an error: there is nothing for the editor to fix, and a red row nobody can act on is what makes a dashboard get ignored
     private const array REFUSED_CODES = [401, 403, 405, 429];
 
-    // Answers telling to come back later, which say nothing of the page: a store throttling a burst of probes from one address (Google Play answers 503 to a few of them) is asked once more after a pause, and only that second answer makes the verdict
-    private const array RETRY_LATER_CODES = [429, 503];
+    // Answers telling to come back later, which say nothing of the page: a store throttling a burst of probes from one address (Google Play answers 503, sometimes 500, to a few of them) or failing on its own side is asked once more after a pause, and only that second answer makes the verdict
+    private const array RETRY_LATER_CODES = [429, 500, 502, 503, 504];
 
     // Which collection of a book's screen the address is typed in, read from the platform's own group (see BookCrudController, where each gesture holds one): the pencil of the dashboard opens the very field to correct, as the pencils of the public page do (see Twig\BookEditUrlExtension)
     private const array BOOK_LINK_FIELDS = [

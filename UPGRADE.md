@@ -2,6 +2,23 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.20
+
+**The books index is composed in the back office, which needs a migration.** The new single-row `BookSettings`
+entity brings `book_settings` and `book_settings_block` - the line and the blocks the books index prints above its
+listing, written on the *Books page* screen. Nothing changes for an existing catalog, which keeps printing
+`text.books_explanation` and renders no block until one is placed, but the tables have to be created:
+
+```bash
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
+```
+
+**A template of yours overriding `book/index.html.twig`** receives `bookIntro` and `bookSettings` beside `books`:
+hand the first to `<twig:c975LBook:Book:Explanation :intro="bookIntro"/>` and render the second's blocks with
+`render_owned_blocks(bookSettings)` when it is not null, as the bundle's own template does - left as it is, the
+template goes on rendering, without the line nor the blocks written in the back office.
+
 ## v2.16
 
 **A category's code becomes one code per classification.** `BookCategory::getCode()`/`setCode()` become

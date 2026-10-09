@@ -157,6 +157,29 @@ class StripTest extends TestCase
         $this->assertNull(new Strip()->getThumbnailMedia());
     }
 
+    // What a share shows: the whole page first, the card failing it, then the first media - the feed, the posts and the page itself reading the same one
+    public function testTheShareMediaReadsThePageThenTheCardThenTheFirstOne(): void
+    {
+        $strip = new Strip();
+        $card = new StripMedia()->setKind(StripMediaKind::Card->value);
+        $page = new StripMedia()->setKind(StripMediaKind::Page->value);
+        $strip->addMedia($card)->addMedia($page);
+
+        $this->assertSame($page, $strip->getShareMedia());
+
+        $withCard = new Strip();
+        $withCard->addMedia(new StripMedia()->setKind(StripMediaKind::Panel->value))->addMedia($card);
+
+        $this->assertSame($card, $withCard->getShareMedia());
+
+        $bare = new Strip();
+        $only = new StripMedia();
+        $bare->addMedia($only);
+
+        $this->assertSame($only, $bare->getShareMedia());
+        $this->assertNull(new Strip()->getShareMedia());
+    }
+
     // Every view is a window on the one mapped collection: removing through any of them takes the media off the planche
     public function testRemovingThroughARoleTakesTheMediaOffThePlanche(): void
     {

@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -55,7 +56,36 @@ class StripRepository extends ServiceEntityRepository
 
     public function findAllPublished(?int $number = null): array
     {
-        $query = $this->createQueryBuilder('s')
+        $query = $this->publishedQueryBuilder();
+
+        if (null !== $number) {
+            $query->setMaxResults($number);
+        }
+
+        return $this->withMedias($query->getQuery()->getResult());
+    }
+
+    // The published planches not posted yet, the latest first - what a post's content is chosen among
+    /**
+     * @param list<string> $excludedIds
+     *
+     * @return list<Strip>
+     */
+    public function findPostableLatest(array $excludedIds, int $limit): array
+    {
+        $query = $this->publishedQueryBuilder()->setMaxResults($limit);
+
+        if ([] !== $excludedIds) {
+            $query->andWhere('s.id NOT IN (:excluded)')->setParameter('excluded', array_map(intval(...), $excludedIds));
+        }
+
+        return array_values($this->withMedias($query->getQuery()->getResult()));
+    }
+
+    // Every planche a reader can open, the latest published first
+    private function publishedQueryBuilder(): QueryBuilder
+    {
+        return $this->createQueryBuilder('s')
             ->leftJoin('s.serie', 'serie')
             ->andWhere('s.isDeleted = false')
             // Every listing below carries the same pair: a planche set aside by its editor is off the site exactly as long as the box is ticked - out of the lists, out of the navigation from one planche to the next, out of the sitemap at its next run (see Entity\Trait\HideableTrait)
@@ -69,12 +99,6 @@ class StripRepository extends ServiceEntityRepository
             ->addOrderBy('s.id', \SortDirection::Descending)
             ->setParameter('now', new \DateTime())
         ;
-
-        if (null !== $number) {
-            $query->setMaxResults($number);
-        }
-
-        return $query->getQuery()->getResult();
     }
 
     // "$character": the same listing, narrowed down to who speaks - the filter the chips of a serie's page lay (see Strip:Characters)
@@ -229,6 +253,33 @@ class StripRepository extends ServiceEntityRepository
         ;
 
         return $end === $strip ? null : $end;
+    }
+
+    // The images a feed or a post reads, loaded in one query for the whole list rather than one per planche (see Strip::getRepresentativeMedia()). Kept out of the listing queries themselves, as BookRepository::withCovers() is: a to-many join multiplies the rows their setMaxResults() then cuts
+    /**
+     * @param Strip[] $strips
+     *
+     * @return Strip[] The same planches, in the same order, their medias already loaded
+     */
+    private function withMedias(array $strips): array
+    {
+        $ids = array_values(array_filter(array_map(static fn (Strip $strip): ?int => $strip->getId(), $strips)));
+
+        if ([] === $ids) {
+            return $strips;
+        }
+
+        // The result is dropped on purpose: hydrating it fills the medias collection of the very planches the caller already holds
+        $this->createQueryBuilder('s')
+            ->select('s', 'medias')
+            ->leftJoin('s.medias', 'medias')
+            ->andWhere('s.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $strips;
     }
 
     // The characters speaking in one serie, each named once - the ones its own listing offers to filter on, which is who actually speaks in a published planche and not everyone the serie declares. Entities rather than a name and a slug, so the language being read can be laid over them (see BookTranslator::apply), and rooted on the character since Doctrine selects no joined entity without its root

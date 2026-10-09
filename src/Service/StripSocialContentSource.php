@@ -13,12 +13,13 @@ namespace c975L\BookBundle\Service;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Repository\StripRepository;
 use c975L\ConfigBundle\Service\SiteUrlResolver;
+use c975L\UiBundle\Contract\BrowsableSocialContentSourceInterface;
 use c975L\UiBundle\Contract\SocialContentSourceInterface;
 use c975L\UiBundle\Model\SocialContent;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 // Hands SocialBundle's publication the published planches, oldest first - a site without SocialBundle simply never asks. What went out where is SocialBundle's to record
-class StripSocialContentSource implements SocialContentSourceInterface
+class StripSocialContentSource implements BrowsableSocialContentSourceInterface, SocialContentSourceInterface
 {
     public function __construct(
         private readonly StripRepository $stripRepository,
@@ -51,6 +52,18 @@ class StripSocialContentSource implements SocialContentSourceInterface
         return null;
     }
 
+    // The planches not posted yet, the latest first, for a post's content to be chosen among - no groups here, so the scope is ignored
+    public function findContents(array $excludedIds, array $scopeIds, int $limit): array
+    {
+        return array_values(array_filter(array_map($this->toContent(...), $this->stripRepository->findPostableLatest($excludedIds, $limit))));
+    }
+
+    // Always null: the planches are not split into groups to draw from
+    public function getContentScope(string $sourceId): ?string
+    {
+        return null;
+    }
+
     // Null for a planche taken off the site since its post was prepared, or whose serie was
     public function getContent(string $sourceId): ?SocialContent
     {
@@ -70,9 +83,8 @@ class StripSocialContentSource implements SocialContentSourceInterface
             return null;
         }
 
-        // What the planche's own page shares: the whole page where it is a drawing, the card where it is words
-        $image = $strip->getMediasByKind('page')->first() ?: $strip->getMediasByKind('card')->first() ?: $strip->getMedias()->first() ?: null;
-        $name = $image?->getName();
+        // What the planche's own page shares
+        $name = $strip->getShareMedia()?->getName();
 
         return new SocialContent(
             sourceId: (string) $strip->getId(),

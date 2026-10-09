@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Controller\Management;
 
 use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
+use c975L\BookBundle\Controller\Management\Trait\SocialStatusCrudTrait;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Field\BookDataField;
@@ -36,6 +37,7 @@ use c975L\BookBundle\Service\BookTrashManager;
 use c975L\BookBundle\Service\BookVersionPublisher;
 use c975L\ConfigBundle\Management\EasyAdminActionHelper;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
+use c975L\UiBundle\Contract\SocialContentStatusProviderInterface;
 use c975L\UiBundle\Form\BlockType;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
@@ -74,6 +76,8 @@ class BookCrudController extends AbstractCrudController
 {
     use ContentLocaleCrudTrait;
 
+    use SocialStatusCrudTrait;
+
     // configureActions() is widened below with an action of its own to books: only a book comes in versions
     use TrashableCrudTrait {
         configureActions as private trashableActions;
@@ -111,12 +115,19 @@ class BookCrudController extends AbstractCrudController
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly RequestStack $requestStack,
         private readonly TranslatorInterface $translator,
+        private readonly ?SocialContentStatusProviderInterface $socialStatuses = null,
     ) {
     }
 
     public static function getEntityFqcn(): string
     {
         return Book::class;
+    }
+
+    // The type SocialBundle files the books under (see Trait\SocialStatusCrudTrait)
+    private function socialSourceType(): string
+    {
+        return 'book';
     }
 
     public function configureFields(string $pageName): iterable
@@ -162,6 +173,7 @@ class BookCrudController extends AbstractCrudController
                 ->setFormType(TrixEditorType::class),
             DateField::new('published')
                 ->setLabel(t('label.published', [], 'book')),
+            ...$this->socialStatusFields(),
             // The switch is offered on the index too: setting a row aside and putting it back is one click there, where opening the edit screen for it is four
             BooleanField::new('hidden')
                 ->setLabel(t('label.hidden', [], 'book'))

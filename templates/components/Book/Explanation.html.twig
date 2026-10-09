@@ -1,1 +1,3 @@
-<p class="text text-center">{{ 'text.books_explanation'|trans({}, 'book') }}</p>
+{# The intro an editor wrote on the books index screen (see BookSettings), the sentence the catalog has always printed otherwise #}
+{% props intro = null %}
+<p class="text text-center">{{ intro ? intro|nl2br : 'text.books_explanation'|trans({}, 'book') }}</p>

@@ -76,7 +76,9 @@ class BookCategory implements HasBlocksInterface, TrashableInterface, \Stringabl
     #[ORM\ManyToMany(targetEntity: Book::class, mappedBy: 'categories')]
     private Collection $books;
 
+    // "SET NULL" and not the default: this only records who created the category, and deleting that account must not be blocked by it
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?UserInterface $user = null;
 
     public function __construct()

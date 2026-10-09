@@ -96,7 +96,9 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $medias;
 
+    // "SET NULL" and not the default: this only records who created the series, and deleting that account must not be blocked by it
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?UserInterface $user = null;
 
     public function __construct()

@@ -6,6 +6,10 @@
                 <source>narration.books</source>
                 <target>«Libros» lista todo el catálogo: información, autor, ilustrador, ediciones, enlaces de venta y bloques de contenido.</target>
             </trans-unit>
+            <trans-unit id="xCBpw1_">
+                <source>narration.books_index</source>
+                <target>«Página de los libros» es lo que el catálogo dice por encima de los libros que lista, compuesto con los mismos bloques que una ficha de libro.</target>
+            </trans-unit>
             <trans-unit id="DNxHSeJ">
                 <source>narration.categories</source>
                 <target>«Categorías» divide el catálogo por tema: un libro lleva tantas como merezca, y una categoría tiene su propia página si el sitio le da una.</target>
@@ -313,6 +317,22 @@
             <trans-unit id="xgT0vnD">
                 <source>narration.guided_step_book_hidden_switch</source>
                 <target>Cambie la fila a «Oculto»: un clic retira el libro del sitio, un segundo lo devuelve, sin nada más que guardar.</target>
+            </trans-unit>
+            <trans-unit id="xE0CAQT">
+                <source>narration.guided_step_book_index_blocks</source>
+                <target>Componga lo que va por encima de la lista. Novedad, argumentos, mensaje de bienvenida: los mismos tipos que los de una página del sitio.</target>
+            </trans-unit>
+            <trans-unit id="aLKomUp">
+                <source>narration.guided_step_book_index_intro</source>
+                <target>Escriba la frase de bienvenida. Es la frase propia del catálogo, mostrada por encima de todo lo demás; si se deja vacía, la página recupera la que siempre ha mostrado.</target>
+            </trans-unit>
+            <trans-unit id="eK_dXAs">
+                <source>narration.guided_step_book_index_open</source>
+                <target>Abra la página de los libros, en el menú de la izquierda. Es una pantalla para una sola fila, y se abre directamente en su formulario.</target>
+            </trans-unit>
+            <trans-unit id="pBiM.Hu">
+                <source>narration.guided_step_book_index_save</source>
+                <target>Guarde. La página de los libros muestra la frase y los bloques en cuanto se guarda la fila.</target>
             </trans-unit>
             <trans-unit id="iUigQGu">
                 <source>narration.guided_step_book_listen_audios</source>

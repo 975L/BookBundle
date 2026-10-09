@@ -1,0 +1,13 @@
+{% extends '@EasyAdmin/crud/edit.html.twig' %}
+
+{% block main %}
+    {# The language tabs, and nothing at all on a site declaring a single language (see ConfigBundle's ContentLocaleScreen) #}
+    {{ include('@c975LConfig/management/_content_locale_tabs.html.twig') }}
+
+    {# What this screen is for, said on the screen the row is written on and left out of a language screen, which only translates its line #}
+    {% if content_locale|default(null) is null %}
+        <p>{{ ('label.info_books_index'|trans({}, 'book')) }}</p>
+    {% endif %}
+
+    {{ parent() }}
+{% endblock main %}

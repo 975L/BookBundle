@@ -100,7 +100,9 @@ abstract class Media implements \Stringable
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    // "SET NULL" and not the default: this only records who created the media, and deleting that account must not be blocked by it
     #[ORM\ManyToOne()]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?UserInterface $user = null;
 
     // What this row says in the language being rendered, laid over its title and stored nowhere on the row: unmapped on purpose, Doctrine computing its changeset from the mapped properties and never from these getters, so a screen rendered in English cannot write English over the title the file was given (see BookTranslator, the only thing that sets it)

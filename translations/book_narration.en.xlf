@@ -6,6 +6,10 @@
                 <source>narration.books</source>
                 <target>"Books" lists the whole catalog: information, author, illustrator, editions, sales links and content blocks.</target>
             </trans-unit>
+            <trans-unit id="xCBpw1_">
+                <source>narration.books_index</source>
+                <target>"Books page" is what the catalog says above the books it lists, composed with the same blocks as a book page.</target>
+            </trans-unit>
             <trans-unit id="DNxHSeJ">
                 <source>narration.categories</source>
                 <target>"Categories" cuts the catalog by subject: a book carries as many as it deserves, and a category has a page of its own where the site gives it one.</target>
@@ -313,6 +317,22 @@
             <trans-unit id="xgT0vnD">
                 <source>narration.guided_step_book_hidden_switch</source>
                 <target>Switch the row to hidden: one click takes the book off the site, a second puts it back, with nothing else to save.</target>
+            </trans-unit>
+            <trans-unit id="xE0CAQT">
+                <source>narration.guided_step_book_index_blocks</source>
+                <target>Compose what stands above the listing. A new release, arguments, a welcome message: the same kinds a page of the site is composed with.</target>
+            </trans-unit>
+            <trans-unit id="aLKomUp">
+                <source>narration.guided_step_book_index_intro</source>
+                <target>Write the welcome line. It is the catalog's own sentence, printed above everything else; left empty, the page falls back to the one it has always printed.</target>
+            </trans-unit>
+            <trans-unit id="eK_dXAs">
+                <source>narration.guided_step_book_index_open</source>
+                <target>Open the books page, in the left-hand menu. It is one screen for one row, and it opens straight on its form.</target>
+            </trans-unit>
+            <trans-unit id="pBiM.Hu">
+                <source>narration.guided_step_book_index_save</source>
+                <target>Save. The books page shows the line and the blocks as soon as the row is saved.</target>
             </trans-unit>
             <trans-unit id="iUigQGu">
                 <source>narration.guided_step_book_listen_audios</source>

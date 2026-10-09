@@ -1,5 +1,30 @@
 [
     {
+        "date": "2026-10-09",
+        "description": [
+            {
+                "en": "The books page can now open on your own sentence and on blocks you compose in the back office.",
+                "fr": "La page des livres peut désormais s'ouvrir sur votre propre phrase et sur des blocs que vous composez dans le back-office.",
+                "es": "La página de los libros puede abrirse ahora con su propia frase y con bloques que usted compone en el back-office."
+            },
+            {
+                "en": "Your readers can follow your latest books and planches in their feed reader.",
+                "fr": "Vos lecteurs peuvent suivre vos derniers livres et planches dans leur lecteur de flux.",
+                "es": "Sus lectores pueden seguir sus últimos libros y planchas en su lector de feeds."
+            },
+            {
+                "en": "The books and planches lists show whether a social network post already holds each one.",
+                "fr": "Les listes des livres et des planches indiquent si une publication sur les réseaux sociaux les reprend déjà.",
+                "es": "Las listas de libros y planchas indican si una publicación en las redes sociales ya los incluye."
+            },
+            {
+                "en": "Search engines now see the price of each edition of a book.",
+                "fr": "Les moteurs de recherche voient désormais le prix de chaque édition d'un livre.",
+                "es": "Los motores de búsqueda ven ahora el precio de cada edición de un libro."
+            }
+        ]
+    },
+    {
         "date": "2026-10-08",
         "description": [
             {

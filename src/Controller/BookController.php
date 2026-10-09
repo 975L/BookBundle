@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Controller;
 
+use c975L\BookBundle\Repository\BookSettingsRepository;
 use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
@@ -33,6 +34,7 @@ class BookController extends AbstractController
 
     public function __construct(
         private readonly BookServiceInterface $bookService,
+        private readonly BookSettingsRepository $bookSettingsRepository,
         private readonly BookTranslatedLocales $translatedLocales,
         private readonly BookTranslator $bookTranslator,
         private readonly LocalizedRouteNegotiator $negotiator,
@@ -63,12 +65,22 @@ class BookController extends AbstractController
 
         $books = $this->bookService->findAllPaginated($request->query);
 
-        // The language being read laid over the titles and summaries, for this render and no longer: called here rather than on postLoad, the back office having to go on showing the text a row was written in (see BookTranslator::apply)
+        // Read once for the two things the index takes from it, the row being absent on a catalog that never opened the back-office screen
+        $settings = $this->bookSettingsRepository->findSingle();
+
+        // The language being read laid over the titles and summaries, and over the settings' intro, for this render and no longer: called here rather than on postLoad, the back office having to go on showing the text a row was written in (see BookTranslator::apply)
         $this->bookTranslator->apply($books);
+        $this->bookTranslator->apply(null === $settings ? [] : [$settings]);
 
         return $this->negotiator->vary($request, $this->render(
             '@c975LBook/book/index.html.twig',
-            ['books' => $books]
+            [
+                'books' => $books,
+                // The catalog's own line - null until the editor writes one, the template then falling back to the sentence the index has always printed
+                'bookIntro' => $settings?->getIntro(),
+                // What the editor composed above the listing - null on a catalog that never opened the screen, which renders nothing rather than failing on a row that was never created
+                'bookSettings' => $settings,
+            ]
         ));
     }
 
