@@ -19,6 +19,9 @@ class BookRoutePrefix
 {
     public const string ALIAS = 'book_route_prefix';
 
+    // The condition of every listening route, the pages and their JSON alike: one copy, so neither is served without the other (see ListenController and ListenJsonController)
+    public const string LISTEN_CONDITION = "service('" . self::ALIAS . "').matches('book-route-listen', params['listen_prefix'])";
+
     // slug of the ConfigBundle entry => name of the route parameter carrying it. One pair per family, the index and the page of a single entry being named apart ("/livres" and "/livre/{slug}") - except the series, read under the very segment of the index listing them ("/series/{slug}", "/strips/{slug}"), so a serie's page sits below its own index rather than beside it (see SerieController). The last two are not segments but short links - one letter and a number, "/b3", the way a book is handed over on a social network
     public const array PREFIXES = [
         'book-route-books' => 'books_prefix',

@@ -185,6 +185,17 @@ class BookSectionsExtension
         ));
     }
 
+    // The books holding a recording: what the listening pages list, and their JSON with them (see ListenJsonController::index())
+    /**
+     * @param Book[] $books
+     *
+     * @return list<Book>
+     */
+    public static function withAudio(array $books): array
+    {
+        return array_values(array_filter($books, static fn (Book $book): bool => [] !== self::audioMedias($book)));
+    }
+
     // The files of a given kind, whatever version carries them - which book_media() does not do, reading only those of the book itself
     /**
      * @return list<Media>

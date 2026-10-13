@@ -11,8 +11,10 @@
     {% set audios = book_audio_medias(book) %}
     {# Mp3 first when there is one: the one format every browser plays #}
     {% set audio = audios|filter(media => media.mimeType == 'audio/mpeg')|first ?: audios|first %}
+    {# The timecodes row can hold no file: nothing to follow then, as in the JSON (see ListenJsonController::book()) #}
+    {% set followed = book.cues and book.cues.name and book.pages|length %}
     <div class="book-listen-page" lang="{{ book.language }}">
-        {% if book.cues and book.pages|length %}
+        {% if followed %}
             <twig:c975LBook:Reader:Reader media="{{ book.pages }}" audio="{{ audio }}" cuesFile="{{ book.cues }}" id="listen-{{ book.id }}"/>
         {% else %}
             {% set cover = book_cover(book) %}
@@ -22,7 +24,7 @@
         {# Everything the player needs again with no network: the recording, each page, their timecodes and the page-turn sound, plus the cover the downloads list shows (see UiBundle's Pwa:Download) #}
         {% set coverUrl = asset(book_cover(book) ?: 'bundles/c975lbook/images/no-cover.webp') %}
         {% set offlineUrls = [vich_uploader_asset(audio), coverUrl] %}
-        {% if book.cues and book.pages|length %}
+        {% if followed %}
             {% set offlineUrls = offlineUrls|merge(book.pages|map(page => vich_uploader_asset(page)))|merge([vich_uploader_asset(book.cues)]) %}
             {% if config('book-page-sound')|to_bool %}
                 {% set offlineUrls = offlineUrls|merge([asset('bundles/c975lbook/sounds/page-turn.mp3')]) %}

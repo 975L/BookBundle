@@ -27,6 +27,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 // The list is read twice by a display page - once to build the summary of anchors, once to decide what to render - so what it holds is what the page shows, and nothing else
 class BookSectionsExtensionTest extends TestCase
 {
+    // The listening pages list a book by what they can play, not by what is filed as audio
+    public function testOnlyTheBooksHoldingARecordingAreKept(): void
+    {
+        $recorded = new Book()->addMedia(new BookMedia()->setKind('audio_mp3')->setName('histoire.mp3'));
+        $silent = new Book()->addMedia(new BookMedia()->setKind('audio_mp3')->setName('histoire.pdf'));
+
+        $this->assertSame([$recorded], BookSectionsExtension::withAudio([$silent, $recorded, new Book()]));
+    }
+
     // A book with nothing filled in still says when it comes out and who wrote it, so that one section is never absent
     public function testABookWithNothingFilledInStillHoldsItsInformations(): void
     {

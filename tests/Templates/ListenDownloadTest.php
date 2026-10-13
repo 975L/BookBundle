@@ -32,6 +32,15 @@ class ListenDownloadTest extends TestCase
         $this->assertStringContainsString('vich_uploader_asset(book.cues)', $contents);
     }
 
+    // A timecodes row holding no file follows nothing: the reader and the kept files read the one same test
+    public function testATimecodesRowHoldingNoFileIsNotFollowed(): void
+    {
+        $contents = $this->contents();
+
+        $this->assertStringContainsString('{% set followed = book.cues and book.cues.name and book.pages|length %}', $contents);
+        $this->assertSame(2, substr_count($contents, '{% if followed %}'));
+    }
+
     private function contents(): string
     {
         $this->assertFileExists(self::DISPLAY);

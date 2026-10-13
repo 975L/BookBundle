@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.21.0
+
+Listening pages served as JSON
+
+- New `ListenJsonController`: `book_listen_json`, the listening books and their files under absolute urls (13/10/2026)
+- JSON answered with a weak `ETag`, 304 to a reader already holding it (13/10/2026)
+- Added `BookRoutePrefix::LISTEN_CONDITION`, shared by every listening route (13/10/2026)
+- Added `BookSectionsExtension::withAudio()` (13/10/2026)
+- `book_listen` no longer follows a timecodes row holding no file (13/10/2026)
+
 ## v2.20.0
 
 Books index composed in the back office, catalog Atom feeds

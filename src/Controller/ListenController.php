@@ -10,7 +10,6 @@
 
 namespace c975L\BookBundle\Controller;
 
-use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
@@ -26,8 +25,6 @@ use Symfony\Component\Routing\Attribute\Route;
 // The books that can be listened to, and each one played: its recording, and its pages turning along it when the book carries their timecodes (see Book::getCues()). Same as SerieController: the index and the page share one first segment, a ConfigBundle entry left empty by default - a site turns the listening pages on by naming them (see BookRoutePrefix)
 class ListenController extends AbstractController
 {
-    private const string LISTEN_CONDITION = "service('" . BookRoutePrefix::ALIAS . "').matches('book-route-listen', params['listen_prefix'])";
-
     public function __construct(
         private readonly BookServiceInterface $bookService,
         private readonly BookTranslatedLocales $translatedLocales,
@@ -42,13 +39,13 @@ class ListenController extends AbstractController
         name: 'book_listen_index_localized',
         requirements: ['_locale' => '%c975l_config.locales_pattern%'],
         methods: ['GET'],
-        condition: self::LISTEN_CONDITION
+        condition: BookRoutePrefix::LISTEN_CONDITION
     )]
     #[Route(
         '/{listen_prefix}',
         name: 'book_listen_index',
         methods: ['GET'],
-        condition: self::LISTEN_CONDITION
+        condition: BookRoutePrefix::LISTEN_CONDITION
     )]
     public function index(Request $request): Response
     {
@@ -57,10 +54,7 @@ class ListenController extends AbstractController
             return $this->negotiator->vary($request, $askedLanguage);
         }
 
-        $books = array_values(array_filter(
-            $this->bookService->findAllPublished(null, $request->getLocale()),
-            static fn (Book $book): bool => [] !== BookSectionsExtension::audioMedias($book)
-        ));
+        $books = BookSectionsExtension::withAudio($this->bookService->findAllPublished(null, $request->getLocale()));
 
         return $this->negotiator->vary($request, $this->render(
             '@c975LBook/listen/index.html.twig',
@@ -77,7 +71,7 @@ class ListenController extends AbstractController
             'slug' => '^([a-z0-9\-]+)',
         ],
         methods: ['GET'],
-        condition: self::LISTEN_CONDITION
+        condition: BookRoutePrefix::LISTEN_CONDITION
     )]
     #[Route(
         '/{listen_prefix}/{slug}',
@@ -86,7 +80,7 @@ class ListenController extends AbstractController
             'slug' => '^([a-z0-9\-]+)',
         ],
         methods: ['GET'],
-        condition: self::LISTEN_CONDITION
+        condition: BookRoutePrefix::LISTEN_CONDITION
     )]
     public function display(string $slug, Request $request): Response
     {

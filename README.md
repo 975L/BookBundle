@@ -44,6 +44,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - A book still to come tells its readers when it is out: an address left on its page, one e-mail sent the day it appears, and the row deleted with it
 - Books and planches handed to SocialBundle's scheduled publication, where the site installs it
 - Listening pages: the books holding a recording, each one played with its pages turning along the voice when it carries their timecodes (a WebVTT file), and kept for offline listening where the site is an installable app
+- The same listening pages as JSON, for a reader living outside the site: every book and the absolute urls of its files in one answer
 - Reader reviews on a book's page, behind UiBundle's `ui-enable-reviews` setting
 - The site's age warning stated on a book declaring an age — one sentence written once in the back office (CoreBundle's `site-age-warning`), printed on every such book and said in the book's own language where the site translated it
 - The four catalog indexes describable from the back office — title and shared sentence written in *Descriptions d'urls*, over the bundle's own labels
@@ -180,6 +181,7 @@ showcase — contributes the same file through its own stylesheet provider.
 | `strip_shortcut` | `/s{number}` | `book-route-strip-shortcut` | Short link to a strip, 301 |
 | `book_listen_index` | *unset* | `book-route-listen` | The books holding a recording, in the language being read |
 | `book_listen` | *unset* | `book-route-listen` | A book played: its pages turning along the recording when it carries a `cues` file, its cover and the player otherwise |
+| `book_listen_json` | *unset* | `book-route-listen` | The listening pages as JSON, at the prefix followed by `.json`: each book's recording, cover, pages and timecodes under absolute urls, answered with a weak `ETag` |
 | `book_onix` | *unset* | `book-route-onix` | The catalog as an ONIX 3.0 feed (see [ONIX feed](#onix-feed)) |
 | `book_release_alert_new` | `/book/release-alert/{id}` | — | Where an address is left to be told a book is out — `noindex` |
 | `book_release_alert_unsubscribe` | `/book/release-alert/{token}/unsubscribe` | — | The link the acknowledgement e-mail carries, opening a page with a button — `noindex` |
