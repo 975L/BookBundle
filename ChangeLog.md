@@ -1,5 +1,26 @@
 # Changelog
 
+## v2.22.0
+
+Book sections cached, listens counted, free books
+
+- Requires `easycorp/easyadmin-bundle` ^5.7 (14/10/2026)
+- Custom actions no longer add the `btn` classes EasyAdmin already sets (14/10/2026)
+- Requires `c975l/core-bundle` ^1.67 (14/10/2026)
+- `book_listen` counts a story heard to its end (14/10/2026)
+- New `book_plays()` and `book-plays-minimum`: listens printed on the book and listening pages (14/10/2026)
+- A book's sections cached until a book changes or midnight (14/10/2026)
+- New `cache` key in `getSections()`: a site's `template` is cached only when `true` (14/10/2026)
+- Catalog cache also dropped on links, credits, characters and any `book-*` setting (14/10/2026)
+- Catalog cache also dropped on catalog translations and collection-only changes (14/10/2026)
+- Catalog cache dropped once per flush (14/10/2026)
+- Added `Book::isFree()`: a digital edition priced 0 titles the shops section "Get it free" (14/10/2026)
+- Listening JSON gains `published`, `age`, `serie`, `credits`, `videos`, `plays` and `data` (14/10/2026)
+- Listening JSON `plays` withheld below `book-plays-minimum` (14/10/2026)
+- New `book-listen-data`: the site's fields the listening JSON hands out (14/10/2026)
+- Guided project *book-edition-sale* explains a free digital edition (14/10/2026)
+- Guided project *book-listen* explains the listen counter (14/10/2026)
+
 ## v2.21.0
 
 Listening pages served as JSON

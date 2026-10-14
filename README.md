@@ -44,7 +44,8 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 - A book still to come tells its readers when it is out: an address left on its page, one e-mail sent the day it appears, and the row deleted with it
 - Books and planches handed to SocialBundle's scheduled publication, where the site installs it
 - Listening pages: the books holding a recording, each one played with its pages turning along the voice when it carries their timecodes (a WebVTT file), and kept for offline listening where the site is an installable app
-- The same listening pages as JSON, for a reader living outside the site: every book and the absolute urls of its files in one answer
+- The same listening pages as JSON, for a reader living outside the site: every book, its credits, its videos and the absolute urls of its files in one answer
+- How many times a book was heard to its end, on the site and in its apps, shown on its page and its listening page once past `book-plays-minimum`
 - Reader reviews on a book's page, behind UiBundle's `ui-enable-reviews` setting
 - The site's age warning stated on a book declaring an age — one sentence written once in the back office (CoreBundle's `site-age-warning`), printed on every such book and said in the book's own language where the site translated it
 - The four catalog indexes describable from the back office — title and shared sentence written in *Descriptions d'urls*, over the bundle's own labels
@@ -181,7 +182,7 @@ showcase — contributes the same file through its own stylesheet provider.
 | `strip_shortcut` | `/s{number}` | `book-route-strip-shortcut` | Short link to a strip, 301 |
 | `book_listen_index` | *unset* | `book-route-listen` | The books holding a recording, in the language being read |
 | `book_listen` | *unset* | `book-route-listen` | A book played: its pages turning along the recording when it carries a `cues` file, its cover and the player otherwise |
-| `book_listen_json` | *unset* | `book-route-listen` | The listening pages as JSON, at the prefix followed by `.json`: each book's recording, cover, pages and timecodes under absolute urls, answered with a weak `ETag` |
+| `book_listen_json` | *unset* | `book-route-listen` | The listening pages as JSON, at the prefix followed by `.json`: each book's recording, cover, pages and timecodes under absolute urls, its serie, credits, videos and listens, plus the fields of its own the site lists in `book-listen-data`, answered with a weak `ETag` |
 | `book_onix` | *unset* | `book-route-onix` | The catalog as an ONIX 3.0 feed (see [ONIX feed](#onix-feed)) |
 | `book_release_alert_new` | `/book/release-alert/{id}` | — | Where an address is left to be told a book is out — `noindex` |
 | `book_release_alert_unsubscribe` | `/book/release-alert/{token}/unsubscribe` | — | The link the acknowledgement e-mail carries, opening a page with a button — `noindex` |
@@ -443,7 +444,8 @@ row now, the same move `BookLink` made for the stores:
 and the public price the [ONIX feed](#onix-feed) announces (`price`, in cents tax included, and `currency`).
 The files and the platforms belong to the book and are edited under the gesture they serve: the recording
 under "Listen" beside the podcast apps, the stores under "Buy". A paperback and an ebook of the same story
-are sold at the same addresses, and neither has pages of its own to upload.
+are sold at the same addresses, and neither has pages of its own to upload. A digital edition whose public price
+is 0 makes the book free: its "Buy" section becomes "Get it free" (`Book::isFree()`).
 
 **Each edition is edited in a panel of its own**, unfolded in the "technical informations" tab of the book
 (`BookEditionType`, an accordion entry). Deleting an edition takes nothing else with it.
@@ -707,6 +709,11 @@ block carries (UiBundle's `animate-scroll.js`, same `data-animation`), the page 
 only when a section asks for one. `template` is a fragment of the site's, included **inside** the card with
 `book` and `section` at hand — which is where a shop button, a smartlink or a field of the site's own goes,
 rather than in an override of the whole component.
+
+The sections are held in the cache the blocks are held in, one entry per book and language, emptied when
+anything they print changes and at midnight. They stay live for an editor, and for every visitor as soon as one
+section declares `cache: false`, or carries a `template` without `cache: true` — a fragment may print something
+of one visitor, a form and its csrf token, so it is held only when the site says it can be.
 
 A label is passed to the translator, so it can be a key of the `book` domain as well as plain words: a
 string the catalog holds no entry for is printed as it stands.

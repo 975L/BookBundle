@@ -83,34 +83,29 @@ trait TrashableCrudTrait
         $viewOnSiteAction = Action::new('viewOnSite', t('action.view_on_site', [], 'book'), 'fa fa-external-link-alt')
             ->linkToUrl(fn (TrashableInterface $entity): string => (string) $this->publicPath($entity))
             ->setHtmlAttributes(['target' => '_blank'])
-            ->displayIf(fn (TrashableInterface $entity): bool => !$entity->isDeleted() && null !== $this->publicPath($entity))
-            ->addCssClass('btn btn-secondary');
+            ->displayIf(fn (TrashableInterface $entity): bool => !$entity->isDeleted() && null !== $this->publicPath($entity));
 
         // Duplicates the row with everything that belongs to it into a new one, saved immediately (see duplicate() and BookDuplicator) - built as a url rather than linked to the crud action, so the csrf token the action checks travels with it
         $duplicateAction = Action::new('duplicate', t('action.duplicate', [], 'book'), 'fa fa-copy')
             ->linkToUrl(fn (TrashableInterface $entity): string => $this->actionUrl('duplicate', $entity, self::DUPLICATE_CSRF_TOKEN))
             ->displayIf(static fn (TrashableInterface $entity): bool => !$entity->isDeleted())
-            ->askConfirmation(t('confirm.duplicate', [], 'book'))
-            ->addCssClass('btn btn-secondary');
+            ->askConfirmation(t('confirm.duplicate', [], 'book'));
 
         // Restores a row out of the trash, only shown once already in it
         $restoreAction = Action::new('restore', t('action.restore', [], 'book'), 'fa fa-trash-restore')
             ->linkToUrl(fn (TrashableInterface $entity): string => $this->trashActionUrl('restore', $entity, self::RESTORE_CSRF_TOKEN))
-            ->displayIf(static fn (TrashableInterface $entity): bool => $entity->isDeleted())
-            ->addCssClass('btn btn-secondary');
+            ->displayIf(static fn (TrashableInterface $entity): bool => $entity->isDeleted());
 
         // Removes the row for good, only shown once already in the trash - built as a url rather than linked to the crud action, so the csrf token the action checks travels with it
         $deletePermanentlyAction = Action::new('deletePermanently', t('action.delete_permanently', [], 'book'), 'fa fa-trash')
             ->linkToUrl(fn (TrashableInterface $entity): string => $this->trashActionUrl('deletePermanently', $entity, self::DELETE_PERMANENTLY_CSRF_TOKEN))
             ->displayIf(static fn (TrashableInterface $entity): bool => $entity->isDeleted())
             ->askConfirmation(t('confirm.delete_permanently', [], 'book'))
-            ->asDangerAction()
-            ->addCssClass('btn btn-danger');
+            ->asDangerAction();
 
         // Lets the admin back out of a create/edit without saving - mirrors EasyAdmin's own built-in actions (linkToCrudAction targeting INDEX, same as Action::INDEX itself)
         $cancelAction = Action::new('cancel', $this->translator->trans('action.cancel', [], 'EasyAdminBundle'), 'fa fa-times')
-            ->linkToCrudAction(Action::INDEX)
-            ->addCssClass('btn btn-secondary');
+            ->linkToCrudAction(Action::INDEX);
 
         return $actions
             ->add(Crud::PAGE_INDEX, $exportGroup)
@@ -335,8 +330,7 @@ trait TrashableCrudTrait
                     ->generateUrl());
 
         return $action
-            ->createAsGlobalAction()
-            ->addCssClass('btn btn-secondary');
+            ->createAsGlobalAction();
     }
 
     // The url of a catalog row button, its csrf token in the query string - the action is a GET, which an <img> on a third-party page would otherwise fire on a logged-in admin

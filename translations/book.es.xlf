@@ -340,7 +340,7 @@
             </trans-unit>
             <trans-unit id="LgOc2qn">
                 <source>description.guided_step_book_edition_sale_files</source>
-                <target>Un espacio por archivo que la edición vende, cada uno con su precio con impuestos: una edición digital lleva el EPUB (marcado «Leído en voz alta» si lee su texto), el PDF y el folleto, una de audio el MP3.</target>
+                <target>Un espacio por archivo que la edición vende, cada uno con su precio con impuestos: una edición digital lleva el EPUB (marcado «Leído en voz alta» si lee su texto), el PDF y el folleto, una de audio el MP3. El precio público de la edición digital, encima de sus archivos, a 0 regala el libro: su página dice entonces «Obtener gratis».</target>
             </trans-unit>
             <trans-unit id="wdXHhRC">
                 <source>description.guided_step_book_edition_sale_open</source>
@@ -424,7 +424,7 @@
             </trans-unit>
             <trans-unit id="u7M2BLI">
                 <source>description.guided_step_book_listen_done</source>
-                <target>La página de escucha solo responde si el sitio le ha dado una dirección: el «Prefijo URL de los libros para escuchar», en la configuración. El ajuste «Sonido de página» añade allí un breve sonido cada vez que la voz pasa una página.</target>
+                <target>La página de escucha solo responde si el sitio le ha dado una dirección: el «Prefijo URL de los libros para escuchar», en la configuración. El ajuste «Sonido de página» añade allí un breve sonido cada vez que la voz pasa una página. Cada escucha completa se cuenta; la cifra aparece en la página del libro y la de escucha en cuanto alcanza el ajuste «Escuchas mostradas a partir de».</target>
             </trans-unit>
             <trans-unit id="GBg0WvF">
                 <source>description.guided_step_book_listen_edit</source>
@@ -1606,6 +1606,14 @@
                 <source>label.gallery_showcase_book_to_be_published_description</source>
                 <target>Lista de libros en curso de publicación</target>
             </trans-unit>
+            <trans-unit id="jwfpzUj">
+                <source>label.get_free</source>
+                <target>Obtener gratis</target>
+            </trans-unit>
+            <trans-unit id="kX5XMTj">
+                <source>label.get_free-intro</source>
+                <target>La edición digital de este libro es gratuita en las direcciones siguientes.</target>
+            </trans-unit>
             <trans-unit id="oPngwpd">
                 <source>label.guided_project_book_category_creation</source>
                 <target>Crear una categoría</target>
@@ -2441,6 +2449,10 @@
             <trans-unit id="GJrzplD">
                 <source>label.listen_links-help</source>
                 <target>Las aplicaciones de podcast y las librerías de audio donde se escucha el libro.</target>
+            </trans-unit>
+            <trans-unit id="S_Q22.F">
+                <source>label.listen_plays</source>
+                <target>%count% escucha|%count% escuchas</target>
             </trans-unit>
             <trans-unit id="3GxSEoz">
                 <source>label.listen_to</source>

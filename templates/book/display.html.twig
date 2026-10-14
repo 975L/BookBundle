@@ -49,17 +49,20 @@
             <twig:c975LBook:Book:Resume book="{{ book }}" editUrl="{{ editUrls.resume|default('') }}"/>
             {# After the summary and outside any card: the flipbook shows the book, it is no section to be announced #}
             <twig:c975LBook:Book:Flipbook book="{{ book }}" editUrl="{{ editUrls.pages|default('') }}"/>
-            {# The sections have a grid of their own rather than the column having it: the player below rests against the bottom of the screen, which position: sticky only does for a child of a box taller than itself - a grid item's own area is exactly its size, and the player would stop sticking #}
-            <div class="book-page__grid">
-            {% for section in sections %}
-                {% if components[section.key] is defined %}
-                    {{ component('c975LBook:Book:' ~ components[section.key], {book: book, section: section, editUrl: editUrls[section.key]|default('')}) }}
-                {# A section the site adds and this bundle knows nothing about: the fragment it declared, in the card every other section takes (see BookCustomizationProviderInterface::getSections()) #}
-                {% elseif section.template|default('') %}
-                    {{ include('@c975LBook/book/_section.html.twig', {book: book, section: section, form: section.form|default('card'), editUrl: editUrls[section.key]|default('')}) }}
-                {% endif %}
-            {% endfor %}
-            </div>
+            {# How many times it was heard, the site's and its apps' listens added up, once there are enough to say so (see BookPlaysExtension). Above the sections and out of their cache: it changes with every listen, they with the book #}
+            {% set plays = book_plays(book) %}
+            {% if plays %}
+                <p class="text text-center text-muted">{{ 'label.listen_plays'|trans({'%count%': plays}, 'book', book_ui_locale(book.language)) }}</p>
+            {% endif %}
+            {# Held in the cache the blocks are held in, one entry per book and language of the page: emptied as soon as anything a section prints changes (see BookCacheInvalidationListener), and at midnight for the sections comparing a date with today's. Rendered live for an editor, whose sections carry their pencils, and when a section of the site's asks so #}
+            {% set params = {book: book, sections: sections, components: components, editUrls: editUrls} %}
+            {% if editUrls or not book_sections_cacheable(sections) %}
+                {{ include('@c975LBook/book/_sections.html.twig', params) }}
+            {% else %}
+                {% cache 'book_sections_' ~ book.id ~ '_' ~ app.request.locale ttl(book_sections_cache_ttl()) tags(['book_catalog', 'blocks_all']) %}
+                    {{ include('@c975LBook/book/_sections.html.twig', params) }}
+                {% endcache %}
+            {% endif %}
             <twig:c975LUi:Blocks:Blocks blocks="{{ book.blocks }}"/>
         </div>
 

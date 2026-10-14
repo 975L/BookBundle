@@ -1,0 +1,11 @@
+{# A book's sections, in the order and the words the site gives them (see book_sections()): held in the cache by book/display.html.twig, so nothing here may print anything of one visitor. A grid of their own rather than the column having it: the player below rests against the bottom of the screen, which position: sticky only does for a child of a box taller than itself - a grid item's own area is exactly its size, and the player would stop sticking #}
+<div class="book-page__grid">
+{% for section in sections %}
+    {% if components[section.key] is defined %}
+        {{ component('c975LBook:Book:' ~ components[section.key], {book: book, section: section, editUrl: editUrls[section.key]|default('')}) }}
+    {# A section the site adds and this bundle knows nothing about: the fragment it declared, in the card every other section takes (see BookCustomizationProviderInterface::getSections()) #}
+    {% elseif section.template|default('') %}
+        {{ include('@c975LBook/book/_section.html.twig', {book: book, section: section, form: section.form|default('card'), editUrl: editUrls[section.key]|default('')}) }}
+    {% endif %}
+{% endfor %}
+</div>

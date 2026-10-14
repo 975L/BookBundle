@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Entity;
 use c975L\BookBundle\Contract\TrashableInterface;
 use c975L\BookBundle\Entity\Trait\HideableTrait;
 use c975L\BookBundle\Entity\Trait\TrashableTrait;
+use c975L\BookBundle\Enum\BookEditionKind;
 use c975L\BookBundle\Enum\BookLinkGroup;
 use c975L\BookBundle\Enum\BookLinkKind;
 use c975L\BookBundle\Repository\BookRepository;
@@ -514,6 +515,12 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         }
 
         return null;
+    }
+
+    // Free when its digital edition sells for nothing: the stores' links then give the book rather than sell it, the convention the ONIX feed already follows (see BookOnixBuilder). An empty price is no price, not a free book
+    public function isFree(): bool
+    {
+        return 0 === $this->getEdition(BookEditionKind::Digital->value)?->getPrice();
     }
 
     public function addEdition(BookEdition $edition): static

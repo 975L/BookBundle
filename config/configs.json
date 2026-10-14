@@ -269,6 +269,28 @@
         "description": "description.book_page_sound"
     },
     {
+        "label": "label.book_plays_minimum",
+        "slug": "book-plays-minimum",
+        "sensitive": false,
+        "restricted": false,
+        "value": "50",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_plays_minimum"
+    },
+    {
+        "label": "label.book_listen_data",
+        "slug": "book-listen-data",
+        "sensitive": false,
+        "restricted": false,
+        "value": "",
+        "kind": "text",
+        "group": "book",
+        "severity": null,
+        "description": "description.book_listen_data"
+    },
+    {
         "label": "label.book_rating",
         "slug": "book-rating",
         "sensitive": false,

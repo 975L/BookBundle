@@ -252,7 +252,7 @@
             </trans-unit>
             <trans-unit id="TTU68ef">
                 <source>narration.guided_step_book_edition_sale_files</source>
-                <target>Déposez chaque fichier avec son prix TTC : l'EPUB, le PDF et le livret pour une édition numérique, le MP3 pour une édition audio. Cochez « Lu à voix haute » si l'EPUB lit son texte.</target>
+                <target>Déposez chaque fichier avec son prix TTC : l'EPUB, le PDF et le livret pour une édition numérique, le MP3 pour une édition audio. Cochez « Lu à voix haute » si l'EPUB lit son texte. Un prix public à zéro sur l'édition numérique, au-dessus des fichiers, offre le livre.</target>
             </trans-unit>
             <trans-unit id="m0nzkFh">
                 <source>narration.guided_step_book_edition_sale_open</source>
@@ -344,7 +344,7 @@
             </trans-unit>
             <trans-unit id="4cz3uxf">
                 <source>narration.guided_step_book_listen_done</source>
-                <target>Le livre s'écoute. La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration. Le réglage « Son de page » y ajoute un petit son à chaque page tournée par la voix.</target>
+                <target>Le livre s'écoute. La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration. Le réglage « Son de page » y ajoute un petit son à chaque page tournée par la voix. Chaque écoute menée à son terme est comptée, et s'affiche dès qu'elle atteint le réglage « Écoutes affichées à partir de ».</target>
             </trans-unit>
             <trans-unit id="vhlfKsq">
                 <source>narration.guided_step_book_listen_edit</source>

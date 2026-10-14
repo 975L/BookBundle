@@ -252,7 +252,7 @@
             </trans-unit>
             <trans-unit id="TTU68ef">
                 <source>narration.guided_step_book_edition_sale_files</source>
-                <target>Upload each file with its price tax included: the EPUB, the PDF and the booklet for a digital edition, the MP3 for an audio one. Tick "Read aloud" when the EPUB reads its text.</target>
+                <target>Upload each file with its price tax included: the EPUB, the PDF and the booklet for a digital edition, the MP3 for an audio one. Tick "Read aloud" when the EPUB reads its text. A public price of zero on the digital edition, above its files, gives the book away.</target>
             </trans-unit>
             <trans-unit id="m0nzkFh">
                 <source>narration.guided_step_book_edition_sale_open</source>
@@ -344,7 +344,7 @@
             </trans-unit>
             <trans-unit id="4cz3uxf">
                 <source>narration.guided_step_book_listen_done</source>
-                <target>The book can be listened to. The listening page answers only once the site has given it an address: the "URL prefix of the books to listen to", in the configuration. The "Page sound" setting there adds a short sound each time the voice turns a page.</target>
+                <target>The book can be listened to. The listening page answers only once the site has given it an address: the "URL prefix of the books to listen to", in the configuration. The "Page sound" setting there adds a short sound each time the voice turns a page. Every listen played to its end is counted, and shown once the count reaches the "Listens shown from" setting.</target>
             </trans-unit>
             <trans-unit id="vhlfKsq">
                 <source>narration.guided_step_book_listen_edit</source>

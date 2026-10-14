@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Tests\Twig;
 
 use c975L\BookBundle\Contract\BookCustomizationProviderInterface;
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
@@ -70,6 +71,21 @@ class BookSectionsExtensionTest extends TestCase
         $coming = new Book()->setPublished(new \DateTimeImmutable('+1 month'));
         $coming->addLink($link);
         $this->assertNotContains('shops', $this->anchors($coming));
+    }
+
+    // A free book is obtained rather than bought: the same section and anchor, under a name and a sentence of its own (see Book::isFree())
+    public function testAFreeBookIsObtainedRatherThanBought(): void
+    {
+        $book = new Book()->setPublished(new \DateTimeImmutable('-1 day'));
+        $book->addLink(new BookLink()->setKind('epub_kobo')->setUrl('https://example.com/kobo'));
+        $this->assertSame('[label.buy]', $this->shops($book)['label']);
+
+        $book->addEdition(new BookEdition()->setKind('digital')->setPrice(0));
+        $shops = $this->shops($book);
+
+        $this->assertSame('shops', $shops['anchor']);
+        $this->assertSame('[label.get_free]', $shops['label']);
+        $this->assertSame('[label.get_free-intro]', $shops['intro']);
     }
 
     // The campaign card is opened by the address alone: a book with an end date and nowhere to pledge has nothing to print
@@ -340,6 +356,16 @@ class BookSectionsExtensionTest extends TestCase
         $sections = $this->extension($this->translator(), ['hero' => ['template' => 'components/Story/Idea.html.twig']])->book(new Book());
 
         $this->assertSame(['informations'], array_column($sections, 'anchor'));
+    }
+
+    // The stores' section of a book, read through a translator that marks what it translated, so a sentence it holds tells itself from one it lacks
+    /** @return array<string, mixed> */
+    private function shops(Book $book): array
+    {
+        $translator = $this->createStub(TranslatorInterface::class);
+        $translator->method('trans')->willReturnCallback(static fn (string $key): string => '[' . $key . ']');
+
+        return array_column($this->extension($translator)->book($book), null, 'key')['shops'];
     }
 
     private function anchors(Book $book): array

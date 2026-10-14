@@ -1,5 +1,20 @@
 [
     {
+        "date": "2026-10-14",
+        "description": [
+            {
+                "en": "Your book pages now show how many times a story was listened to, once it has been heard often enough.",
+                "fr": "Les pages de vos livres indiquent désormais combien de fois une histoire a été écoutée, dès qu'elle l'a été assez souvent.",
+                "es": "Las páginas de sus libros indican ahora cuántas veces se ha escuchado una historia, en cuanto se ha escuchado lo suficiente."
+            },
+            {
+                "en": "A digital edition priced at 0 now offers the book for free on its page.",
+                "fr": "Une édition numérique au prix de 0 offre désormais le livre gratuitement sur sa page.",
+                "es": "Una edición digital con precio 0 ofrece ahora el libro gratis en su página."
+            }
+        ]
+    },
+    {
         "date": "2026-10-13",
         "description": [
             {

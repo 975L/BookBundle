@@ -340,7 +340,7 @@
             </trans-unit>
             <trans-unit id="LgOc2qn">
                 <source>description.guided_step_book_edition_sale_files</source>
-                <target>Un emplacement par fichier que l'édition vend, chacun avec son prix TTC : une édition numérique prend l'EPUB (à cocher « Lu à voix haute » s'il lit son texte), le PDF et le livret, une édition audio le MP3.</target>
+                <target>Un emplacement par fichier que l'édition vend, chacun avec son prix TTC : une édition numérique prend l'EPUB (à cocher « Lu à voix haute » s'il lit son texte), le PDF et le livret, une édition audio le MP3. Le prix public de l'édition numérique, au-dessus des fichiers, à 0 offre le livre : sa page dit alors « Obtenir gratuitement ».</target>
             </trans-unit>
             <trans-unit id="wdXHhRC">
                 <source>description.guided_step_book_edition_sale_open</source>
@@ -424,7 +424,7 @@
             </trans-unit>
             <trans-unit id="u7M2BLI">
                 <source>description.guided_step_book_listen_done</source>
-                <target>La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration. Le réglage « Son de page » y ajoute un petit son à chaque page tournée par la voix.</target>
+                <target>La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration. Le réglage « Son de page » y ajoute un petit son à chaque page tournée par la voix. Chaque écoute menée à son terme est comptée ; le nombre s'affiche sur la page du livre et la page d'écoute dès qu'il atteint le réglage « Écoutes affichées à partir de ».</target>
             </trans-unit>
             <trans-unit id="GBg0WvF">
                 <source>description.guided_step_book_listen_edit</source>
@@ -1606,6 +1606,14 @@
                 <source>label.gallery_showcase_book_to_be_published_description</source>
                 <target>Liste des livres en cours de publication</target>
             </trans-unit>
+            <trans-unit id="jwfpzUj">
+                <source>label.get_free</source>
+                <target>Obtenir gratuitement</target>
+            </trans-unit>
+            <trans-unit id="kX5XMTj">
+                <source>label.get_free-intro</source>
+                <target>La version numérique de ce livre est offerte aux adresses ci-dessous.</target>
+            </trans-unit>
             <trans-unit id="oPngwpd">
                 <source>label.guided_project_book_category_creation</source>
                 <target>Créer une catégorie</target>
@@ -2441,6 +2449,10 @@
             <trans-unit id="GJrzplD">
                 <source>label.listen_links-help</source>
                 <target>Les applications de podcast et les librairies audio où le livre s'écoute.</target>
+            </trans-unit>
+            <trans-unit id="S_Q22.F">
+                <source>label.listen_plays</source>
+                <target>%count% écoute|%count% écoutes</target>
             </trans-unit>
             <trans-unit id="3GxSEoz">
                 <source>label.listen_to</source>

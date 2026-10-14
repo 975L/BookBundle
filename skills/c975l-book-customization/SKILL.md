@@ -42,7 +42,7 @@ class CatalogCustomization implements BookCustomizationProviderInterface
 | `getEditionKinds()` | `BookEditionKind` | `kind => label` |
 | `getContributorRoles()` | `BookContributorRole` | `role => label` |
 | `getLinkKinds()` | `BookLinkKind` | `kind => ['label', 'group', 'icon']` |
-| `getSections()` | the bundle's own page | `key => ['anchor', 'label', 'domain', 'icon', 'animation', 'template', 'form', 'field']` |
+| `getSections()` | the bundle's own page | `key => ['anchor', 'label', 'domain', 'icon', 'animation', 'template', 'form', 'field', 'cache']` |
 | `getDataFormType()` | no extra fields | a form class mapped on `Book::$data` |
 
 A **label is a plain word or a translation key**: it goes through the translator in the `book` catalog (or
@@ -70,6 +70,7 @@ that nothing else can:
   it takes, `field` the property it is written in — which is what gives it the same editor's pencil as the
   bundle's sections (`data` for a rubric held in the site's own fields).
 - `animation` is the very entrance effect a block carries, read by UiBundle's `animate-scroll.js`.
+- `cache: false` keeps the whole run of sections out of the cache, and so does a `template` without `cache: true` — a fragment may print something of one visitor (a form and its csrf token), so it is cached only when the site declares `cache: true`.
 
 ## The catalog contract
 
@@ -116,7 +117,7 @@ later needs nothing anywhere else.
 
 ## Settings
 
-All twenty-three live in `config/configs.json`, group **book**, and are read through ConfigBundle:
+All twenty-eight live in `config/configs.json`, group **book**, and are read through ConfigBundle:
 
 | Slug | Does |
 | --- | --- |
@@ -127,6 +128,7 @@ All twenty-three live in `config/configs.json`, group **book**, and are read thr
 | `book-catalog-title` | the word the catalog page carries |
 | `book-gplay-affiliate` | the identifier added to a Google Play address |
 | `book-rating`, `book-confetti` | reader scores, confetti on a book's page |
+| `book-plays-minimum` | the listens a book needs before its pages print the count (`book_plays()`), 50 by default |
 | `book-strip-card`, `book-strip-card-icon`, `book-strip-rating-icon` | how a planche card reads |
 
 **A prefix emptied means the site serves that page itself**: `BookRoutePrefix` then registers no route at

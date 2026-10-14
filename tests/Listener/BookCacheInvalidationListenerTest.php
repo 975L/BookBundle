@@ -11,9 +11,14 @@
 namespace c975L\BookBundle\Tests\Listener;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\ContributorLink;
 use c975L\BookBundle\Entity\ContributorMedia;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
@@ -23,10 +28,17 @@ use c975L\BookBundle\Listener\BookCacheInvalidationListener;
 use c975L\BookBundle\Service\BookBlockCacheInvalidator;
 use c975L\ConfigBundle\Entity\Config;
 use c975L\UiBundle\Entity\Block;
+use c975L\UiBundle\Entity\Translation;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
@@ -70,10 +82,25 @@ class BookCacheInvalidationListenerTest extends TestCase
         $this->assertSame([], $this->invalidated);
     }
 
-    // A family of pages turned on or off changes the cached menu entries, any other setting leaves the catalog alone
-    public function testOnlyARouteSettingDropsTheBlocks(): void
+    // What a book's page alone prints, its sections being held under the same tag: its links, its credits, its characters, and the links of the people it credits
+    public function testWhatABooksSectionsPrintDropsTheBlocks(): void
+    {
+        foreach ([new BookLink(), new BookContributor(), new Character(), new ContributorLink()] as $entity) {
+            $this->invalidated = [];
+            $this->listen($entity);
+
+            $this->assertSame([[BookBlockCacheInvalidator::CACHE_TAG_CATALOG]], $this->invalidated, $entity::class);
+        }
+    }
+
+    // A family of pages turned on or off changes the cached menu entries, and any book setting what a section says; a setting of the site's leaves the catalog alone
+    public function testOnlyABookSettingDropsTheBlocks(): void
     {
         $this->listen(new Config()->setSlug('book-route-strips'));
+        $this->assertSame([[BookBlockCacheInvalidator::CACHE_TAG_CATALOG]], $this->invalidated);
+
+        $this->invalidated = [];
+        $this->listen(new Config()->setSlug('book-plays-minimum'));
         $this->assertSame([[BookBlockCacheInvalidator::CACHE_TAG_CATALOG]], $this->invalidated);
 
         $this->invalidated = [];
@@ -81,23 +108,59 @@ class BookCacheInvalidationListenerTest extends TestCase
         $this->assertSame([], $this->invalidated);
     }
 
-    // A book added to an already-cached listing is an INSERT, for which postUpdate never fires
-    public function testTheThreeEventsAllInvalidate(): void
+    // The catalog's own translations are what its sections print in another language; another bundle's leave it alone
+    public function testOnlyACatalogTranslationDropsTheBlocks(): void
+    {
+        $this->listen(new Translation('book_media', 3, 'title', 'en'));
+        $this->assertSame([[BookBlockCacheInvalidator::CACHE_TAG_CATALOG]], $this->invalidated);
+
+        $this->invalidated = [];
+        $this->listen(new Translation('ui_block', 3, 'title', 'en'));
+        $this->assertSame([], $this->invalidated);
+    }
+
+    // A book added to an already-cached listing is an INSERT, for which postUpdate never fires; and however many rows a flush wrote, the tag is dropped once
+    public function testTheThreeEventsInvalidateOncePerFlush(): void
     {
         $listener = $this->createListener();
         $manager = $this->createStub(EntityManagerInterface::class);
         $book = new Book();
 
         $listener->postPersist(new PostPersistEventArgs($book, $manager));
-        $listener->postUpdate(new PostUpdateEventArgs($book, $manager));
-        $listener->preRemove(new PreRemoveEventArgs($book, $manager));
+        $listener->postUpdate(new PostUpdateEventArgs(new BookLink(), $manager));
+        $listener->preRemove(new PreRemoveEventArgs(new BookContributor(), $manager));
+        $this->assertSame([], $this->invalidated);
 
-        $this->assertCount(3, $this->invalidated);
+        $listener->postFlush(new PostFlushEventArgs($manager));
+        $listener->postFlush(new PostFlushEventArgs($manager));
+        $this->assertCount(1, $this->invalidated);
+    }
+
+    // A category added to a book and nothing else: no changeset on the book, only its collection scheduled
+    public function testACollectionChangedAloneDropsTheBlocks(): void
+    {
+        $collection = new PersistentCollection($this->createStub(EntityManagerInterface::class), new ClassMetadata(BookCategory::class), new ArrayCollection());
+        new \ReflectionProperty(PersistentCollection::class, 'owner')->setValue($collection, new Book());
+
+        $unitOfWork = $this->createStub(UnitOfWork::class);
+        $unitOfWork->method('getScheduledCollectionUpdates')->willReturn([$collection]);
+        $unitOfWork->method('getScheduledCollectionDeletions')->willReturn([]);
+        $manager = $this->createStub(EntityManagerInterface::class);
+        $manager->method('getUnitOfWork')->willReturn($unitOfWork);
+
+        $listener = $this->createListener();
+        $listener->onFlush(new OnFlushEventArgs($manager));
+        $listener->postFlush(new PostFlushEventArgs($manager));
+
+        $this->assertSame([[BookBlockCacheInvalidator::CACHE_TAG_CATALOG]], $this->invalidated);
     }
 
     private function listen(object $entity): void
     {
-        $this->createListener()->postUpdate(new PostUpdateEventArgs($entity, $this->createStub(EntityManagerInterface::class)));
+        $manager = $this->createStub(EntityManagerInterface::class);
+        $listener = $this->createListener();
+        $listener->postUpdate(new PostUpdateEventArgs($entity, $manager));
+        $listener->postFlush(new PostFlushEventArgs($manager));
     }
 
     private function createListener(): BookCacheInvalidationListener

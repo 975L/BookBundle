@@ -106,4 +106,22 @@ class BookEditionTest extends TestCase
         $this->assertTrue($edition->hasChannel(BookChannel::Google));
         $this->assertFalse($edition->hasChannel(BookChannel::Onix));
     }
+
+    // Free is a price of nothing on the digital edition: an empty price is no price, and a paperback at nothing says nothing of the ebook
+    public function testABookIsFreeOnlyWhenItsDigitalEditionSellsForNothing(): void
+    {
+        $book = new Book();
+        $this->assertFalse($book->isFree());
+
+        $digital = new BookEdition()->setKind('digital');
+        $book->addEdition($digital);
+        $book->addEdition(new BookEdition()->setKind('paper')->setPrice(0));
+        $this->assertFalse($book->isFree());
+
+        $digital->setPrice(0);
+        $this->assertTrue($book->isFree());
+
+        $digital->setPrice(299);
+        $this->assertFalse($book->isFree());
+    }
 }

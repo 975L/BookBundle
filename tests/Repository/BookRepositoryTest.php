@@ -206,6 +206,25 @@ class BookRepositoryTest extends TestCase
         $this->assertCount(1, $this->dqls);
     }
 
+    // Who made each book and its videos, in two queries for the whole list: joining both collections at once would multiply their rows
+    public function testTheCreditsAndVideosOfAListAreReadInTwoQueries(): void
+    {
+        $this->createRepository()->withCreditsAndVideos([$this->book(1), $this->book(2)]);
+
+        $this->assertCount(2, $this->dqls);
+        $this->assertStringContainsString('LEFT JOIN b.contributors credits', $this->dqls[0]);
+        $this->assertStringNotContainsString('b.videos', $this->dqls[0]);
+        $this->assertStringContainsString('LEFT JOIN b.videos videos', $this->dqls[1]);
+    }
+
+    // No book, no query
+    public function testAnEmptyListAsksForNoCredits(): void
+    {
+        $this->createRepository()->withCreditsAndVideos([]);
+
+        $this->assertCount(0, $this->dqls);
+    }
+
     // A book as the listing hands it over: only its id is read, the covers query being built on that alone
     private function book(int $id): Book
     {

@@ -115,7 +115,9 @@ class SectionAnchorsTest extends TestCase
         $this->assertStringNotContainsString('{% block body %}', $this->sectionFragment());
 
         foreach ($this->templates() as $file => $twig) {
-            if (!str_contains($twig, '_section.html.twig')) {
+            // A section of the site's own is the only one handed to the card with no contents of its own: the card includes the fragment the site declared (see _section.html.twig)
+            $handed = preg_replace("/\\{\\{ include\\('@c975LBook\\/book\\/_section\\.html\\.twig', \\{book: book, section: section, form: section\\.form[^}]*\\}\\) \\}\\}/", '', $twig);
+            if (!str_contains((string) $handed, '_section.html.twig')) {
                 continue;
             }
 

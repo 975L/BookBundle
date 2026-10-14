@@ -14,12 +14,20 @@
     {# The timecodes row can hold no file: nothing to follow then, as in the JSON (see ListenJsonController::book()) #}
     {% set followed = book.cues and book.cues.name and book.pages|length %}
     <div class="book-listen-page" lang="{{ book.language }}">
-        {% if followed %}
-            <twig:c975LBook:Reader:Reader media="{{ book.pages }}" audio="{{ audio }}" cuesFile="{{ book.cues }}" id="listen-{{ book.id }}"/>
-        {% else %}
-            {% set cover = book_cover(book) %}
-            <twig:c975LUi:Image:Image class="img-rounded box-shadow img-300" src="{{ asset(cover ?: 'bundles/c975lbook/images/no-cover.webp') }}" alt="{{ book.title }}" width="300" height="425"/>
-            <twig:c975LUi:Audio:Audio src="{{ vich_uploader_asset(audio) }}" type="{{ audio.mimeType }}"/>
+        {# A story heard to its end counts one listen, the site's and its apps' adding up (see UiBundle's PlayController) #}
+        <div data-controller="ui-play-count" data-ui-play-count-url-value="{{ path('ui_play', {ownerType: constant('c975L\\BookBundle\\Service\\BookFavoriteItemProvider::OWNER_TYPE'), ownerId: book.id}) }}">
+            {% if followed %}
+                <twig:c975LBook:Reader:Reader media="{{ book.pages }}" audio="{{ audio }}" cuesFile="{{ book.cues }}" id="listen-{{ book.id }}"/>
+            {% else %}
+                {% set cover = book_cover(book) %}
+                <twig:c975LUi:Image:Image class="img-rounded box-shadow img-300" src="{{ asset(cover ?: 'bundles/c975lbook/images/no-cover.webp') }}" alt="{{ book.title }}" width="300" height="425"/>
+                <twig:c975LUi:Audio:Audio src="{{ vich_uploader_asset(audio) }}" type="{{ audio.mimeType }}"/>
+            {% endif %}
+        </div>
+        {# How many times it was heard, the site's and its apps' listens added up, once there are enough to say so (see BookPlaysExtension) #}
+        {% set plays = book_plays(book) %}
+        {% if plays %}
+            <p class="text text-center text-muted">{{ 'label.listen_plays'|trans({'%count%': plays}, 'book', book_ui_locale(book.language)) }}</p>
         {% endif %}
         {# Everything the player needs again with no network: the recording, each page, their timecodes and the page-turn sound, plus the cover the downloads list shows (see UiBundle's Pwa:Download) #}
         {% set coverUrl = asset(book_cover(book) ?: 'bundles/c975lbook/images/no-cover.webp') %}

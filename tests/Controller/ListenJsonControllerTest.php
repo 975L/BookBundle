@@ -12,12 +12,22 @@ namespace c975L\BookBundle\Tests\Controller;
 
 use c975L\BookBundle\Controller\ListenJsonController;
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\BookVideo;
+use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Media;
+use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Service\BookCustomizationRegistry;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
+use c975L\BookBundle\Service\BookTranslator;
+use c975L\BookBundle\Twig\BookPlaysExtension;
+use c975L\BookBundle\Twig\BookTranslationExtension;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\ConfigBundle\Service\LocalizedRouteNegotiator;
+use c975L\UiBundle\Service\PlayService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\Container;
@@ -26,6 +36,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelperInterface;
 
 // The listening pages as data hand out what the listening page plays, under absolute urls, and nothing a book does not carry
@@ -34,7 +45,7 @@ class ListenJsonControllerTest extends TestCase
     /**
      * @param Book[] $published
      */
-    private function createController(array $published = [], bool $translated = true, bool $pageSound = false, string $uriPrefix = '/'): ListenJsonController
+    private function createController(array $published = [], bool $translated = true, bool $pageSound = false, string $uriPrefix = '/', ?BookTranslator $bookTranslator = null, string $locale = '', string $playsMinimum = ''): ListenJsonController
     {
         $bookService = $this->createStub(BookServiceInterface::class);
         $bookService->method('findAllPublished')->willReturn($published);
@@ -44,20 +55,36 @@ class ListenJsonControllerTest extends TestCase
         $negotiator->method('vary')->willReturnCallback(static fn (Request $request, Response $response): Response => $response);
 
         $configService = $this->createStub(ConfigServiceInterface::class);
-        $configService->method('get')->willReturn($pageSound);
+        $configService->method('get')->willReturnCallback(static fn (string $slug): mixed => match ($slug) {
+            'book-listen-data' => 'idea, age',
+            'book-plays-minimum' => $playsMinimum,
+            default => $pageSound,
+        });
         $configService->method('getBool')->willReturnCallback(static fn (mixed $value): bool => (bool) $value);
 
         $packages = $this->createStub(Packages::class);
         $packages->method('getUrl')->willReturnCallback(static fn (string $path): string => '/' . $path);
 
         // A real one, the class being final: it reads the host off the request being answered
-        $requestStack = new RequestStack([$this->request()]);
+        $request = $this->request();
+        $request->attributes->set('_locale', $locale);
+        $requestStack = new RequestStack([$request]);
 
         // What the mapping answers: its uri_prefix before the file's name, and nothing for a row holding no file
         $uploaderHelper = $this->createStub(UploaderHelperInterface::class);
         $uploaderHelper->method('asset')->willReturnCallback(static fn (Media $media): ?string => null === $media->getName() ? null : $uriPrefix . $media->getName());
 
-        $controller = new ListenJsonController($bookService, $this->createStub(BookTranslatedLocales::class), $negotiator, $configService, $packages, new UrlHelper($requestStack), $uploaderHelper);
+        // Every book heard three times, on the site and in its apps
+        $playService = $this->createStub(PlayService::class);
+        $playService->method('totals')->willReturnCallback(static fn (string $ownerType, array $ids): array => array_fill_keys($ids, 3));
+
+        $registry = $this->createStub(BookCustomizationRegistry::class);
+        $registry->method('getRoleLabel')->willReturnCallback(static fn (string $role): string => 'Idée : ' . $role);
+
+        $translator = $this->createStub(TranslatorInterface::class);
+        $translator->method('trans')->willReturnCallback(static fn (string $key, array $parameters, ?string $domain, ?string $locale): string => 'fr' === $locale ? $key : $locale . ':' . $key);
+
+        $controller = new ListenJsonController($bookService, $this->createStub(BookTranslatedLocales::class), $negotiator, $configService, $packages, new UrlHelper($requestStack), $uploaderHelper, $playService, $registry, $translator, $bookTranslator ?? $this->createStub(BookTranslator::class), new BookTranslationExtension($requestStack), $this->createStub(BookRepository::class), new BookPlaysExtension($playService, $configService));
         $controller->setContainer(new Container());
 
         return $controller;
@@ -204,5 +231,63 @@ class ListenJsonControllerTest extends TestCase
         $this->expectException(NotFoundHttpException::class);
 
         $this->createController(translated: false)->index($this->request());
+    }
+
+    // What the book's own page says of it travels too: who made it, for whom, how many times it was heard, and its videos wherever they are held
+    public function testGivesTheBooksInformationsVideosAndPlays(): void
+    {
+        $book = $this->book()
+            ->setAge('3-8')
+            ->setAuthor(new Contributor()->setName('Laurent Marquet'))
+            ->addContributor(new BookContributor()->setRole('idea')->setContributor(new Contributor()->setName('Mattéo')))
+            ->addVideo(new BookVideo()->setYoutubeUrl('https://www.youtube-nocookie.com/embed/abc'))
+            ->addVideo(new BookVideo()->setName('medias/film.mp4'))
+            ->addVideo(new BookVideo())
+        ;
+
+        $data = $this->data($this->createController([$book])->index($this->request()))['books'][0];
+
+        $this->assertSame('3-8', $data['age']);
+        $this->assertSame([['role' => 'label.author', 'name' => 'Laurent Marquet'], ['role' => 'Idée : idea', 'name' => 'Mattéo']], $data['credits']);
+        $this->assertSame([
+            ['title' => null, 'youtube' => 'https://www.youtube-nocookie.com/embed/abc', 'url' => null],
+            ['title' => null, 'youtube' => null, 'url' => 'https://example.com/medias/film.mp4'],
+        ], $data['videos']);
+        $this->assertSame(3, $data['plays']);
+    }
+
+    // Below the site's minimum the count is withheld, as the book's own page withholds it
+    public function testWithholdsThePlaysBelowTheMinimum(): void
+    {
+        $data = $this->data($this->createController([$this->book()], playsMinimum: '50')->index($this->request()))['books'][0];
+
+        $this->assertNull($data['plays']);
+    }
+
+    // A serie is named as the book's own page names it, in the language the list is read in
+    public function testTranslatesTheSeriesOfTheListedBooks(): void
+    {
+        $serie = new Serie()->setTitle('Les Histoires de Papa Câlin');
+        $bookTranslator = $this->createMock(BookTranslator::class);
+        $bookTranslator->expects($this->once())->method('apply')->with($this->containsIdentical($serie));
+
+        $this->createController([$this->book()->setSerie($serie)], bookTranslator: $bookTranslator)->index($this->request());
+    }
+
+    // The roles are named in the language the listening page names them in: the url's when it reads one, the book's own otherwise
+    public function testNamesTheRolesInTheListeningPageLanguage(): void
+    {
+        $book = $this->book()->setAuthor(new Contributor()->setName('Laurent Marquet'));
+
+        $this->assertSame('label.author', $this->data($this->createController([$book])->index($this->request()))['books'][0]['credits'][0]['role']);
+        $this->assertSame('en:label.author', $this->data($this->createController([$book], locale: 'en')->index($this->request()))['books'][0]['credits'][0]['role']);
+    }
+
+    // Only the fields of the site's own it lists travel, and nothing empty
+    public function testGivesOnlyTheListedFieldsOfTheSite(): void
+    {
+        $book = $this->book()->setData(['idea' => 'Mattéo', 'age' => '', 'secret' => 'not for the app']);
+
+        $this->assertSame(['idea' => 'Mattéo'], $this->data($this->createController([$book])->index($this->request()))['books'][0]['data']);
     }
 }

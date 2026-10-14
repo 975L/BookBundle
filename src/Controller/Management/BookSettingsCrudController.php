@@ -119,7 +119,6 @@ class BookSettingsCrudController extends AbstractCrudController
             ->linkToUrl(fn (): string => (string) $this->publicUrlResolver->resolvePath('book_index'))
             ->setHtmlAttributes(['target' => '_blank'])
             ->displayIf(fn (): bool => null !== $this->publicUrlResolver->resolvePath('book_index'))
-            ->addCssClass('btn btn-secondary')
         ;
 
         return $actions

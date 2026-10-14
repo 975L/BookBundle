@@ -30,6 +30,10 @@
                 <source>description.book_isbn_prefixes</source>
                 <target>Las raíces ISBN de la editorial, una por línea y con sus guiones, p. ej. «978-2-488750». El corte de un ISBN no se deduce del número: proviene de los rangos oficiales de la Agencia Internacional del ISBN. Un número que no empieza por ninguna raíz declarada se muestra sin guiones.</target>
             </trans-unit>
+            <trans-unit id="sauDePq">
+                <source>description.book_listen_data</source>
+                <target>Campos propios del sitio (separados por comas, por ejemplo idea) que la página de escucha en JSON da a las aplicaciones móviles. Vacío: ninguno</target>
+            </trans-unit>
             <trans-unit id="L6F9Rf2">
                 <source>description.book_onix_publisher</source>
                 <target>El nombre de la editorial que anuncia el flujo ONIX, p. ej. «Éditions Lolant». Vacío, se usa el nombre del sitio.</target>
@@ -37,6 +41,10 @@
             <trans-unit id="J.AoxnV">
                 <source>description.book_page_sound</source>
                 <target>Reproduce un breve sonido cuando la grabación de un libro pasa la página en la página de escucha</target>
+            </trans-unit>
+            <trans-unit id="0QyXXPC">
+                <source>description.book_plays_minimum</source>
+                <target>Número de escuchas (sitio y aplicaciones) a partir del cual una historia muestra su total en su página de escucha y en su página</target>
             </trans-unit>
             <trans-unit id="DXvp5yF">
                 <source>description.book_rating</source>
@@ -138,6 +146,10 @@
                 <source>label.book_isbn_prefixes</source>
                 <target>Raíces ISBN</target>
             </trans-unit>
+            <trans-unit id="NPmHruI">
+                <source>label.book_listen_data</source>
+                <target>Campos propios dados a las aplicaciones</target>
+            </trans-unit>
             <trans-unit id="rGKmHO2">
                 <source>label.book_onix_publisher</source>
                 <target>Editorial ONIX</target>
@@ -145,6 +157,10 @@
             <trans-unit id="4VFjkIr">
                 <source>label.book_page_sound</source>
                 <target>Sonido de página</target>
+            </trans-unit>
+            <trans-unit id="90IkMeu">
+                <source>label.book_plays_minimum</source>
+                <target>Escuchas mostradas a partir de</target>
             </trans-unit>
             <trans-unit id="ZRe0eUt">
                 <source>label.book_rating</source>

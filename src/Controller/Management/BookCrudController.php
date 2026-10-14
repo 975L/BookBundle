@@ -538,15 +538,14 @@ class BookCrudController extends AbstractCrudController
             ->linkToUrl(fn (Book $book): string => $this->publishVersionUrl($book))
             // A book already replaced is not replaced a second time: the version replacing it is what comes in versions in its turn, so a third version chains onto the second
             ->displayIf(static fn (Book $book): bool => !$book->isDeleted() && !$book->getNewerVersion() instanceof Book)
-            ->askConfirmation(t('confirm.publish_new_version', [], 'book'))
-            ->addCssClass('btn btn-secondary');
+            ->askConfirmation(t('confirm.publish_new_version', [], 'book'));
 
         // The same button, greyed, for the books that cannot come in versions any more: removing it would shift the row of icons from one line to the next, and a moving column reads worse than a grey button
         $publishVersionDone = Action::new('publishVersionDone', t('action.publish_new_version', [], 'book'), 'fa fa-code-branch')
             ->linkToUrl(static fn (Book $book): string => '#')
             ->displayIf(static fn (Book $book): bool => !$book->isDeleted() && $book->getNewerVersion() instanceof Book)
             ->setHtmlAttributes(['aria-disabled' => 'true', 'tabindex' => '-1'])
-            ->addCssClass('btn btn-secondary disabled');
+            ->addCssClass('disabled');
 
         $disabledTitle = $this->translator->trans('action.publish_new_version_disabled', [], 'book');
 

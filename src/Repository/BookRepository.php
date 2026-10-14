@@ -346,6 +346,42 @@ class BookRepository extends ServiceEntityRepository
         return $books;
     }
 
+    // Who made each book and its videos, loaded for the whole list rather than one book at a time (see ListenJsonController::credits()). Two queries rather than one: joining both collections at once would multiply the rows by one another
+    /** @param Book[] $books */
+    public function withCreditsAndVideos(array $books): void
+    {
+        $ids = array_values(array_filter(array_map(static fn (Book $book): ?int => $book->getId(), $books)));
+
+        if ([] === $ids) {
+            return;
+        }
+
+        // The results are dropped on purpose: hydrating them fills the relations of the very books the caller already holds
+        $this->createQueryBuilder('b')
+            ->select('b', 'author', 'illustrator', 'serie', 'serieAuthor', 'serieIllustrator', 'credits', 'contributor')
+            ->leftJoin('b.author', 'author')
+            ->leftJoin('b.illustrator', 'illustrator')
+            ->leftJoin('b.serie', 'serie')
+            ->leftJoin('serie.author', 'serieAuthor')
+            ->leftJoin('serie.illustrator', 'serieIllustrator')
+            ->leftJoin('b.contributors', 'credits')
+            ->leftJoin('credits.contributor', 'contributor')
+            ->andWhere('b.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        $this->createQueryBuilder('b')
+            ->select('b', 'videos')
+            ->leftJoin('b.videos', 'videos')
+            ->andWhere('b.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // The languages the catalog is actually written in, so a list can be offered per language without any site having to declare which ones it publishes
     /** @return list<string> */
     public function findLanguages(): array

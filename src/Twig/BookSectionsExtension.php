@@ -69,7 +69,8 @@ class BookSectionsExtension
             $this->sections([
                 // Where a book not yet paid for is helped along, which comes before where a book already out is bought
                 'crowdfunding' => ['label.crowdfunding', '' !== (string) $book->getCrowdfunding()],
-                'shops' => ['label.buy', $shops && [] !== $this->customizationRegistry->getLinksOf($book, 'epub')],
+                // A free book is obtained rather than bought: same section, its name and its sentence saying so (see Book::isFree())
+                'shops' => [$book->isFree() ? 'label.get_free' : 'label.buy', $shops && [] !== $this->customizationRegistry->getLinksOf($book, 'epub')],
                 'presse' => ['label.presse', !$book->getPresses()->isEmpty()],
                 'marketing' => ['label.marketing', !$book->getMarketings()->isEmpty()],
                 // Always: a book with no field filled in still says when it comes out and who wrote it
@@ -153,8 +154,8 @@ class BookSectionsExtension
             }
         }
 
-        // "form" is what the card takes shape as (see book/_section.html.twig), a site's own section being a card unless it says otherwise
-        foreach (['icon', 'animation', 'template', 'form'] as $name) {
+        // "form" is what the card takes shape as (see book/_section.html.twig), a site's own section being a card unless it says otherwise; "cache" set to false keeps the whole run of sections out of the cache (see BookSectionsCacheExtension::cacheable())
+        foreach (['icon', 'animation', 'template', 'form', 'cache'] as $name) {
             if (isset($own[$name]) && [] !== $own[$name] && '' !== $own[$name]) {
                 $section[$name] = $own[$name];
             }
