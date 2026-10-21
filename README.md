@@ -182,7 +182,7 @@ showcase — contributes the same file through its own stylesheet provider.
 | `strip_shortcut` | `/s{number}` | `book-route-strip-shortcut` | Short link to a strip, 301 |
 | `book_listen_index` | *unset* | `book-route-listen` | The books holding a recording, in the language being read |
 | `book_listen` | *unset* | `book-route-listen` | A book played: its pages turning along the recording when it carries a `cues` file, its cover and the player otherwise |
-| `book_listen_json` | *unset* | `book-route-listen` | The listening pages as JSON, at the prefix followed by `.json`: each book's recording, cover, pages and timecodes under absolute urls, its serie, credits, videos and listens, plus the fields of its own the site lists in `book-listen-data`, answered with a weak `ETag` |
+| `book_listen_json` | *unset* | `book-route-listen` | The listening pages as JSON, at the prefix followed by `.json`: each book's recording, cover and fourth cover, pages and timecodes under absolute urls, its serie, credits, videos and listens, the address of its own page, plus the fields of its own the site lists in `book-listen-data`, answered with a weak `ETag` |
 | `book_onix` | *unset* | `book-route-onix` | The catalog as an ONIX 3.0 feed (see [ONIX feed](#onix-feed)) |
 | `book_release_alert_new` | `/book/release-alert/{id}` | — | Where an address is left to be told a book is out — `noindex` |
 | `book_release_alert_unsubscribe` | `/book/release-alert/{token}/unsubscribe` | — | The link the acknowledgement e-mail carries, opening a page with a button — `noindex` |

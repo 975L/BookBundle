@@ -68,16 +68,11 @@ class CharacterCrudController extends AbstractCrudController
     // The language screen opened straight from the list, as on the five other screens of the catalog - every row action icon-only, as everywhere else (see ContentLocaleCrudTrait::translateAction())
     public function configureActions(Actions $actions): Actions
     {
+        // EasyAdmin's own Edit and Delete as icons on the list, their label kept as the title
+        EasyAdminActionHelper::iconOnlyDefaults($actions, $this->translator());
+
         return $actions
             ->add(Crud::PAGE_INDEX, $this->translateAction())
-            ->update(Crud::PAGE_INDEX, Action::EDIT, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
-                $action,
-                $this->translator()->trans('action.edit', [], 'EasyAdminBundle'),
-            ))
-            ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
-                $action,
-                $this->translator()->trans('action.delete', [], 'EasyAdminBundle'),
-            ))
             ->reorder(Crud::PAGE_INDEX, [Action::EDIT, 'translate', Action::DELETE])
             // Detail adds no information beyond what edit already shows
             ->disable(Action::DETAIL)

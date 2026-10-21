@@ -69,8 +69,8 @@ there and stays off the index, whatever kind its files were filed under. `reader
 the timecodes and the page-turn sound — and `book_listen_index` links to `ui_pwa_downloads` when `pwa_enabled()`.
 
 **`book_listen_json` is the same list as data, for a reader outside the site** (`ListenJsonController`): one answer holding
-`pageSound` and `books`, each with its `id`, `slug`, `title`, `summary`, `language`, `modification`, `cover`, `audio`
-(`url`, `type` — the mp3 first), `pages`, `cues`, `published`, `age`, `serie` (its title translated, `number`), `credits` (`role`, `name`, the roles named in `book_ui_locale()`), `videos` (`title`, `youtube`, `url`) `plays` (null below `book-plays-minimum`, as on the pages: `BookPlaysExtension::shown()`) and `data` (the fields of `Book::$data` the site lists in `book-listen-data`, none by default). Every url is absolute, asked to VichUploader then to `UrlHelper`. `pages`
+`pageSound` and `books`, each with its `id`, `slug`, `title`, `summary`, `language`, `modification`, `cover`, `coverBack` (the fourth cover, null without one), `audio`
+(`url`, `type` — the mp3 first), `pages`, `cues`, `published`, `age`, `serie` (its title translated, `number`), `credits` (`role`, `name`, the roles named in `book_ui_locale()`), `videos` (`title`, `youtube`, `url`) `plays` (null below `book-plays-minimum`, as on the pages: `BookPlaysExtension::shown()`) `data` (the fields of `Book::$data` the site lists in `book-listen-data`, none by default) and `page` (the book's own page in the asked language, null where the site serves none). Every url is absolute, asked to VichUploader then to `UrlHelper`. `pages`
 and `cues` come together or not at all: a book with no timecodes, or with a `page` or `cues` row holding no file, answers
 `pages: []` and `cues: null`. The answer carries a weak ETag and stays `private`. Its routes sit behind
 `BookRoutePrefix::LISTEN_CONDITION`, the one condition of every listening route, and list the books

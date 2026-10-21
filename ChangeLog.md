@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.22.4
+
+Listening JSON gives the fourth cover and the book's page
+
+- `book_listen_json`: `coverBack`, the fourth cover, null without one (21/10/2026)
+- `book_listen_json`: `page`, the book's own page in the asked language, null where the site serves none (21/10/2026)
+- `BookPublicUrlResolver::resolveLocalizedPath()` takes the language asked (21/10/2026)
+- Requires `c975l/core-bundle` ^1.72.4 (21/10/2026)
+- Character row actions through `EasyAdminActionHelper::iconOnlyDefaults()` (21/10/2026)
+
 ## v2.22.3
 
 Character row actions icon-only

@@ -78,9 +78,9 @@ class BookPublicUrlResolver
         );
     }
 
-    // The same path in the language the page around it is read in, which is what a template links with - resolvePath() staying the canonical url a sitemap, a hreflang group and a JSON-LD node declare (see LocalizedUrlGenerator::path)
+    // The same path in the language the page around it is read in, which is what a template links with - or in "$locale" where no route says it - resolvePath() staying the canonical url a sitemap, a hreflang group and a JSON-LD node declare (see LocalizedUrlGenerator::path)
     /** @param array<string, mixed> $parameters */
-    public function resolveLocalizedPath(string $route, array $parameters = []): ?string
+    public function resolveLocalizedPath(string $route, array $parameters = [], ?string $locale = null): ?string
     {
         $slug = self::ROUTE_PREFIXES[$route] ?? throw new \InvalidArgumentException(sprintf('The route "%s" is not one of this bundle\'s public routes.', $route));
         $prefix = $this->routePrefix->get($slug);
@@ -89,7 +89,7 @@ class BookPublicUrlResolver
         }
 
         // The prefix is passed rather than left to the request context, exactly as above: one rule for the two, and nothing to remember about which of them may run without a request
-        return $this->localizedUrlGenerator->path($route, [BookRoutePrefix::PREFIXES[$slug] => $prefix, ...$parameters]);
+        return $this->localizedUrlGenerator->path($route, [BookRoutePrefix::PREFIXES[$slug] => $prefix, ...$parameters], locale: $locale);
     }
 
     // One absolute url per language the page answers in, for a sitemap's alternates - empty wherever a group would name itself alone, as PagePublicUrlResolver::alternatesFor(), and asked of the router directly, a cron command holding no request

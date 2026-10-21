@@ -16,6 +16,7 @@ use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Routing\BookRoutePrefix;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use c975L\BookBundle\Service\BookFavoriteItemProvider;
+use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\BookTranslator;
@@ -53,6 +54,7 @@ class ListenJsonController extends AbstractController
         private readonly BookTranslationExtension $translationExtension,
         private readonly BookRepository $bookRepository,
         private readonly BookPlaysExtension $playsExtension,
+        private readonly BookPublicUrlResolver $publicUrlResolver,
     ) {
     }
 
@@ -103,7 +105,7 @@ class ListenJsonController extends AbstractController
         $books = [];
         foreach ($listed as [$book, $audios]) {
             // The roles named in the language the listening page names them in (see book_ui_locale())
-            $books[] = $this->book($book, $audios, $this->playsExtension->shown($plays[(int) $book->getId()] ?? 0), $this->translationExtension->uiLocale($book->getLanguage()) ?? $request->getLocale());
+            $books[] = $this->book($book, $audios, $this->playsExtension->shown($plays[(int) $book->getId()] ?? 0), $this->translationExtension->uiLocale($book->getLanguage()) ?? $request->getLocale(), $request->getLocale());
         }
 
         $response = new JsonResponse([
@@ -120,13 +122,13 @@ class ListenJsonController extends AbstractController
         return $this->negotiator->vary($request, $response);
     }
 
-    // What the listening page hands its player (see listen/display.html.twig): the pages and their timecodes go together or not at all, a few pages to leaf through before buying being no book to follow along. Then what the book's own page says of it, its informations and its videos
+    // What the listening page hands its player (see listen/display.html.twig): the pages and their timecodes go together or not at all, a few pages to leaf through before buying being no book to follow along. Then what the book's own page says of it - its fourth cover, its informations, its videos - and that page's address
     /**
      * @param list<Media> $audios
      *
      * @return array<string, mixed>
      */
-    private function book(Book $book, array $audios, ?int $plays, string $locale): array
+    private function book(Book $book, array $audios, ?int $plays, string $locale, string $askedLocale): array
     {
         // Mp3 first when there is one: the one format every player reads
         $audio = array_find($audios, static fn (Media $media): bool => 'audio/mpeg' === $media->getMimeType()) ?? $audios[0];
@@ -144,6 +146,7 @@ class ListenJsonController extends AbstractController
             'language' => $book->getLanguage(),
             'modification' => $book->getModification()?->format(\DATE_ATOM),
             'cover' => $this->url(BookSectionsExtension::cover($book)),
+            'coverBack' => $this->url($book->getBackCovers()->first() ?: null),
             'audio' => ['url' => $this->url($audio), 'type' => $audio->getMimeType()],
             'pages' => $followed ? $pages : [],
             'cues' => $followed ? $cues : null,
@@ -154,6 +157,7 @@ class ListenJsonController extends AbstractController
             'videos' => $this->videos($book),
             'plays' => $plays,
             'data' => $this->data($book),
+            'page' => $this->page($book, $askedLocale),
         ];
     }
 
@@ -202,6 +206,14 @@ class ListenJsonController extends AbstractController
         }
 
         return $videos;
+    }
+
+    // The book's own page in the language asked, absolute like the files - null where the site serves no book pages (see BookPublicUrlResolver::resolveLocalizedPath()). Given the language rather than left to the route: the bare url says none, answering in the one it negotiated
+    private function page(Book $book, string $locale): ?string
+    {
+        $path = $this->publicUrlResolver->resolveLocalizedPath('book_display', ['slug' => $book->getSlug()], $locale);
+
+        return null === $path ? null : $this->urlHelper->getAbsoluteUrl($path);
     }
 
     // Absolute, the reader not being a page of the site, and asked to the uploader as the listening page does (vich_uploader_asset()). Null for a row holding no file (see Media::validateFileOrAddress())

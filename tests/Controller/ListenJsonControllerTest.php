@@ -20,6 +20,7 @@ use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
+use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\BookTranslator;
@@ -45,7 +46,7 @@ class ListenJsonControllerTest extends TestCase
     /**
      * @param Book[] $published
      */
-    private function createController(array $published = [], bool $translated = true, bool $pageSound = false, string $uriPrefix = '/', ?BookTranslator $bookTranslator = null, string $locale = '', string $playsMinimum = ''): ListenJsonController
+    private function createController(array $published = [], bool $translated = true, bool $pageSound = false, string $uriPrefix = '/', ?BookTranslator $bookTranslator = null, string $locale = '', string $playsMinimum = '', bool $bookPages = true): ListenJsonController
     {
         $bookService = $this->createStub(BookServiceInterface::class);
         $bookService->method('findAllPublished')->willReturn($published);
@@ -81,10 +82,14 @@ class ListenJsonControllerTest extends TestCase
         $registry = $this->createStub(BookCustomizationRegistry::class);
         $registry->method('getRoleLabel')->willReturnCallback(static fn (string $role): string => 'Idée : ' . $role);
 
+        // The book's page under the books' prefix, below the language asked unless it is the writing one, none at all for a site not serving them
+        $publicUrlResolver = $this->createStub(BookPublicUrlResolver::class);
+        $publicUrlResolver->method('resolveLocalizedPath')->willReturnCallback(static fn (string $route, array $parameters, string $locale = 'fr'): ?string => $bookPages ? ('fr' === $locale ? '' : '/' . $locale) . '/livre/' . $parameters['slug'] : null);
+
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnCallback(static fn (string $key, array $parameters, ?string $domain, ?string $locale): string => 'fr' === $locale ? $key : $locale . ':' . $key);
 
-        $controller = new ListenJsonController($bookService, $this->createStub(BookTranslatedLocales::class), $negotiator, $configService, $packages, new UrlHelper($requestStack), $uploaderHelper, $playService, $registry, $translator, $bookTranslator ?? $this->createStub(BookTranslator::class), new BookTranslationExtension($requestStack), $this->createStub(BookRepository::class), new BookPlaysExtension($playService, $configService));
+        $controller = new ListenJsonController($bookService, $this->createStub(BookTranslatedLocales::class), $negotiator, $configService, $packages, new UrlHelper($requestStack), $uploaderHelper, $playService, $registry, $translator, $bookTranslator ?? $this->createStub(BookTranslator::class), new BookTranslationExtension($requestStack), $this->createStub(BookRepository::class), new BookPlaysExtension($playService, $configService), $publicUrlResolver);
         $controller->setContainer(new Container());
 
         return $controller;
@@ -119,9 +124,13 @@ class ListenJsonControllerTest extends TestCase
         return json_decode((string) $response->getContent(), true, flags: \JSON_THROW_ON_ERROR);
     }
 
-    private function request(): Request
+    // Read in the writing language unless a test asks another, as the bare url negotiates it
+    private function request(string $locale = 'fr'): Request
     {
-        return Request::create('https://example.com/ecouter.json');
+        $request = Request::create('https://example.com/ecouter.json');
+        $request->setLocale($locale);
+
+        return $request;
     }
 
     // A book with no recording has nothing to play: it is left out, as on the listening index
@@ -168,6 +177,30 @@ class ListenJsonControllerTest extends TestCase
 
         $this->assertSame(['url' => 'https://example.com/medias/histoire.mp3', 'type' => 'audio/mpeg'], $books[0]['audio']);
         $this->assertSame(['url' => 'https://example.com/medias/histoire.m4a', 'type' => 'audio/mp4'], $books[1]['audio']);
+    }
+
+    // The fourth cover is the book's own upload, never a page standing in for it
+    public function testNamesTheFourthCoverOrNothing(): void
+    {
+        $covered = $this->book()->addMedia(new BookMedia()->setKind('cover_back')->setName('medias/quatrieme.webp'));
+
+        $books = $this->data($this->createController([$covered, $this->book(pages: true)])->index($this->request()))['books'];
+
+        $this->assertSame('https://example.com/medias/quatrieme.webp', $books[0]['coverBack']);
+        $this->assertNull($books[1]['coverBack']);
+    }
+
+    // The book's own page under its full address, and none for a site whose book pages are read elsewhere
+    public function testGivesTheBooksPageOrNothing(): void
+    {
+        $this->assertSame('https://example.com/livre/la-moto-et-la-biche', $this->data($this->createController([$this->book()])->index($this->request()))['books'][0]['page']);
+        $this->assertNull($this->data($this->createController([$this->book()], bookPages: false)->index($this->request()))['books'][0]['page']);
+    }
+
+    // The bare url says no language: the book's page follows the one it negotiated, as the books it lists do
+    public function testGivesTheBooksPageInTheAskedLanguage(): void
+    {
+        $this->assertSame('https://example.com/en/livre/la-moto-et-la-biche', $this->data($this->createController([$this->book()])->index($this->request('en')))['books'][0]['page']);
     }
 
     // A book given no image names no cover, rather than the site's "no cover" picture
