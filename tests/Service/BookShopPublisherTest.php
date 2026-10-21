@@ -72,6 +72,20 @@ class BookShopPublisherTest extends TestCase
         $this->assertSame(['fr' => 'label.edition_file_read_aloud_description@fr', 'en' => 'label.edition_file_read_aloud_description@en'], $written[0]->items[0]->description);
     }
 
+    // The edition's ISBN goes along as the item's barcode, written without its hyphens, and one that is no ISBN-13 is not passed at all
+    public function testTheIsbnIsTheItemsGtin(): void
+    {
+        $written = [];
+        $book = $this->book(1, 'new.epub', ['shop']);
+        $book->getEditions()->first()->setIsbn('978-2-9532859-0-1');
+        $this->publisher($written)->publish($book);
+        $book->getEditions()->first()->setIsbn('2-9532859-0-1');
+        $this->publisher($written)->publish($book);
+
+        $this->assertSame('9782953285901', $written[0]->items[0]->gtin);
+        $this->assertNull($written[1]->items[0]->gtin);
+    }
+
     // An edition ticked "Shop" whose files are not on disk yet is no reason to set the product's items aside: nothing is written
     public function testAShopEditionWithoutFilesWritesNothing(): void
     {

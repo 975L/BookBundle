@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.22.1
+
+Shop items carry the edition's ISBN as their GTIN
+
+- Requires `c975l/core-bundle` ^1.70.1 (21/10/2026)
+- Shop items take the edition's ISBN-13 as their GTIN (21/10/2026)
+
 ## v2.22.0
 
 Book sections cached, listens counted, free books

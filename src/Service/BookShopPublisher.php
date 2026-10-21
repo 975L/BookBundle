@@ -122,10 +122,19 @@ class BookShopPublisher
                 price: $file->getPrice(),
                 currency: $edition->getCurrency(),
                 description: $file->isReadAloud() ? $this->readAloudDescriptions() : [],
+                gtin: self::gtin($edition),
             );
         }
 
         return $items;
+    }
+
+    // The edition's ISBN as the GTIN-13 it is, digits only - null when it is not one, a wrong barcode being worse than none
+    private static function gtin(BookEdition $edition): ?string
+    {
+        $isbn = preg_replace('/\D/', '', (string) $edition->getIsbn());
+
+        return 13 === \strlen($isbn) ? $isbn : null;
     }
 
     // What an EPUB read aloud is, in every language the site offers - the shop writes its own on the row and the others as translations

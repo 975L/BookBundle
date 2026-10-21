@@ -971,7 +971,8 @@ Where the edition goes is ticked on it (`BookChannel`): the site's shop, the pub
 
 When ShopBundle is installed, a book saved in the back-office is written into the shop (`BookShopPublisher`,
 through UiBundle's `ProductCatalogWriterInterface`): one product per family of versions, created once and then
-the shop's to edit, with one item per file of the editions ticked "Shop" — the file copied, the price the file's.
+the shop's to edit, with one item per file of the editions ticked "Shop" — the file copied, the price the file's,
+the edition's ISBN-13 as its GTIN.
 An earlier version's files sit in the same product, named "version originale". An edition ticked "Shop" whose files
 are not on disk yet leaves the product alone rather than hiding its items. `c975l:book:shop:publish` writes
 every book at once. The guided project *Vendre une édition en fichiers* walks the gesture.
