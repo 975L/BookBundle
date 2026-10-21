@@ -119,12 +119,6 @@ class BookPublicUrlResolverTest extends TestCase
         $this->assertSame('/livre/tome-1', $this->createResolver('', [], ['fr', 'en'])->resolveLocalizedPath('book_display', ['slug' => 'tome-1']));
     }
 
-    // A bare url answering in the language it negotiated says it, no route attribute carrying it
-    public function testResolveLocalizedPathTakesTheLanguageAsked(): void
-    {
-        $this->assertSame('/en/livre/tome-1', $this->createResolver('', [], ['fr', 'en'])->resolveLocalizedPath('book_display', ['slug' => 'tome-1'], 'en'));
-    }
-
     // A family this site does not serve has no link to hand back, in any language
     public function testResolveLocalizedPathReturnsNullForAFamilyNotServedHere(): void
     {

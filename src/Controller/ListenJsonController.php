@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Exception\ExceptionInterface as RoutingExceptionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelperInterface;
 
@@ -105,7 +106,7 @@ class ListenJsonController extends AbstractController
         $books = [];
         foreach ($listed as [$book, $audios]) {
             // The roles named in the language the listening page names them in (see book_ui_locale())
-            $books[] = $this->book($book, $audios, $this->playsExtension->shown($plays[(int) $book->getId()] ?? 0), $this->translationExtension->uiLocale($book->getLanguage()) ?? $request->getLocale(), $request->getLocale());
+            $books[] = [...$this->book($book, $audios, $this->playsExtension->shown($plays[(int) $book->getId()] ?? 0), $this->translationExtension->uiLocale($book->getLanguage()) ?? $request->getLocale()), 'page' => $this->page($book)];
         }
 
         $response = new JsonResponse([
@@ -122,13 +123,13 @@ class ListenJsonController extends AbstractController
         return $this->negotiator->vary($request, $response);
     }
 
-    // What the listening page hands its player (see listen/display.html.twig): the pages and their timecodes go together or not at all, a few pages to leaf through before buying being no book to follow along. Then what the book's own page says of it - its fourth cover, its informations, its videos - and that page's address
+    // What the listening page hands its player (see listen/display.html.twig): the pages and their timecodes go together or not at all, a few pages to leaf through before buying being no book to follow along. Then what the book's own page says of it - its fourth cover, its informations, its videos
     /**
      * @param list<Media> $audios
      *
      * @return array<string, mixed>
      */
-    private function book(Book $book, array $audios, ?int $plays, string $locale, string $askedLocale): array
+    private function book(Book $book, array $audios, ?int $plays, string $locale): array
     {
         // Mp3 first when there is one: the one format every player reads
         $audio = array_find($audios, static fn (Media $media): bool => 'audio/mpeg' === $media->getMimeType()) ?? $audios[0];
@@ -146,7 +147,7 @@ class ListenJsonController extends AbstractController
             'language' => $book->getLanguage(),
             'modification' => $book->getModification()?->format(\DATE_ATOM),
             'cover' => $this->url(BookSectionsExtension::cover($book)),
-            'coverBack' => $this->url($book->getBackCovers()->first() ?: null),
+            'coverBack' => $this->url(BookSectionsExtension::backCover($book)),
             'audio' => ['url' => $this->url($audio), 'type' => $audio->getMimeType()],
             'pages' => $followed ? $pages : [],
             'cues' => $followed ? $cues : null,
@@ -157,7 +158,6 @@ class ListenJsonController extends AbstractController
             'videos' => $this->videos($book),
             'plays' => $plays,
             'data' => $this->data($book),
-            'page' => $this->page($book, $askedLocale),
         ];
     }
 
@@ -208,10 +208,14 @@ class ListenJsonController extends AbstractController
         return $videos;
     }
 
-    // The book's own page in the language asked, absolute like the files - null where the site serves no book pages (see BookPublicUrlResolver::resolveLocalizedPath()). Given the language rather than left to the route: the bare url says none, answering in the one it negotiated
-    private function page(Book $book, string $locale): ?string
+    // The book's own page in the language asked, absolute like the files - null where the site serves no book pages (see BookPublicUrlResolver::resolveLocalizedPath()), and null for a book whose url cannot be built rather than no answer for the others
+    private function page(Book $book): ?string
     {
-        $path = $this->publicUrlResolver->resolveLocalizedPath('book_display', ['slug' => $book->getSlug()], $locale);
+        try {
+            $path = $this->publicUrlResolver->resolveLocalizedPath('book_display', ['slug' => $book->getSlug()]);
+        } catch (RoutingExceptionInterface) {
+            return null;
+        }
 
         return null === $path ? null : $this->urlHelper->getAbsoluteUrl($path);
     }

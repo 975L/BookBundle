@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.22.5
+
+Fourth cover borrowed from another version, like the cover
+
+- `book_back_cover()`: the fourth cover, another version's for want of one (21/10/2026)
+- Book page and `book_listen_json` read the fourth cover through `book_back_cover()` (21/10/2026)
+- `book_listen_json`: a book whose url cannot be built answers `page: null` (21/10/2026)
+- `book_listen_json`: `page` follows the negotiated language through CoreBundle (21/10/2026)
+- `BookPublicUrlResolver::resolveLocalizedPath()` drops its `$locale` argument (21/10/2026)
+- Requires `c975l/core-bundle` ^1.72.6 (21/10/2026)
+
 ## v2.22.4
 
 Listening JSON gives the fourth cover and the book's page

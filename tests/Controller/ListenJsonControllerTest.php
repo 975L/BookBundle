@@ -37,6 +37,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelperInterface;
 
@@ -84,7 +85,7 @@ class ListenJsonControllerTest extends TestCase
 
         // The book's page under the books' prefix, below the language asked unless it is the writing one, none at all for a site not serving them
         $publicUrlResolver = $this->createStub(BookPublicUrlResolver::class);
-        $publicUrlResolver->method('resolveLocalizedPath')->willReturnCallback(static fn (string $route, array $parameters, string $locale = 'fr'): ?string => $bookPages ? ('fr' === $locale ? '' : '/' . $locale) . '/livre/' . $parameters['slug'] : null);
+        $publicUrlResolver->method('resolveLocalizedPath')->willReturnCallback(static fn (string $route, array $parameters): ?string => $bookPages ? '/livre/' . (1 === preg_match('/^[a-z0-9\-]+$/', $parameters['slug']) ? $parameters['slug'] : throw new InvalidParameterException('slug')) : null);
 
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnCallback(static fn (string $key, array $parameters, ?string $domain, ?string $locale): string => 'fr' === $locale ? $key : $locale . ':' . $key);
@@ -124,11 +125,11 @@ class ListenJsonControllerTest extends TestCase
         return json_decode((string) $response->getContent(), true, flags: \JSON_THROW_ON_ERROR);
     }
 
-    // Read in the writing language unless a test asks another, as the bare url negotiates it
-    private function request(string $locale = 'fr'): Request
+    // Read in the writing language, as the bare url negotiates it
+    private function request(): Request
     {
         $request = Request::create('https://example.com/ecouter.json');
-        $request->setLocale($locale);
+        $request->setLocale('fr');
 
         return $request;
     }
@@ -197,10 +198,13 @@ class ListenJsonControllerTest extends TestCase
         $this->assertNull($this->data($this->createController([$this->book()], bookPages: false)->index($this->request()))['books'][0]['page']);
     }
 
-    // The bare url says no language: the book's page follows the one it negotiated, as the books it lists do
-    public function testGivesTheBooksPageInTheAskedLanguage(): void
+    // A slug the route refuses leaves that book without a page rather than every book without an answer
+    public function testABookWhoseUrlCannotBeBuiltHasNoPage(): void
     {
-        $this->assertSame('https://example.com/en/livre/la-moto-et-la-biche', $this->data($this->createController([$this->book()])->index($this->request('en')))['books'][0]['page']);
+        $books = $this->data($this->createController([$this->book()->setSlug('La_Moto'), $this->book()])->index($this->request()))['books'];
+
+        $this->assertNull($books[0]['page']);
+        $this->assertSame('https://example.com/livre/la-moto-et-la-biche', $books[1]['page']);
     }
 
     // A book given no image names no cover, rather than the site's "no cover" picture

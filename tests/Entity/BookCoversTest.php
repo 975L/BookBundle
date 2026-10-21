@@ -55,4 +55,21 @@ class BookCoversTest extends TestCase
 
         $this->assertSame('cover.webp', (string) BookSectionsExtension::cover($book));
     }
+
+    // The fourth cover is borrowed the same way, so the newly illustrated version shows a back with its borrowed front
+    public function testABookWithNoBackCoverOfItsOwnShowsTheOneOfAnotherVersion(): void
+    {
+        $book = new Book()->setTitle('La Sorcière et les Policiers');
+        $previous = new Book()->setTitle('La Sorcière et les Policiers — Édition originale');
+        $previous->addBackCover(new BookMedia()->setName('back-original.webp'));
+        $previous->setNewerVersion($book);
+
+        $this->assertSame('back-original.webp', (string) BookSectionsExtension::backCover($book));
+
+        // Its own wins as soon as it is there
+        $book->addBackCover(new BookMedia()->setName('back.webp'));
+
+        $this->assertSame('back.webp', (string) BookSectionsExtension::backCover($book));
+        $this->assertNull(BookSectionsExtension::backCover(new Book()));
+    }
 }

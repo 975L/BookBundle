@@ -240,6 +240,20 @@ class BookSectionsExtension
         return null;
     }
 
+    // Its fourth cover, borrowed like the cover from another version of the same text for want of one of its own: the newly illustrated version would otherwise show a borrowed front and no back
+    #[AsTwigFunction('book_back_cover')]
+    public static function backCover(Book $book): ?Media
+    {
+        foreach ([$book, ...BookVersionExtension::versions($book)] as $version) {
+            $backCover = $version->getBackCovers()->first();
+            if ($backCover instanceof Media) {
+                return $backCover;
+            }
+        }
+
+        return null;
+    }
+
     // What the book carries itself, borrowing nothing from anyone
     private static function ownCover(Book $book): ?Media
     {

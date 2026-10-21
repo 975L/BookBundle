@@ -3,6 +3,11 @@
         "date": "2026-10-21",
         "description": [
             {
+                "en": "A new version of a book with no back cover of its own now shows the one of its other version.",
+                "fr": "Une nouvelle version d'un livre sans quatrième de couverture propre affiche désormais celle de son autre version.",
+                "es": "Una nueva versión de un libro sin contraportada propia muestra ahora la de su otra versión."
+            },
+            {
                 "en": "Files sold in your shop now carry the edition's ISBN as their barcode.",
                 "fr": "Les fichiers vendus dans votre boutique portent désormais l'ISBN de leur édition comme code-barres.",
                 "es": "Los archivos vendidos en su tienda llevan ahora el ISBN de su edición como código de barras."
