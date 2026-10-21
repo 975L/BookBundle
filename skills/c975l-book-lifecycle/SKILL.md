@@ -26,7 +26,7 @@ edition. **An edition holds no platform and no date**: the platforms belong to t
 they serve, and the date is the book's — the only one there is. The files it holds are what it is **sold as**, plus its covers
 as drawn, never sold (`BookEditionFile`, one per `BookEditionFileKind`, kept under `private/` with its price, an
 EPUB flagged `readAloud`, opened in the back-office through `BookEditionFileController` for `site-role-editor`): the slots its kind
-takes (`BookEditionFileKind::forEdition()`), ticked "Shop" for `BookShopPublisher` to write into the shop (the edition's ISBN-13 as each item's `gtin`), "Google"
+takes (`BookEditionFileKind::forEdition()`), ticked "Shop" for `BookShopPublisher` to write into the shop (the edition's ISBN-13 as each item's `gtin`, the book's language as the product's `language`), "Google"
 for `GooglePlayFeed`, "ONIX" for `OnixController` (`BookChannel`). The book's own files — the covers its pages
 show, pages, recording — still belong to the book.
 

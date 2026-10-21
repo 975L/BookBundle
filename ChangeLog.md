@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.22.2
+
+Shop products carry the book's language
+
+- Requires `c975l/core-bundle` ^1.70.2 (21/10/2026)
+- Shop products take the book's language (21/10/2026)
+
 ## v2.22.1
 
 Shop items carry the edition's ISBN as their GTIN

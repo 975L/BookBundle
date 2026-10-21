@@ -23,7 +23,7 @@
     ],
     "require": {
         "php": ">=8.4",
-        "c975l/core-bundle": "^1.70.1",
+        "c975l/core-bundle": "^1.70.2",
         "doctrine/dbal": "^4.5",
         "doctrine/orm": "^3.7",
         "easycorp/easyadmin-bundle": "^5.7",

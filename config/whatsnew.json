@@ -6,6 +6,11 @@
                 "en": "Files sold in your shop now carry the edition's ISBN as their barcode.",
                 "fr": "Les fichiers vendus dans votre boutique portent désormais l'ISBN de leur édition comme code-barres.",
                 "es": "Los archivos vendidos en su tienda llevan ahora el ISBN de su edición como código de barras."
+            },
+            {
+                "en": "Books sold in your shop now carry the language the book is written in.",
+                "fr": "Les livres vendus dans votre boutique portent désormais la langue dans laquelle le livre est écrit.",
+                "es": "Los libros vendidos en su tienda llevan ahora el idioma en que está escrito el libro."
             }
         ]
     },

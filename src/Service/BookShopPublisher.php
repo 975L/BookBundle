@@ -71,6 +71,7 @@ class BookShopPublisher
             description: (string) $latest->getSummary(),
             items: $items,
             coverPath: $this->coverPath($latest),
+            language: $latest->getLanguage(),
         ));
     }
 

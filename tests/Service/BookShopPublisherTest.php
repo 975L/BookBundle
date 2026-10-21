@@ -86,6 +86,15 @@ class BookShopPublisherTest extends TestCase
         $this->assertNull($written[1]->items[0]->gtin);
     }
 
+    // The product is written in the language of the book it sells
+    public function testTheProductIsWrittenInTheBooksLanguage(): void
+    {
+        $written = [];
+        $this->publisher($written)->publish($this->book(1, 'new.epub', ['shop'])->setLanguage('en'));
+
+        $this->assertSame('en', $written[0]->language);
+    }
+
     // An edition ticked "Shop" whose files are not on disk yet is no reason to set the product's items aside: nothing is written
     public function testAShopEditionWithoutFilesWritesNothing(): void
     {
