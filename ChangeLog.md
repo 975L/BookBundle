@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.22.3
+
+Character row actions icon-only
+
+- Character row actions icon-only, ordered as on the other screens (21/10/2026)
+- Character screen drops its detail action (21/10/2026)
+- `translateAction()` created icon-only (21/10/2026)
+
 ## v2.22.2
 
 Shop products carry the book's language

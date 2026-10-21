@@ -20,6 +20,7 @@ use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookTranslator;
 use c975L\ConfigBundle\Management\ContentLocaleScreen;
+use c975L\ConfigBundle\Management\EasyAdminActionHelper;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -31,6 +32,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Intl\Locales;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -45,6 +47,7 @@ trait ContentLocaleCrudTrait
             ...parent::getSubscribedServices(),
             BookTranslator::class => BookTranslator::class,
             ContentLocaleScreen::class => ContentLocaleScreen::class,
+            TranslatorInterface::class => TranslatorInterface::class,
         ];
     }
 
@@ -62,6 +65,11 @@ trait ContentLocaleCrudTrait
     private function contentLocaleScreen(): ContentLocaleScreen
     {
         return $this->container->get(ContentLocaleScreen::class);
+    }
+
+    private function translator(): TranslatorInterface
+    {
+        return $this->container->get(TranslatorInterface::class);
     }
 
     // The language this row is being written in, when it is not the one the site was written in (see ContentLocaleScreen)
@@ -128,12 +136,15 @@ trait ContentLocaleCrudTrait
         return $fields;
     }
 
-    // Opens the first language screen straight from the list, the way SiteBundle's pages and ShopBundle's products are translated - the tabs above a row already opened are the only other way in, and a translation screen nobody finds translates nothing
+    // Opens the first language screen straight from the list, the way SiteBundle's pages and ShopBundle's products are translated - the tabs above a row already opened are the only other way in, and a translation screen nobody finds translates nothing. Born icon-only, as every row action of the catalog, so no screen has to dress it again
     private function translateAction(): Action
     {
-        return $this->contentLocaleScreen()
+        $action = $this->contentLocaleScreen()
             ->action('translate', t('action.translate', [], 'book'), 'fa fa-language', $this->bookTranslator()->getTranslatableLocales())
             ->displayIf(fn (object $entity): bool => $this->bookTranslator()->isActive() && !($entity instanceof TrashableInterface && $entity->isDeleted()));
+        EasyAdminActionHelper::toIconOnly($action, $this->translator()->trans('action.translate', [], 'book'));
+
+        return $action;
     }
 
     // What the language tabs at the top of the edit screen need, and nothing at all where the row is not saved yet or the site declares a single language

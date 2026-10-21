@@ -13,10 +13,12 @@ namespace c975L\BookBundle\Controller\Management;
 use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Form\CharacterMediaType;
+use c975L\ConfigBundle\Management\EasyAdminActionHelper;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Form\TrixEditorType;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -55,6 +57,7 @@ class CharacterCrudController extends AbstractCrudController
             ->setEntityLabelInPlural(t('label.characters', [], 'book'))
             ->setDefaultSort(['serie' => 'ASC', 'position' => 'ASC'])
             ->setSearchFields(['name', 'slug', 'presentation'])
+            ->showEntityActionsInlined()
             ->overrideTemplate('crud/index', '@c975LBook/management/character_crud_index.html.twig')
             ->overrideTemplate('crud/edit', '@c975LBook/management/character_crud_edit.html.twig')
             ->overrideTemplate('crud/new', '@c975LBook/management/character_crud_new.html.twig')
@@ -62,10 +65,23 @@ class CharacterCrudController extends AbstractCrudController
         ;
     }
 
-    // The language screen opened straight from the list, as on the five other screens of the catalog - left labelled, EasyAdmin's own row actions being labelled here too (see ContentLocaleCrudTrait::translateAction())
+    // The language screen opened straight from the list, as on the five other screens of the catalog - every row action icon-only, as everywhere else (see ContentLocaleCrudTrait::translateAction())
     public function configureActions(Actions $actions): Actions
     {
-        return $actions->add(Crud::PAGE_INDEX, $this->translateAction());
+        return $actions
+            ->add(Crud::PAGE_INDEX, $this->translateAction())
+            ->update(Crud::PAGE_INDEX, Action::EDIT, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
+                $action,
+                $this->translator()->trans('action.edit', [], 'EasyAdminBundle'),
+            ))
+            ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
+                $action,
+                $this->translator()->trans('action.delete', [], 'EasyAdminBundle'),
+            ))
+            ->reorder(Crud::PAGE_INDEX, [Action::EDIT, 'translate', Action::DELETE])
+            // Detail adds no information beyond what edit already shows
+            ->disable(Action::DETAIL)
+        ;
     }
 
     public function configureFields(string $pageName): iterable

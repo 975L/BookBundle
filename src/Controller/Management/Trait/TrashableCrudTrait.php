@@ -132,10 +132,6 @@ trait TrashableCrudTrait
                 $action,
                 $this->translator->trans('action.duplicate', [], 'book'),
             ))
-            ->update(Crud::PAGE_INDEX, 'translate', fn (Action $action) => EasyAdminActionHelper::toIconOnly(
-                $action,
-                $this->translator->trans('action.translate', [], 'book'),
-            ))
             ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
                 $action
                     ->setIcon('fa fa-box-archive')

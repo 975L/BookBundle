@@ -11,6 +11,11 @@
                 "en": "Books sold in your shop now carry the language the book is written in.",
                 "fr": "Les livres vendus dans votre boutique portent désormais la langue dans laquelle le livre est écrit.",
                 "es": "Los libros vendidos en su tienda llevan ahora el idioma en que está escrito el libro."
+            },
+            {
+                "en": "The characters list shows its actions as icons, in the same order as the other catalog screens.",
+                "fr": "La liste des personnages affiche ses actions en icônes, dans le même ordre que les autres écrans du catalogue.",
+                "es": "La lista de personajes muestra sus acciones como iconos, en el mismo orden que las demás pantallas del catálogo."
             }
         ]
     },
