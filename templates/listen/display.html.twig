@@ -14,8 +14,9 @@
     {# The timecodes row can hold no file: nothing to follow then, as in the JSON (see ListenJsonController::book()) #}
     {% set followed = book.cues and book.cues.name and book.pages|length %}
     <div class="book-listen-page" lang="{{ book.language }}">
-        {# A story heard to its end counts one listen, the site's and its apps' adding up (see UiBundle's PlayController) #}
-        <div data-controller="ui-play-count" data-ui-play-count-url-value="{{ path('ui_play', {ownerType: constant('c975L\\BookBundle\\Service\\BookFavoriteItemProvider::OWNER_TYPE'), ownerId: book.id}) }}">
+        {# A story heard far enough counts one listen, the site's and its apps' adding up: a ticket taken as it starts, handed back at the part the site sets, the server measuring the time itself (see UiBundle's PlayController and BookPlayDurationProvider) #}
+        {% set playOwner = {ownerType: constant('c975L\\BookBundle\\Service\\BookFavoriteItemProvider::OWNER_TYPE'), ownerId: book.id} %}
+        <div data-controller="ui-play-count" data-ui-play-count-url-value="{{ path('ui_play', playOwner) }}" data-ui-play-count-start-url-value="{{ path('ui_play_start', playOwner) }}">
             {% if followed %}
                 <twig:c975LBook:Reader:Reader media="{{ book.pages }}" audio="{{ audio }}" cuesFile="{{ book.cues }}" id="listen-{{ book.id }}"/>
             {% else %}

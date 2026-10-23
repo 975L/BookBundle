@@ -32,9 +32,9 @@ class BookOnixBuilderTest extends TestCase
     {
         // Every recording plays five minutes: how it is read is AudioDurationReader's business, tested there
         $reader = $this->createStub(AudioDurationReader::class);
-        $reader->method('seconds')->willReturn(300);
+        $reader->method('ofMedia')->willReturn(300);
 
-        $this->builder = new BookOnixBuilder($reader, '/public');
+        $this->builder = new BookOnixBuilder($reader);
     }
 
     public function testEachEditionWithAnIsbnIsAProduct(): void

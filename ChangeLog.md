@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.24.0
+
+Listens counted on a ticket the server times
+
+- Requires `c975l/core-bundle` ^1.76 for UiBundle's `PlayTicket` (23/10/2026)
+- Added `BookPlayDurationProvider`, a book's listen timed on its mp3 (23/10/2026)
+- The listening page takes its ticket from `ui_play_start`: a story jumped to its end no longer counts a listen (23/10/2026)
+- Added `playStart` and `play` urls to the listening JSON (23/10/2026)
+- Apps must count listens through a `ui_play_start` ticket (23/10/2026) [BC-Break]
+- Added `AudioDurationReader::ofMedia()`, reading a media under `public/` (23/10/2026)
+
 ## v2.23.0
 
 Book videos dated by their platform, social column from UiBundle

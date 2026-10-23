@@ -20,7 +20,6 @@ use c975L\BookBundle\Enum\BookSubjectScheme;
 use c975L\BookBundle\Twig\BookSectionsExtension;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Service\JsonLdBuilder;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Intl\Languages;
 
 // The catalog as an ONIX 3.0 message, one <Product> per edition holding an ISBN - what a store or a script uploading to one reads instead of the pages. Built out of what the catalog already holds, as the JSON-LD is (see BookSnippetBuilder): nothing here is typed twice
@@ -36,8 +35,6 @@ class BookOnixBuilder
 
     public function __construct(
         private readonly AudioDurationReader $durationReader,
-        #[Autowire('%kernel.project_dir%/public')]
-        private readonly string $publicDir,
         private readonly JsonLdBuilder $jsonLdBuilder = new JsonLdBuilder(),
     ) {
     }
@@ -348,7 +345,7 @@ class BookOnixBuilder
     {
         $total = null;
         foreach ($book->getAudios() as $audio) {
-            $seconds = $this->durationReader->seconds($this->publicDir . '/' . ltrim((string) $audio->getName(), '/'));
+            $seconds = $this->durationReader->ofMedia($audio);
             if (null !== $seconds) {
                 $total = ($total ?? 0) + $seconds;
             }

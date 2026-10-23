@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Tests\Service;
 
+use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Service\AudioDurationReader;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +39,7 @@ class AudioDurationReaderTest extends TestCase
         $id3 = 'ID3' . "\x04\x00\x00\x00\x00\x00\x0A" . str_repeat("\0", 10);
         file_put_contents($this->path, $id3 . str_repeat($this->frame(), 383));
 
-        $this->assertSame(10, new AudioDurationReader()->seconds($this->path));
+        $this->assertSame(10, new AudioDurationReader('/public')->seconds($this->path));
     }
 
     // A tag larger than the window read, as an embedded cover makes it, is skipped rather than searched for a frame
@@ -52,7 +53,7 @@ class AudioDurationReaderTest extends TestCase
         $id3 = 'ID3' . "\x04\x00\x00" . $syncsafe . str_repeat("\0", $size);
         file_put_contents($this->path, $id3 . str_repeat($this->frame(), 383));
 
-        $this->assertSame(10, new AudioDurationReader()->seconds($this->path));
+        $this->assertSame(10, new AudioDurationReader('/public')->seconds($this->path));
     }
 
     // A variable bitrate file is counted by the frame total of its Xing header, whatever its size
@@ -61,16 +62,26 @@ class AudioDurationReaderTest extends TestCase
         $xing = self::HEADER . str_repeat("\0", 32) . 'Xing' . "\x00\x00\x00\x01" . pack('N', 2297);
         file_put_contents($this->path, str_pad($xing, self::FRAME_BYTES, "\0") . str_repeat($this->frame(), 3));
 
-        $this->assertSame(60, new AudioDurationReader()->seconds($this->path));
+        $this->assertSame(60, new AudioDurationReader('/public')->seconds($this->path));
     }
 
     public function testWhatIsNotAnMp3HasNoDuration(): void
     {
         file_put_contents($this->path, 'OggS not an mp3');
 
-        $reader = new AudioDurationReader();
+        $reader = new AudioDurationReader('/public');
         $this->assertNull($reader->seconds($this->path));
         $this->assertNull($reader->seconds('/nowhere.mp3'));
+    }
+
+    // A stored media is read where the site serves its files, and a row holding no file has no duration
+    public function testAMediaIsReadUnderThePublicDirectory(): void
+    {
+        file_put_contents($this->path, str_repeat($this->frame(), 383));
+        $reader = new AudioDurationReader(\dirname($this->path));
+
+        $this->assertSame(10, $reader->ofMedia(new BookMedia()->setName('/' . basename($this->path))));
+        $this->assertNull($reader->ofMedia(new BookMedia()));
     }
 
     private function frame(): string

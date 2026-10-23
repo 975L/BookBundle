@@ -34,6 +34,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Exception\ExceptionInterface as RoutingExceptionInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelperInterface;
 
@@ -123,7 +124,7 @@ class ListenJsonController extends AbstractController
         return $this->negotiator->vary($request, $response);
     }
 
-    // What the listening page hands its player (see listen/display.html.twig): the pages and their timecodes go together or not at all, a few pages to leaf through before buying being no book to follow along. Then what the book's own page says of it - its fourth cover, its informations, its videos
+    // What the listening page hands its player (see listen/display.html.twig): the pages and their timecodes go together or not at all, a few pages to leaf through before buying being no book to follow along. Then what the book's own page says of it - its fourth cover, its informations, its videos - and where its listens are counted
     /**
      * @param list<Media> $audios
      *
@@ -138,6 +139,9 @@ class ListenJsonController extends AbstractController
         $pages = array_values(array_map($this->url(...), $book->getPages()->toArray()));
         $cues = $this->url($book->getCues());
         $followed = null !== $cues && [] !== $pages && !\in_array(null, $pages, true);
+
+        // Where a listen is counted, as the listening page counts it: a ticket taken from the first as the story starts, handed back to the second once enough of it played (see UiBundle's PlayController)
+        $playOwner = ['ownerType' => BookFavoriteItemProvider::OWNER_TYPE, 'ownerId' => $book->getId()];
 
         return [
             'id' => $book->getId(),
@@ -157,6 +161,8 @@ class ListenJsonController extends AbstractController
             'credits' => $this->credits($book, $locale),
             'videos' => $this->videos($book),
             'plays' => $plays,
+            'playStart' => $this->generateUrl('ui_play_start', $playOwner, UrlGeneratorInterface::ABSOLUTE_URL),
+            'play' => $this->generateUrl('ui_play', $playOwner, UrlGeneratorInterface::ABSOLUTE_URL),
             'data' => $this->data($book),
         ];
     }

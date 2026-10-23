@@ -38,6 +38,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelperInterface;
 
@@ -91,7 +92,12 @@ class ListenJsonControllerTest extends TestCase
         $translator->method('trans')->willReturnCallback(static fn (string $key, array $parameters, ?string $domain, ?string $locale): string => 'fr' === $locale ? $key : $locale . ':' . $key);
 
         $controller = new ListenJsonController($bookService, $this->createStub(BookTranslatedLocales::class), $negotiator, $configService, $packages, new UrlHelper($requestStack), $uploaderHelper, $playService, $registry, $translator, $bookTranslator ?? $this->createStub(BookTranslator::class), new BookTranslationExtension($requestStack), $this->createStub(BookRepository::class), new BookPlaysExtension($playService, $configService), $publicUrlResolver);
-        $controller->setContainer(new Container());
+        // The play routes under their full address, as UiBundle declares them
+        $router = $this->createStub(UrlGeneratorInterface::class);
+        $router->method('generate')->willReturnCallback(static fn (string $route, array $parameters): string => 'https://example.com/' . ('ui_play_start' === $route ? 'play-start' : 'play') . '/' . $parameters['ownerType'] . '/' . $parameters['ownerId']);
+        $container = new Container();
+        $container->set('router', $router);
+        $controller->setContainer($container);
 
         return $controller;
     }
@@ -154,6 +160,17 @@ class ListenJsonControllerTest extends TestCase
         $this->assertSame(['url' => 'https://example.com/medias/histoire.mp3', 'type' => 'audio/mpeg'], $book['audio']);
         $this->assertSame(['https://example.com/medias/page-1.webp', 'https://example.com/medias/page-2.webp'], $book['pages']);
         $this->assertSame('https://example.com/medias/histoire.vtt', $book['cues']);
+    }
+
+    // An app counts its listens as the listening page does: a ticket taken where the JSON says, handed back where it says
+    public function testGivesWhereAListenIsCounted(): void
+    {
+        $book = $this->book();
+        new \ReflectionProperty(Book::class, 'id')->setValue($book, 12);
+        $data = $this->data($this->createController([$book])->index($this->request()))['books'][0];
+
+        $this->assertSame('https://example.com/play-start/book/12', $data['playStart']);
+        $this->assertSame('https://example.com/play/book/12', $data['play']);
     }
 
     // Pages with no timecodes are a few to leaf through before buying, not a book to follow along: they stay on the site

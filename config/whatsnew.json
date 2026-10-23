@@ -16,6 +16,11 @@
                 "en": "The trash of books and planches no longer shows the social networks column.",
                 "fr": "La corbeille des livres et des planches n'affiche plus la colonne Réseaux sociaux.",
                 "es": "La papelera de libros y planchas ya no muestra la columna de redes sociales."
+            },
+            {
+                "en": "A book's listen count now only counts stories really listened to, not ones skipped to the end.",
+                "fr": "Le nombre d'écoutes d'un livre ne compte désormais que les histoires vraiment écoutées, plus celles sautées jusqu'à la fin.",
+                "es": "El número de escuchas de un libro solo cuenta ahora las historias realmente escuchadas, no las saltadas hasta el final."
             }
         ]
     },
