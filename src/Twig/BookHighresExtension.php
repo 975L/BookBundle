@@ -10,29 +10,37 @@
 
 namespace c975L\BookBundle\Twig;
 
+use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\StripMedia;
+use c975L\UiBundle\Service\ImageDimensionsReader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Twig\Attribute\AsTwigFunction;
 
-// The high resolution a picture opens over the page (see c975LUi:Image:Zoom), for the medias that actually have one on disk
-// The name is derived from the stored file's own (see StripMedia::getHighresFilename), so it can be spelled for every media - including one uploaded before this bundle asked for the derivatives, whose file was never produced. A template offering the zoom on that name would hand the dialog an address answering 404, which is why the disk is the thing asked rather than the entity
+// The high resolution a picture opens over the page (see c975LUi:Image:Zoom) or on a tablet's screen (see ListenJsonController), asked to the disk rather than to the entity: the name can be spelled for every media (see Media::getHighresFilename), including one uploaded before the derivatives were asked for, whose file would answer 404
 class BookHighresExtension
 {
     public function __construct(
         private readonly ParameterBagInterface $parameterBag,
+        private readonly ImageDimensionsReader $imageDimensionsReader,
     ) {
     }
 
-    // The path to hand the zoom, or null for a media whose derivative was never produced - the caller then shows the picture without a zoom on it
-    #[AsTwigFunction('strip_highres')]
-    public function stripHighres(?StripMedia $media): ?string
+    // The path to hand the zoom, or null for a media whose derivative was never produced, or produced no wider than the stored file - an upload at most that wide gives both the same pixels (see UiBundle's VichImageResizeListener, capping each at the upload's own width), and a second download of them shows nothing more
+    public function highres(?Media $media): ?string
     {
         $filename = $media?->getHighresFilename();
-
         if (null === $filename) {
             return null;
         }
 
-        return is_file($this->parameterBag->get('kernel.project_dir') . '/public/' . $filename) ? $filename : null;
+        $dimensions = $this->imageDimensionsReader->read($this->parameterBag->get('kernel.project_dir') . '/public/' . $filename);
+
+        return null !== $dimensions && $dimensions['width'] > $media->getImageWidth() ? $filename : null;
+    }
+
+    #[AsTwigFunction('strip_highres')]
+    public function stripHighres(?StripMedia $media): ?string
+    {
+        return $this->highres($media);
     }
 }

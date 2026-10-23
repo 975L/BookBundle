@@ -4,8 +4,8 @@
 {% set medias = book.pages %}
 {% if medias|length %}
     {% set body %}
-        {# The gallery's own heading comes translated rather than left to the slider, which would read it in the visitor's language on a book written in another. What each page is described as while nobody has typed its own alternative text: a hundred pages would otherwise publish a hundred empty alt attributes, silent to a screen reader and invisible to Google Images, which is a real channel for an illustrated catalog. Translated in the book's own language, like the heading above it #}
-        <twig:c975LUi:Slider:Slider media="{{ medias }}" id="slider" label="{{ 'label.pages_gallery'|trans({}, 'ui', book_ui_locale(book.language)) }}" fallbackAlt="{{ 'label.pages_gallery'|trans({}, 'ui', book_ui_locale(book.language)) }} - {{ book.title }}" />
+        {# A page clicked opens over the site at its high resolution rather than turning to the next, the arrows and swipes still leafing through. The gallery's own heading comes translated rather than left to the slider, which would read it in the visitor's language on a book written in another. What each page is described as while nobody has typed its own alternative text: a hundred pages would otherwise publish a hundred empty alt attributes, silent to a screen reader and invisible to Google Images, which is a real channel for an illustrated catalog. Translated in the book's own language, like the heading above it #}
+        <twig:c975LUi:Slider:Slider media="{{ medias }}" id="slider" label="{{ 'label.pages_gallery'|trans({}, 'ui', book_ui_locale(book.language)) }}" fallbackAlt="{{ 'label.pages_gallery'|trans({}, 'ui', book_ui_locale(book.language)) }} - {{ book.title }}" zoom="true" />
     {% endset %}
     {{ include('@c975LBook/book/_section.html.twig', {form: 'slider', book: book, section: section, editUrl: editUrl, body: body}) }}
 {% endif %}

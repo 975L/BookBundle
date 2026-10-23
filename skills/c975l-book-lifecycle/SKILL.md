@@ -212,6 +212,7 @@ and an import never deletes what the archive does not name — a book's `categor
 whole, an archive saying which categories the book carries and a category taken off it there coming off it
 here too. A book archive exported before 2.15 still lands its `extract` files as `page`. An edition carries its `files`
 with their price and `readAloud` flag, `MediaArchiver` reading and laying them back under `private/` (`PrivateDirectory::resolve()`).
+A multi-size image's `-highres`/`-thumb` siblings travel beside its file, named after its archive entry, and come back beside it.
 
 **A person is the one exception, matched by name** (`ContributorResolver`): a book's archive still carries
 `author`, `authorWebsite`, `illustrator` and `illustratorWebsite` as the plain strings the four columns held
@@ -287,10 +288,13 @@ own file is re-uploaded from — a book, a serie, a strip or a contributor — n
 be listed on. A row implementing `VichPrivateFileInterface` is looked for under its own private directory,
 every other under `PUBLIC_DIRECTORY`.
 
-The image subclasses — `BookMedia`, `SerieMedia`, `CharacterMedia`, `ContributorMedia` — implement UiBundle's
+The image subclasses — `SerieMedia`, `CharacterMedia`, `ContributorMedia` — implement UiBundle's
 `VichImageResizableInterface`, so an upload is resized and converted to webp: `Media::getImageWidth()` answers
-1200 for a `background` or a `page`, 800 for every other kind, the listener never enlarging. `StripMedia` takes
-`VichMultiSizeImageInterface` instead, a planche being cut into several sizes.
+1200 for a `background` or a `page`, 800 for every other kind, the listener never enlarging. `BookMedia` and
+`StripMedia` take `VichMultiSizeImageInterface` instead: `BookMedia` adds a 1600px `-highres.webp` beside each
+upload (capped at the upload's own width) and no thumbnail (`getThumbnailSize()` is `0`), opened by the pages slider's zoom and handed to the apps as
+`pagesHighres`/`coverHighres`; a file uploaded before has none, and the zoom then opens the stored one. Their names come from
+`Media::getHighresFilename()`/`Media::derivedFilename()` only, and UiBundle's `MediaFileRemoveListener` removes them with the file.
 
 ```bash
 php bin/console c975l:health-check:run --kind=files-book

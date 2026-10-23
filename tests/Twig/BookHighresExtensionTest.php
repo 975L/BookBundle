@@ -10,8 +10,11 @@
 
 namespace c975L\BookBundle\Tests\Twig;
 
+use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\SerieMedia;
 use c975L\BookBundle\Entity\StripMedia;
 use c975L\BookBundle\Twig\BookHighresExtension;
+use c975L\UiBundle\Service\ImageDimensionsReader;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\Filesystem\Filesystem;
@@ -35,7 +38,7 @@ class BookHighresExtensionTest extends TestCase
     // The suffix goes before the extension, where the listener saved the file
     public function testItNamesTheFileTheListenerSavedBesideTheStoredOne(): void
     {
-        $this->write('medias/book/strips/page-la-tribu-ecole-abc123-highres.webp');
+        $this->write('medias/book/strips/page-la-tribu-ecole-abc123-highres.webp', 1600);
 
         $this->assertSame(
             'medias/book/strips/page-la-tribu-ecole-abc123-highres.webp',
@@ -51,6 +54,33 @@ class BookHighresExtensionTest extends TestCase
         );
     }
 
+    // An upload no wider than the stored file leaves a highres of the same pixels, and the zoom would open the very picture the page shows
+    public function testItAnswersNothingForAHighresNoWiderThanTheStoredFile(): void
+    {
+        $this->write('medias/book/strips/page-la-tribu-ecole-abc123-highres.webp', StripMedia::MEDIUM_WIDTH);
+
+        $this->assertNull(
+            $this->extension()->stripHighres($this->media('medias/book/strips/page-la-tribu-ecole-abc123.webp'))
+        );
+    }
+
+    // The same answer for a book's page, which the listening JSON hands a tablet
+    public function testItAnswersForABookPageToo(): void
+    {
+        $this->write('medias/book/books/page-la-moto-abc123-highres.webp', 1600);
+        $media = new BookMedia()->setKind('page')->setName('medias/book/books/page-la-moto-abc123.webp');
+
+        $this->assertSame('medias/book/books/page-la-moto-abc123-highres.webp', $this->extension()->highres($media));
+    }
+
+    // A media cutting no derivatives has no highres to look for, whatever sits on disk
+    public function testItAnswersNothingForAMediaCuttingNoDerivatives(): void
+    {
+        $this->write('medias/book/series/cover-abc123-highres.webp', 1600);
+
+        $this->assertNull($this->extension()->highres(new SerieMedia()->setName('medias/book/series/cover-abc123.webp')));
+    }
+
     // A media row exists from the moment its planche is saved, whether or not a file has been picked
     public function testItAnswersNothingForAMediaCarryingNoFileAtAll(): void
     {
@@ -60,7 +90,7 @@ class BookHighresExtensionTest extends TestCase
 
     private function extension(): BookHighresExtension
     {
-        return new BookHighresExtension(new ParameterBag(['kernel.project_dir' => $this->projectDir]));
+        return new BookHighresExtension(new ParameterBag(['kernel.project_dir' => $this->projectDir]), new ImageDimensionsReader());
     }
 
     private function media(string $name): StripMedia
@@ -68,8 +98,10 @@ class BookHighresExtensionTest extends TestCase
         return new StripMedia()->setName($name);
     }
 
-    private function write(string $path): void
+    // A real image, its width being what is read
+    private function write(string $path, int $width): void
     {
-        new Filesystem()->dumpFile($this->projectDir . '/public/' . $path, 'x');
+        new Filesystem()->mkdir(\dirname($this->projectDir . '/public/' . $path));
+        imagewebp(imagecreatetruecolor($width, 10), $this->projectDir . '/public/' . $path);
     }
 }

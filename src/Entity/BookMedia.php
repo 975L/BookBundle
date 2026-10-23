@@ -10,15 +10,15 @@
 
 namespace c975L\BookBundle\Entity;
 
-use c975L\UiBundle\Contract\VichImageResizableInterface;
 use c975L\UiBundle\Contract\VichMediaNamableInterface;
+use c975L\UiBundle\Contract\VichMultiSizeImageInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
-// Resized and converted to webp on upload, at the width its kind calls for (see Media::getImageWidth)
+// Resized and converted to webp on upload, at the width its kind calls for (see Media::getImageWidth), with a "-highres.webp" beside it that the pages' zoom and the apps' tablets open (see UiBundle's VichImageResizeListener)
 #[ORM\Entity]
 #[Vich\Uploadable]
-class BookMedia extends Media implements VichImageResizableInterface, VichMediaNamableInterface
+class BookMedia extends Media implements VichMultiSizeImageInterface, VichMediaNamableInterface
 {
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'medias')]
     #[ORM\JoinColumn(nullable: true)]
@@ -34,6 +34,18 @@ class BookMedia extends Media implements VichImageResizableInterface, VichMediaN
         $this->book = $book;
 
         return $this;
+    }
+
+    // No book screen shows its images as a grid, so UiBundle cuts no thumbnail for them
+    public function getThumbnailSize(): int
+    {
+        return 0;
+    }
+
+    // Wide enough for a tablet's full screen and the zoom, capped by UiBundle at the upload's own width
+    public function getHighresWidth(): int
+    {
+        return 1600;
     }
 
     public function getVichMediaPath(): string

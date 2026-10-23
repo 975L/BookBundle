@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Entity\Media;
+use c975L\UiBundle\Contract\VichMultiSizeImageInterface;
 use c975L\UiBundle\Storage\PrivateDirectory;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,9 @@ use Symfony\Component\Filesystem\Filesystem;
 // What the export and import providers of this bundle do alike with a file: the six subclasses of Media carry the same columns and the same stored name, whether they hang off a serie, a book, one of its versions or a strip. The name is this hierarchy's own natural key - unique across the table, and the very path the file is served under - so an archive puts its files straight back where they were rather than re-uploading them: a catalog carried to another site answers at the same urls, and an import re-encodes nothing
 class MediaArchiver
 {
+    // The siblings UiBundle's VichImageResizeListener cuts beside a multi-size image, which only an upload produces: an archive not carrying them would bring the pages back without their zoom, and nothing short of a new upload could make them again
+    private const array DERIVATIVE_SUFFIXES = ['-highres', '-thumb'];
+
     private readonly Filesystem $filesystem;
 
     public function __construct(
@@ -114,8 +118,17 @@ class MediaArchiver
             }
 
             $archivedPath = $filesDir . '/' . $entry;
-            if (is_file($archivedPath)) {
-                $this->filesystem->copy($archivedPath, $this->path($media, $name), true);
+            if (!is_file($archivedPath)) {
+                continue;
+            }
+            $this->filesystem->copy($archivedPath, $this->path($media, $name), true);
+
+            // Laid back beside it under the names the stored file gives them, for an archive holding them (see registerFile())
+            foreach ($this->derivativeSuffixes($media) as $suffix) {
+                $archivedDerivative = Media::derivedFilename($archivedPath, $suffix);
+                if (is_file($archivedDerivative)) {
+                    $this->filesystem->copy($archivedDerivative, $this->path($media, Media::derivedFilename($name, $suffix)), true);
+                }
             }
         }
     }
@@ -150,7 +163,21 @@ class MediaArchiver
         $archivePath = 'files/' . bin2hex(random_bytes(8)) . '_' . basename($name);
         $files[$archivePath] = $path;
 
+        // The derivatives travel beside it, named after its archive entry as they are after its stored name, so the metadata needs no reference of their own
+        foreach ($this->derivativeSuffixes($media) as $suffix) {
+            $derivative = $this->path($media, Media::derivedFilename($name, $suffix));
+            if (is_file($derivative)) {
+                $files[Media::derivedFilename($archivePath, $suffix)] = $derivative;
+            }
+        }
+
         return $archivePath;
+    }
+
+    /** @return list<string> */
+    private function derivativeSuffixes(Media $media): array
+    {
+        return $media instanceof VichMultiSizeImageInterface ? self::DERIVATIVE_SUFFIXES : [];
     }
 
     // Where the file is on disk: under public/, or under the private directory of a file the web server must not hand out (see BookEditionFile)

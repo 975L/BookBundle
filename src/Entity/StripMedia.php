@@ -64,22 +64,11 @@ class StripMedia extends Media implements VichMediaNamableInterface, VichMultiSi
         return self::HIGHRES_WIDTH;
     }
 
-    // Read off the stored name rather than held in a column of its own: the listener writes the derivatives beside the file under the very same name, and a column would be a second place for the same truth. Null for a media carrying no file, and for one uploaded before this bundle asked for the derivatives - a caller checks it before offering the zoom
+    // Named like the highres (see Media::getHighresFilename()), null for a media carrying no file
     public function getThumbnailFilename(): ?string
-    {
-        return $this->deriveFilename('-thumb');
-    }
-
-    public function getHighresFilename(): ?string
-    {
-        return $this->deriveFilename('-highres');
-    }
-
-    // The sibling the listener saved next to the stored file, whose suffix comes before the extension
-    private function deriveFilename(string $suffix): ?string
     {
         $name = $this->getName();
 
-        return null === $name ? null : preg_replace('/(\.[^.\/]+)$/', $suffix . '$1', $name);
+        return null === $name ? null : self::derivedFilename($name, '-thumb');
     }
 }

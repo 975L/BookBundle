@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Entity;
 use c975L\BookBundle\Enum\BookMediaKind;
 use c975L\BookBundle\Repository\MediaRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
+use c975L\UiBundle\Contract\VichMultiSizeImageInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -195,6 +196,18 @@ abstract class Media implements \Stringable
             BookMediaKind::Background->value, BookMediaKind::Page->value => 1200,
             default => 800,
         };
+    }
+
+    // The "-highres" sibling UiBundle's VichImageResizeListener saves next to a multi-size image's stored file, read off the stored name rather than held in a column of its own, a column being a second place for the same truth. Null for a media carrying no file and for a subclass cutting no derivatives - a caller still checks the disk, a file uploaded before its subclass asked for them having none (see BookHighresExtension)
+    public function getHighresFilename(): ?string
+    {
+        return $this instanceof VichMultiSizeImageInterface && null !== $this->name ? self::derivedFilename($this->name, '-highres') : null;
+    }
+
+    // The name a derivative of the stored file "$name" carries, its suffix before the extension where the listener puts it
+    public static function derivedFilename(string $name, string $suffix): string
+    {
+        return (string) preg_replace('/(\.[^.\/]+)$/', $suffix . '$1', $name);
     }
 
     public function getKind(): ?string

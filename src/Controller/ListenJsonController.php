@@ -20,6 +20,7 @@ use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\BookTranslator;
+use c975L\BookBundle\Twig\BookHighresExtension;
 use c975L\BookBundle\Twig\BookPlaysExtension;
 use c975L\BookBundle\Twig\BookSectionsExtension;
 use c975L\BookBundle\Twig\BookTranslationExtension;
@@ -57,6 +58,7 @@ class ListenJsonController extends AbstractController
         private readonly BookRepository $bookRepository,
         private readonly BookPlaysExtension $playsExtension,
         private readonly BookPublicUrlResolver $publicUrlResolver,
+        private readonly BookHighresExtension $highresExtension,
     ) {
     }
 
@@ -143,6 +145,10 @@ class ListenJsonController extends AbstractController
         // Where a listen is counted, as the listening page counts it: a ticket taken from the first as the story starts, handed back to the second once enough of it played (see UiBundle's PlayController)
         $playOwner = ['ownerType' => BookFavoriteItemProvider::OWNER_TYPE, 'ownerId' => $book->getId()];
 
+        // Each read once, then given at both sizes
+        $cover = BookSectionsExtension::cover($book);
+        $backCover = BookSectionsExtension::backCover($book);
+
         return [
             'id' => $book->getId(),
             'slug' => $book->getSlug(),
@@ -150,10 +156,13 @@ class ListenJsonController extends AbstractController
             'summary' => $book->getSummary(),
             'language' => $book->getLanguage(),
             'modification' => $book->getModification()?->format(\DATE_ATOM),
-            'cover' => $this->url(BookSectionsExtension::cover($book)),
-            'coverBack' => $this->url(BookSectionsExtension::backCover($book)),
+            'cover' => $this->url($cover),
+            'coverHighres' => $this->highres($cover),
+            'coverBack' => $this->url($backCover),
+            'coverBackHighres' => $this->highres($backCover),
             'audio' => ['url' => $this->url($audio), 'type' => $audio->getMimeType()],
             'pages' => $followed ? $pages : [],
+            'pagesHighres' => $followed ? array_values(array_map($this->highres(...), $book->getPages()->toArray())) : [],
             'cues' => $followed ? $cues : null,
             'published' => $book->getPublished()?->format(\DATE_ATOM),
             'age' => $book->getAge(),
@@ -232,5 +241,13 @@ class ListenJsonController extends AbstractController
         $path = null === $media ? null : $this->uploaderHelper->asset($media);
 
         return null === $path ? null : $this->urlHelper->getAbsoluteUrl($path);
+    }
+
+    // The "-highres.webp" its upload produced beside the stored file, for a tablet's wider screen - null where there is none worth the download (see BookHighresExtension::highres()), the stored file then being shown
+    private function highres(?Media $media): ?string
+    {
+        $highres = $this->highresExtension->highres($media);
+
+        return null === $highres ? null : $this->urlHelper->getAbsoluteUrl('/' . $highres);
     }
 }

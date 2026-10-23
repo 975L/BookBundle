@@ -151,19 +151,11 @@ $book-bp-row-3: 1025px;
     box-shadow: var(--book-lead-shadow);
 }
 
-// A shelf of covers, laid on the very grid ShopBundle draws its products with (its sass/_products.scss): what is stated is the smallest a track may be, the grid sharing the rest of the measure between as many as fit - two to the row on a phone, four on a page at the default measure. A grid rather than the flex row ".cards" gives it, so the last row lines up in the same columns as the ones above it
+// A shelf of covers, laid on the picture grid UiBundle sizes once for every bundle (--card-grid-min and --card-grid-gap, its sass/_tokens.scss): what is stated is the smallest a track may be, the grid sharing the rest of the measure between as many as fit - two to the row on a phone, a phone's size on a tablet, the wider track on a computer. The fallbacks are those tokens' phone values, for a site without UiBundle. A grid rather than the flex row ".cards" gives it, so the last row lines up in the same columns as the ones above it
 .book-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
-    gap: 12px;
-}
-
-// Mobile first: the phone keeps the narrow track above, which is what puts two covers on its row
-@media (min-width: $book-bp-row-2) {
-    .book-cards {
-        grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
-        gap: 20px;
-    }
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-grid-min, min(150px, calc(50% - 6px)))), 1fr));
+    gap: var(--card-grid-gap, 12px);
 }
 
 // The cover fills the column the grid gives it, where it used to be pinned at the 150px its markup carried

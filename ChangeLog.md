@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.25.0
+
+Book pictures at high resolution, the pages zoomed on click
+
+- `BookMedia` implements `VichMultiSizeImageInterface`, a 1600px `-highres.webp` made beside each upload (23/10/2026)
+- Book pages slider opens the clicked page over the site instead of turning to the next (23/10/2026)
+- `coverHighres`, `coverBackHighres` and `pagesHighres` in the listening JSON, null where none wider exists (23/10/2026)
+- `BookMedia` cuts no thumbnail, requires the CoreBundle release skipping a size of 0 (23/10/2026)
+- `Media::getHighresFilename()` and `Media::derivedFilename()` name the derivatives for every subclass (23/10/2026)
+- `BookHighresExtension::highres()` shared by `strip_highres` and the listening JSON, null for a highres no wider than the stored file (23/10/2026)
+- Export/import archives carry the `-highres`/`-thumb` derivatives (23/10/2026)
+- Covers grid on UiBundle's `--card-grid-min` and `--card-grid-gap`: a phone's size on a tablet, the 215px track from 1024px instead of 621px (23/10/2026)
+
 ## v2.24.0
 
 Listens counted on a ticket the server times

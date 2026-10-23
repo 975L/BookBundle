@@ -69,7 +69,7 @@ there and stays off the index, whatever kind its files were filed under. `reader
 the timecodes and the page-turn sound — and `book_listen_index` links to `ui_pwa_downloads` when `pwa_enabled()`.
 
 **`book_listen_json` is the same list as data, for a reader outside the site** (`ListenJsonController`): one answer holding
-`pageSound` and `books`, each with its `id`, `slug`, `title`, `summary`, `language`, `modification`, `cover`, `coverBack` (the fourth cover, another version's for want of one as `book_back_cover()` reads it, null without), `audio`
+`pageSound` and `books`, each with its `id`, `slug`, `title`, `summary`, `language`, `modification`, `cover`, `coverBack` (the fourth cover, another version's for want of one as `book_back_cover()` reads it, null without), `coverHighres`/`coverBackHighres`/`pagesHighres` (the `-highres.webp` beside each, null where none is on disk), `audio`
 (`url`, `type` — the mp3 first), `pages`, `cues`, `published`, `age`, `serie` (its title translated, `number`), `credits` (`role`, `name`, the roles named in `book_ui_locale()`), `videos` (`title`, `youtube`, `url`), `plays` (null below `book-plays-minimum`, as on the pages: `BookPlaysExtension::shown()`), `playStart` and `play` (the absolute `ui_play_start` and `ui_play` urls an app takes its ticket from and hands it back to, as the listening page does), `data` (the fields of `Book::$data` the site lists in `book-listen-data`, none by default) and `page` (the book's own page in the asked language, null where the site serves none). Every url is absolute, asked to VichUploader then to `UrlHelper`. `pages`
 and `cues` come together or not at all: a book with no timecodes, or with a `page` or `cues` row holding no file, answers
 `pages: []` and `cues: null`. The answer carries a weak ETag and stays `private`. Its routes sit behind
@@ -268,7 +268,8 @@ apart falls back on the single gallery, which is what a site whose planches are 
 A page carrying its high resolution opens it over the page through UiBundle's `<twig:c975LUi:Image:Zoom>`
 (**CoreBundle 1.26 and up**). `strip_highres(media)` (`BookHighresExtension`) guards it: the derivative's name
 can be spelled for every media, but the file only exists for what was uploaded since — a planche predating it
-is shown without a zoom rather than with one leading to a 404.
+is shown without a zoom rather than with one leading to a 404, and one no wider than the stored file is not offered either.
+`BookHighresExtension::highres()` gives the same answer for any media, and is what `book_listen_json` hands the apps.
 
 **Read a media by its role, never by its rank.** `Strip:Card` reads `Strip::getThumbnailMedia()` — thumbnail,
 then card, then whatever comes first — and the page's `og:image` reads `Strip::getShareMedia()`, page, then card, then the first: two

@@ -24,14 +24,17 @@ use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\BookTranslator;
+use c975L\BookBundle\Twig\BookHighresExtension;
 use c975L\BookBundle\Twig\BookPlaysExtension;
 use c975L\BookBundle\Twig\BookTranslationExtension;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\ConfigBundle\Service\LocalizedRouteNegotiator;
+use c975L\UiBundle\Service\ImageDimensionsReader;
 use c975L\UiBundle\Service\PlayService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +51,7 @@ class ListenJsonControllerTest extends TestCase
     /**
      * @param Book[] $published
      */
-    private function createController(array $published = [], bool $translated = true, bool $pageSound = false, string $uriPrefix = '/', ?BookTranslator $bookTranslator = null, string $locale = '', string $playsMinimum = '', bool $bookPages = true): ListenJsonController
+    private function createController(array $published = [], bool $translated = true, bool $pageSound = false, string $uriPrefix = '/', ?BookTranslator $bookTranslator = null, string $locale = '', string $playsMinimum = '', bool $bookPages = true, string $projectDir = ''): ListenJsonController
     {
         $bookService = $this->createStub(BookServiceInterface::class);
         $bookService->method('findAllPublished')->willReturn($published);
@@ -91,7 +94,7 @@ class ListenJsonControllerTest extends TestCase
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnCallback(static fn (string $key, array $parameters, ?string $domain, ?string $locale): string => 'fr' === $locale ? $key : $locale . ':' . $key);
 
-        $controller = new ListenJsonController($bookService, $this->createStub(BookTranslatedLocales::class), $negotiator, $configService, $packages, new UrlHelper($requestStack), $uploaderHelper, $playService, $registry, $translator, $bookTranslator ?? $this->createStub(BookTranslator::class), new BookTranslationExtension($requestStack), $this->createStub(BookRepository::class), new BookPlaysExtension($playService, $configService), $publicUrlResolver);
+        $controller = new ListenJsonController($bookService, $this->createStub(BookTranslatedLocales::class), $negotiator, $configService, $packages, new UrlHelper($requestStack), $uploaderHelper, $playService, $registry, $translator, $bookTranslator ?? $this->createStub(BookTranslator::class), new BookTranslationExtension($requestStack), $this->createStub(BookRepository::class), new BookPlaysExtension($playService, $configService), $publicUrlResolver, new BookHighresExtension(new ParameterBag(['kernel.project_dir' => $projectDir]), new ImageDimensionsReader()));
         // The play routes under their full address, as UiBundle declares them
         $router = $this->createStub(UrlGeneratorInterface::class);
         $router->method('generate')->willReturnCallback(static fn (string $route, array $parameters): string => 'https://example.com/' . ('ui_play_start' === $route ? 'play-start' : 'play') . '/' . $parameters['ownerType'] . '/' . $parameters['ownerId']);
@@ -160,6 +163,29 @@ class ListenJsonControllerTest extends TestCase
         $this->assertSame(['url' => 'https://example.com/medias/histoire.mp3', 'type' => 'audio/mpeg'], $book['audio']);
         $this->assertSame(['https://example.com/medias/page-1.webp', 'https://example.com/medias/page-2.webp'], $book['pages']);
         $this->assertSame('https://example.com/medias/histoire.vtt', $book['cues']);
+    }
+
+    // A tablet's wider screen gets the "-highres.webp" the upload produced, and only where it is on disk: a page uploaded before there were any keeps its stored file
+    public function testGivesTheHighResolutionOnlyWhereItExists(): void
+    {
+        $projectDir = sys_get_temp_dir() . '/listen-json-' . bin2hex(random_bytes(4));
+        mkdir($projectDir . '/public/medias', 0o777, true);
+        // Wider than a page's stored 1200px, or it would be the same picture twice
+        imagewebp(imagecreatetruecolor(1600, 10), $projectDir . '/public/medias/page-1-highres.webp');
+
+        try {
+            $book = $this->data($this->createController([$this->book(pages: true, cues: true)], projectDir: $projectDir)->index($this->request()))['books'][0];
+        } finally {
+            unlink($projectDir . '/public/medias/page-1-highres.webp');
+            rmdir($projectDir . '/public/medias');
+            rmdir($projectDir . '/public');
+            rmdir($projectDir);
+        }
+
+        $this->assertSame(['https://example.com/medias/page-1-highres.webp', null], $book['pagesHighres']);
+        // A book with no cover of its own shows its first page instead (see BookSectionsExtension::cover()), and its high resolution with it
+        $this->assertSame('https://example.com/medias/page-1-highres.webp', $book['coverHighres']);
+        $this->assertNull($book['coverBackHighres']);
     }
 
     // An app counts its listens as the listening page does: a ticket taken where the JSON says, handed back where it says

@@ -21,6 +21,16 @@
                 "en": "A book's listen count now only counts stories really listened to, not ones skipped to the end.",
                 "fr": "Le nombre d'écoutes d'un livre ne compte désormais que les histoires vraiment écoutées, plus celles sautées jusqu'à la fin.",
                 "es": "El número de escuchas de un libro solo cuenta ahora las historias realmente escuchadas, no las saltadas hasta el final."
+            },
+            {
+                "en": "A book's page clicked in its slider now opens enlarged over the site, ready for sharper pictures.",
+                "fr": "Une page de livre cliquée dans le diaporama s'ouvre désormais en grand par-dessus le site, prête pour des images plus nettes.",
+                "es": "Una página de libro pulsada en el carrusel se abre ahora ampliada sobre el sitio, lista para imágenes más nítidas."
+            },
+            {
+                "en": "An exported catalog now brings its high-resolution pictures along when imported elsewhere.",
+                "fr": "Un catalogue exporté emporte désormais ses images haute résolution lorsqu'il est importé ailleurs.",
+                "es": "Un catálogo exportado se lleva ahora sus imágenes en alta resolución al importarse en otro sitio."
             }
         ]
     },

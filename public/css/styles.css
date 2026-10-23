@@ -291,16 +291,10 @@
 
 .book-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-grid-min, min(150px, 50% - 6px))), 1fr));
+  gap: var(--card-grid-gap, 12px);
 }
 
-@media (min-width: 621px) {
-  .book-cards {
-    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
-    gap: 20px;
-  }
-}
 .book-cards img {
   width: 100%;
 }

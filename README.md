@@ -1077,7 +1077,8 @@ re-importing an archive over the catalog it came from rewrites nothing that is a
 out of an archive is only honoured under `medias/book/`, as a plain relative name — the files an edition is sold as
 travel with their price and come back under `private/` — anything climbing
 out of it is refused. A media whose file has left the disk is dropped from the export rather than travelling
-as a broken reference; one standing for a YouTube url holds no file and travels all the same.
+as a broken reference; one standing for a YouTube url holds no file and travels all the same. The `-highres`/`-thumb`
+siblings a book page or a planche was cut into travel beside its file, only an upload being able to make them again.
 
 ### Seeding a demo catalog
 
