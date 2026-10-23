@@ -2886,6 +2886,14 @@
                 <source>label.video</source>
                 <target>Video</target>
             </trans-unit>
+            <trans-unit id="J3JiqWF">
+                <source>label.video_upload_date</source>
+                <target>Upload date</target>
+            </trans-unit>
+            <trans-unit id="XLTn4A2">
+                <source>label.video_upload_date-help</source>
+                <target>Day the video went online on its platform, filled by the c975l:book:video-upload-dates command; it dates the video for Google, the book's publication standing in otherwise</target>
+            </trans-unit>
             <trans-unit id="eRXVDgZ">
                 <source>label.videos</source>
                 <target>Videos</target>

@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.23.0
+
+Book videos dated by their platform, social column from UiBundle
+
+- Requires `c975l/core-bundle` ^1.73 for UiBundle's `SocialStatusCrudTrait` (23/10/2026)
+- Removed `Controller\Management\Trait\SocialStatusCrudTrait`, moved up to UiBundle (23/10/2026)
+- The social column's date is read in the site's time zone (23/10/2026)
+- No social column on the books and planches trash (23/10/2026)
+- Added `Media::$uploadDate`, typed on a book's video **Needs db update** (23/10/2026)
+- Added `c975l:book:video-upload-dates` to fetch it from the platform (23/10/2026)
+- A VideoObject's `uploadDate` reads it first and is never later than today (23/10/2026)
+- Archives export and import a video's upload date (23/10/2026)
+
 ## v2.22.6
 
 Book videos published as VideoObject in JSON-LD and sitemap

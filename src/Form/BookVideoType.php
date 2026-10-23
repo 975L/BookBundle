@@ -11,10 +11,29 @@
 namespace c975L\BookBundle\Form;
 
 use c975L\BookBundle\Entity\BookVideo;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 // A video of a book is hosted as readily as it is uploaded, exactly as a presse row is - without the address field the id could never be typed, and Book:Video's embed was unreachable
 class BookVideoType extends BookOwnedMediaType
 {
+    // The day the video went online, which dates its VideoObject: a video of a book is the one row published as such, so a presse row has no use for it. Left out of a language screen, a date being the same in every language
+    #[\Override]
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        parent::buildForm($builder, $options);
+
+        if (null === ($options['translation_locale'] ?? null)) {
+            $builder->add('uploadDate', DateType::class, [
+                'label' => 'label.video_upload_date',
+                'help' => 'label.video_upload_date-help',
+                'required' => false,
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
+            ]);
+        }
+    }
+
     protected function dataClass(): string
     {
         return BookVideo::class;

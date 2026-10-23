@@ -176,7 +176,8 @@ class BookSitemapProviderTest extends TestCase
     // A book's YouTube video goes along with its url, for the sitemap template to write as <video:video>
     public function testGetUrlsDeclaresTheVideosOfABook(): void
     {
-        $book = $this->book()->addVideo(new BookVideo()->setTitle('Le film')->setYoutubeUrl('https://www.youtube-nocookie.com/embed/7xb-GaWG0c8'));
+        $video = new BookVideo()->setTitle('Le film')->setYoutubeUrl('https://www.youtube-nocookie.com/embed/7xb-GaWG0c8')->setUpdatedAt(new \DateTimeImmutable('2026-01-15', new \DateTimeZone('UTC')));
+        $book = $this->book()->addVideo($video);
 
         $this->assertSame([[
             '@type' => 'VideoObject',
@@ -184,7 +185,7 @@ class BookSitemapProviderTest extends TestCase
             'description' => 'Une histoire de pirates',
             'thumbnailUrl' => 'https://i.ytimg.com/vi/7xb-GaWG0c8/hqdefault.jpg',
             'embedUrl' => 'https://www.youtube-nocookie.com/embed/7xb-GaWG0c8',
-            'uploadDate' => $book->getVideos()->first()->getUpdatedAt()->format('Y-m-d'),
+            'uploadDate' => '2026-01-15T00:00:00+00:00',
         ]], $this->createProvider([$book])->getUrls()[1]['videos']);
     }
 

@@ -11,7 +11,6 @@
 namespace c975L\BookBundle\Controller\Management;
 
 use c975L\BookBundle\Controller\Management\Trait\ContentLocaleCrudTrait;
-use c975L\BookBundle\Controller\Management\Trait\SocialStatusCrudTrait;
 use c975L\BookBundle\Controller\Management\Trait\TrashableCrudTrait;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Field\BookDataField;
@@ -38,6 +37,7 @@ use c975L\BookBundle\Service\BookVersionPublisher;
 use c975L\ConfigBundle\Management\EasyAdminActionHelper;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Contract\SocialContentStatusProviderInterface;
+use c975L\UiBundle\Controller\Management\Trait\SocialStatusCrudTrait;
 use c975L\UiBundle\Form\BlockType;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
@@ -124,10 +124,16 @@ class BookCrudController extends AbstractCrudController
         return Book::class;
     }
 
-    // The type SocialBundle files the books under (see Trait\SocialStatusCrudTrait)
+    // The type SocialBundle files the books under (see UiBundle's SocialStatusCrudTrait)
     private function socialSourceType(): string
     {
         return 'book';
+    }
+
+    // No social column on the trash, whose rows no post can hold any more
+    private function socialStatusColumnShown(): bool
+    {
+        return !$this->isTrashView();
     }
 
     public function configureFields(string $pageName): iterable

@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Entity;
 use c975L\BookBundle\Enum\BookMediaKind;
 use c975L\BookBundle\Repository\MediaRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -92,6 +93,10 @@ abstract class Media implements \Stringable
     // Ticked, the pasted address is rewritten into a privacy-respecting one on save - youtube-nocookie.com for YouTube, "dnt=1" for Vimeo (see c975L\UiBundle\Video\VideoPlatform). Ticked by default: it is the only origin the site's security policy allows, and a "watch?v=" address does not embed
     #[ORM\Column(options: ['default' => true])]
     private bool $noCookie = true;
+
+    // The day the video went online on its platform, which its VideoObject is dated by: filled by "c975l:book:video-upload-dates" (see BookVideoUploadDatesCommand), or typed by hand where the platform gives none
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $uploadDate = null;
 
     // The upload declared once for the whole hierarchy: Vich reads a property off the parent classes too, so each subclass only carries the #[Vich\Uploadable] that marks it uploadable, an attribute that is not inherited
     #[Vich\UploadableField(mapping: 'block_media', fileNameProperty: 'name', size: 'size')]
@@ -343,6 +348,18 @@ abstract class Media implements \Stringable
         if (!empty($youtubeUrl)) {
             $this->setUpdatedAt(new \DateTimeImmutable());
         }
+
+        return $this;
+    }
+
+    public function getUploadDate(): ?\DateTimeImmutable
+    {
+        return $this->uploadDate;
+    }
+
+    public function setUploadDate(?\DateTimeImmutable $uploadDate): static
+    {
+        $this->uploadDate = $uploadDate;
 
         return $this;
     }

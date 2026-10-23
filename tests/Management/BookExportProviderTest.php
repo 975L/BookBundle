@@ -132,6 +132,7 @@ class BookExportProviderTest extends TestCase
         $this->assertCount(1, $item['videos']);
         $this->assertSame('https://youtu.be/abc', $item['videos'][0]['youtubeUrl']);
         $this->assertNull($item['videos'][0]['file']);
+        $this->assertNull($item['videos'][0]['uploadDate']);
 
         $this->removeDir($projectDir);
     }

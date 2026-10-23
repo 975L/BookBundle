@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Tests\Form;
 use c975L\BookBundle\Form\BookVideoType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
@@ -43,7 +44,8 @@ class BookVideoTypeTest extends TestCase
     {
         $this->build();
 
-        $this->assertSame(['position', 'title', 'youtubeUrl', 'noCookie', 'file'], array_keys($this->added));
+        $this->assertSame(['position', 'title', 'youtubeUrl', 'noCookie', 'file', 'uploadDate'], array_keys($this->added));
+        $this->assertSame(DateType::class, $this->added['uploadDate']['type']);
         $this->assertSame(HiddenType::class, $this->added['position']['type']);
         $this->assertSame(TextType::class, $this->added['title']['type']);
         $this->assertSame(UrlType::class, $this->added['youtubeUrl']['type']);

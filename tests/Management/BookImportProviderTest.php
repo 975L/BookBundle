@@ -89,6 +89,7 @@ class BookImportProviderTest extends TestCase
 
         // A media standing for a YouTube url carries no file and travels all the same
         $this->assertSame('https://youtu.be/abc', $book->getVideos()->first()->getYoutubeUrl());
+        $this->assertSame('2024-05-12', $book->getVideos()->first()->getUploadDate()?->format('Y-m-d'));
 
         $this->removeDir($sourceDir);
         $this->removeDir($filesDir);
@@ -228,7 +229,7 @@ class BookImportProviderTest extends TestCase
         $book->addEdition($edition);
         $book->addMedia(new BookMedia()->setName('medias/book/books/cover-tome-1/c.webp')->setKind('cover')->setTitle('Couverture')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable('2026-02-01 09:00:00')));
         $book->addLink(new BookLink()->setKind('epub_kobo')->setUrl('https://kobo.example/livre?aff=975l')->setPosition(0));
-        $book->addVideo(new BookVideo()->setYoutubeUrl('https://youtu.be/abc')->setUpdatedAt(new \DateTimeImmutable()));
+        $book->addVideo(new BookVideo()->setYoutubeUrl('https://youtu.be/abc')->setUploadDate(new \DateTimeImmutable('2024-05-12'))->setUpdatedAt(new \DateTimeImmutable()));
 
         return $book;
     }

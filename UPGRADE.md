@@ -2,6 +2,18 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.23
+
+**A book's video carries the day it went online on its platform**, which dates its VideoObject in the JSON-LD and
+the sitemap. `book_media` gets a nullable `upload_date` column, which `doctrine:schema:update` (or a migration)
+adds; then fill it once, and after each new video:
+
+```bash
+php bin/console c975l:book:video-upload-dates
+```
+
+A video left without one is still dated by the book's publication, as before.
+
 ## v2.20
 
 **The books index is composed in the back office, which needs a migration.** The new single-row `BookSettings`

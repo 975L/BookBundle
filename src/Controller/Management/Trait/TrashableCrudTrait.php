@@ -377,6 +377,12 @@ trait TrashableCrudTrait
         return (bool) $this->requestStack->getCurrentRequest()?->query->get('trash');
     }
 
+    // The domain the keys of UiBundle's social column are shipped in, for the screens using its SocialStatusCrudTrait
+    private function socialTranslationDomain(): string
+    {
+        return 'book';
+    }
+
     // Path of the public page, null when the family isn't served here or the row has no slug - what hides the action rather than offering a dead link (see c975L\BookBundle\Service\BookPublicUrlResolver)
     private function publicPath(TrashableInterface $entity): ?string
     {

@@ -54,10 +54,10 @@ class BookOwnedMediaTypeTest extends TestCase
         return $resolver->resolve([]);
     }
 
-    // A filmed review is pasted like a video of the book: both collections therefore ask for the address, and in the same place - between the title and the file
+    // A filmed review is pasted like a video of the book: both collections therefore ask for the address, and in the same place - between the title and the file. The video alone is dated, being the one published as a VideoObject
     public function testAVideoAndAPresseRowBothAskForAHostedAddress(): void
     {
-        $this->assertSame(['position', 'title', 'youtubeUrl', 'noCookie', 'file'], $this->build(new BookVideoType()));
+        $this->assertSame(['position', 'title', 'youtubeUrl', 'noCookie', 'file', 'uploadDate'], $this->build(new BookVideoType()));
         $this->assertSame(['position', 'title', 'youtubeUrl', 'noCookie', 'file'], $this->build(new BookPresseType()));
     }
 

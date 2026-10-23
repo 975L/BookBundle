@@ -48,6 +48,7 @@ class MediaArchiver
             'position' => $media->getPosition(),
             'size' => $media->getSize(),
             'youtubeUrl' => $media->getYoutubeUrl(),
+            'uploadDate' => $media->getUploadDate()?->format('Y-m-d'),
             // Vich never stamping an imported media, this is the only thing left to date it by
             'updatedAt' => $media->getUpdatedAt()?->format(\DateTimeInterface::ATOM),
             'file' => $file,
@@ -133,6 +134,7 @@ class MediaArchiver
             ->setTitle($mediaData['title'] ?? null)
             ->setPosition($mediaData['position'] ?? 0)
             ->setSize($mediaData['size'] ?? null)
+            ->setUploadDate(isset($mediaData['uploadDate']) ? new \DateTimeImmutable($mediaData['uploadDate']) : null)
             // The column is not nullable, so an archive predating it dates the row from the import rather than leaving it unwritten
             ->setUpdatedAt(isset($mediaData['updatedAt']) ? new \DateTimeImmutable($mediaData['updatedAt']) : new \DateTimeImmutable());
     }

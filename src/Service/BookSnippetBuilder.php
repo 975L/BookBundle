@@ -481,9 +481,16 @@ class BookSnippetBuilder
             // The last candidate, "hqdefault", and not the first: "maxresdefault" is missing on plenty of videos, and a graph cannot fall back the way an import does
             'thumbnailUrl' => end($posters),
             'embedUrl' => $resolved->embedUrl(),
-            // The platform's own date is stored nowhere: the book's publication stands for it, the row's last change for a book not published yet
-            'uploadDate' => ($book->getPublished() ?? $video->getUpdatedAt())?->format('Y-m-d') ?? '',
+            'uploadDate' => $this->uploadDate($book, $video),
         ]);
+    }
+
+    // The platform's own date when fetched (see BookVideoUploadDatesCommand), else the book's publication, else the row's last change. Never later than today, which Google flags: a book announced for later dates a video already online. A full datetime with its offset, which Google flags a bare date for missing
+    private function uploadDate(Book $book, BookVideo $video): string
+    {
+        $date = $video->getUploadDate() ?? $book->getPublished() ?? $video->getUpdatedAt();
+
+        return null !== $date ? min(\DateTimeImmutable::createFromInterface($date), new \DateTimeImmutable())->format(\DATE_ATOM) : '';
     }
 
     // Drops everything left empty, so an unfilled field never reaches the graph as a blank property

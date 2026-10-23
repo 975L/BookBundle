@@ -118,8 +118,24 @@ class BookSnippetBuilderTest extends TestCase
             'description' => 'Une histoire de pirates',
             'thumbnailUrl' => 'https://i.ytimg.com/vi/7xb-GaWG0c8/hqdefault.jpg',
             'embedUrl' => 'https://www.youtube-nocookie.com/embed/7xb-GaWG0c8',
-            'uploadDate' => '2026-01-15',
+            'uploadDate' => '2026-01-15T00:00:00+00:00',
         ]], $this->builder->buildBook($book)['video']);
+    }
+
+    // The day the platform gives, once fetched, dates the video rather than the book's publication
+    public function testTheUploadDateOfThePlatformWins(): void
+    {
+        $video = new BookVideo()->setYoutubeUrl('https://www.youtube.com/watch?v=7xb-GaWG0c8')->setUploadDate(new \DateTimeImmutable('2025-11-03', new \DateTimeZone('UTC')));
+
+        $this->assertSame('2025-11-03T00:00:00+00:00', $this->builder->buildBook($this->book()->addVideo($video))['video'][0]['uploadDate']);
+    }
+
+    // A book announced for later never dates its video in the future, which Google flags
+    public function testAnUploadDateIsNeverLaterThanToday(): void
+    {
+        $book = $this->book()->setPublished(new \DateTime('+1 year'))->addVideo(new BookVideo()->setYoutubeUrl('https://www.youtube.com/watch?v=7xb-GaWG0c8'));
+
+        $this->assertLessThanOrEqual(new \DateTimeImmutable(), new \DateTimeImmutable($this->builder->buildBook($book)['video'][0]['uploadDate']));
     }
 
     // A book carrying no video says nothing of one, and neither does one whose only video is a file uploaded here: no absolute address for it, and no still Google would accept
@@ -346,7 +362,7 @@ class BookSnippetBuilderTest extends TestCase
             ->setSummary('Une histoire de pirates')
             ->setAuthor(self::contributor())
             ->setLanguage('fr')
-            ->setPublished(new \DateTime('2026-01-15'))
+            ->setPublished(new \DateTime('2026-01-15', new \DateTimeZone('UTC')))
             ->setAge('7-10')
             ->addEdition(self::edition('paper', '9791092030143'))
             ->addEdition(self::edition('digital', '9791092030150'))
