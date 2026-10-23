@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
+use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
@@ -104,6 +105,28 @@ class BookSnippetBuilderTest extends TestCase
     public function testABookWithoutACategoryPublishesNoGenre(): void
     {
         $this->assertArrayNotHasKey('genre', $this->builder->buildBook($this->book()));
+    }
+
+    // A YouTube video is published as a VideoObject: its still, its player, the book's summary for a description and its publication for a date
+    public function testAYoutubeVideoReachesTheGraphAsAVideoObject(): void
+    {
+        $book = $this->book()->addVideo(new BookVideo()->setYoutubeUrl('https://www.youtube.com/watch?v=7xb-GaWG0c8'));
+
+        $this->assertSame([[
+            '@type' => 'VideoObject',
+            'name' => 'Tome 1',
+            'description' => 'Une histoire de pirates',
+            'thumbnailUrl' => 'https://i.ytimg.com/vi/7xb-GaWG0c8/hqdefault.jpg',
+            'embedUrl' => 'https://www.youtube-nocookie.com/embed/7xb-GaWG0c8',
+            'uploadDate' => '2026-01-15',
+        ]], $this->builder->buildBook($book)['video']);
+    }
+
+    // A book carrying no video says nothing of one, and neither does one whose only video is a file uploaded here: no absolute address for it, and no still Google would accept
+    public function testABookWithoutAPlatformVideoPublishesNoVideo(): void
+    {
+        $this->assertArrayNotHasKey('video', $this->builder->buildBook($this->book()));
+        $this->assertArrayNotHasKey('video', $this->builder->buildBook($this->book()->addVideo(new BookVideo()->setName('videos/tome-1.mp4'))));
     }
 
     // The summary is written in a rich text editor, and a graph carries the words only

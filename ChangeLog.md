@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.22.6
+
+Book videos published as VideoObject in JSON-LD and sitemap
+
+- `BookSnippetBuilder::buildVideos()`: one `VideoObject` per platform video (23/10/2026)
+- Book JSON-LD carries its videos as `video` (23/10/2026)
+- `BookSitemapProvider`: book entries declare their videos as `videos` (23/10/2026)
+
 ## v2.22.5
 
 Fourth cover borrowed from another version, like the cover

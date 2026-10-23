@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
@@ -20,6 +21,7 @@ use c975L\BookBundle\Enum\BookEditionKind;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Service\JsonLdBuilder;
 use c975L\UiBundle\Service\RatingSnippetBuilder;
+use c975L\UiBundle\Video\VideoPlatform;
 
 // Builds the schema.org graph a book's, a serie's or a strip's page publishes as JSON-LD, out of the fields those pages already show. Assembled here rather than as microdata on the rendered elements, for the same reason as UiBundle's ContactSnippetBuilder: an itemprop pinned to an element leaves an empty node behind when the field is empty, where a graph simply drops what wasn't filled in - and it can carry what no template displays (the two ISBNs as two editions, the rank of a volume in its serie). Each edition carries its own offer, at the price the ONIX feed announces, so an ISBN and its price are read together.
 class BookSnippetBuilder
@@ -49,6 +51,8 @@ class BookSnippetBuilder
             'url' => trim((string) $url),
             'description' => $this->jsonLdBuilder->plainText($book->getSummary()),
             'image' => trim((string) $imageUrl),
+            // The videos the book carries on a platform, absent from the graph of a book carrying none (see buildVideos())
+            'video' => $this->buildVideos($book),
             'author' => $this->person($book->getEffectiveAuthor()),
             'illustrator' => $this->person($book->getEffectiveIllustrator()),
             // The one part of a book's credits schema.org names on a CreativeWork: the voice reading it is "readBy", which belongs to an Audiobook and not to the Book node this is (see BookContributorRole), so it stays on the page and out of the graph
@@ -73,6 +77,15 @@ class BookSnippetBuilder
             // The tally the page already shows above its title, said in the graph too - what puts the stars in a search result. Only where the page shows the widget ($withRating, the site's "book-rating" switch): stars a visitor cannot find on the page are what Google penalizes. Empty while nobody has voted (see UiBundle's RatingSnippetBuilder)
             'aggregateRating' => $withRating ? $this->rating('book', $book->getId()) : [],
         ]);
+    }
+
+    // One VideoObject per video the book carries on a platform, public so BookSitemapProvider declares the very same videos the page describes. An uploaded file is left out, only a template turning it into an absolute url, and so is a platform serving no guessable still: Google indexes no video without its thumbnail (see VideoPlatform::posterUrls())
+    public function buildVideos(Book $book): array
+    {
+        return array_values(array_filter(array_map(
+            fn (BookVideo $video): array => $this->videoObject($book, $video),
+            $book->getVideos()->toArray(),
+        )));
     }
 
     public function buildSerie(Serie $serie, ?string $imageUrl = null, ?string $url = null): array
@@ -446,6 +459,31 @@ class BookSnippetBuilder
         usort($volumes, static fn (Book $first, Book $second) => $first->getPublished() <=> $second->getPublished());
 
         return $volumes;
+    }
+
+    // Empty for a video with no platform address, no guessable still or nothing to name it by - a VideoObject missing any of them is one Google refuses
+    private function videoObject(Book $book, BookVideo $video): array
+    {
+        $resolved = VideoPlatform::resolve($video->getYoutubeUrl());
+        $posters = $resolved?->posterUrls() ?? [];
+        $name = trim((string) ($video->getTitle() ?: $book->getTitle()));
+        if (null === $resolved || [] === $posters || '' === $name) {
+            return [];
+        }
+
+        // Google asks for a description as much as for a name: the back-cover text says what the video tells, the name standing in when none was written
+        $description = $this->jsonLdBuilder->plainText($book->getSummary());
+
+        return $this->clean([
+            '@type' => 'VideoObject',
+            'name' => $name,
+            'description' => '' !== $description ? $description : $name,
+            // The last candidate, "hqdefault", and not the first: "maxresdefault" is missing on plenty of videos, and a graph cannot fall back the way an import does
+            'thumbnailUrl' => end($posters),
+            'embedUrl' => $resolved->embedUrl(),
+            // The platform's own date is stored nowhere: the book's publication stands for it, the row's last change for a book not published yet
+            'uploadDate' => ($book->getPublished() ?? $video->getUpdatedAt())?->format('Y-m-d') ?? '',
+        ]);
     }
 
     // Drops everything left empty, so an unfilled field never reaches the graph as a blank property

@@ -115,7 +115,7 @@ The back office writes them on a language screen, the row's own edit screen open
 | --- | --- |
 | `BookRepository::findAllPublished()`, `countPublished()`, `findPublishedByIds()` | published, not trashed, not replaced by a newer version |
 | `BookRepository::findOneByNumber()`, `StripRepository::findOneByNumber()` | what the catalog reads today — never a draft, never the trash |
-| `BookRepository::findAllOnline()` | every page that still answers, replaced versions included — the sitemap |
+| `BookRepository::findAllOnline()` | every page that still answers, replaced versions included — the sitemap, each book entry carrying its platform videos as `videos` |
 | `BookRepository::findAll()` | trash excluded, rows set aside included — the health check, which walks the links of a row nobody is shown |
 | `BookRepository::search()` | replaced versions included: a reader looking for an old text finds it |
 | `ContributorRepository::findCredited()` | the people a shown book or serie credits — the index and the sitemap; someone whose only credits are replaced versions is off both |

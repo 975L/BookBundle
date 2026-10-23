@@ -10,9 +10,11 @@
 
 namespace c975L\BookBundle\Management;
 
+use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\BookSnippetBuilder;
 use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\ContributorServiceInterface;
 use c975L\BookBundle\Service\SerieServiceInterface;
@@ -32,6 +34,7 @@ class BookSitemapProvider implements SitemapProviderInterface
         private readonly SerieServiceInterface $serieService,
         private readonly StripServiceInterface $stripService,
         private readonly TranslatorInterface $translator,
+        private readonly BookSnippetBuilder $snippetBuilder,
     ) {
     }
 
@@ -70,10 +73,20 @@ class BookSitemapProvider implements SitemapProviderInterface
                 'title' => (string) $book->getTitle(),
                 // The back-cover text, handed over as it stands: the writer flattens it, strips its markup and bounds it
                 'description' => $book->getSummary(),
+                // The same VideoObjects the page's graph carries, written as <video:video> by ConfigBundle's sitemap template - the key absent from a book carrying no video, whose entry stays as it always was
+                ...$this->videos($book),
             ], $url, $this->bookPublicUrlResolver->resolveAlternates('book_display', $parameters, $this->translatedLocales->forEntry()))];
         }
 
         return $urls;
+    }
+
+    // The book's VideoObjects under a "videos" key, nothing at all for a book carrying none
+    private function videos(Book $book): array
+    {
+        $videos = $this->snippetBuilder->buildVideos($book);
+
+        return [] === $videos ? [] : ['videos' => $videos];
     }
 
     // The categories a visitor can open, their index above them: one holding nothing the site shows is off the index and off the sitemap alike (see BookCategoryRepository::findWithBooks())

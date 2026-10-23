@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
@@ -19,6 +20,7 @@ use c975L\BookBundle\Management\BookSitemapProvider;
 use c975L\BookBundle\Service\BookCategoryServiceInterface;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookServiceInterface;
+use c975L\BookBundle\Service\BookSnippetBuilder;
 use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\BookTranslator;
 use c975L\BookBundle\Service\ContributorServiceInterface;
@@ -28,6 +30,7 @@ use c975L\BookBundle\Tests\BookPublicUrlGeneratorTestTrait;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\ConfigBundle\Service\LocalizedUrlGenerator;
 use c975L\ConfigBundle\Service\SiteLocales;
+use c975L\UiBundle\Service\RatingSnippetBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -86,7 +89,9 @@ class BookSitemapProviderTest extends TestCase
             $contributorService,
             $serieService,
             $stripService,
-            $translator
+            $translator,
+            // A real builder, so the videos a book declares are the very VideoObjects its page publishes
+            new BookSnippetBuilder($this->createStub(BookPublicUrlResolver::class), $this->createStub(RatingSnippetBuilder::class), $configService),
         );
     }
 
@@ -166,6 +171,21 @@ class BookSitemapProviderTest extends TestCase
             'description' => 'Une histoire de pirates',
             'alternates' => [],
         ], $urls[1]);
+    }
+
+    // A book's YouTube video goes along with its url, for the sitemap template to write as <video:video>
+    public function testGetUrlsDeclaresTheVideosOfABook(): void
+    {
+        $book = $this->book()->addVideo(new BookVideo()->setTitle('Le film')->setYoutubeUrl('https://www.youtube-nocookie.com/embed/7xb-GaWG0c8'));
+
+        $this->assertSame([[
+            '@type' => 'VideoObject',
+            'name' => 'Le film',
+            'description' => 'Une histoire de pirates',
+            'thumbnailUrl' => 'https://i.ytimg.com/vi/7xb-GaWG0c8/hqdefault.jpg',
+            'embedUrl' => 'https://www.youtube-nocookie.com/embed/7xb-GaWG0c8',
+            'uploadDate' => $book->getVideos()->first()->getUpdatedAt()->format('Y-m-d'),
+        ]], $this->createProvider([$book])->getUrls()[1]['videos']);
     }
 
     public function testGetUrlsDeclaresASerie(): void

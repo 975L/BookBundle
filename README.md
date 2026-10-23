@@ -866,7 +866,7 @@ It is what the listening pages (`book-route-listen`, left empty by default) turn
 
 ### Structured data
 
-A book's, a serie's and a strip's page publish their schema.org graph as JSON-LD, built by `BookSnippetBuilder` from the fields those pages already show: author, illustrator, translator, language, publication date, page count, age range, the categories it carries as its `genre`, one `workExample` per released edition, and the volume's rank in its serie (`isPartOf`/`position`, `hasPart` on the serie side).
+A book's, a serie's and a strip's page publish their schema.org graph as JSON-LD, built by `BookSnippetBuilder` from the fields those pages already show: author, illustrator, translator, language, publication date, page count, age range, the categories it carries as its `genre`, one `workExample` per released edition, and the volume's rank in its serie (`isPartOf`/`position`, `hasPart` on the serie side), plus one `VideoObject` per video it carries on a platform such as YouTube — an uploaded file, or a platform serving no guessable still, is left out.
 
 An edition carries the ISBN and the page count of its own form, an audio one being an `Audiobook` rather than a `Book`, and the addresses the book is found at under the gesture that edition serves (`sameAs`) — the podcast apps for a recording, the bookshops for a printed or digital one. A translation is not an edition: it is a book of its own, paired with the one it translates through `translationOfWork` and `workTranslation`, at the url `BookPublicUrlResolver` spells for it.
 
@@ -994,6 +994,8 @@ The urls are declared by `BookSitemapProvider` (ConfigBundle's `SitemapProviderI
 A row [set aside](#setting-a-row-aside) is declared by none of them: the provider reads the same repository methods the front does, so the switch takes the url out of the file at the command's next run.
 
 Each one is built by `BookPublicUrlResolver`, which generates the path through the router and prefixes it with the configured `site-url`, so the sitemap declares the exact urls the routes answer to: it follows the prefixes of `BookRoutePrefix`, and leaves out a family whose prefix is empty — those pages are not served here at all. Nothing is declared before `site-url` is set, a sitemap accepting no relative url.
+
+A book's entry also carries its videos, the very `VideoObject`s its page publishes (`BookSnippetBuilder::buildVideos()`), which ConfigBundle writes as `<video:video>`; a book with none keeps the entry it had.
 
 On a site declaring several languages, each page is declared once per language, every entry carrying the whole
 `alternates` group (`BookPublicUrlResolver::resolveAlternates()`); a site declaring one keeps the sitemap it had.
