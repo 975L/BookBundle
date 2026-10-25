@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.25.2
+
+CI installs the latest lizard
+
+- CI no longer pins lizard to 1.17.31 (25/10/2026)
+
 ## v2.25.1
 
 Book posts carry the book's language
