@@ -25,7 +25,7 @@ class BookSocialContentSourceTest extends TestCase
 
     private function createBook(int $id, string $published = '-1 year'): Book
     {
-        $book = new Book()->setTitle('Livre ' . $id)->setSlug('livre-' . $id)->setSummary('<p>Une histoire</p>')->setPublished(new \DateTime($published));
+        $book = new Book()->setTitle('Livre ' . $id)->setSlug('livre-' . $id)->setSummary('<p>Une histoire</p>')->setLanguage('fr')->setPublished(new \DateTime($published));
         new \ReflectionProperty(Book::class, 'id')->setValue($book, $id);
 
         return $book;
@@ -62,6 +62,7 @@ class BookSocialContentSourceTest extends TestCase
         $this->assertSame('2', $content?->sourceId);
         $this->assertSame('https://example.org/livres/livre-2', $content->url);
         $this->assertSame(['description' => 'Une histoire'], $content->variables);
+        $this->assertSame('fr', $content->locale);
     }
 
     // The book pages are not served on every site: no url, no post

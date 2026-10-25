@@ -1,5 +1,15 @@
 [
     {
+        "date": "2026-10-25",
+        "description": [
+            {
+                "en": "A book's social network posts are now written in the book's own language.",
+                "fr": "Les publications d'un livre sur les réseaux sociaux sont désormais rédigées dans la langue du livre.",
+                "es": "Las publicaciones de un libro en las redes sociales se redactan ahora en el idioma del libro."
+            }
+        ]
+    },
+    {
         "date": "2026-10-23",
         "description": [
             {

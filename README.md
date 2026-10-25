@@ -558,7 +558,7 @@ Where the site installs SocialBundle, its scheduled publication draws from the c
 published books, oldest first, and recalls each one 90 days after it last went out;
 `StripSocialContentSource` (`strip`) hands out the published planches, oldest first, never twice. Each
 post carries the public page's address, the cover or the planche's page as its image, the summary and the
-serie. A row with no public address — `site-url` unset, or its pages not served on this site — is never
+serie, in the book's language. A row with no public address — `site-url` unset, or its pages not served on this site — is never
 handed out, and a row taken off the site since its post was prepared is dropped. Which rows went out where
 is SocialBundle's to record; a site without it never asks.
 

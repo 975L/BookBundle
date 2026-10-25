@@ -100,6 +100,7 @@ class BookSocialContentSource implements BrowsableSocialContentSourceInterface, 
                 'description' => trim(html_entity_decode(strip_tags((string) $book->getSummary()))),
                 'serie' => (string) $book->getSerie()?->getTitle(),
             ]),
+            locale: $book->getLanguage(),
         );
     }
 }

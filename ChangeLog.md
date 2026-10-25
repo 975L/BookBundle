@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.25.1
+
+Book posts carry the book's language
+
+- Requires `c975l/core-bundle` ^1.79 for `SocialContent::$locale` (25/10/2026)
+- `BookSocialContentSource` hands out the book's language as the post's locale (25/10/2026)
+
 ## v2.25.0
 
 Book pictures at high resolution, the pages zoomed on click

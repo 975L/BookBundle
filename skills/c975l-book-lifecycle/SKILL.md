@@ -191,7 +191,7 @@ the list. A book deleted takes its list with it (`onDelete: CASCADE`).
 (`strip`, never repeated) implement UiBundle's `SocialContentSourceInterface`, which SocialBundle's
 scheduled publication reads where the site installs it. Both read the public catalog oldest first
 (`findAllPublished()`, reversed), skip a row with no public url (`BookPublicUrlResolver::resolve()` null)
-and answer `null` from `getContent()` for a row taken off the site since its post was prepared. What went
+and answer `null` from `getContent()` for a row taken off the site since its post was prepared. A book's post carries `Book::getLanguage()` as its `locale`. What went
 out where is SocialBundle's to record: the books and planches lists only read it back, as a badge column
 (`c975L\UiBundle\Controller\Management\Trait\SocialStatusCrudTrait`, through UiBundle's optional
 `SocialContentStatusProviderInterface`), asked about the rows of the page shown in one call from `index()`.
