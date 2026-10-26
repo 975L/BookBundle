@@ -53,7 +53,7 @@ class GooglePlayFeed
     {
         $books = $this->bookRepository->findAllForOnix();
         $publisher = BookOnixBuilder::publisher($this->configService);
-        $content = $this->onixBuilder->build($books, $publisher, $baseUrl, self::sent(...));
+        $content = $this->onixBuilder->build($books, $publisher, $baseUrl, self::sent(...), freeAsZeroPrice: true);
         $modified = $this->lastModified($books);
 
         return [

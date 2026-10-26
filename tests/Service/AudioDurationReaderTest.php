@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Tests\Service;
 
+use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Service\AudioDurationReader;
 use PHPUnit\Framework\TestCase;
@@ -31,6 +32,9 @@ class AudioDurationReaderTest extends TestCase
     protected function tearDown(): void
     {
         @unlink($this->path);
+        array_map(unlink(...), glob($this->path . '.d/*/*') ?: []);
+        array_map(rmdir(...), glob($this->path . '.d/*') ?: []);
+        @rmdir($this->path . '.d');
     }
 
     // A constant bitrate file is counted by its size, after its ID3 tag
@@ -77,11 +81,29 @@ class AudioDurationReaderTest extends TestCase
     // A stored media is read where the site serves its files, and a row holding no file has no duration
     public function testAMediaIsReadUnderThePublicDirectory(): void
     {
-        file_put_contents($this->path, str_repeat($this->frame(), 383));
-        $reader = new AudioDurationReader(\dirname($this->path));
+        $project = $this->project('public');
+        $reader = new AudioDurationReader($project);
 
-        $this->assertSame(10, $reader->ofMedia(new BookMedia()->setName('/' . basename($this->path))));
+        $this->assertSame(10, $reader->ofMedia(new BookMedia()->setName('/loup.mp3')));
         $this->assertNull($reader->ofMedia(new BookMedia()));
+    }
+
+    // An edition's recording is kept out of public/, where the reader looks for it too
+    public function testAnEditionsFileIsReadUnderThePrivateDirectory(): void
+    {
+        $project = $this->project('private');
+
+        $this->assertSame(10, new AudioDurationReader($project)->ofMedia(new BookEditionFile()->setName('loup.mp3')));
+    }
+
+    // A project directory holding a ten seconds recording under the given folder
+    private function project(string $folder): string
+    {
+        $project = $this->path . '.d';
+        mkdir($project . '/' . $folder, 0o777, true);
+        file_put_contents($project . '/' . $folder . '/loup.mp3', str_repeat($this->frame(), 383));
+
+        return $project;
     }
 
     private function frame(): string

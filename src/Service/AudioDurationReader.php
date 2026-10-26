@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Media;
+use c975L\UiBundle\Storage\PrivateDirectory;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 // How long a recording plays, read from the file itself rather than typed in: a duration kept by hand drifts the day the file is replaced. MP3 only, read from its first frame - no getID3, no ffprobe, neither being sure to exist on a managed host
@@ -41,15 +42,15 @@ class AudioDurationReader
     private const array SIDE_INFORMATION = [1 => [32, 17], 2 => [17, 9]];
 
     public function __construct(
-        #[Autowire('%kernel.project_dir%/public')]
-        private readonly string $publicDir,
+        #[Autowire(param: 'kernel.project_dir')]
+        private readonly string $projectDir,
     ) {
     }
 
-    // A stored media's whole seconds, read where the site serves its files: null for a row holding no file
+    // A stored media's whole seconds, read where it is kept - public/, or the private directory of an edition's file (see PrivateDirectory): null for a row holding no file
     public function ofMedia(Media $media): ?int
     {
-        return null === $media->getName() ? null : $this->seconds($this->publicDir . '/' . ltrim($media->getName(), '/'));
+        return null === $media->getName() ? null : $this->seconds($this->projectDir . '/' . (PrivateDirectory::resolve($media) ?? 'public') . '/' . ltrim($media->getName(), '/'));
     }
 
     // Whole seconds, null for a file that is not an MP3 or cannot be read. A variable bitrate file is counted by the frame total its Xing or VBRI header carries, a constant one by its size

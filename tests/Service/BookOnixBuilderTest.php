@@ -30,9 +30,9 @@ class BookOnixBuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        // Every recording plays five minutes: how it is read is AudioDurationReader's business, tested there
+        // The book's recordings play five minutes, an edition's own ten: how they are read is AudioDurationReader's business, tested there
         $reader = $this->createStub(AudioDurationReader::class);
-        $reader->method('ofMedia')->willReturn(300);
+        $reader->method('ofMedia')->willReturnCallback(static fn (object $media): int => $media instanceof BookEditionFile ? 600 : 300);
 
         $this->builder = new BookOnixBuilder($reader);
     }
@@ -71,6 +71,15 @@ class BookOnixBuilderTest extends TestCase
         $this->assertSame('AJ', $xpath->evaluate('string(//o:Product[2]//o:ProductForm)'));
         $this->assertSame('09', $xpath->evaluate('string(//o:Product[2]//o:Extent/o:ExtentType)'));
         $this->assertSame('300', $xpath->evaluate('string(//o:Product[2]//o:Extent/o:ExtentValue)'));
+    }
+
+    // The recording sent with the edition is the one measured, the book's own standing in for want of it
+    public function testTheEditionsRecordingGivesTheDuration(): void
+    {
+        $book = $this->book();
+        $book->getEdition('audio')?->setFileOf(BookEditionFileKind::Audio, new BookEditionFile()->setName('loup.mp3'));
+
+        $this->assertSame('600', $this->read([$book])->evaluate('string(//o:Product[2]//o:Extent/o:ExtentValue)'));
     }
 
     // The recording's detail tells the format of the file Google fetches: MP3 unless an M4A was dropped, which is AAC
@@ -113,6 +122,42 @@ class BookOnixBuilderTest extends TestCase
 
         $this->assertSame('01', $xpath->evaluate('string(//o:Product[1]//o:UnpricedItemType)'));
         $this->assertSame(0.0, $xpath->evaluate('count(//o:Product[1]//o:Price)'));
+    }
+
+    // Google reads no other way of saying a book is free than a price of 0
+    public function testAZeroPriceIsPricedForTheStoresAskingForIt(): void
+    {
+        $book = $this->book();
+        $book->getEditions()->first()->setPrice(0);
+        $xpath = $this->read([$book], true);
+
+        $this->assertSame('0.00', $xpath->evaluate('string(//o:Product[1]//o:Price/o:PriceAmount)'));
+        $this->assertSame(0.0, $xpath->evaluate('count(//o:Product[1]//o:UnpricedItemType)'));
+    }
+
+    // A file points to the printed edition it is drawn from, a book never printed being said digital only
+    public function testAFileNamesItsPrintedEditionOrIsDigitalOnly(): void
+    {
+        $xpath = $this->read([$this->book()]);
+
+        $this->assertSame(0.0, $xpath->evaluate('count(//o:RelatedMaterial)'));
+        $this->assertSame(['DGO', 'DGO'], $this->values($xpath, '//o:Product/o:DescriptiveDetail/o:EditionType'));
+
+        $book = $this->book()->addEdition(new BookEdition()->setKind('paper')->setIsbn('9782488750035'));
+        $xpath = $this->read([$book]);
+
+        $this->assertSame(['9782488750035', '9782488750035'], $this->values($xpath, '//o:RelatedMaterial/o:RelatedProduct[o:ProductRelationCode="13"]/o:ProductIdentifier/o:IDValue'));
+        $this->assertSame(0.0, $xpath->evaluate('count(//o:Product[3]/o:RelatedMaterial)'));
+        $this->assertSame(0.0, $xpath->evaluate('count(//o:EditionType)'));
+    }
+
+    // The contributor's summary is the biography, a contributor without one going without
+    public function testAContributorCarriesItsBiography(): void
+    {
+        $xpath = $this->read([$this->book()]);
+
+        $this->assertSame('Écrit des contes.', $xpath->evaluate('string(//o:Product[2]/o:DescriptiveDetail/o:Contributor[1]/o:BiographicalNote)'));
+        $this->assertSame(0.0, $xpath->evaluate('count(//o:Product[2]/o:DescriptiveDetail/o:Contributor[2]/o:BiographicalNote)'));
     }
 
     // A book dated ahead is announced, for the stores to take preorders
@@ -178,7 +223,7 @@ class BookOnixBuilderTest extends TestCase
 
     private function book(): Book
     {
-        $author = new Contributor()->setName('Jeanne Auteur');
+        $author = new Contributor()->setName('Jeanne Auteur')->setSummary('<p>Écrit des contes.</p>');
         $book = new Book()
             ->setTitle('Le Loup')
             ->setSummary('<p>Un loup &amp; un agneau.</p>')
@@ -199,10 +244,10 @@ class BookOnixBuilderTest extends TestCase
     }
 
     /** @param Book[] $books */
-    private function read(array $books): \DOMXPath
+    private function read(array $books, bool $freeAsZeroPrice = false): \DOMXPath
     {
         $document = new \DOMDocument();
-        $document->loadXML($this->builder->build($books, 'Éditions Test', 'https://example.org/'));
+        $document->loadXML($this->builder->build($books, 'Éditions Test', 'https://example.org/', null, $freeAsZeroPrice));
         $xpath = new \DOMXPath($document);
         $xpath->registerNamespace('o', 'http://ns.editeur.org/onix/3.0/reference');
 

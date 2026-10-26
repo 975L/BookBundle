@@ -63,6 +63,12 @@ class GooglePlayFeedTest extends TestCase
         $this->assertSame('2026-03-01', $onix['modified']->format('Y-m-d'));
     }
 
+    // Google reads a free book as a price of 0 only, which the feed asks the builder for
+    public function testTheOnixPricesAFreeBookAtZero(): void
+    {
+        $this->assertSame('<ONIXMessage free="0.00"/>', $this->feed()->onix('https://example.org')['content']);
+    }
+
     public function testTheCollectionKeepsLettersAndDigitsOnly(): void
     {
         $this->assertSame('337R84F', $this->feed()->collection());
@@ -151,7 +157,7 @@ class GooglePlayFeedTest extends TestCase
         $repository->method('findAllForOnix')->willReturn($books ?? [$this->book()]);
 
         $builder = $this->createStub(BookOnixBuilder::class);
-        $builder->method('build')->willReturn('<ONIXMessage/>');
+        $builder->method('build')->willReturnCallback(static fn (array $books, string $sender, string $baseUrl, ?\Closure $keep = null, bool $freeAsZeroPrice = false): string => $freeAsZeroPrice ? '<ONIXMessage free="0.00"/>' : '<ONIXMessage/>');
 
         $configService = $this->createStub(ConfigServiceInterface::class);
         $configService->method('get')->willReturnCallback(static fn (string $key): ?string => ['book-onix-publisher' => 'Éditions Test', 'book-google-collection' => ' 337R84F '][$key] ?? null);

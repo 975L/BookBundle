@@ -39,9 +39,9 @@ class BookOnixBuilder
     ) {
     }
 
-    // $baseUrl turns a stored file name into the address a store downloads the cover from; $sender names the publisher in the header and on each product; $keep picks the editions a feed sends, by the channels ticked on them (see OnixController and GooglePlayFeed)
+    // $baseUrl turns a stored file name into the address a store downloads the cover from; $sender names the publisher in the header and on each product; $keep picks the editions a feed sends, by the channels ticked on them (see OnixController and GooglePlayFeed); $freeAsZeroPrice prices a free book at 0 for a store that reads no other way of saying it, as Google does
     /** @param Book[] $books @param (\Closure(BookEdition): bool)|null $keep */
-    public function build(array $books, string $sender, string $baseUrl, ?\Closure $keep = null): string
+    public function build(array $books, string $sender, string $baseUrl, ?\Closure $keep = null, bool $freeAsZeroPrice = false): string
     {
         $xml = new \XMLWriter();
         $xml->openMemory();
@@ -61,7 +61,7 @@ class BookOnixBuilder
         foreach ($books as $book) {
             foreach ($book->getEditions() as $edition) {
                 if ('' !== $this->isbn($edition) && (null === $keep || $keep($edition))) {
-                    $this->product($xml, $book, $edition, $sender, rtrim($baseUrl, '/'));
+                    $this->product($xml, $book, $edition, $sender, rtrim($baseUrl, '/'), $freeAsZeroPrice);
                 }
             }
         }
@@ -73,9 +73,10 @@ class BookOnixBuilder
     }
 
     // One edition, in the order the ONIX schema sets its blocks
-    private function product(\XMLWriter $xml, Book $book, BookEdition $edition, string $sender, string $baseUrl): void
+    private function product(\XMLWriter $xml, Book $book, BookEdition $edition, string $sender, string $baseUrl, bool $freeAsZeroPrice): void
     {
         $isbn = $this->isbn($edition);
+        $printIsbn = $this->printIsbn($book, $edition);
         $forthcoming = $book->getPublished() > new \DateTime();
 
         $xml->startElement('Product');
@@ -86,16 +87,17 @@ class BookOnixBuilder
         $xml->writeElement('IDValue', $isbn);
         $xml->endElement();
 
-        $this->descriptiveDetail($xml, $book, $edition);
+        $this->descriptiveDetail($xml, $book, $edition, null === $printIsbn);
         $this->collateralDetail($xml, $book, $baseUrl);
         $this->publishingDetail($xml, $book, $sender, $forthcoming);
-        $this->productSupply($xml, $edition, $sender, $forthcoming);
+        $this->relatedMaterial($xml, $printIsbn);
+        $this->productSupply($xml, $edition, $sender, $forthcoming, $freeAsZeroPrice);
 
         $xml->endElement();
     }
 
-    // What the edition is: its form, its series, its title, who made it, its language, its extent, its subjects, its readers
-    private function descriptiveDetail(\XMLWriter $xml, Book $book, BookEdition $edition): void
+    // What the edition is: its form, its series, its title, who made it, whether it was born digital, its language, its extent, its subjects, its readers
+    private function descriptiveDetail(\XMLWriter $xml, Book $book, BookEdition $edition, bool $digitalOnly): void
     {
         [$form, $detail] = self::productForm($edition);
 
@@ -139,6 +141,11 @@ class BookOnixBuilder
 
         $this->contributors($xml, $book, $edition);
 
+        // A file with no printed edition to point to is said to be one, for a store not to wait for the print ISBN
+        if ($digitalOnly && 'BC' !== $form) {
+            $xml->writeElement('EditionType', 'DGO');
+        }
+
         $language = self::language($book->getLanguage());
         if (null !== $language) {
             $xml->startElement('Language');
@@ -178,6 +185,10 @@ class BookOnixBuilder
             $xml->writeElement('SequenceNumber', (string) ++$sequence);
             $xml->writeElement('ContributorRole', $role);
             $xml->writeElement('PersonName', $name);
+            $biography = $this->jsonLdBuilder->plainText($contributor->getSummary());
+            if ('' !== $biography) {
+                $xml->writeElement('BiographicalNote', $biography);
+            }
             $xml->endElement();
         }
 
@@ -186,12 +197,12 @@ class BookOnixBuilder
         }
     }
 
-    // The pages of a printed or digital edition, the playing time of a recorded one - read from its files, not typed
+    // The pages of a printed or digital edition, the playing time of a recorded one - read from the recording the edition sends, or the book's own for want of one, not typed
     private function extent(\XMLWriter $xml, Book $book, BookEdition $edition): void
     {
         $extents = [];
         if (str_contains((string) $edition->getKind(), 'audio')) {
-            $seconds = $this->duration($book);
+            $seconds = $this->duration($book, $edition);
             if (null !== $seconds) {
                 $extents[] = ['09', (string) $seconds, '06'];
             }
@@ -308,8 +319,26 @@ class BookOnixBuilder
         $xml->endElement();
     }
 
+    // The printed edition a file is drawn from, for a store to keep its layout and show a preview
+    private function relatedMaterial(\XMLWriter $xml, ?string $printIsbn): void
+    {
+        if (null === $printIsbn) {
+            return;
+        }
+
+        $xml->startElement('RelatedMaterial');
+        $xml->startElement('RelatedProduct');
+        $xml->writeElement('ProductRelationCode', '13');
+        $xml->startElement('ProductIdentifier');
+        $xml->writeElement('ProductIDType', '15');
+        $xml->writeElement('IDValue', $printIsbn);
+        $xml->endElement();
+        $xml->endElement();
+        $xml->endElement();
+    }
+
     // Sold everywhere, by the publisher, at the edition's price tax included when it has one, free when it is 0 - without one, a price still to come for a forthcoming book, a store to ask the publisher otherwise
-    private function productSupply(\XMLWriter $xml, BookEdition $edition, string $sender, bool $forthcoming): void
+    private function productSupply(\XMLWriter $xml, BookEdition $edition, string $sender, bool $forthcoming, bool $freeAsZeroPrice): void
     {
         $xml->startElement('ProductSupply');
         $xml->startElement('Market');
@@ -325,7 +354,7 @@ class BookOnixBuilder
         $xml->endElement();
         $xml->writeElement('ProductAvailability', $forthcoming ? '10' : '20');
         // Free is said in so many words rather than as a price of nothing, which the stores refuse
-        if (0 === $edition->getPrice()) {
+        if (0 === $edition->getPrice() && !$freeAsZeroPrice) {
             $xml->writeElement('UnpricedItemType', '01');
         } elseif (null !== $edition->getPrice()) {
             $xml->startElement('Price');
@@ -340,9 +369,14 @@ class BookOnixBuilder
         $xml->endElement();
     }
 
-    // The playing time of all the book's recordings together, null when none can be read
-    private function duration(Book $book): ?int
+    // The playing time of the edition's recording, or of all the book's recordings together for want of one, null when none can be read
+    private function duration(Book $book, BookEdition $edition): ?int
     {
+        $recording = $edition->getFileOf(BookEditionFileKind::Audio);
+        if (null !== $recording) {
+            return $this->durationReader->ofMedia($recording);
+        }
+
         $total = null;
         foreach ($book->getAudios() as $audio) {
             $seconds = $this->durationReader->ofMedia($audio);
@@ -394,6 +428,22 @@ class BookOnixBuilder
         $alpha3 = Languages::getAlpha3Code($code);
 
         return self::BIBLIOGRAPHIC_LANGUAGES[$alpha3] ?? $alpha3;
+    }
+
+    // The ISBN of the book's printed edition a file is drawn from, null for a printed edition itself or a book never printed
+    private function printIsbn(Book $book, BookEdition $edition): ?string
+    {
+        if ('BC' === self::productForm($edition)[0]) {
+            return null;
+        }
+
+        foreach ($book->getEditions() as $other) {
+            if ('BC' === self::productForm($other)[0] && '' !== $this->isbn($other)) {
+                return $this->isbn($other);
+            }
+        }
+
+        return null;
     }
 
     // The ISBN as ONIX takes it, 13 digits only - an older ISBN-10 is left out rather than sent truncated

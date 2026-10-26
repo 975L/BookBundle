@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.25.3
+
+ONIX completed for Google Play Books
+
+- `AudioDurationReader` reads a file kept out of public/ too (26/10/2026)
+- `BookOnixBuilder` measures the edition's own recording first (26/10/2026)
+- `BookOnixBuilder` points a file to the book's printed edition, or marks it digital only (26/10/2026)
+- `BookOnixBuilder` writes each contributor's summary as `BiographicalNote` (26/10/2026)
+- `GooglePlayFeed` prices a free edition at 0.00, Google refusing `UnpricedItemType` (26/10/2026)
+
 ## v2.25.2
 
 CI installs the latest lizard

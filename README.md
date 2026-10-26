@@ -901,8 +901,9 @@ The stores and the distributors read a catalog as ONIX 3.0, and `book_onix` serv
 by naming it, and the publisher it speaks for is `book-onix-publisher`, the site's name for want of one.
 
 Each edition holding an ISBN-13 and ticked "ONIX" in its channels is one product (`BookOnixBuilder`): its form, its title and serie, its
-contributors, its language, its page count — or, for an audio edition, the playing time `AudioDurationReader`
-reads from the book's MP3 files —, the categories' codes as subjects, the publication date and the price. A book
+contributors with their summary as biography, its language, its page count — or, for an audio edition, the playing time `AudioDurationReader`
+reads from the edition's MP3, the book's ones for want of it —, the categories' codes as subjects, the publication date and the price.
+An ebook or an audiobook points to the book's printed edition holding an ISBN, or is said digital only (`EditionType` DGO). A book
 dated ahead is announced as forthcoming, for the stores to take preorders; an edition with no price is
 announced as one still to come, or to be asked of the publisher once it is out. An ISBN-10 is left out rather
 than sent truncated. The guided project *Ouvrir le catalogue aux librairies* walks the two settings.
@@ -928,7 +929,7 @@ are set, nothing answers. The list of files is cached until the catalog changes,
 format is converted once into `var/cache/<env>/book-google/`; the ONIX is renamed only by a change to a book sent
 to Google or to the files of its editions. Only the digital and audio editions ticked "Google" are sent: an ebook with its EPUB and PDF — never the
 booklet —, an audiobook with its recording once it has its own square front cover, the pages' portrait one being
-no stand-in. An edition priced 0 is announced as free. On an Apache server running PHP-FPM, check the
+no stand-in. An edition priced 0 is priced 0.00, Google reading no other way of saying a book is free. On an Apache server running PHP-FPM, check the
 `Authorization` header reaches PHP (the Symfony `.htaccess` passes it on).
 
 #### Asking Google for the feed
