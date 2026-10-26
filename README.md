@@ -904,7 +904,8 @@ Each edition holding an ISBN-13 and ticked "ONIX" in its channels is one product
 contributors with their summary as biography, its language, its page count — or, for an audio edition, the playing time `AudioDurationReader`
 reads from the edition's MP3, the book's ones for want of it —, the categories' codes as subjects, the publication date and the price.
 An ebook or an audiobook points to the book's printed edition holding an ISBN, or is said digital only (`EditionType` DGO). A book
-dated ahead is announced as forthcoming, for the stores to take preorders; an edition with no price is
+dated ahead is announced as forthcoming, for the stores to take preorders; an edition ticked "Out of print" is
+announced so (`PublishingStatus` 07, `ProductAvailability` 51), the stores keeping its record without selling it; an edition with no price is
 announced as one still to come, or to be asked of the publisher once it is out. An ISBN-10 is left out rather
 than sent truncated. The guided project *Ouvrir le catalogue aux librairies* walks the two settings.
 

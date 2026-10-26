@@ -284,7 +284,7 @@ class BookImportProvider implements ImportProviderInterface
     private function writeEdition(Book $book, BookEdition $edition, string $kind, array $editionData): BookEdition
     {
         // Every field an older archive may not carry yet falls back on what a new edition holds
-        $editionData += ['isbn' => null, 'pages' => null, 'format' => null, 'price' => null, 'currency' => null, 'channels' => [], 'position' => 0];
+        $editionData += ['isbn' => null, 'pages' => null, 'format' => null, 'price' => null, 'currency' => null, 'channels' => [], 'outOfPrint' => false, 'position' => 0];
         $edition
             ->setKind($kind)
             ->setIsbn($editionData['isbn'])
@@ -293,6 +293,7 @@ class BookImportProvider implements ImportProviderInterface
             ->setPrice($editionData['price'])
             ->setCurrency($editionData['currency'])
             ->setChannels($editionData['channels'])
+            ->setOutOfPrint((bool) $editionData['outOfPrint'])
             ->setPosition($editionData['position']);
 
         $this->em->persist($edition);

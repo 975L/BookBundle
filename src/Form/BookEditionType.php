@@ -16,6 +16,7 @@ use c975L\BookBundle\Enum\BookChannel;
 use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -80,6 +81,12 @@ class BookEditionType extends AbstractType
                 'choices' => BookChannel::choices(),
                 'multiple' => true,
                 'expanded' => true,
+                'required' => false,
+            ])
+            // No longer sold, the stores keeping the record without offering it (see BookOnixBuilder)
+            ->add('outOfPrint', CheckboxType::class, [
+                'label' => 'label.edition_out_of_print',
+                'help' => 'label.edition_out_of_print-help',
                 'required' => false,
             ])
         ;

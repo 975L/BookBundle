@@ -130,6 +130,7 @@ class BookExportProvider implements ExportProviderInterface
             'price' => $edition->getPrice(),
             'currency' => $edition->getCurrency(),
             'channels' => $edition->getChannels(),
+            'outOfPrint' => $edition->isOutOfPrint(),
             'position' => $edition->getPosition(),
             // The files it is sold as, each with the price the shop sells it at and whether it is read aloud - without them an edition ticked "Shop" would come back with nothing to sell
             'files' => $this->exportEditionFiles($edition, $files),

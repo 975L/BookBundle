@@ -6,6 +6,11 @@
                 "en": "Your free books are now accepted by Google Play Books, and the stores show your authors' biography and the printed edition of your ebooks and audiobooks.",
                 "fr": "Vos livres gratuits sont désormais acceptés par Google Play Livres, et les librairies affichent la biographie de vos auteurs ainsi que l'édition imprimée de vos livres numériques et audio.",
                 "es": "Sus libros gratuitos son ahora aceptados por Google Play Libros, y las librerías muestran la biografía de sus autores y la edición impresa de sus libros digitales y audiolibros."
+            },
+            {
+                "en": "An edition you no longer sell can be ticked \"Out of print\": the stores keep its page without offering it for sale.",
+                "fr": "Une édition que vous ne vendez plus peut être cochée « Épuisée » : les librairies gardent sa fiche sans la proposer à l'achat.",
+                "es": "Una edición que ya no vende puede marcarse «Agotada»: las librerías conservan su ficha sin ofrecerla a la venta."
             }
         ]
     },

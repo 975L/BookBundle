@@ -2,6 +2,11 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.26
+
+**An edition can be said out of print.** `book_edition` gets an `out_of_print` column (`false` by default), which
+`doctrine:schema:update` (or a migration) adds. Nothing changes until an edition is ticked.
+
 ## v2.23
 
 **A book's video carries the day it went online on its platform**, which dates its VideoObject in the JSON-LD and

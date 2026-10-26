@@ -96,13 +96,13 @@ class BookImportProviderTest extends TestCase
         $this->removeDir($targetDir);
     }
 
-    // The files an edition is sold as travel with their price and their reading aloud and come back out of public/, where the shop and the stores read them
+    // The files an edition is sold as travel with their price and their reading aloud, the edition with its being out of print, and come back out of public/, where the shop and the stores read them
     public function testRoundTripRebuildsTheFilesAnEditionIsSoldAs(): void
     {
         $sourceDir = $this->createProjectDir([]);
         $this->write($sourceDir . '/private/medias/book/editions/tome-1-epub.epub', 'epub-bytes');
         $book = new Book()->setSlug('tome-1')->setTitle('Tome 1');
-        $book->addEdition(new BookEdition()->setKind('digital')->setChannels(['shop'])
+        $book->addEdition(new BookEdition()->setKind('digital')->setChannels(['shop'])->setOutOfPrint(true)
             ->setFileOf(BookEditionFileKind::Epub, new BookEditionFile()->setName('medias/book/editions/tome-1-epub.epub')->setPrice(499)->setReadAloud(true)));
         $export = $this->createExportProvider($sourceDir)->serialize([$book]);
 
@@ -114,6 +114,7 @@ class BookImportProviderTest extends TestCase
         $file = $this->firstOf($persisted, Book::class)->getEdition('digital')?->getFileOf(BookEditionFileKind::Epub);
         $this->assertSame('medias/book/editions/tome-1-epub.epub', $file?->getName());
         $this->assertSame(499, $file?->getPrice());
+        $this->assertTrue($this->firstOf($persisted, Book::class)->getEdition('digital')?->isOutOfPrint());
         $this->assertTrue($file?->isReadAloud());
         $this->assertSame('epub-bytes', file_get_contents($targetDir . '/private/medias/book/editions/tome-1-epub.epub'));
         $this->assertFileDoesNotExist($targetDir . '/public/medias/book/editions/tome-1-epub.epub');

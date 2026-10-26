@@ -172,6 +172,18 @@ class BookOnixBuilderTest extends TestCase
         $this->assertSame(new \DateTime('+1 month')->format('Ymd'), $xpath->evaluate('string(//o:Product[1]//o:PublishingDate/o:Date)'));
     }
 
+    // An edition no longer sold is announced out of print, a store keeping its record without selling it
+    public function testAnEditionOutOfPrintIsAnnouncedSo(): void
+    {
+        $book = $this->book()->setPublished(new \DateTime('+1 month'));
+        $book->getEditions()->first()->setOutOfPrint(true);
+        $xpath = $this->read([$book]);
+
+        $this->assertSame('07', $xpath->evaluate('string(//o:Product[1]/o:PublishingDetail/o:PublishingStatus)'));
+        $this->assertSame('51', $xpath->evaluate('string(//o:Product[1]//o:ProductAvailability)'));
+        $this->assertSame('02', $xpath->evaluate('string(//o:Product[2]/o:PublishingDetail/o:PublishingStatus)'));
+    }
+
     // A store reads the rights before offering the book at all, and whether the file is locked before adding a lock of its own
     public function testAProductCarriesItsRightsAndNoDrm(): void
     {

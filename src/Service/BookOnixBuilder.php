@@ -89,7 +89,7 @@ class BookOnixBuilder
 
         $this->descriptiveDetail($xml, $book, $edition, null === $printIsbn);
         $this->collateralDetail($xml, $book, $baseUrl);
-        $this->publishingDetail($xml, $book, $sender, $forthcoming);
+        $this->publishingDetail($xml, $book, $edition, $sender, $forthcoming);
         $this->relatedMaterial($xml, $printIsbn);
         $this->productSupply($xml, $edition, $sender, $forthcoming, $freeAsZeroPrice);
 
@@ -296,15 +296,15 @@ class BookOnixBuilder
         $xml->endElement();
     }
 
-    // Who publishes it, and when it comes out - a date still ahead making it forthcoming
-    private function publishingDetail(\XMLWriter $xml, Book $book, string $sender, bool $forthcoming): void
+    // Who publishes it, and when it comes out - a date still ahead making it forthcoming, an edition no longer sold out of print
+    private function publishingDetail(\XMLWriter $xml, Book $book, BookEdition $edition, string $sender, bool $forthcoming): void
     {
         $xml->startElement('PublishingDetail');
         $xml->startElement('Publisher');
         $xml->writeElement('PublishingRole', '01');
         $xml->writeElement('PublisherName', $sender);
         $xml->endElement();
-        $xml->writeElement('PublishingStatus', $forthcoming ? '02' : '04');
+        $xml->writeElement('PublishingStatus', $edition->isOutOfPrint() ? '07' : ($forthcoming ? '02' : '04'));
         $xml->startElement('PublishingDate');
         $xml->writeElement('PublishingDateRole', '01');
         $xml->writeElement('Date', (string) $book->getPublished()?->format('Ymd'));
@@ -337,7 +337,7 @@ class BookOnixBuilder
         $xml->endElement();
     }
 
-    // Sold everywhere, by the publisher, at the edition's price tax included when it has one, free when it is 0 - without one, a price still to come for a forthcoming book, a store to ask the publisher otherwise
+    // Sold everywhere, by the publisher - unless out of print - at the edition's price tax included when it has one, free when it is 0 - without one, a price still to come for a forthcoming book, a store to ask the publisher otherwise
     private function productSupply(\XMLWriter $xml, BookEdition $edition, string $sender, bool $forthcoming, bool $freeAsZeroPrice): void
     {
         $xml->startElement('ProductSupply');
@@ -352,7 +352,7 @@ class BookOnixBuilder
         $xml->writeElement('SupplierRole', '01');
         $xml->writeElement('SupplierName', $sender);
         $xml->endElement();
-        $xml->writeElement('ProductAvailability', $forthcoming ? '10' : '20');
+        $xml->writeElement('ProductAvailability', $edition->isOutOfPrint() ? '51' : ($forthcoming ? '10' : '20'));
         // Free is said in so many words rather than as a price of nothing, which the stores refuse
         if (0 === $edition->getPrice() && !$freeAsZeroPrice) {
             $xml->writeElement('UnpricedItemType', '01');

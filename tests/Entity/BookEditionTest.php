@@ -107,6 +107,15 @@ class BookEditionTest extends TestCase
         $this->assertFalse($edition->hasChannel(BookChannel::Onix));
     }
 
+    // An edition is on sale until said out of print
+    public function testAnEditionIsOnSaleUntilOutOfPrint(): void
+    {
+        $edition = new BookEdition();
+
+        $this->assertFalse($edition->isOutOfPrint());
+        $this->assertTrue($edition->setOutOfPrint(true)->isOutOfPrint());
+    }
+
     // Free is a price of nothing on the digital edition: an empty price is no price, and a paperback at nothing says nothing of the ebook
     public function testABookIsFreeOnlyWhenItsDigitalEditionSellsForNothing(): void
     {

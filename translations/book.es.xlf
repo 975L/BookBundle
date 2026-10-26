@@ -1486,6 +1486,14 @@
                 <source>label.edition_medias-help</source>
                 <target>Los archivos de este formato solamente — sus páginas, su grabación, su portada</target>
             </trans-unit>
+            <trans-unit id="OWlt0ni">
+                <source>label.edition_out_of_print</source>
+                <target>Agotada</target>
+            </trans-unit>
+            <trans-unit id="CgtmpOn">
+                <source>label.edition_out_of_print-help</source>
+                <target>La edición ya no se vende: el flujo ONIX la anuncia agotada, las librerías conservan su ficha sin ofrecerla a la venta.</target>
+            </trans-unit>
             <trans-unit id="7FRsJeY">
                 <source>label.edition_pages-help</source>
                 <target>El número de páginas de esta versión</target>

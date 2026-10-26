@@ -65,6 +65,10 @@ class BookEdition implements \Stringable
     #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
     private array $channels = [];
 
+    // An edition no longer sold, the publisher printing or producing it no more - what the ONIX feed tells the stores, which keep the record without selling it
+    #[ORM\Column(options: ['default' => false])]
+    private bool $outOfPrint = false;
+
     public function __construct()
     {
         $this->files = new ArrayCollection();
@@ -235,5 +239,17 @@ class BookEdition implements \Stringable
     public function hasChannel(BookChannel $channel): bool
     {
         return \in_array($channel->value, $this->channels, true);
+    }
+
+    public function isOutOfPrint(): bool
+    {
+        return $this->outOfPrint;
+    }
+
+    public function setOutOfPrint(bool $outOfPrint): static
+    {
+        $this->outOfPrint = $outOfPrint;
+
+        return $this;
     }
 }

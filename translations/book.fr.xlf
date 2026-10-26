@@ -1486,6 +1486,14 @@
                 <source>label.edition_medias-help</source>
                 <target>Les fichiers de ce format seul — ses pages, son enregistrement, sa couverture</target>
             </trans-unit>
+            <trans-unit id="OWlt0ni">
+                <source>label.edition_out_of_print</source>
+                <target>Épuisée</target>
+            </trans-unit>
+            <trans-unit id="CgtmpOn">
+                <source>label.edition_out_of_print-help</source>
+                <target>L’édition n’est plus vendue : le flux ONIX l’annonce épuisée, les librairies gardent sa fiche sans la proposer à l’achat.</target>
+            </trans-unit>
             <trans-unit id="7FRsJeY">
                 <source>label.edition_pages-help</source>
                 <target>Le nombre de pages de cette version</target>

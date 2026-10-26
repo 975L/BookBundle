@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.26.0
+
+An edition said out of print
+
+- `BookEdition::$outOfPrint`, ticked on the edition's form, exported and imported with it **Needs db update** (26/10/2026)
+- `BookOnixBuilder` announces an edition out of print as such, `PublishingStatus` 07 and `ProductAvailability` 51 (26/10/2026)
+
 ## v2.25.3
 
 ONIX completed for Google Play Books
