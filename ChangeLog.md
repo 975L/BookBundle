@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.27.0
+
+Book posts drawn by series
+
+- `BookSocialContentSource` implements `ScopedSocialContentSourceInterface`, its series as scopes (27/10/2026)
+- `BookSocialContentSource::getContentScope()` answers the book's serie (27/10/2026)
+- `BookRepository::findPostableLatest()` narrows to the series given (27/10/2026)
+
 ## v2.26.0
 
 An edition said out of print

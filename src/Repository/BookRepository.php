@@ -80,13 +80,14 @@ class BookRepository extends ServiceEntityRepository
         return $this->withCovers($query->getQuery()->getResult());
     }
 
-    // The catalog's books not posted yet, the most recently published first - what a post's content is chosen among
+    // The catalog's books not posted yet, the most recently published first - what a post's content is chosen among, in the series given, every one when none is
     /**
      * @param list<string> $excludedIds
+     * @param list<int>    $serieIds
      *
      * @return list<Book>
      */
-    public function findPostableLatest(array $excludedIds, int $limit): array
+    public function findPostableLatest(array $excludedIds, int $limit, array $serieIds = []): array
     {
         $query = $this->publishedQueryBuilder()
             ->addOrderBy('b.id', \SortDirection::Descending)
@@ -95,6 +96,10 @@ class BookRepository extends ServiceEntityRepository
 
         if ([] !== $excludedIds) {
             $query->andWhere('b.id NOT IN (:excluded)')->setParameter('excluded', array_map(intval(...), $excludedIds));
+        }
+
+        if ([] !== $serieIds) {
+            $query->andWhere('IDENTITY(b.serie) IN (:series)')->setParameter('series', $serieIds);
         }
 
         return array_values($this->withCovers($query->getQuery()->getResult()));

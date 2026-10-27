@@ -281,5 +281,14 @@ class BookRepositoryTest extends TestCase
         $this->createRepository()->findPostableLatest([], 48);
 
         $this->assertStringNotContainsString('NOT IN', $this->dql);
+        $this->assertStringNotContainsString('IDENTITY(b.serie)', $this->dql);
+    }
+
+    // Narrowed to some series, the books of those alone
+    public function testThePostableLatestAreNarrowedToTheSeriesGiven(): void
+    {
+        $this->createRepository()->findPostableLatest([], 48, [4, 7]);
+
+        $this->assertStringContainsString('IDENTITY(b.serie) IN (:series)', $this->dql);
     }
 }
