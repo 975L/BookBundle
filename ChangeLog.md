@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.27.1
+
+Shop publish listener declared by attributes
+
+- `BookShopPublishSubscriber` listens through `#[AsEventListener]` instead of `EventSubscriberInterface` (28/10/2026)
+
 ## v2.27.0
 
 Book posts drawn by series

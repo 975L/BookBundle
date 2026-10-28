@@ -15,10 +15,10 @@ use c975L\BookBundle\Service\BookShopPublisher;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 // A book saved in the back-office is written into the shop straight after (see BookShopPublisher) - once saved, never before: the files have to be on disk for the shop to copy them. A shop that fails is logged rather than thrown, the book itself being saved already
-class BookShopPublishSubscriber implements EventSubscriberInterface
+class BookShopPublishSubscriber
 {
     public function __construct(
         private readonly BookShopPublisher $publisher,
@@ -26,14 +26,8 @@ class BookShopPublishSubscriber implements EventSubscriberInterface
     ) {
     }
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            AfterEntityPersistedEvent::class => 'publish',
-            AfterEntityUpdatedEvent::class => 'publish',
-        ];
-    }
-
+    #[AsEventListener(event: AfterEntityPersistedEvent::class)]
+    #[AsEventListener(event: AfterEntityUpdatedEvent::class)]
     public function publish(AfterEntityPersistedEvent | AfterEntityUpdatedEvent $event): void
     {
         $book = $event->getEntityInstance();

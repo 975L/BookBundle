@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityUpdatedEvent;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 class BookShopPublishSubscriberTest extends TestCase
 {
@@ -59,6 +60,7 @@ class BookShopPublishSubscriberTest extends TestCase
 
     public function testItListensToTheTwoSaves(): void
     {
-        $this->assertSame([AfterEntityPersistedEvent::class, AfterEntityUpdatedEvent::class], array_keys(BookShopPublishSubscriber::getSubscribedEvents()));
+        $attributes = new \ReflectionMethod(BookShopPublishSubscriber::class, 'publish')->getAttributes(AsEventListener::class);
+        $this->assertSame([AfterEntityPersistedEvent::class, AfterEntityUpdatedEvent::class], array_map(fn (\ReflectionAttribute $attribute) => $attribute->newInstance()->event, $attributes));
     }
 }
