@@ -73,6 +73,32 @@ class BookRoutePrefixTest extends TestCase
         $this->assertCount(11, array_unique(array_keys(BookRoutePrefix::PREFIXES)));
     }
 
+    // The listener and every route condition ask for it on the same request: each entry is read once
+    public function testAnEntryIsReadOncePerRequest(): void
+    {
+        $configService = $this->createMock(ConfigServiceInterface::class);
+        $configService->expects($this->once())->method('get')->with('book-route-books')->willReturn('livres');
+        $prefix = new BookRoutePrefix($configService);
+
+        $prefix->get('book-route-books');
+        $prefix->matches('book-route-books', 'livres');
+
+        $this->assertTrue($prefix->isEnabled('book-route-books'));
+    }
+
+    // A worker runtime keeps the service between requests: a prefix changed in the dashboard must still apply on the next one
+    public function testResetReadsTheEntriesAgain(): void
+    {
+        $configService = $this->createStub(ConfigServiceInterface::class);
+        $configService->method('get')->willReturn('livres', 'books');
+        $prefix = new BookRoutePrefix($configService);
+
+        $prefix->get('book-route-books');
+        $prefix->reset();
+
+        $this->assertSame('books', $prefix->get('book-route-books'));
+    }
+
     /** @param array<string, string> $entries */
     private function prefix(array $entries): BookRoutePrefix
     {

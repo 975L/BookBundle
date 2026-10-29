@@ -65,11 +65,13 @@ class BookRoutePrefixListenerTest extends TestCase
         $router = $this->createStub(RouterInterface::class);
         $router->method('getContext')->willReturn($context = new RequestContext());
 
-        $listener = new BookRoutePrefixListener($router, new BookRoutePrefix($configService));
+        $listener = new BookRoutePrefixListener($router, $routePrefix = new BookRoutePrefix($configService));
         $listener($this->event());
 
         $this->assertSame('livres', $context->getParameter('books_prefix'));
 
+        // What the kernel does between two requests
+        $routePrefix->reset();
         $entries['book-route-books'] = 'books';
         $listener($this->event());
 

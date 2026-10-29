@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.27.3
+
+Book route prefixes read once per request
+
+- Book route prefixes read once per request (29/10/2026)
+- Required `c975l/core-bundle` ^1.79.8 (29/10/2026)
+
 ## v2.27.2
 
 Book route prefixes on error pages, two guided projects

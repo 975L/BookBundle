@@ -12,10 +12,11 @@ namespace c975L\BookBundle\Routing;
 
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Attribute\AsRoutingConditionService;
+use Symfony\Contracts\Service\ResetInterface;
 
 // The first segment of each public route, edited in the back office and read at each request rather than baked into the router's cache - a site serves the catalog in its own language ("livres", "books", "libros"), and the change applies straight away with no cache to clear. Same shape as GalleryBundle's own GalleryRoutePrefix, with one difference that matters: an empty value here turns the pair off instead of falling back to a default. A site whose books are read under its own routes - as numbered "histoires", say - would otherwise serve every book at two addresses competing for the same search result
 #[AsRoutingConditionService(alias: self::ALIAS)]
-class BookRoutePrefix
+class BookRoutePrefix implements ResetInterface
 {
     public const string ALIAS = 'book_route_prefix';
 
@@ -38,15 +39,18 @@ class BookRoutePrefix
         'book-route-listen' => 'listen_prefix',
     ];
 
+    /** @var array<string, string> */
+    private array $prefixes = [];
+
     public function __construct(
         private readonly ConfigServiceInterface $configService,
     ) {
     }
 
-    // Empty when the entry is unset or blank, which is what a site says when its books are read elsewhere - the routes then match nothing at all
+    // Empty when the entry is unset or blank, which is what a site says when its books are read elsewhere - the routes then match nothing at all. Read once per request, the listener and every route condition asking for it
     public function get(string $slug): string
     {
-        return trim((string) $this->configService->get($slug), " \t\n\r\0\x0B/");
+        return $this->prefixes[$slug] ??= trim((string) $this->configService->get($slug), " \t\n\r\0\x0B/");
     }
 
     // What the routes' condition calls: any other first segment simply doesn't match, and the router carries on with the rest of the site's routes - without that check, "/{book_prefix}/{slug}" would swallow every two-segment url of the site
@@ -61,5 +65,11 @@ class BookRoutePrefix
     public function isEnabled(string $slug): bool
     {
         return '' !== $this->get($slug);
+    }
+
+    // Dropped between two requests so a worker runtime (FrankenPHP, RoadRunner...) still picks up a prefix changed in the dashboard
+    public function reset(): void
+    {
+        $this->prefixes = [];
     }
 }
