@@ -53,6 +53,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->mediaMoveProject(),
             $this->bookCompositionProject(),
             $this->bookListenProject(),
+            $this->bookVideoProject(),
             $this->bookReaderProject(),
             $this->translationProject(),
             $this->sortingProject(),
@@ -65,6 +66,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->exportProject(),
             $this->onixFeedProject(),
             $this->editionSaleProject(),
+            $this->editionWithdrawalProject(),
         ];
     }
 
@@ -587,6 +589,62 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_listen_done',
                     'description' => 'description.guided_step_book_listen_done',
                     'narration' => 'narration.guided_step_book_listen_done',
+                ],
+            ],
+        ];
+    }
+
+    // A video of a book, hosted or uploaded, laid in the "Watch" fieldset of the "Page" tab: often added after the book is out, its upload date then asked from its platform (see BookVideoUploadDatesCommand)
+    private function bookVideoProject(): array
+    {
+        return [
+            'slug' => 'book-video',
+            'label' => 'label.guided_project_book_video',
+            'description' => 'description.guided_project_book_video',
+            'translation_domain' => 'book',
+            'order' => 6032,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_video_open',
+                    'description' => 'description.guided_step_book_video_open',
+                    'narration' => 'narration.guided_step_book_video_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_video_edit',
+                    'description' => 'description.guided_step_book_video_edit',
+                    'narration' => 'narration.guided_step_book_video_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    'label' => 'label.guided_step_book_video_tab',
+                    'description' => 'description.guided_step_book_video_tab',
+                    'narration' => 'narration.guided_step_book_video_tab',
+                    'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
+                ],
+                [
+                    'label' => 'label.guided_step_book_video_add',
+                    'description' => 'description.guided_step_book_video_add',
+                    'narration' => 'narration.guided_step_book_video_add',
+                    'highlight' => '[data-book-videos] .field-collection-add-button',
+                ],
+                [
+                    // The address of the row just added, EasyAdmin appending it after the videos already laid
+                    'label' => 'label.guided_step_book_video_url',
+                    'description' => 'description.guided_step_book_video_url',
+                    'narration' => 'narration.guided_step_book_video_url',
+                    'highlight' => '[data-book-videos] .field-collection-item:last-child [id$="_youtubeUrl"]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_video_save',
+                    'narration' => 'narration.guided_step_book_video_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_video_done',
+                    'description' => 'description.guided_step_book_video_done',
+                    'narration' => 'narration.guided_step_book_video_done',
                 ],
             ],
         ];
@@ -1308,6 +1366,61 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_edition_sale_done',
                     'description' => 'description.guided_step_book_edition_sale_done',
                     'narration' => 'narration.guided_step_book_edition_sale_done',
+                ],
+            ],
+        ];
+    }
+
+    // An edition no longer sold, months after it went on sale: ticked out of print in its panel, which the ONIX feed announces to the bookshops (see BookOnixBuilder)
+    private function editionWithdrawalProject(): array
+    {
+        return [
+            'slug' => 'book-edition-withdrawal',
+            'label' => 'label.guided_project_book_edition_withdrawal',
+            'description' => 'description.guided_project_book_edition_withdrawal',
+            'translation_domain' => 'book',
+            'order' => 6090,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_edition_withdrawal_open',
+                    'description' => 'description.guided_step_book_edition_withdrawal_open',
+                    'narration' => 'narration.guided_step_book_edition_withdrawal_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_withdrawal_edit',
+                    'description' => 'description.guided_step_book_edition_withdrawal_edit',
+                    'narration' => 'narration.guided_step_book_edition_withdrawal_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_withdrawal_tab',
+                    'description' => 'description.guided_step_book_edition_withdrawal_tab',
+                    'narration' => 'narration.guided_step_book_edition_withdrawal_tab',
+                    'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_withdrawal_unfold',
+                    'description' => 'description.guided_step_book_edition_withdrawal_unfold',
+                    'narration' => 'narration.guided_step_book_edition_withdrawal_unfold',
+                    'highlight' => '[data-book-editions]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_withdrawal_out_of_print',
+                    'description' => 'description.guided_step_book_edition_withdrawal_out_of_print',
+                    'narration' => 'narration.guided_step_book_edition_withdrawal_out_of_print',
+                    'highlight' => self::EDITION_OPEN . ' [id$="_outOfPrint"]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_withdrawal_save',
+                    'narration' => 'narration.guided_step_book_edition_withdrawal_save',
+                    'highlight' => '.action-saveAndReturn',
+                ],
+                [
+                    'label' => 'label.guided_step_book_edition_withdrawal_done',
+                    'description' => 'description.guided_step_book_edition_withdrawal_done',
+                    'narration' => 'narration.guided_step_book_edition_withdrawal_done',
                 ],
             ],
         ];

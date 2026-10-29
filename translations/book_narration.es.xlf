@@ -270,6 +270,34 @@
                 <source>narration.guided_step_book_edition_sale_unfold</source>
                 <target>Haga clic en el título de la edición que vender para abrir su panel.</target>
             </trans-unit>
+            <trans-unit id="YSsYJuU">
+                <source>narration.guided_step_book_edition_withdrawal_done</source>
+                <target>La edición está agotada: el flujo ONIX lo anuncia, y las librerías conservan su ficha sin ofrecerla a la venta.</target>
+            </trans-unit>
+            <trans-unit id="lIu1wDl">
+                <source>narration.guided_step_book_edition_withdrawal_edit</source>
+                <target>Edite el libro cuya edición ya no se vende.</target>
+            </trans-unit>
+            <trans-unit id="YsYRAes">
+                <source>narration.guided_step_book_edition_withdrawal_open</source>
+                <target>El panel le lleva al catálogo, donde se elige el libro.</target>
+            </trans-unit>
+            <trans-unit id="F1Ecenm">
+                <source>narration.guided_step_book_edition_withdrawal_out_of_print</source>
+                <target>Marque «Agotada» el día en que la edición deja de venderse.</target>
+            </trans-unit>
+            <trans-unit id="lnJl5nO">
+                <source>narration.guided_step_book_edition_withdrawal_save</source>
+                <target>Guarde el libro.</target>
+            </trans-unit>
+            <trans-unit id="5hBaLSS">
+                <source>narration.guided_step_book_edition_withdrawal_tab</source>
+                <target>Abra la pestaña página, la que lleva las ediciones del libro.</target>
+            </trans-unit>
+            <trans-unit id="LNmKDbR">
+                <source>narration.guided_step_book_edition_withdrawal_unfold</source>
+                <target>Haga clic en el título de la edición que retirar para abrir su panel.</target>
+            </trans-unit>
             <trans-unit id="iPiRr1O">
                 <source>narration.guided_step_book_export_done</source>
                 <target>El archivo está en su ordenador. Un JSON se reinyecta mediante la importación de otro sitio, que lee las mismas claves que este ha escrito.</target>
@@ -633,6 +661,34 @@
             <trans-unit id="1CAia.N">
                 <source>narration.guided_step_book_version_publication_save</source>
                 <target>Guarde con el botón situado en la parte inferior del formulario.</target>
+            </trans-unit>
+            <trans-unit id="Fs1Li67">
+                <source>narration.guided_step_book_video_add</source>
+                <target>Añada un vídeo: se abre una nueva fila.</target>
+            </trans-unit>
+            <trans-unit id="oCbsitg">
+                <source>narration.guided_step_book_video_done</source>
+                <target>El vídeo se reproduce en la página del libro y se anuncia a los buscadores; su fecha de publicación se pide a su plataforma.</target>
+            </trans-unit>
+            <trans-unit id="ZeibOr.">
+                <source>narration.guided_step_book_video_edit</source>
+                <target>Edite el libro del que trata el vídeo.</target>
+            </trans-unit>
+            <trans-unit id="6yKtWoS">
+                <source>narration.guided_step_book_video_open</source>
+                <target>El panel le lleva al catálogo, donde se elige el libro.</target>
+            </trans-unit>
+            <trans-unit id="XSGSABs">
+                <source>narration.guided_step_book_video_save</source>
+                <target>Guarde el libro.</target>
+            </trans-unit>
+            <trans-unit id="YXfn_Ph">
+                <source>narration.guided_step_book_video_tab</source>
+                <target>Abra la pestaña página: los vídeos están bajo «Ver».</target>
+            </trans-unit>
+            <trans-unit id="38oDXW4">
+                <source>narration.guided_step_book_video_url</source>
+                <target>Pegue la dirección del vídeo alojado, o déjela vacía y suba el archivo debajo.</target>
             </trans-unit>
             <trans-unit id="6XzWZHL">
                 <source>narration.series</source>

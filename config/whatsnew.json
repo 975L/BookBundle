@@ -1,5 +1,25 @@
 [
     {
+        "date": "2026-10-29",
+        "description": [
+            {
+                "en": "A page you marked as removed now shows the proper notice to visitors instead of an error.",
+                "fr": "Une page que vous avez marquée comme supprimée affiche désormais le bon message aux visiteurs au lieu d'une erreur.",
+                "es": "Una página que ha marcado como eliminada muestra ahora el aviso adecuado a los visitantes en lugar de un error."
+            },
+            {
+                "en": "A new guided tour shows how to add a video to a book.",
+                "fr": "Une nouvelle visite guidée montre comment ajouter une vidéo à un livre.",
+                "es": "Una nueva visita guiada muestra cómo añadir un vídeo a un libro."
+            },
+            {
+                "en": "A new guided tour shows how to take an edition off sale.",
+                "fr": "Une nouvelle visite guidée montre comment retirer une édition de la vente.",
+                "es": "Una nueva visita guiada muestra cómo retirar una edición de la venta."
+            }
+        ]
+    },
+    {
         "date": "2026-10-27",
         "description": [
             {

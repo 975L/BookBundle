@@ -23,7 +23,7 @@ use Symfony\Component\Routing\RouterInterface;
 // Generating a catalog url: the router fills the prefix parameters from its context, which is what this listener puts there, so path('book_display', {slug: ...}) keeps taking the slug alone
 class BookRoutePrefixListenerTest extends TestCase
 {
-    // The five parameters the routes are written with, each holding the word the back office was given
+    // The parameters the routes are written with, each holding the word the back office was given
     public function testEveryConfiguredPrefixIsPutInTheRoutersContext(): void
     {
         $context = $this->handle([
@@ -76,10 +76,29 @@ class BookRoutePrefixListenerTest extends TestCase
         $this->assertSame('books', $context->getParameter('books_prefix'));
     }
 
-    // A sub-request renders a fragment inside a page whose context is already set: reading the six entries again would buy nothing
-    public function testASubRequestIsLeftAlone(): void
+    // A fragment renders inside a page whose context is already set: reading every entry again would buy nothing
+    public function testASubRequestOnAFilledContextIsLeftAlone(): void
     {
         $context = new RequestContext();
+        $context->setParameter('books_prefix', 'livres');
+
+        $this->subRequest($context);
+
+        $this->assertFalse($context->hasParameter('book_prefix'));
+    }
+
+    // The error page of a request aborted before the listener ran (a 400 from an early listener) still renders links: its sub-request gets the prefixes, or the error turns into a 500
+    public function testASubRequestOnAnEmptyContextIsFilled(): void
+    {
+        $context = new RequestContext();
+
+        $this->subRequest($context);
+
+        $this->assertSame('livres', $context->getParameter('books_prefix'));
+    }
+
+    private function subRequest(RequestContext $context): void
+    {
         $router = $this->createStub(RouterInterface::class);
         $router->method('getContext')->willReturn($context);
 
@@ -87,8 +106,6 @@ class BookRoutePrefixListenerTest extends TestCase
         $configService->method('get')->willReturn('livres');
 
         new BookRoutePrefixListener($router, new BookRoutePrefix($configService))($this->event(HttpKernelInterface::SUB_REQUEST));
-
-        $this->assertFalse($context->hasParameter('books_prefix'));
     }
 
     /** @param array<string, string> $entries */

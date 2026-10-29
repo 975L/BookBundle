@@ -11,14 +11,14 @@
 namespace c975L\BookBundle\Listener;
 
 use c975L\BookBundle\Routing\BookRoutePrefix;
+use c975L\ConfigBundle\EventSubscriber\RedirectSubscriber;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 
-// Matching a catalog url is the routes' condition business (see BookRoutePrefix); generating one is this listener's: the generator fills a route parameter it wasn't given from the request context, which is where the configured prefixes are put here, so path('book_display', {slug: ...}) keeps taking the slug alone
-// Runs just before Symfony's own RouterListener (priority 32), the parameters having to be in the context before anything generates a url
-#[AsEventListener(event: KernelEvents::REQUEST, priority: 33)]
+// Puts the configured prefixes in the router's request context so path('book_display', {slug: ...}) keeps taking the slug alone (matching is BookRoutePrefix's business). Runs before ConfigBundle's RedirectSubscriber, as the error page a "gone" row leads to still renders links
+#[AsEventListener(event: KernelEvents::REQUEST, priority: RedirectSubscriber::PRIORITY + 1)]
 class BookRoutePrefixListener
 {
     public function __construct(
@@ -29,11 +29,12 @@ class BookRoutePrefixListener
 
     public function __invoke(RequestEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        $context = $this->router->getContext();
+
+        // A fragment renders inside a page whose context is already set, but the error page of a request aborted before this listener ran is a sub-request on an empty one
+        if (!$event->isMainRequest() && $context->hasParameter('books_prefix')) {
             return;
         }
-
-        $context = $this->router->getContext();
 
         foreach (BookRoutePrefix::PREFIXES as $slug => $parameter) {
             $context->setParameter($parameter, $this->routePrefix->get($slug));

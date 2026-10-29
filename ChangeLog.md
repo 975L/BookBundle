@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.27.2
+
+Book route prefixes on error pages, two guided projects
+
+- `BookRoutePrefixListener` runs at `RedirectSubscriber::PRIORITY + 1`, so a gone page no longer ends in a 500 (29/10/2026)
+- `BookRoutePrefixListener` fills a sub-request whose context holds no prefix (29/10/2026)
+- Requires `c975l/core-bundle` ^1.80 for `RedirectSubscriber::PRIORITY` (29/10/2026)
+- Guided project `book-video`, adding a video to a book (29/10/2026)
+- Guided project `book-edition-withdrawal`, ticking an edition out of print (29/10/2026)
+
 ## v2.27.1
 
 Shop publish listener declared by attributes

@@ -270,6 +270,34 @@
                 <source>narration.guided_step_book_edition_sale_unfold</source>
                 <target>Cliquez sur le titre de l'édition à vendre pour en ouvrir le panneau.</target>
             </trans-unit>
+            <trans-unit id="YSsYJuU">
+                <source>narration.guided_step_book_edition_withdrawal_done</source>
+                <target>L'édition est épuisée : le flux ONIX l'annonce, et les librairies gardent sa fiche sans la proposer à l'achat.</target>
+            </trans-unit>
+            <trans-unit id="lIu1wDl">
+                <source>narration.guided_step_book_edition_withdrawal_edit</source>
+                <target>Modifiez le livre dont l'édition n'est plus vendue.</target>
+            </trans-unit>
+            <trans-unit id="YsYRAes">
+                <source>narration.guided_step_book_edition_withdrawal_open</source>
+                <target>Le panneau vous mène au catalogue, où l'on choisit le livre.</target>
+            </trans-unit>
+            <trans-unit id="F1Ecenm">
+                <source>narration.guided_step_book_edition_withdrawal_out_of_print</source>
+                <target>Cochez « Épuisée » le jour où l'édition n'est plus vendue.</target>
+            </trans-unit>
+            <trans-unit id="lnJl5nO">
+                <source>narration.guided_step_book_edition_withdrawal_save</source>
+                <target>Enregistrez le livre.</target>
+            </trans-unit>
+            <trans-unit id="5hBaLSS">
+                <source>narration.guided_step_book_edition_withdrawal_tab</source>
+                <target>Ouvrez l'onglet page, celui qui porte les éditions du livre.</target>
+            </trans-unit>
+            <trans-unit id="LNmKDbR">
+                <source>narration.guided_step_book_edition_withdrawal_unfold</source>
+                <target>Cliquez sur le titre de l'édition à retirer pour ouvrir son panneau.</target>
+            </trans-unit>
             <trans-unit id="iPiRr1O">
                 <source>narration.guided_step_book_export_done</source>
                 <target>Le fichier est sur votre ordinateur. Un JSON se réinjecte par l'import d'un autre site, qui lit les mêmes clés que celui-ci a écrites.</target>
@@ -633,6 +661,34 @@
             <trans-unit id="1CAia.N">
                 <source>narration.guided_step_book_version_publication_save</source>
                 <target>Enregistrez avec le bouton en bas du formulaire.</target>
+            </trans-unit>
+            <trans-unit id="Fs1Li67">
+                <source>narration.guided_step_book_video_add</source>
+                <target>Ajoutez une vidéo : une nouvelle ligne s'ouvre.</target>
+            </trans-unit>
+            <trans-unit id="oCbsitg">
+                <source>narration.guided_step_book_video_done</source>
+                <target>La vidéo se lit sur la page du livre et est signalée aux moteurs de recherche ; sa date de mise en ligne est demandée à sa plateforme.</target>
+            </trans-unit>
+            <trans-unit id="ZeibOr.">
+                <source>narration.guided_step_book_video_edit</source>
+                <target>Modifiez le livre dont parle la vidéo.</target>
+            </trans-unit>
+            <trans-unit id="6yKtWoS">
+                <source>narration.guided_step_book_video_open</source>
+                <target>Le panneau vous mène au catalogue, où l'on choisit le livre.</target>
+            </trans-unit>
+            <trans-unit id="XSGSABs">
+                <source>narration.guided_step_book_video_save</source>
+                <target>Enregistrez le livre.</target>
+            </trans-unit>
+            <trans-unit id="YXfn_Ph">
+                <source>narration.guided_step_book_video_tab</source>
+                <target>Ouvrez l'onglet page : les vidéos sont sous « Regarder ».</target>
+            </trans-unit>
+            <trans-unit id="38oDXW4">
+                <source>narration.guided_step_book_video_url</source>
+                <target>Collez l'adresse de la vidéo hébergée, ou laissez-la vide et déposez le fichier en dessous.</target>
             </trans-unit>
             <trans-unit id="6XzWZHL">
                 <source>narration.series</source>

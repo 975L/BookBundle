@@ -82,6 +82,10 @@
                 <source>description.guided_project_book_edition_sale</source>
                 <target>Une édition numérique ou audio se vend sous ses fichiers — EPUB, PDF, livret, MP3 : déposés avec leur prix et cochés « Boutique », ils sont écrits dans la boutique du site à l'enregistrement du livre.</target>
             </trans-unit>
+            <trans-unit id="UE7K7rp">
+                <source>description.guided_project_book_edition_withdrawal</source>
+                <target>Une édition qui n'est plus vendue se coche épuisée : le flux ONIX l'annonce aux librairies, qui gardent sa fiche sans la proposer à l'achat.</target>
+            </trans-unit>
             <trans-unit id="jlCH.8q">
                 <source>description.guided_project_book_export</source>
                 <target>Le catalogue sort du site en SQL, CSV ou JSON — une sauvegarde, un déménagement vers un autre site, une lecture dans un tableur. Réservé à l'administrateur : c'est toute la table qui sort.</target>
@@ -133,6 +137,10 @@
             <trans-unit id="5xAALK6">
                 <source>description.guided_project_book_version_publication</source>
                 <target>Ce qui a paru jusqu'ici est mis de côté dans un jumeau, et le livre garde son adresse, ses notes et ses traductions pour recevoir le texte neuf.</target>
+            </trans-unit>
+            <trans-unit id="V_kgLDK">
+                <source>description.guided_project_book_video</source>
+                <target>Une bande-annonce, une lecture, un entretien : une vidéo hébergée sur YouTube ou déposée s'affiche sur la page du livre et est signalée aux moteurs de recherche.</target>
             </trans-unit>
             <trans-unit id="5kHBelb">
                 <source>description.guided_step_book_category_creation_code</source>
@@ -353,6 +361,30 @@
             <trans-unit id="FRdlJpz">
                 <source>description.guided_step_book_edition_sale_unfold</source>
                 <target>Cliquez sur le titre de l'édition à vendre : son panneau s'ouvre.</target>
+            </trans-unit>
+            <trans-unit id="ywSsFKr">
+                <source>description.guided_step_book_edition_withdrawal_done</source>
+                <target>Le flux ONIX l'annonce désormais épuisée ; les librairies gardent sa fiche sans la proposer à l'achat.</target>
+            </trans-unit>
+            <trans-unit id="xG0xtYi">
+                <source>description.guided_step_book_edition_withdrawal_edit</source>
+                <target>Celui dont l'édition n'est plus vendue.</target>
+            </trans-unit>
+            <trans-unit id="ChsQGND">
+                <source>description.guided_step_book_edition_withdrawal_open</source>
+                <target>Le catalogue, où l'on choisit le livre.</target>
+            </trans-unit>
+            <trans-unit id="iEQFDqb">
+                <source>description.guided_step_book_edition_withdrawal_out_of_print</source>
+                <target>Le jour où l'édition n'est plus vendue.</target>
+            </trans-unit>
+            <trans-unit id="xkLH2qO">
+                <source>description.guided_step_book_edition_withdrawal_tab</source>
+                <target>L'onglet qui porte les éditions du livre.</target>
+            </trans-unit>
+            <trans-unit id="e4QQ7dn">
+                <source>description.guided_step_book_edition_withdrawal_unfold</source>
+                <target>Cliquez sur le titre de l'édition à retirer : son panneau s'ouvre.</target>
             </trans-unit>
             <trans-unit id="_tWJalT">
                 <source>description.guided_step_book_export_done</source>
@@ -693,6 +725,30 @@
             <trans-unit id="RYYQFGu">
                 <source>description.guided_step_book_version_publication_publish</source>
                 <target>Le bouton demande confirmation, puis ouvre le livre qui reste — vidé de ses formats, partis avec le jumeau.</target>
+            </trans-unit>
+            <trans-unit id="pVaCw8n">
+                <source>description.guided_step_book_video_add</source>
+                <target>Une nouvelle ligne s'ouvre sous les vidéos déjà posées.</target>
+            </trans-unit>
+            <trans-unit id="sRWHL8F">
+                <source>description.guided_step_book_video_done</source>
+                <target>Elle se lit sur la page du livre ; laissée vide, sa date de mise en ligne est demandée à sa plateforme.</target>
+            </trans-unit>
+            <trans-unit id="gyncYWQ">
+                <source>description.guided_step_book_video_edit</source>
+                <target>Celui dont parle la vidéo.</target>
+            </trans-unit>
+            <trans-unit id="3pVj_YG">
+                <source>description.guided_step_book_video_open</source>
+                <target>Le catalogue, où l'on choisit le livre.</target>
+            </trans-unit>
+            <trans-unit id="gICn1kT">
+                <source>description.guided_step_book_video_tab</source>
+                <target>L'onglet qui porte les vidéos du livre, sous « Regarder ».</target>
+            </trans-unit>
+            <trans-unit id="FXS4Ghj">
+                <source>description.guided_step_book_video_url</source>
+                <target>L'adresse de la vidéo hébergée, ou laissez-la vide et déposez le fichier en dessous.</target>
             </trans-unit>
             <trans-unit id="YKVN37A">
                 <source>flash.book_deleted_permanently</source>
@@ -1650,6 +1706,10 @@
                 <source>label.guided_project_book_edition_sale</source>
                 <target>Vendre une édition en fichiers</target>
             </trans-unit>
+            <trans-unit id="JPFRtvT">
+                <source>label.guided_project_book_edition_withdrawal</source>
+                <target>Retirer une édition de la vente</target>
+            </trans-unit>
             <trans-unit id="TUyJ6vi">
                 <source>label.guided_project_book_export</source>
                 <target>Emporter le catalogue dans un fichier</target>
@@ -1701,6 +1761,10 @@
             <trans-unit id="a0rsniN">
                 <source>label.guided_project_book_version_publication</source>
                 <target>Publier une nouvelle version</target>
+            </trans-unit>
+            <trans-unit id="B1nyFL3">
+                <source>label.guided_project_book_video</source>
+                <target>Ajouter une vidéo à un livre</target>
             </trans-unit>
             <trans-unit id="CsL_Bx8">
                 <source>label.guided_step_book_category_creation_code</source>
@@ -1948,6 +2012,34 @@
             </trans-unit>
             <trans-unit id="tghcDPW">
                 <source>label.guided_step_book_edition_sale_unfold</source>
+                <target>Dépliez l'édition</target>
+            </trans-unit>
+            <trans-unit id="vzfT2bF">
+                <source>label.guided_step_book_edition_withdrawal_done</source>
+                <target>L'édition est épuisée</target>
+            </trans-unit>
+            <trans-unit id="1tWrgXi">
+                <source>label.guided_step_book_edition_withdrawal_edit</source>
+                <target>Modifiez le livre</target>
+            </trans-unit>
+            <trans-unit id="v2XZDc2">
+                <source>label.guided_step_book_edition_withdrawal_open</source>
+                <target>Ouvrez « Livres »</target>
+            </trans-unit>
+            <trans-unit id="40uX7Qf">
+                <source>label.guided_step_book_edition_withdrawal_out_of_print</source>
+                <target>Cochez « Épuisée »</target>
+            </trans-unit>
+            <trans-unit id="3hmcziC">
+                <source>label.guided_step_book_edition_withdrawal_save</source>
+                <target>Enregistrez le livre</target>
+            </trans-unit>
+            <trans-unit id="m4XDwgO">
+                <source>label.guided_step_book_edition_withdrawal_tab</source>
+                <target>Ouvrez l'onglet « Page »</target>
+            </trans-unit>
+            <trans-unit id="0uXQKs.">
+                <source>label.guided_step_book_edition_withdrawal_unfold</source>
                 <target>Dépliez l'édition</target>
             </trans-unit>
             <trans-unit id="._biBpn">
@@ -2313,6 +2405,34 @@
             <trans-unit id="zsR1kmI">
                 <source>label.guided_step_book_version_publication_save</source>
                 <target>Enregistrez</target>
+            </trans-unit>
+            <trans-unit id="2E2NOD8">
+                <source>label.guided_step_book_video_add</source>
+                <target>Ajoutez une vidéo</target>
+            </trans-unit>
+            <trans-unit id="D1IGu3B">
+                <source>label.guided_step_book_video_done</source>
+                <target>La vidéo est en ligne</target>
+            </trans-unit>
+            <trans-unit id=".0mqGSz">
+                <source>label.guided_step_book_video_edit</source>
+                <target>Modifiez le livre</target>
+            </trans-unit>
+            <trans-unit id="c7.mb6v">
+                <source>label.guided_step_book_video_open</source>
+                <target>Ouvrez « Livres »</target>
+            </trans-unit>
+            <trans-unit id="gV6CARg">
+                <source>label.guided_step_book_video_save</source>
+                <target>Enregistrez le livre</target>
+            </trans-unit>
+            <trans-unit id="Jhq1dKn">
+                <source>label.guided_step_book_video_tab</source>
+                <target>Ouvrez l'onglet « Page »</target>
+            </trans-unit>
+            <trans-unit id="c2c4Uz4">
+                <source>label.guided_step_book_video_url</source>
+                <target>Collez son adresse</target>
             </trans-unit>
             <trans-unit id="T5sqP.N">
                 <source>label.health_check_link_broken</source>

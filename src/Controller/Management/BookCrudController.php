@@ -377,11 +377,13 @@ class BookCrudController extends AbstractCrudController
             // "Watch" - the same section of the page. Like the collections following it, each is alone of its kind in its fieldset
             FormField::addFieldset(t('label.watch', [], 'book'))
                 ->hideOnIndex(),
+            // Marked on its row for BookGuidedProjectProvider's tour, a collection printing no field id of its own
             CollectionField::new('videos')
                 ->setLabel(t('label.videos', [], 'book'))
                 ->setHelp(t('label.videos-help', [], 'book'))
                 ->hideOnIndex()
-                ->setEntryType(BookVideoType::class),
+                ->setEntryType(BookVideoType::class)
+                ->setFormTypeOption('row_attr', ['data-book-videos' => '1']),
             CollectionField::new('watchLinks')
                 ->setLabel(t('label.links', [], 'book'))
                 ->setHelp(t('label.watch_links-help', [], 'book'))

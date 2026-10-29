@@ -270,6 +270,34 @@
                 <source>narration.guided_step_book_edition_sale_unfold</source>
                 <target>Click the title of the edition to sell to open its panel.</target>
             </trans-unit>
+            <trans-unit id="YSsYJuU">
+                <source>narration.guided_step_book_edition_withdrawal_done</source>
+                <target>The edition is out of print: the ONIX feed announces it, and the bookshops keep its record without offering it for sale.</target>
+            </trans-unit>
+            <trans-unit id="lIu1wDl">
+                <source>narration.guided_step_book_edition_withdrawal_edit</source>
+                <target>Edit the book whose edition is no longer sold.</target>
+            </trans-unit>
+            <trans-unit id="YsYRAes">
+                <source>narration.guided_step_book_edition_withdrawal_open</source>
+                <target>The panel takes you to the catalog, where the book is picked.</target>
+            </trans-unit>
+            <trans-unit id="F1Ecenm">
+                <source>narration.guided_step_book_edition_withdrawal_out_of_print</source>
+                <target>Tick "Out of print" the day the edition is no longer sold.</target>
+            </trans-unit>
+            <trans-unit id="lnJl5nO">
+                <source>narration.guided_step_book_edition_withdrawal_save</source>
+                <target>Save the book.</target>
+            </trans-unit>
+            <trans-unit id="5hBaLSS">
+                <source>narration.guided_step_book_edition_withdrawal_tab</source>
+                <target>Open the page tab, the one holding the editions of the book.</target>
+            </trans-unit>
+            <trans-unit id="LNmKDbR">
+                <source>narration.guided_step_book_edition_withdrawal_unfold</source>
+                <target>Click the title of the edition to take off sale to open its panel.</target>
+            </trans-unit>
             <trans-unit id="iPiRr1O">
                 <source>narration.guided_step_book_export_done</source>
                 <target>The file is on your computer. A JSON comes back in through the import of another site, which reads the same keys this one wrote.</target>
@@ -633,6 +661,34 @@
             <trans-unit id="1CAia.N">
                 <source>narration.guided_step_book_version_publication_save</source>
                 <target>Save with the button at the bottom of the form.</target>
+            </trans-unit>
+            <trans-unit id="Fs1Li67">
+                <source>narration.guided_step_book_video_add</source>
+                <target>Add a video: a new row opens.</target>
+            </trans-unit>
+            <trans-unit id="oCbsitg">
+                <source>narration.guided_step_book_video_done</source>
+                <target>The video plays on the book's page and is announced to search engines; its upload date is asked from its platform.</target>
+            </trans-unit>
+            <trans-unit id="ZeibOr.">
+                <source>narration.guided_step_book_video_edit</source>
+                <target>Edit the book the video is about.</target>
+            </trans-unit>
+            <trans-unit id="6yKtWoS">
+                <source>narration.guided_step_book_video_open</source>
+                <target>The panel takes you to the catalog, where the book is picked.</target>
+            </trans-unit>
+            <trans-unit id="XSGSABs">
+                <source>narration.guided_step_book_video_save</source>
+                <target>Save the book.</target>
+            </trans-unit>
+            <trans-unit id="YXfn_Ph">
+                <source>narration.guided_step_book_video_tab</source>
+                <target>Open the page tab: the videos sit under "Watch".</target>
+            </trans-unit>
+            <trans-unit id="38oDXW4">
+                <source>narration.guided_step_book_video_url</source>
+                <target>Paste the address of the hosted video, or leave it empty and drop the file below.</target>
             </trans-unit>
             <trans-unit id="6XzWZHL">
                 <source>narration.series</source>
