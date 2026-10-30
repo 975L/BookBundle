@@ -21,10 +21,9 @@ use c975L\BookBundle\Enum\SerieKind;
 use c975L\UiBundle\Contract\DemoFixtureLinkerInterface;
 use c975L\UiBundle\Contract\DemoFixtureProviderInterface;
 use c975L\UiBundle\Registry\PlaceholderMediaRegistry;
+use c975L\UiBundle\Service\DemoFixtureMediaCopier;
 use c975L\UiBundle\Service\DemoFixtureTranslator;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 
 // The catalog a demo site is seeded with, from the very data the block showcase renders (see BookSampleCatalog) - persisted here, where the showcase only ever builds entities it never writes
 class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixtureProviderInterface
@@ -49,8 +48,7 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
         private readonly DemoFixtureTranslator $demoFixtureTranslator,
         private readonly TranslatorInterface $translator,
         private readonly PlaceholderMediaRegistry $placeholderMediaRegistry,
-        #[Autowire(param: 'kernel.project_dir')]
-        private readonly string $projectDir,
+        private readonly DemoFixtureMediaCopier $demoFixtureMediaCopier,
     ) {
     }
 
@@ -221,7 +219,7 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
     // The kind is set before the media joins its serie, and both before anything is written: SerieMedia builds its stored path out of the two (see getVichMediaPath()), and the other way round lands in "cover-temp"
     private function serieMedia(string $image, string $kind, int $position): ?SerieMedia
     {
-        $file = $this->temporaryCopy($image);
+        $file = $this->demoFixtureMediaCopier->copy($image);
 
         if (null === $file) {
             return null;
@@ -237,7 +235,7 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
 
     private function media(string $image, string $kind, int $position): ?BookMedia
     {
-        $file = $this->temporaryCopy($image);
+        $file = $this->demoFixtureMediaCopier->copy($image);
 
         if (null === $file) {
             return null;
@@ -249,20 +247,6 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
         $media->setFile($file);
 
         return $media;
-    }
-
-    // VichUploader moves the file it is handed, so it gets a copy - the declared picture is read by every other showcase and would be gone after the first load - and a ReplacingFile rather than a plain File, which UploadHandler::hasUploadedFile() ignores silently, writing the row with no file name
-    private function temporaryCopy(string $publicPath): ?ReplacingFile
-    {
-        $source = $this->projectDir . '/public/' . $publicPath;
-
-        if (!is_file($source)) {
-            return null;
-        }
-
-        $target = sys_get_temp_dir() . '/c975l-demo-' . uniqid() . '-' . basename($publicPath);
-
-        return copy($source, $target) ? new ReplacingFile($target, true, true, true) : null;
     }
 
     // The locale the made-up books are written in, a key like the rest so a Spanish demo holds Spanish books
