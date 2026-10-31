@@ -616,11 +616,11 @@
             </trans-unit>
             <trans-unit id=".QzKE3N">
                 <source>narration.guided_step_book_trash_delete</source>
-                <target>Mettez le livre à la corbeille. L'icône demande confirmation, puis le livre quitte le catalogue sans rien perdre d'autre.</target>
+                <target>Mettez le livre à la corbeille. L'icône demande confirmation, puis le livre quitte le catalogue sans rien perdre d'autre. Cochez plusieurs livres pour les y mettre ensemble.</target>
             </trans-unit>
             <trans-unit id="efm2EUz">
                 <source>narration.guided_step_book_trash_done</source>
-                <target>Le livre est à la corbeille. Le remettre en place ou le supprimer pour de bon revient à l'administrateur du site.</target>
+                <target>Le livre est à la corbeille. Le remettre en place ou le supprimer pour de bon revient à l'administrateur du site, qui peut aussi cocher plusieurs livres pour vider la corbeille d'un coup.</target>
             </trans-unit>
             <trans-unit id="94e4Mrw">
                 <source>narration.guided_step_book_trash_open</source>

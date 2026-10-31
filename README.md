@@ -573,7 +573,9 @@ from its index goes to the **trash** (`isDeleted`): the row, its files, its vers
 they were, and its public page answers **410 Gone** rather than the 404 an url that never existed gets —
 which is what a search engine drops an indexed page on. Each index carries a **Corbeille** toggle listing
 what left the site, where every row offers **Restaurer** and **Supprimer définitivement** (both
-`site-role-admin`, the rest of the screen staying `site-role-editor`). A trashed row leaves every public
+`site-role-admin`, the rest of the screen staying `site-role-editor`). Ticked rows go to the trash together, and
+an admin empties the trash the same way — its batch **Supprimer définitivement** keeps the
+refusals below. A trashed row leaves every public
 listing, the search components, the sitemap and the serie autocomplete of the book and strip forms — the
 repository queries filter on the column, so a site calling them through `BookService`, `SerieService` or
 `StripService` gets that for free.

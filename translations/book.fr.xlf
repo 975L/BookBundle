@@ -2,17 +2,9 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="fr" datatype="plaintext" original="book.en.xlf">
         <body>
-            <trans-unit id="sSgetpg">
-                <source>action.delete_permanently</source>
-                <target>Supprimer définitivement</target>
-            </trans-unit>
             <trans-unit id="IzBoXOt">
                 <source>action.duplicate</source>
                 <target>Dupliquer</target>
-            </trans-unit>
-            <trans-unit id="vUjYe27">
-                <source>action.move_to_trash</source>
-                <target>Mettre à la corbeille</target>
             </trans-unit>
             <trans-unit id="cm16A9p">
                 <source>action.publish_new_version</source>
@@ -684,11 +676,11 @@
             </trans-unit>
             <trans-unit id="Kl4RXD0">
                 <source>description.guided_step_book_trash_delete</source>
-                <target>L'icône demande confirmation ; le livre quitte le catalogue sans rien perdre d'autre.</target>
+                <target>L'icône demande confirmation ; le livre quitte le catalogue sans rien perdre d'autre. Cochez plusieurs livres pour les y mettre ensemble.</target>
             </trans-unit>
             <trans-unit id="jd8UjNW">
                 <source>description.guided_step_book_trash_done</source>
-                <target>Le remettre en place ou le supprimer pour de bon revient à l'administrateur du site.</target>
+                <target>Le remettre en place ou le supprimer pour de bon revient à l'administrateur du site, qui peut aussi cocher plusieurs livres pour vider la corbeille d'un coup.</target>
             </trans-unit>
             <trans-unit id="Tgr4TqW">
                 <source>description.guided_step_book_trash_open</source>

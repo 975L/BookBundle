@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Service\BookMediaMoveRowAttrBuilder;
+use c975L\BookBundle\Tests\ServicesContainerTestTrait;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -24,14 +25,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 // The only address of this bundle that writes on a POST: what it accepts of a drag-and-drop, and everything it turns down (see BookMediaMoveController)
 class BookMediaMoveControllerTest extends TestCase
 {
+    use ServicesContainerTestTrait;
+
     private const int BOOK_ID = 7;
 
     // One row for the whole test, as Doctrine hands the very same instance to a file and to the book holding it - two objects carrying the same id are two different books to the controller, and rightly so
@@ -206,22 +207,6 @@ class BookMediaMoveControllerTest extends TestCase
 
     private function container(RequestStack $requestStack, bool $csrfValid, bool $granted): ContainerInterface
     {
-        $csrfTokenManager = $this->createStub(CsrfTokenManagerInterface::class);
-        $csrfTokenManager->method('isTokenValid')->willReturn($csrfValid);
-
-        $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
-        $authorizationChecker->method('isGranted')->willReturn($granted);
-
-        $services = [
-            'request_stack' => $requestStack,
-            'security.csrf.token_manager' => $csrfTokenManager,
-            'security.authorization_checker' => $authorizationChecker,
-        ];
-
-        $container = $this->createStub(ContainerInterface::class);
-        $container->method('has')->willReturnCallback(static fn (string $id): bool => isset($services[$id]));
-        $container->method('get')->willReturnCallback(static fn (string $id) => $services[$id] ?? null);
-
-        return $container;
+        return $this->securityContainer($csrfValid, $granted, ['request_stack' => $requestStack]);
     }
 }

@@ -14,6 +14,7 @@ use c975L\BookBundle\Controller\Management\CharacterCrudController;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookTranslator;
+use c975L\BookBundle\Tests\ServicesContainerTestTrait;
 use c975L\ConfigBundle\Management\ContentLocaleScreen;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,14 +26,14 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 // The drag and drop of the characters' index: a position only means something inside a serie, so the order posted is saved for one serie and nothing else - and the row actions it sits beside
 class CharacterCrudControllerTest extends TestCase
 {
+    use ServicesContainerTestTrait;
+
     private const int SERIE_ID = 3;
 
     // The order posted becomes the positions, and the answer says what was saved
@@ -151,25 +152,6 @@ class CharacterCrudControllerTest extends TestCase
 
     private function container(bool $csrfValid, bool $granted): ContainerInterface
     {
-        $csrfTokenManager = $this->createStub(CsrfTokenManagerInterface::class);
-        $csrfTokenManager->method('isTokenValid')->willReturn($csrfValid);
-
-        $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
-        $authorizationChecker->method('isGranted')->willReturn($granted);
-
-        return $this->servicesContainer([
-            'security.csrf.token_manager' => $csrfTokenManager,
-            'security.authorization_checker' => $authorizationChecker,
-        ]);
-    }
-
-    /** @param array<string, object> $services */
-    private function servicesContainer(array $services): ContainerInterface
-    {
-        $container = $this->createStub(ContainerInterface::class);
-        $container->method('has')->willReturnCallback(static fn (string $id): bool => isset($services[$id]));
-        $container->method('get')->willReturnCallback(static fn (string $id) => $services[$id] ?? null);
-
-        return $container;
+        return $this->securityContainer($csrfValid, $granted);
     }
 }

@@ -616,11 +616,11 @@
             </trans-unit>
             <trans-unit id=".QzKE3N">
                 <source>narration.guided_step_book_trash_delete</source>
-                <target>Envíe el libro a la papelera. El icono pide confirmación, y luego el libro sale del catálogo sin perder nada más.</target>
+                <target>Envíe el libro a la papelera. El icono pide confirmación, y luego el libro sale del catálogo sin perder nada más. Marque varios libros para moverlos juntos.</target>
             </trans-unit>
             <trans-unit id="efm2EUz">
                 <source>narration.guided_step_book_trash_done</source>
-                <target>El libro está en la papelera. Restaurarlo o eliminarlo definitivamente corresponde al administrador del sitio.</target>
+                <target>El libro está en la papelera. Restaurarlo o eliminarlo definitivamente corresponde al administrador del sitio, que también puede marcar varios libros para vaciar la papelera de una vez.</target>
             </trans-unit>
             <trans-unit id="94e4Mrw">
                 <source>narration.guided_step_book_trash_open</source>

@@ -29,6 +29,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Translation\TranslatableMessage;
 
 use function Symfony\Component\Translation\t;
 
@@ -97,7 +98,7 @@ trait TrashableCrudTrait
             ->displayIf(static fn (TrashableInterface $entity): bool => $entity->isDeleted());
 
         // Removes the row for good, only shown once already in the trash - built as a url rather than linked to the crud action, so the csrf token the action checks travels with it
-        $deletePermanentlyAction = Action::new('deletePermanently', t('action.delete_permanently', [], 'book'), 'fa fa-trash')
+        $deletePermanentlyAction = Action::new('deletePermanently', t('action.delete_permanently', [], 'config'), 'fa fa-trash')
             ->linkToUrl(fn (TrashableInterface $entity): string => $this->trashActionUrl('deletePermanently', $entity, self::DELETE_PERMANENTLY_CSRF_TOKEN))
             ->displayIf(static fn (TrashableInterface $entity): bool => $entity->isDeleted())
             ->askConfirmation(t('confirm.delete_permanently', [], 'book'))
@@ -107,7 +108,7 @@ trait TrashableCrudTrait
         $cancelAction = Action::new('cancel', $this->translator->trans('action.cancel', [], 'EasyAdminBundle'), 'fa fa-times')
             ->linkToCrudAction(Action::INDEX);
 
-        return $actions
+        $actions
             ->add(Crud::PAGE_INDEX, $exportGroup)
             ->add(Crud::PAGE_INDEX, $exportSelectionAction)
             ->add(Crud::PAGE_INDEX, $this->trashAction())
@@ -137,7 +138,7 @@ trait TrashableCrudTrait
                     ->setIcon('fa fa-box-archive')
                     ->askConfirmation(t('confirm.move_to_trash', [], 'book'))
                     ->displayIf(static fn (TrashableInterface $entity): bool => !$entity->isDeleted()),
-                $this->translator->trans('action.move_to_trash', [], 'book'),
+                $this->translator->trans('action.move_to_trash', [], 'config'),
             ))
             ->update(Crud::PAGE_INDEX, 'restore', fn (Action $action) => EasyAdminActionHelper::toIconOnly(
                 $action,
@@ -145,13 +146,15 @@ trait TrashableCrudTrait
             ))
             ->update(Crud::PAGE_INDEX, 'deletePermanently', fn (Action $action) => EasyAdminActionHelper::toIconOnly(
                 $action,
-                $this->translator->trans('action.delete_permanently', [], 'book'),
+                $this->translator->trans('action.delete_permanently', [], 'config'),
             ))
             ->reorder(Crud::PAGE_INDEX, array_values(array_filter([Action::EDIT, 'viewOnSite', 'duplicate', 'translate', ...$this->extraIndexActions(), Action::DELETE, 'restore', 'deletePermanently'])))
             ->setPermission(Action::INDEX, $role)
             ->setPermission(Action::NEW, $role)
             ->setPermission(Action::EDIT, $role)
             ->setPermission(Action::DELETE, $role)
+            // Emptying the bin in a batch is the admin's, like the row button of the bin: an editor is not shown a button deleteEntity() would skip - display only, the real guard being the one of deleteEntity()
+            ->setPermission(Action::BATCH_DELETE, $this->isTrashView() ? $exportRole : $role)
             ->setPermission('viewOnSite', $role)
             ->setPermission('duplicate', $role)
             ->setPermission('translate', $role)
@@ -165,6 +168,9 @@ trait TrashableCrudTrait
             // Detail adds no information beyond what edit already shows
             ->disable(Action::DETAIL)
         ;
+
+        // The batch "Delete" runs deleteEntity(), which trashes from the catalog and removes for good from the trash - worded for each, the one of the trash posting back to the trash
+        return EasyAdminActionHelper::trashBatchDelete($actions, $this->isTrashView(), $this->adminUrlGenerator);
     }
 
     // The actions a screen adds between the copy and the trash: they must be named here to keep their place in the row, reorder() listing only what it knows. Empty for a screen adding none
@@ -213,10 +219,23 @@ trait TrashableCrudTrait
         ;
     }
 
-    // Deleting only takes the row off the site: it goes to the trash, where it can be brought back or removed for good (see BookTrashManager)
+    // Deleting only takes the row off the site: it goes to the trash, where it can be brought back or removed for good (see BookTrashManager). One already in the trash is removed for good only by the batch "Delete" of the trash, and only for the admin - the batch checks the editor's role of Action::DELETE, and an editor's stale selection skips the row rather than failing after the ones already trashed
     public function deleteEntity(EntityManagerInterface $entityManager, mixed $entity): void
     {
-        $this->trashManager->moveToTrash($entity);
+        // Decided by the screen the delete came from, never by the row alone: a replayed trashing of a row already there, or a stale trash selection holding one restored meanwhile, is left alone
+        if ($entity->isDeleted() !== $this->isTrashView()) {
+            return;
+        }
+
+        if (!$entity->isDeleted()) {
+            $this->trashManager->moveToTrash($entity);
+
+            return;
+        }
+
+        if ($this->isGranted($this->configService->get('site-role-admin'))) {
+            $this->removeForGood($entity);
+        }
     }
 
     // Restores the row out of the trash - back on the site exactly as it left it
@@ -246,10 +265,7 @@ trait TrashableCrudTrait
             return $this->redirect($this->trashIndexUrl());
         }
 
-        $entity = $context->getEntity()->getInstance();
-        $this->trashManager->deletePermanently($entity, $this->displayRoute($entity));
-
-        $this->addFlash('success', $this->translator->trans(self::FLASH_DELETED_PERMANENTLY, [], 'book'));
+        $this->removeForGood($context->getEntity()->getInstance());
 
         return $this->redirect($this->trashIndexUrl());
     }
@@ -361,6 +377,14 @@ trait TrashableCrudTrait
             ->generateUrl();
     }
 
+    // Removes the row for good, its url left answering 410 (see BookTrashManager::deletePermanently()) - shared by the row button and the batch "Delete" of the trash, both checking the admin's role first
+    private function removeForGood(TrashableInterface $entity): void
+    {
+        $this->trashManager->deletePermanently($entity, $this->displayRoute($entity));
+
+        $this->addFlash('success', $this->translator->trans(self::FLASH_DELETED_PERMANENTLY, [], 'book'));
+    }
+
     // The trash listing both actions come back to, whether they ran or were refused
     private function trashIndexUrl(): string
     {
@@ -369,6 +393,12 @@ trait TrashableCrudTrait
             ->setAction(Action::INDEX)
             ->set('trash', 1)
             ->generateUrl();
+    }
+
+    // The trash is the same screen as the catalog, and says which of the two is shown rather than printing the family's plural over both
+    private function indexPageTitle(): TranslatableMessage
+    {
+        return t($this->isTrashView() ? 'action.trash' : self::TRASH_BACK_LABEL, [], 'book');
     }
 
     // Whether the index is showing the trash rather than the catalog

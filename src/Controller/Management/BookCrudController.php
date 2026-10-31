@@ -528,6 +528,8 @@ class BookCrudController extends AbstractCrudController
             // Named in the editor's own language: with no label, EasyAdmin falls back on the class name and prints "Product", "Créer Product"
             ->setEntityLabelInSingular(t('label.book', [], 'book'))
             ->setEntityLabelInPlural(t('label.books', [], 'book'))
+            // Titled "Trash" over the trash rather than "Books" (see Trait\TrashableCrudTrait::indexPageTitle())
+            ->setPageTitle(Crud::PAGE_INDEX, $this->indexPageTitle())
             // The volume number is what a catalog is read by, the latest published first - a book carrying none (a standalone title) sorts last
             ->setDefaultSort(['number' => 'DESC'])
             ->addFormTheme('@c975LBook/management/book_crud_form_theme.html.twig')

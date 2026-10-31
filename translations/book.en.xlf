@@ -2,17 +2,9 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="en" datatype="plaintext" original="book.en.xlf">
         <body>
-            <trans-unit id="sSgetpg">
-                <source>action.delete_permanently</source>
-                <target>Delete permanently</target>
-            </trans-unit>
             <trans-unit id="IzBoXOt">
                 <source>action.duplicate</source>
                 <target>Duplicate</target>
-            </trans-unit>
-            <trans-unit id="vUjYe27">
-                <source>action.move_to_trash</source>
-                <target>Move to trash</target>
             </trans-unit>
             <trans-unit id="cm16A9p">
                 <source>action.publish_new_version</source>
@@ -684,11 +676,11 @@
             </trans-unit>
             <trans-unit id="Kl4RXD0">
                 <source>description.guided_step_book_trash_delete</source>
-                <target>The icon asks for confirmation; the book leaves the catalog without losing anything else.</target>
+                <target>The icon asks for confirmation; the book leaves the catalog without losing anything else. Tick several books to move them together.</target>
             </trans-unit>
             <trans-unit id="jd8UjNW">
                 <source>description.guided_step_book_trash_done</source>
-                <target>Restoring it or deleting it for good is the site administrator's to do.</target>
+                <target>Restoring it or deleting it for good is up to the site administrator, who can also tick several books to empty the trash at once.</target>
             </trans-unit>
             <trans-unit id="Tgr4TqW">
                 <source>description.guided_step_book_trash_open</source>

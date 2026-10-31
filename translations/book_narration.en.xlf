@@ -616,11 +616,11 @@
             </trans-unit>
             <trans-unit id=".QzKE3N">
                 <source>narration.guided_step_book_trash_delete</source>
-                <target>Move the book to the trash. The icon asks for confirmation, then the book leaves the catalog without losing anything else.</target>
+                <target>Move the book to the trash. The icon asks for confirmation, then the book leaves the catalog without losing anything else. Tick several books to move them together.</target>
             </trans-unit>
             <trans-unit id="efm2EUz">
                 <source>narration.guided_step_book_trash_done</source>
-                <target>The book is in the trash. Restoring it or deleting it for good is the site administrator's to do.</target>
+                <target>The book is in the trash. Restoring it or deleting it for good is up to the site administrator, who can also tick several books to empty the trash at once.</target>
             </trans-unit>
             <trans-unit id="94e4Mrw">
                 <source>narration.guided_step_book_trash_open</source>

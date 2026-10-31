@@ -61,10 +61,11 @@ class ContributorCrudController extends AbstractCrudController
 {
     use ContentLocaleCrudTrait;
 
-    // updateEntity() and createIndexQueryBuilder() are widened below: a method written in the class body would take the trait's place instead of chaining to it
+    // updateEntity(), createIndexQueryBuilder() and deleteEntity() are widened below: a method written in the class body would take the trait's place instead of chaining to it
     use TrashableCrudTrait {
         createIndexQueryBuilder as private trashableIndexQueryBuilder;
         updateEntity as private trashableUpdateEntity;
+        deleteEntity as private trashableDeleteEntity;
     }
 
     // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
@@ -224,6 +225,8 @@ class ContributorCrudController extends AbstractCrudController
             // Named in the editor's own language: with no label, EasyAdmin falls back on the class name and prints "Contributor", "Créer Contributor"
             ->setEntityLabelInSingular(t('label.contributor', [], 'book'))
             ->setEntityLabelInPlural(t('label.contributors', [], 'book'))
+            // Titled "Trash" over the trash rather than "Contributors" (see Trait\TrashableCrudTrait::indexPageTitle())
+            ->setPageTitle(Crud::PAGE_INDEX, $this->indexPageTitle())
             // In the order the editor laid, the very one the public pages follow (see ContributorRepository)
             ->setDefaultSort(['position' => 'ASC'])
             ->overrideTemplate('crud/index', '@c975LBook/management/contributor_crud_index.html.twig')
@@ -303,7 +306,7 @@ class ContributorCrudController extends AbstractCrudController
         return $queryBuilder;
     }
 
-    // Refused while a book or a serie still credits them - what credits them would otherwise keep naming someone the catalog has lost, and the foreign key would refuse the day they are removed for good. Trashed rows count just as much: they name them too
+    // Refused while a book or a serie still credits them - what credits them would otherwise keep naming someone the catalog has lost, and the foreign key would refuse the day they are removed for good. Trashed rows count just as much: they name them too. Once past that, the trait trashes or removes for good (see Trait\TrashableCrudTrait::deleteEntity())
     public function deleteEntity(EntityManagerInterface $entityManager, mixed $contributor): void
     {
         if ($contributor->holdsContent()) {
@@ -312,7 +315,7 @@ class ContributorCrudController extends AbstractCrudController
             return;
         }
 
-        $this->trashManager->moveToTrash($contributor);
+        $this->trashableDeleteEntity($entityManager, $contributor);
     }
 
     protected function duplicateEntity(mixed $entity): object

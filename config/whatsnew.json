@@ -1,5 +1,20 @@
 [
     {
+        "date": "2026-10-31",
+        "description": [
+            {
+                "en": "Administrators can now tick several items in the trash and delete them for good in one go.",
+                "fr": "Les administrateurs peuvent désormais cocher plusieurs éléments dans la corbeille et les supprimer définitivement d'un coup.",
+                "es": "Los administradores pueden ahora marcar varios elementos en la papelera y eliminarlos definitivamente de una vez."
+            },
+            {
+                "en": "The trash of the catalog is now titled as such, so you always know which list you are looking at.",
+                "fr": "La corbeille du catalogue porte désormais son propre titre, pour toujours savoir quelle liste vous consultez.",
+                "es": "La papelera del catálogo lleva ahora su propio título, para saber siempre qué lista está consultando."
+            }
+        ]
+    },
+    {
         "date": "2026-10-29",
         "description": [
             {

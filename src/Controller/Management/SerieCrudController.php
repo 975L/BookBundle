@@ -58,9 +58,10 @@ class SerieCrudController extends AbstractCrudController
 {
     use ContentLocaleCrudTrait;
 
-    // updateEntity() is widened below: a method written in the class body would take the trait's place instead of chaining to it
+    // updateEntity() and deleteEntity() are widened below: a method written in the class body would take the trait's place instead of chaining to it
     use TrashableCrudTrait {
         updateEntity as private trashableUpdateEntity;
+        deleteEntity as private trashableDeleteEntity;
     }
 
     // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
@@ -242,6 +243,8 @@ class SerieCrudController extends AbstractCrudController
             // Named in the editor's own language: with no label, EasyAdmin falls back on the class name and prints "Product", "Créer Product"
             ->setEntityLabelInSingular(t('label.serie', [], 'book'))
             ->setEntityLabelInPlural(t('label.series', [], 'book'))
+            // Titled "Trash" over the trash rather than "Series" (see Trait\TrashableCrudTrait::indexPageTitle())
+            ->setPageTitle(Crud::PAGE_INDEX, $this->indexPageTitle())
             // In the order the editor laid, the very one the public pages follow (see SerieRepository)
             ->setDefaultSort(['position' => 'ASC'])
             ->overrideTemplate('crud/index', '@c975LBook/management/serie_crud_index.html.twig')
@@ -314,7 +317,7 @@ class SerieCrudController extends AbstractCrudController
             return;
         }
 
-        $this->trashManager->moveToTrash($serie);
+        $this->trashableDeleteEntity($entityManager, $serie);
     }
 
     protected function duplicateEntity(mixed $entity): object

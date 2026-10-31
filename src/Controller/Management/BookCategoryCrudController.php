@@ -164,6 +164,8 @@ class BookCategoryCrudController extends AbstractCrudController
             // Named in the editor's own language: with no label, EasyAdmin falls back on the class name and prints "BookCategory"
             ->setEntityLabelInSingular(t('label.category', [], 'book'))
             ->setEntityLabelInPlural(t('label.categories', [], 'book'))
+            // Titled "Trash" over the trash rather than "Categories" (see Trait\TrashableCrudTrait::indexPageTitle())
+            ->setPageTitle(Crud::PAGE_INDEX, $this->indexPageTitle())
             // In the order the editor laid, the very one the public pages follow (see BookCategoryRepository)
             ->setDefaultSort(['position' => 'ASC'])
             ->overrideTemplate('crud/index', '@c975LBook/management/category_crud_index.html.twig')

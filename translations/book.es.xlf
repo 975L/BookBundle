@@ -2,17 +2,9 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="es" datatype="plaintext" original="book.en.xlf">
         <body>
-            <trans-unit id="sSgetpg">
-                <source>action.delete_permanently</source>
-                <target>Eliminar definitivamente</target>
-            </trans-unit>
             <trans-unit id="IzBoXOt">
                 <source>action.duplicate</source>
                 <target>Duplicar</target>
-            </trans-unit>
-            <trans-unit id="vUjYe27">
-                <source>action.move_to_trash</source>
-                <target>Mover a la papelera</target>
             </trans-unit>
             <trans-unit id="cm16A9p">
                 <source>action.publish_new_version</source>
@@ -684,11 +676,11 @@
             </trans-unit>
             <trans-unit id="Kl4RXD0">
                 <source>description.guided_step_book_trash_delete</source>
-                <target>El icono pide confirmación; el libro sale del catálogo sin perder nada más.</target>
+                <target>El icono pide confirmación; el libro sale del catálogo sin perder nada más. Marque varios libros para moverlos juntos.</target>
             </trans-unit>
             <trans-unit id="jd8UjNW">
                 <source>description.guided_step_book_trash_done</source>
-                <target>Restaurarlo o eliminarlo definitivamente corresponde al administrador del sitio.</target>
+                <target>Restaurarlo o eliminarlo definitivamente corresponde al administrador del sitio, que también puede marcar varios libros para vaciar la papelera de una vez.</target>
             </trans-unit>
             <trans-unit id="Tgr4TqW">
                 <source>description.guided_step_book_trash_open</source>

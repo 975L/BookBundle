@@ -226,6 +226,8 @@ class StripCrudController extends AbstractCrudController
             // Named in the editor's own language: with no label, EasyAdmin falls back on the class name and prints "Product", "Créer Product"
             ->setEntityLabelInSingular(t('label.strip', [], 'book'))
             ->setEntityLabelInPlural(t('label.strips', [], 'book'))
+            // Titled "Trash" over the trash rather than "Strips" (see Trait\TrashableCrudTrait::indexPageTitle())
+            ->setPageTitle(Crud::PAGE_INDEX, $this->indexPageTitle())
             ->overrideTemplate('crud/index', '@c975LBook/management/strip_crud_index.html.twig')
             ->overrideTemplate('crud/edit', '@c975LBook/management/strip_crud_edit.html.twig')
             ->overrideTemplate('crud/new', '@c975LBook/management/strip_crud_new.html.twig')

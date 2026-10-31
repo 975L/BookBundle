@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.28.0
+
+Trash emptied in a batch, and titled as such
+
+- `TrashableCrudTrait`: batch "Delete" worded "Move to the trash" / "Delete permanently" (31/10/2026)
+- `TrashableCrudTrait`: batch "Delete" of the trash removes for good, admin only (31/10/2026)
+- `TrashableCrudTrait`: batch "Delete" of the trash posts back with its `trash` flag (31/10/2026)
+- `TrashableCrudTrait`: batch "Delete" of the trash offered to the admin role only (31/10/2026)
+- `TrashableCrudTrait`: row and batch removal share `removeForGood()` and its flash (31/10/2026)
+- `TrashableCrudTrait`: trash index titled "Trash" rather than the family's plural (31/10/2026)
+- `SerieCrudController`, `ContributorCrudController`: content guard chains to the trait's `deleteEntity()` (31/10/2026)
+- Trash guided project mentions the batch gestures (31/10/2026)
+- `action.move_to_trash` and `action.delete_permanently` read from ConfigBundle's `config` catalog (31/10/2026)
+- Requires `c975l/core-bundle` ^1.83.0 (31/10/2026)
+
 ## v2.27.4
 
 Demo pictures copied through UiBundle's DemoFixtureMediaCopier
