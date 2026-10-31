@@ -84,7 +84,8 @@ stay exactly as they were, and its public page answers **410 Gone** rather than 
 existed gets, which is what a search engine drops an indexed page on. `restore()` and `deletePermanently()`
 are `site-role-admin`, the rest of the screens `site-role-editor`; `TrashableCrudTrait` lays the toggle and
 the two actions out. Its `deleteEntity()` trashes a live row and removes a trashed one for good only from the
-trash view (`?trash=1`, carried by the batch url) and for the admin, so the batch "Delete" of the trash empties it.
+trash view (`?trash=1`, carried by the batch url) and for the admin, so the batch "Delete" of the trash empties it —
+ConfigBundle's `TrashBatchDeleteTrait` refusing an editor before the first row and saying once how many rows went.
 
 | Event | Answer left behind |
 | --- | --- |

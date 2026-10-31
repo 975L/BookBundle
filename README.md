@@ -575,7 +575,7 @@ which is what a search engine drops an indexed page on. Each index carries a **C
 what left the site, where every row offers **Restaurer** and **Supprimer définitivement** (both
 `site-role-admin`, the rest of the screen staying `site-role-editor`). Ticked rows go to the trash together, and
 an admin empties the trash the same way — its batch **Supprimer définitivement** keeps the
-refusals below. A trashed row leaves every public
+refusals below, is refused to an editor before its first row and says once how many rows went. A trashed row leaves every public
 listing, the search components, the sitemap and the serie autocomplete of the book and strip forms — the
 repository queries filter on the column, so a site calling them through `BookService`, `SerieService` or
 `StripService` gets that for free.

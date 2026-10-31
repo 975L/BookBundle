@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Controller\Management\Trait;
 
 use c975L\BookBundle\Contract\TrashableInterface;
+use c975L\ConfigBundle\Controller\Management\Trait\TrashBatchDeleteTrait;
 use c975L\ConfigBundle\Management\EasyAdminActionHelper;
 use c975L\ConfigBundle\Service\Export\ExportFormat;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,6 +37,8 @@ use function Symfony\Component\Translation\t;
 // What the three screens of the catalog do alike with a row: its actions, its trash, its copy and its exports. A serie, a book and a strip only differ here by the words they are named with and the table and route they answer on, all of them constants of the controller using this trait - the screens themselves stay whole, each keeping its own fields, its own templates and whatever it does on its own (see SerieCrudController::deleteEntity(), which refuses the trash to a serie still holding a book or a strip)
 trait TrashableCrudTrait
 {
+    use TrashBatchDeleteTrait;
+
     public function persistEntity(EntityManagerInterface $entityManager, mixed $entity): void
     {
         $entity->setCreation(new \DateTime());
@@ -153,7 +156,7 @@ trait TrashableCrudTrait
             ->setPermission(Action::NEW, $role)
             ->setPermission(Action::EDIT, $role)
             ->setPermission(Action::DELETE, $role)
-            // Emptying the bin in a batch is the admin's, like the row button of the bin: an editor is not shown a button deleteEntity() would skip - display only, the real guard being the one of deleteEntity()
+            // Emptying the bin in a batch is the admin's, like the row button of the bin: an editor is not shown a button TrashBatchDeleteTrait would refuse - display only, the real guard being the one of batchDelete()
             ->setPermission(Action::BATCH_DELETE, $this->isTrashView() ? $exportRole : $role)
             ->setPermission('viewOnSite', $role)
             ->setPermission('duplicate', $role)
@@ -219,7 +222,7 @@ trait TrashableCrudTrait
         ;
     }
 
-    // Deleting only takes the row off the site: it goes to the trash, where it can be brought back or removed for good (see BookTrashManager). One already in the trash is removed for good only by the batch "Delete" of the trash, and only for the admin - the batch checks the editor's role of Action::DELETE, and an editor's stale selection skips the row rather than failing after the ones already trashed
+    // Deleting only takes the row off the site: it goes to the trash, where it can be brought back or removed for good (see BookTrashManager). One already in the trash is removed for good only by the batch "Delete" of the trash, and only for the admin - TrashBatchDeleteTrait checks that role before the first row and says once what went
     public function deleteEntity(EntityManagerInterface $entityManager, mixed $entity): void
     {
         // Decided by the screen the delete came from, never by the row alone: a replayed trashing of a row already there, or a stale trash selection holding one restored meanwhile, is left alone
@@ -233,9 +236,9 @@ trait TrashableCrudTrait
             return;
         }
 
-        if ($this->isGranted($this->configService->get('site-role-admin'))) {
-            $this->removeForGood($entity);
-        }
+        // From the trash, at the admin role like its row button - TrashBatchDeleteTrait checked it before the first row, this holds EasyAdmin's single delete to the same bar
+        $this->denyAccessUnlessGranted((string) $this->configService->get('site-role-admin'));
+        $this->removeForGood($entity);
     }
 
     // Restores the row out of the trash - back on the site exactly as it left it
@@ -266,6 +269,7 @@ trait TrashableCrudTrait
         }
 
         $this->removeForGood($context->getEntity()->getInstance());
+        $this->addFlash('success', $this->translator->trans(self::FLASH_DELETED_PERMANENTLY, [], 'book'));
 
         return $this->redirect($this->trashIndexUrl());
     }
@@ -377,12 +381,10 @@ trait TrashableCrudTrait
             ->generateUrl();
     }
 
-    // Removes the row for good, its url left answering 410 (see BookTrashManager::deletePermanently()) - shared by the row button and the batch "Delete" of the trash, both checking the admin's role first
+    // Removes the row for good, its url left answering 410 (see BookTrashManager::deletePermanently()) - shared by the row button and the batch "Delete" of the trash, both checking the admin's role first and each saying what went its own way
     private function removeForGood(TrashableInterface $entity): void
     {
         $this->trashManager->deletePermanently($entity, $this->displayRoute($entity));
-
-        $this->addFlash('success', $this->translator->trans(self::FLASH_DELETED_PERMANENTLY, [], 'book'));
     }
 
     // The trash listing both actions come back to, whether they ran or were refused

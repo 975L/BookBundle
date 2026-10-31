@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.28.1
+
+Recycle bin emptied through ConfigBundle's TrashBatchDeleteTrait
+
+- `TrashableCrudTrait`: batch "Delete" of the trash checks the admin role before the first row (31/10/2026)
+- `TrashableCrudTrait`: batch "Delete" of the trash flashes once how many rows went for good (31/10/2026)
+- `TrashableCrudTrait::deleteEntity()`: a row of the trash is removed for good at the admin role only, refused otherwise (31/10/2026)
+- Requires `c975l/core-bundle` ^1.84.0 (31/10/2026)
+
 ## v2.28.0
 
 Trash emptied in a batch, and titled as such

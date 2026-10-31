@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -58,7 +59,7 @@ class TrashableCrudDeleteTest extends TestCase
         $this->stripController($trashManager)->deleteEntity($this->createStub(EntityManagerInterface::class), $strip);
     }
 
-    // Deleting a row already in the trash, which is what the batch action of the trash does, removes it for good through the same path as its row button, flash included
+    // Deleting a row already in the trash, which is what the batch action of the trash does, removes it for good through the same path as its row button - the message for the whole selection is TrashBatchDeleteTrait's, said once rather than per row
     public function testDeletingATrashedRowRemovesItForGood(): void
     {
         $strip = new Strip()->setIsDeleted(true);
@@ -69,12 +70,14 @@ class TrashableCrudDeleteTest extends TestCase
         $requestStack = $this->requestStack(true);
         $this->stripController($trashManager, requestStack: $requestStack)->deleteEntity($this->createStub(EntityManagerInterface::class), $strip);
 
-        $this->assertCount(1, $requestStack->getSession()->getFlashBag()->peek('success'));
+        $this->assertSame([], $requestStack->getSession()->getFlashBag()->peek('success'));
     }
 
-    // Removing for good sits at the admin's role, where the batch only checks the editor's one of Action::DELETE: an editor's stale selection skips the row rather than failing after the ones already trashed
-    public function testAnEditorCannotEmptyTheTrashInABatch(): void
+    // Removing for good is the admin's, EasyAdmin's single delete held to the bar of the row button - the batch is refused before its first row by TrashBatchDeleteTrait
+    public function testAnEditorCannotRemoveATrashedRowForGood(): void
     {
+        $this->expectException(AccessDeniedException::class);
+
         $this->stripController($this->untouchedTrashManager(), granted: false, trash: true)->deleteEntity($this->createStub(EntityManagerInterface::class), new Strip()->setIsDeleted(true));
     }
 
@@ -120,7 +123,7 @@ class TrashableCrudDeleteTest extends TestCase
         $this->assertSame(['action.move_to_trash', 'action.delete_permanently'], $labels);
     }
 
-    // Emptying the trash in a batch is the admin's, like its row button, while the catalog's batch stays the editor's - an editor is not shown a button deleteEntity() would refuse
+    // Emptying the trash in a batch is the admin's, like its row button, while the catalog's batch stays the editor's - an editor is not shown a button TrashBatchDeleteTrait would refuse
     public function testOnlyTheAdminIsOfferedToEmptyTheTrashInABatch(): void
     {
         $permissions = array_map(fn (bool $trash): ?string => $this->stripActions($trash)->getActionPermissions()[Action::BATCH_DELETE] ?? null, [false, true]);
