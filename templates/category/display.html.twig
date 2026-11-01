@@ -14,7 +14,7 @@
         <div class="book-page__sections">
             {# The sentence the category opens on, which is also what its meta description is built from #}
             {% if category.summary %}
-                <div class="lead"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>{{ category.summary|raw }}</div>
+                <div class="lead"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>{{ category.summary|sanitize_html('c975l.rich') }}</div>
             {% endif %}
 
             {# No card around the books: what the category holds is no section to be announced, it is what the page is read for #}

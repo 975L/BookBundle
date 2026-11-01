@@ -57,6 +57,7 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
 
     // The address of their own site, held once by the person rather than once per book: the four author_website/illustrator_website columns said the same thing as many times as they were retyped
     #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $website = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

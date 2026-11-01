@@ -2,6 +2,10 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.28.2
+
+**An address outside http and https is refused when it is typed**: `BookLink::$url`, `ContributorLink::$url`, `Contributor::$website`, `Strip::$sourceUrl`, `Media::$youtubeUrl` (`Assert\Url`), and any scheme but http, https, mailto, tel on a listing block's `linkUrl` (UiBundle's `SafeUrl`). Nothing is rewritten: a stored value that fails stays until its row is next saved, when the editor is told. **A book still to come no longer shows its player nor its audio downloads** on its own page; the podcast app links stay. A site overriding `Book/Podcasts.html.twig` carries the same `isToBePublished` test over. **An upload outside what its field takes is refused**, a stored file staying as it is: an image field takes jpeg, png, webp and gif, no SVG nor AVIF, and a row holding anything (`MediaFileFieldTrait`) also takes pdf, epub, mp3, m4a, ogg, wav, mp4, webm and vtt (`Media::FILE_UPLOAD_EXTENSIONS`), under a site's own media kinds as well.
+
 ## v2.26
 
 **An edition can be said out of print.** `book_edition` gets an `out_of_print` column (`false` by default), which

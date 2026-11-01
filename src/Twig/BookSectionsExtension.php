@@ -61,8 +61,8 @@ class BookSectionsExtension
             $this->sections([
                 // The pages the book shows (Book::getPages())
                 'pages' => ['label.read', !$book->getPages()->isEmpty()],
-                // Where the book is listened to: the recording itself as much as the platforms carrying it, the card holding both
-                'podcasts' => ['label.podcasts', [] !== self::audioMedias($book) || [] !== $this->customizationRegistry->getLinksOf($book, 'audio') || [] !== $this->customizationRegistry->getLinksOf($book, 'podcast')],
+                // Where the book is listened to: the recording itself once the book is out, as much as the platforms carrying it, the card holding both
+                'podcasts' => ['label.podcasts', (!$book->isToBePublished() && [] !== self::audioMedias($book)) || [] !== $this->customizationRegistry->getLinksOf($book, 'audio') || [] !== $this->customizationRegistry->getLinksOf($book, 'podcast')],
                 // The videos the book holds as files, and the platforms it is watched on - one card, the way the stores and the podcast apps share theirs. The "video" group had a name and a place in the vocabulary and was printed by nothing
                 'apercu' => ['label.watch', !$book->getVideos()->isEmpty() || [] !== $this->customizationRegistry->getLinksOf($book, 'video')],
             ], $locale),

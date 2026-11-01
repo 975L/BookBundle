@@ -45,7 +45,7 @@
     {% endif %}
     {# Bounded to a few lines so every card of a row keeps the same height, whatever the length of what it summarizes - the whole of it is read on the planche's own page, where the same card is shown uncut (see "strip-card--full") #}
     {% if card.summary is not null and 'image' != display %}
-        <div class="strip-card__text">{{ card.summary|raw }}</div>
+        <div class="strip-card__text">{{ card.summary|sanitize_html('c975l.rich') }}</div>
     {% endif %}
     {# Under everything else, so the card keeps reading as a drawing first: the icons are the only thing here the visitor acts on rather than follows #}
     {% if showRating %}

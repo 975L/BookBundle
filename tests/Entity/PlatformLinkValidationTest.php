@@ -12,8 +12,11 @@ namespace c975L\BookBundle\Tests\Entity;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookLink;
+use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\ContributorLink;
+use c975L\BookBundle\Entity\Media;
+use c975L\BookBundle\Entity\Strip;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -50,6 +53,43 @@ class PlatformLinkValidationTest extends TestCase
         $link = new $class()->setKind('epub_fnac')->setUrl('https://www.fnac.com/ia1/Camille-Ferrand');
 
         $this->assertCount(0, $this->validator()->validate($link));
+    }
+
+    // Printed in an href: an address pasted from a platform goes through, what a browser would run or open locally does not
+    #[DataProvider('linkClasses')]
+    public function testOnlyAnHttpAddressIsAccepted(string $class): void
+    {
+        foreach (['https://www.fnac.com/ia1/Camille-Ferrand?awc=a_b&x=1#y', 'http://example.com'] as $url) {
+            $this->assertCount(0, $this->validator()->validateProperty(new $class()->setUrl($url), 'url'), $url);
+        }
+
+        foreach (['javascript:alert(1)', 'javascript://%0Aalert(1)', 'data:text/html,x', 'ftp://example.com/a', '/relative'] as $url) {
+            $this->assertCount(1, $this->validator()->validateProperty(new $class()->setUrl($url), 'url'), $url);
+        }
+    }
+
+    // Each of the address fields an editor pastes, the same way
+    #[DataProvider('addressFields')]
+    public function testAnAddressFieldTakesHttpAlone(object $entity, string $declaredOn, string $property): void
+    {
+        $reflection = new \ReflectionProperty($declaredOn, $property);
+
+        $reflection->setValue($entity, 'https://example.com/a');
+        $this->assertCount(0, $this->validator()->validateProperty($entity, $property));
+
+        $reflection->setValue($entity, 'javascript://%0Aalert(1)');
+        $this->assertCount(1, $this->validator()->validateProperty($entity, $property));
+
+        $reflection->setValue($entity, null);
+        $this->assertCount(0, $this->validator()->validateProperty($entity, $property));
+    }
+
+    /** @return iterable<string, array{object, class-string, string}> */
+    public static function addressFields(): iterable
+    {
+        yield 'contributor website' => [new Contributor(), Contributor::class, 'website'];
+        yield 'strip source' => [new Strip(), Strip::class, 'sourceUrl'];
+        yield 'video' => [new BookVideo(), Media::class, 'youtubeUrl'];
     }
 
     // Read off the attribute rather than by validating the owner, whose UniqueEntity asks for the Doctrine services a unit test has none of (see BookContributorTest)

@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Tests\Templates;
 use PHPUnit\Framework\TestCase;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Twig\TwigFilter;
 
 // The head every listing kind of this bundle draws its grid under: what it writes with a title typed on the block, and what it writes with none
 class ListingSectionTest extends TestCase
@@ -63,6 +64,11 @@ class ListingSectionTest extends TestCase
         $loader->addPath(__DIR__ . '/../../templates', 'c975LBook');
         $loader->addPath(__DIR__ . '/../../vendor/c975l/core-bundle/UiBundle/templates', 'c975LUi');
 
-        return new Environment($loader)->render(self::TEMPLATE, $context);
+        $twig = new Environment($loader);
+
+        // A double of the filter CoreBundle brings: this test reads the section's shape, and a bare Environment knows no sanitizer
+        $twig->addFilter(new TwigFilter('sanitize_html', static fn (string $html): string => $html, ['is_safe' => ['html']]));
+
+        return $twig->render(self::TEMPLATE, $context);
     }
 }

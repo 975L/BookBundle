@@ -10,5 +10,5 @@
     {# Left without a page - the site serving its categories none - the name is printed and not linked (see BookRoutePrefix) #}
     <{{ level }} class="book-card__title">{% if url %}<a href="{{ url }}">{{ category.title }}</a>{% else %}{{ category.title }}{% endif %}</{{ level }}>
     {# A <div>, not a <p>: Trix stores the summary as html, already block-level, and a <p> would be split by a list or a quotation #}
-    {% if category.summary %}<div class="text">{{ category.summary|raw }}</div>{% endif %}
+    {% if category.summary %}<div class="text">{{ category.summary|sanitize_html('c975l.rich') }}</div>{% endif %}
 </article>

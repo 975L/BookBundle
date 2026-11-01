@@ -33,7 +33,7 @@ class CharacterMediaType extends AbstractType
                 'download_uri' => true,
                 'asset_helper' => true,
                 'constraints' => [
-                    new File(maxSize: '100M'),
+                    new File(maxSize: '100M', mimeTypes: CharacterMedia::IMAGE_UPLOAD_TYPES),
                 ],
             ])
         ;

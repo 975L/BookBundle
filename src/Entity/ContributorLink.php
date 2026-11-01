@@ -36,6 +36,7 @@ class ContributorLink implements PlatformLinkInterface, \Stringable
     // The whole address, as the platform hands it over: an affiliate identifier, a country, an author identifier are all part of it, and none of them is deducible from the person
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $url = null;
 
     #[ORM\Column(nullable: true)]

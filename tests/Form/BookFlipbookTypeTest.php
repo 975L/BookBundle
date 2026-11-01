@@ -40,7 +40,8 @@ class BookFlipbookTypeTest extends TestCase
 
         $this->assertCount(1, $constraints);
         $this->assertInstanceOf(File::class, $constraints[0]);
-        $this->assertSame(['video/mp4'], $constraints[0]->mimeTypes);
+        $this->assertSame(['mp4' => 'video/mp4'], $constraints[0]->extensions);
+        $this->assertSame('label.flipbook-help', $constraints[0]->extensionsMessage);
         $this->assertSame('label.flipbook-help', $constraints[0]->mimeTypesMessage);
     }
 

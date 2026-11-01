@@ -38,7 +38,7 @@ class BookFlipbookType extends AbstractType
                 'download_uri' => true,
                 'asset_helper' => true,
                 'constraints' => [
-                    new File(maxSize: '100M', mimeTypes: ['video/mp4'], mimeTypesMessage: 'label.flipbook-help'),
+                    new File(maxSize: '100M', extensions: ['mp4' => 'video/mp4'], extensionsMessage: 'label.flipbook-help', mimeTypesMessage: 'label.flipbook-help'),
                 ],
             ])
         ;

@@ -18,6 +18,7 @@ use c975L\BookBundle\Form\Block\SeriesBlockType;
 use c975L\BookBundle\Form\Block\SerieStripsBlockType;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockAnchorSlugger;
+use c975L\UiBundle\Validator\SafeUrl;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -152,6 +153,7 @@ class BookListingBlockTypesTest extends TestCase
         $this->assertSame(TextType::class, $added['linkUrl']['type']);
         $this->assertFalse($added['linkLabel']['options']['required']);
         $this->assertFalse($added['linkUrl']['options']['required']);
+        $this->assertContainsOnlyInstancesOf(SafeUrl::class, $added['linkUrl']['options']['constraints'] ?? [null]);
     }
 
     // The kind whose layout a phone changes - the covers scrolled rather than stacked

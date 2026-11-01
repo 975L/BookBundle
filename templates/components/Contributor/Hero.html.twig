@@ -21,7 +21,7 @@
 
         {# The sentences they are introduced with, unfolded whole: the number of books they signed used to stand here, and it said "6 livres" over the very list printing them - a site naming its catalog "Toutes nos histoires" read "6 toutes nos histoires". A div rather than a p, the field being written in a rich text editor whose own blocks stand #}
         {% if contributor.summary %}
-            <div class="book-hero__summary">{{ contributor.summary|raw }}</div>
+            <div class="book-hero__summary">{{ contributor.summary|sanitize_html('c975l.rich') }}</div>
         {% endif %}
 
         {# The only gesture the page offers, laid out as a book's are: a line of text under a summary went unseen, where a button reads as the thing to click #}

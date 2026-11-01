@@ -63,7 +63,8 @@ which is a site using them as tags rather than as rayons. The listening pages ar
 when `book-page-sound` is on, `pageSound` naming another file); a book without one is shown as its
 cover and the player, a few pages to leaf through before buying being no book to follow along. A book with no
 recording the player can read — `book_audio_medias()`, an `audio/*` file: mp3, ogg, m4a or wav — answers 404
-there and stays off the index, whatever kind its files were filed under. `reader.js` follows UiBundle's
+there and stays off the index, whatever kind its files were filed under; so does a book still to come
+(`isToBePublished()`). `reader.js` follows UiBundle's
 `slider:changed` event, so a page turned by arrow, tap or swipe moves the recording too. `book_listen` also mounts UiBundle's
 `<twig:c975LUi:Pwa:Download>` with every file the player needs offline — the recording, the cover, and with `cues` the pages,
 the timecodes and the page-turn sound — and `book_listen_index` links to `ui_pwa_downloads` when `pwa_enabled()`.
@@ -150,7 +151,7 @@ They all live in `templates/components/` and are overridden in
 | `<twig:c975LBook:Book:Resume>` | the sentence under the hero |
 | `<twig:c975LBook:Book:Pages>` | the pages, in UiBundle's slider |
 | `<twig:c975LBook:Book:Flipbook>` | the video turning them, under the hero and outside any card |
-| `<twig:c975LBook:Book:Podcasts>` | one card for everything the book is listened to by, plus a link to `book_listen` when the book carries timecodes and pages |
+| `<twig:c975LBook:Book:Podcasts>` | one card for everything the book is listened to by, plus a link to `book_listen` when the book carries timecodes and pages. While `isToBePublished()`: the podcast apps alone, no player and no download, and the section goes when no link is left |
 | `<twig:c975LBook:Book:Videos>` | one card for everything it is watched by |
 | `<twig:c975LBook:Book:Shops>` | the bookshops, the site's own shop first and in the site colour — titled "Get it free" rather than "Buy" when `Book::isFree()` (a digital edition whose public price is 0) |
 | `<twig:c975LBook:Book:Informations>` | the framed civil status — author, illustrator, everyone else the book credits, serie, editions, languages, versions |

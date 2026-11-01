@@ -11,7 +11,7 @@
         <twig:c975LUi:Image:Image class="img-rounded box-shadow img-300" src="{{ asset(cover ?: 'bundles/c975lbook/images/no-cover.webp') }}" alt="{{ book.title }}" width="300" height="425"/>
     </a>
     {# A <div>, not a <p>: Trix stores the summary as html, already block-level, and a <p> would be split by a list or a quotation #}
-    {% if book.summary and not compact %}<div class="lead text-center">{{ book.summary|raw }}</div>{% endif %}
+    {% if book.summary and not compact %}<div class="lead text-center">{{ book.summary|sanitize_html('c975l.rich') }}</div>{% endif %}
     {# The language named in the page's language - the same rule as the hero's selector (see BookTranslationExtension) #}
     {% if book.language %}<p class="text text-center small bold">({{ book_language_label(book.language) }})</p>{% endif %}
 </twig:c975LUi:Card:Card>

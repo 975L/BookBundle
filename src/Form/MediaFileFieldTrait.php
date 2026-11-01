@@ -65,7 +65,7 @@ trait MediaFileFieldTrait
             'download_uri' => true,
             'asset_helper' => true,
             'constraints' => [
-                new File(maxSize: '100M'),
+                new File(maxSize: '100M', extensions: array_fill_keys(Media::FILE_UPLOAD_EXTENSIONS, Media::FILE_UPLOAD_TYPES)),
             ],
         ];
     }

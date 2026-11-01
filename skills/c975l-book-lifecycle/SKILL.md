@@ -291,6 +291,9 @@ own file is re-uploaded from — a book, a serie, a strip or a contributor — n
 be listed on. A row implementing `VichPrivateFileInterface` is looked for under its own private directory,
 every other under `PUBLIC_DIRECTORY`.
 
+An image field takes `Media::IMAGE_UPLOAD_TYPES` (no SVG, no AVIF); a row holding anything takes `Media::FILE_UPLOAD_EXTENSIONS`
+and `Media::FILE_UPLOAD_TYPES`, the name and the bytes both checked: the bytes alone let an SVG through under a video's signature.
+
 The image subclasses — `SerieMedia`, `CharacterMedia`, `ContributorMedia` — implement UiBundle's
 `VichImageResizableInterface`, so an upload is resized and converted to webp: `Media::getImageWidth()` answers
 1200 for a `background` or a `page`, 800 for every other kind, the listener never enlarging. `BookMedia` and

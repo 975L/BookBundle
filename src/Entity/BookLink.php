@@ -36,6 +36,7 @@ class BookLink implements PlatformLinkInterface, \Stringable
     // The whole address, as SiteBundle's CollectionItem holds one: an affiliate identifier, a country, a format anchor are all part of what a platform hands over, and none of them is deducible from the book
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $url = null;
 
     #[ORM\Column(nullable: true)]

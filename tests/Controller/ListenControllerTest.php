@@ -17,6 +17,7 @@ use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\BookTranslator;
 use c975L\ConfigBundle\Service\LocalizedRouteNegotiator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,6 +61,7 @@ class ListenControllerTest extends TestCase
             ->setSlug('la-moto-et-la-biche')
             ->setHidden($hidden)
             ->setIsDeleted($deleted)
+            ->setPublished(new \DateTime('2020-01-01'))
         ;
         if ($audio) {
             $book->addMedia(new BookMedia()->setKind('audio_mp3')->setName('histoire.mp3'));
@@ -123,6 +125,28 @@ class ListenControllerTest extends TestCase
         $this->expectException(NotFoundHttpException::class);
 
         $this->createController($this->book(hidden: true))->display('la-moto-et-la-biche', new Request());
+    }
+
+    // The listings leave out a book still to come: its recording stays unreachable by its slug too, undated or dated later
+    #[DataProvider('unreleasedDates')]
+    public function testABookStillToComeIsNotFound(?\DateTime $published): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        $this->createController($this->book()->setPublished($published))->display('la-moto-et-la-biche', new Request());
+    }
+
+    /** @return iterable<string, array{?\DateTime}> */
+    public static function unreleasedDates(): iterable
+    {
+        yield 'undated' => [null];
+        yield 'dated later' => [new \DateTime('+1 year')];
+    }
+
+    // Replaced by a newer version, it leaves the listings but keeps its own page: a link to its recording goes on answering, there being nothing to hide in a book already out
+    public function testABookANewerVersionReplacesStillAnswers(): void
+    {
+        $this->assertSame(200, $this->createController($this->book()->setNewerVersion(new Book()))->display('la-moto-et-la-biche', new Request())->getStatusCode());
     }
 
     // The negotiator as a screen answering in one language alone meets it: nothing to refuse, nobody to move, and the response handed straight back

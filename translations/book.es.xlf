@@ -448,7 +448,7 @@
             </trans-unit>
             <trans-unit id="u7M2BLI">
                 <source>description.guided_step_book_listen_done</source>
-                <target>La página de escucha solo responde si el sitio le ha dado una dirección: el «Prefijo URL de los libros para escuchar», en la configuración. El ajuste «Sonido de página» añade allí un breve sonido cada vez que la voz pasa una página. Cada escucha completa se cuenta; la cifra aparece en la página del libro y la de escucha en cuanto alcanza el ajuste «Escuchas mostradas a partir de».</target>
+                <target>La página de escucha solo responde si el sitio le ha dado una dirección: el «Prefijo URL de los libros para escuchar», en la configuración, y solo se abre cuando el libro se publica: hasta entonces, su página solo muestra los enlaces a las aplicaciones de pódcast. El ajuste «Sonido de página» añade allí un breve sonido cada vez que la voz pasa una página. Cada escucha completa se cuenta; la cifra aparece en la página del libro y la de escucha en cuanto alcanza el ajuste «Escuchas mostradas a partir de».</target>
             </trans-unit>
             <trans-unit id="GBg0WvF">
                 <source>description.guided_step_book_listen_edit</source>

@@ -1,5 +1,30 @@
 [
     {
+        "date": "2026-11-01",
+        "description": [
+            {
+                "en": "Each file field now only accepts the types it can use: images for covers and portraits, and for a book's other files also PDF, EPUB, audio, video and WebVTT. SVG and AVIF files are refused.",
+                "fr": "Chaque champ de fichier n'accepte désormais que ce qu'il sait utiliser : des images pour les couvertures et les portraits, et pour les autres fichiers d'un livre aussi du PDF, de l'EPUB, de l'audio, de la vidéo et du WebVTT. Les fichiers SVG et AVIF sont refusés.",
+                "es": "Cada campo de archivo solo acepta ahora lo que puede usar: imágenes para las portadas y los retratos, y para los demás archivos de un libro también PDF, EPUB, audio, vídeo y WebVTT. Los archivos SVG y AVIF se rechazan."
+            },
+            {
+                "en": "A link typed on a book, a person, a strip or a video must now start with http:// or https://, and you are told when it does not.",
+                "fr": "Un lien saisi sur un livre, une personne, une planche ou une vidéo doit désormais commencer par http:// ou https://, et un message le signale quand ce n'est pas le cas.",
+                "es": "Un enlace introducido en un libro, una persona, una tira o un vídeo debe empezar ahora por http:// o https://, y se le avisa cuando no es así."
+            },
+            {
+                "en": "The listening page of a book not yet released now answers as not found.",
+                "fr": "La page d'écoute d'un livre pas encore paru répond désormais comme introuvable.",
+                "es": "La página de escucha de un libro aún no publicado responde ahora como no encontrada."
+            },
+            {
+                "en": "A book not yet released no longer shows its audio player or its audio downloads on its page; the podcast app links stay.",
+                "fr": "Un livre pas encore paru n'affiche plus son lecteur ni ses téléchargements audio sur sa page ; les liens vers les applications de podcast restent.",
+                "es": "Un libro aún no publicado ya no muestra su reproductor ni sus descargas de audio en su página; los enlaces a las aplicaciones de pódcast se mantienen."
+            }
+        ]
+    },
+    {
         "date": "2026-10-31",
         "description": [
             {

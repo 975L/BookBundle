@@ -448,7 +448,7 @@
             </trans-unit>
             <trans-unit id="u7M2BLI">
                 <source>description.guided_step_book_listen_done</source>
-                <target>La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration. Le réglage « Son de page » y ajoute un petit son à chaque page tournée par la voix. Chaque écoute menée à son terme est comptée ; le nombre s'affiche sur la page du livre et la page d'écoute dès qu'il atteint le réglage « Écoutes affichées à partir de ».</target>
+                <target>La page d'écoute ne répond que si le site lui a donné une adresse : le « Préfixe URL des livres à écouter », dans la configuration, et elle n'ouvre qu'à la parution du livre : d'ici là, sa page ne montre que les liens vers les applications de podcast. Le réglage « Son de page » y ajoute un petit son à chaque page tournée par la voix. Chaque écoute menée à son terme est comptée ; le nombre s'affiche sur la page du livre et la page d'écoute dès qu'il atteint le réglage « Écoutes affichées à partir de ».</target>
             </trans-unit>
             <trans-unit id="GBg0WvF">
                 <source>description.guided_step_book_listen_edit</source>

@@ -181,7 +181,7 @@ showcase — contributes the same file through its own stylesheet provider.
 | `book_shortcut` | `/b{number}` | `book-route-book-shortcut` | Short link to a book, 301 |
 | `strip_shortcut` | `/s{number}` | `book-route-strip-shortcut` | Short link to a strip, 301 |
 | `book_listen_index` | *unset* | `book-route-listen` | The books holding a recording, in the language being read |
-| `book_listen` | *unset* | `book-route-listen` | A book played: its pages turning along the recording when it carries a `cues` file, its cover and the player otherwise |
+| `book_listen` | *unset* | `book-route-listen` | A book played: its pages turning along the recording when it carries a `cues` file, its cover and the player otherwise. 404 while the book is still to come (`Book::isToBePublished()`) |
 | `book_listen_json` | *unset* | `book-route-listen` | The listening pages as JSON, at the prefix followed by `.json`: each book's recording, cover and fourth cover, pages and timecodes under absolute urls, its serie, credits, videos and listens, the address of its own page (null where the site serves none), plus the fields of its own the site lists in `book-listen-data`, answered with a weak `ETag` |
 | `book_onix` | *unset* | `book-route-onix` | The catalog as an ONIX 3.0 feed (see [ONIX feed](#onix-feed)) |
 | `book_release_alert_new` | `/book/release-alert/{id}` | — | Where an address is left to be told a book is out — `noindex` |
@@ -1048,7 +1048,7 @@ php bin/console c975l:health-check:run --kind=files-book
 
 Four owners share the one media table, so each row links to the screen its own file is re-uploaded from — a book, a serie, a strip or a contributor — never merely the one it happens to be listed on.
 
-A book's, a serie's, a character's and a contributor's pictures are resized and converted to webp on upload by UiBundle's `VichImageResizeListener`: a backdrop and a reader's page at 1200 pixels wide, every other picture at 800, never enlarged (`Media::getImageWidth()`). A planche goes through its own multi-size pipeline instead (`VichMultiSizeImageInterface`).
+A book's, a serie's, a character's and a contributor's pictures are resized and converted to webp on upload by UiBundle's `VichImageResizeListener`: a backdrop and a reader's page at 1200 pixels wide, every other picture at 800, never enlarged (`Media::getImageWidth()`). A planche goes through its own multi-size pipeline instead (`VichMultiSizeImageInterface`). An image field takes jpeg, png, webp and gif, no SVG nor AVIF (`Media::IMAGE_UPLOAD_TYPES`); a book's other files also pdf, epub, audio, video and WebVTT, judged on their name and their bytes (`Media::FILE_UPLOAD_EXTENSIONS`, `Media::FILE_UPLOAD_TYPES`).
 
 A platform answering `401`, `403`, `405` or `429` is reported **skipped**, not broken: most stores turn down a `HEAD` request carrying no browser behind it, and there is nothing there for an editor to fix. `404`/`410`, any other error code, and a host that never answered at all are reported as errors, the http code being kept in the row's details. The provider enumerates every link each run, so an address that is deleted or corrected drops off the dashboard instead of leaving its last red row behind.
 

@@ -95,8 +95,8 @@ class ListenController extends AbstractController
             throw new GoneHttpException();
         }
 
-        // What the page will play, not what is filed as audio: a recording whose type is not "audio/*" would leave the player empty
-        if ($book->isHidden() || [] === BookSectionsExtension::audioMedias($book)) {
+        // A book still to come keeps this page to itself, where one a newer version replaces goes on answering as its own page does. And what the page will play, not what is filed as audio: a recording whose type is not "audio/*" would leave the player empty
+        if ($book->isHidden() || $book->isToBePublished() || [] === BookSectionsExtension::audioMedias($book)) {
             throw $this->createNotFoundException();
         }
 

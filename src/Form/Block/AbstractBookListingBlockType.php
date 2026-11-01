@@ -14,6 +14,7 @@ use c975L\UiBundle\Form\Block\HasAnchorFieldTrait;
 use c975L\UiBundle\Form\Block\HasBackgroundFieldTrait;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockAnchorSlugger;
+use c975L\UiBundle\Validator\SafeUrl;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -59,6 +60,7 @@ abstract class AbstractBookListingBlockType extends AbstractType
                 'label' => 'label.block_link_url',
                 'help' => 'label.block_link_url_help',
                 'required' => false,
+                'constraints' => [new SafeUrl()],
             ])
         ;
 

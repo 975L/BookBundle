@@ -27,7 +27,7 @@ class TwigStringEscapeTest extends TestCase
                 // The sixth escape is the literal's own quote and only that one: Twig deprecates a double quote escaped inside a single-quoted string just as it does a dot
                 $this->assertSame(
                     0,
-                    preg_match('/\\\\(?!' . self::KNOWN_ESCAPES . '|' . $literal[0] . ')/', $literal),
+                    preg_match('/\\\\(?!' . self::KNOWN_ESCAPES . '|' . $literal[0] . ')/', str_replace('\\\\', '', $literal)),
                     sprintf('%s: "%s" escapes a character Twig ignores - it is deprecated since 3.12 and dropped in Twig 4, so the pattern stops meaning what it says.', $template, $literal),
                 );
             }
@@ -57,7 +57,8 @@ class TwigStringEscapeTest extends TestCase
             }
 
             if ([] !== $found) {
-                $literals[$file->getFilename()] = $found;
+                // By its path: six templates are called display.html.twig, and a filename would keep only the last one read
+                $literals[$file->getPathname()] = $found;
             }
         }
 

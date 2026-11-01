@@ -3,7 +3,8 @@
 {# One column, from the largest to the smallest: listen, take away, subscribe. Everything in it is optional #}
 {% props book, section = {}, editUrl = "" %}
 {% set section = {anchor: 'podcasts', label: 'label.podcasts'|trans({}, 'book', book_ui_locale(book.language))}|merge(section) %}
-{% set medias = book_audio_medias(book) %}
+{# A book still to come keeps its recording to itself, here as on its listening page (see ListenController::display()): where it will be heard is what may be said ahead of it #}
+{% set medias = book.isToBePublished ? [] : book_audio_medias(book) %}
 {% set links = book_links_of(book, 'audio', 'podcast') %}
 {% if medias|length or links|length %}
     {% set body %}

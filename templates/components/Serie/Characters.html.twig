@@ -23,7 +23,7 @@
                             {% endif %}
                             <h4 class="card-title">{% if href %}<a href="{{ href }}">{{ character.name }}</a>{% else %}{{ character.name }}{% endif %}</h4>
                             {# A <div>, not a <p>: the presentation is markup already block-level, and a <p> would be split #}
-                            {% if character.presentation %}<div>{{ character.presentation|raw|nl2br }}</div>{% endif %}
+                            {% if character.presentation %}<div>{{ character.presentation|sanitize_html('c975l.rich')|nl2br }}</div>{% endif %}
                         </div>
                     </article>
                 {% endfor %}

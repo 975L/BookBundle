@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.28.2
+
+Uploads limited to what each field takes, rich text sanitized, the listening page of an unreleased book closed
+
+- `BookCoverType`, `SerieMediaType`, `StripMediaType`, `ContributorMediaType`, `CharacterMediaType`: an image only (jpeg, png, webp, gif), an SVG or an AVIF refused (01/11/2026)
+- `MediaFileFieldTrait`: an image, a PDF, an EPUB, a recording, a video or a WebVTT file only, read off the file's name and bytes (01/11/2026)
+- `BookFlipbookType`: an mp4 by its name as well as by its bytes (01/11/2026)
+- Summaries, presentations and listing intros printed through `sanitize_html('c975l.rich')` rather than `|raw` (01/11/2026)
+- `Book.html.twig`: a title escaped, its " - " alone turned into a line break (01/11/2026)
+- `ListenController::display()`: 404 on a book to be published; one a newer version replaces keeps answering, as its own page does (01/11/2026)
+- `Podcasts.html.twig` and `BookSectionsExtension::book()`: no player, no audio download and no button to that page while `isToBePublished()`, the podcast app links staying, and no section when none is left (01/11/2026)
+- `Assert\Url` limited to http and https on `BookLink::$url`, `ContributorLink::$url`, `Contributor::$website`, `Strip::$sourceUrl` and `Media::$youtubeUrl` (01/11/2026)
+- UiBundle's `SafeUrl` on the `linkUrl` of `AbstractBookListingBlockType` (01/11/2026)
+- Requires `c975l/core-bundle` ^1.85.0 (01/11/2026)
+
 ## v2.28.1
 
 Recycle bin emptied through ConfigBundle's TrashBatchDeleteTrait

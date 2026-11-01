@@ -65,6 +65,7 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     private ?string $summary = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $sourceUrl = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]

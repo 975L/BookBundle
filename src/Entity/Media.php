@@ -43,6 +43,28 @@ abstract class Media implements \Stringable
     // The root every subclass writes under (see their getVichMediaPath), and what BookBackupPathProvider declares to ConfigBundle
     public const string MEDIA_DIRECTORY = 'medias/book';
 
+    // What an image field takes, read off the file's own bytes by the form's File constraint: the four whose stored extension UiMediaNamer decides itself, never the name the browser sent. No SVG, which runs its scripts when opened directly from the site's own origin
+    public const array IMAGE_UPLOAD_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+    // What a row holding anything takes (see MediaFileFieldTrait): an image, a document, a recording, a video or the pages' timecodes - what MIME_TYPES below names, without the SVG and the AVIF, under the names the detection gives them
+    public const array FILE_UPLOAD_TYPES = [
+        ...self::IMAGE_UPLOAD_TYPES,
+        'application/pdf',
+        'application/epub+zip',
+        'audio/mpeg',
+        'audio/mp4',
+        'audio/x-m4a',
+        'audio/ogg',
+        'audio/wav',
+        'audio/x-wav',
+        'video/mp4',
+        'video/webm',
+        'text/vtt',
+    ];
+
+    // The names those rows go by: the bytes alone do not settle it, "<!--ftypmp42 --><svg onload=...>" being detected as a video and UiMediaNamer keeping the ".svg" it was sent under, where it runs on the site's own origin
+    public const array FILE_UPLOAD_EXTENSIONS = ['jpg', 'jpeg', 'jfif', 'png', 'webp', 'gif', 'pdf', 'epub', 'mp3', 'm4a', 'ogg', 'oga', 'wav', 'mp4', 'webm', 'vtt'];
+
     // UiBundle's Slider and Image components read a media through the same accessors as UiBundle's own Media entity - the nine below fill that contract without adding a column, the display metadata they stand for having no home in this hierarchy
     private const array MIME_TYPES = [
         'avif' => 'image/avif',
@@ -89,6 +111,7 @@ abstract class Media implements \Stringable
 
     // The player's whole address and no longer the id alone: it is what an editor pastes, and what the rendering hands as is to the iframe (see BookVideoNoCookieListener, which brings it back to its platform's canonical form)
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $youtubeUrl = null;
 
     // Ticked, the pasted address is rewritten into a privacy-respecting one on save - youtube-nocookie.com for YouTube, "dnt=1" for Vimeo (see c975L\UiBundle\Video\VideoPlatform). Ticked by default: it is the only origin the site's security policy allows, and a "watch?v=" address does not embed

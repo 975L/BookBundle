@@ -135,6 +135,25 @@ class BookSectionsExtensionTest extends TestCase
         $this->assertContains('podcasts', $this->anchors($book));
     }
 
+    // A book still to come keeps its recording to itself: the card and the hero's button to it would point at nothing
+    public function testARecordingAloneOpensNoSectionOnABookToCome(): void
+    {
+        $book = new Book()->setPublished(new \DateTimeImmutable('+1 year'));
+        $book->addAudio(new BookMedia()->setName('histoire.mp3'));
+
+        $this->assertNotContains('podcasts', $this->anchors($book));
+    }
+
+    // Where it will be heard is said ahead of it
+    public function testAPodcastLinkStillOpensTheSectionOnABookToCome(): void
+    {
+        $book = new Book()->setPublished(new \DateTimeImmutable('+1 year'));
+        $book->addAudio(new BookMedia()->setName('histoire.mp3'));
+        $book->addLink(new BookLink()->setKind('podcast_spotify')->setUrl('https://example.com/spotify'));
+
+        $this->assertContains('podcasts', $this->anchors($book));
+    }
+
     // A book is read in its own language, whatever the language the visitor reached it in
     public function testTheLabelsAreTranslatedInTheBooksOwnLanguage(): void
     {
@@ -190,7 +209,7 @@ class BookSectionsExtensionTest extends TestCase
     // The book's recording is listened to and downloaded in the "Listen" card, which already holds the podcast apps. It belongs to the book, its edition saying only the ISBN it comes out under (see BookEditionType)
     public function testTheRecordingIsListenedToInTheListeningCard(): void
     {
-        $book = new Book();
+        $book = new Book()->setPublished(new \DateTimeImmutable('-1 day'));
         $book->addAudio(new BookMedia()->setName('histoire.mp3'));
 
         $this->assertSame(['podcasts', 'informations'], $this->anchors($book));
