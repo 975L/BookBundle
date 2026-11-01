@@ -21,6 +21,11 @@
                 "en": "A book not yet released no longer shows its audio player or its audio downloads on its page; the podcast app links stay.",
                 "fr": "Un livre pas encore paru n'affiche plus son lecteur ni ses téléchargements audio sur sa page ; les liens vers les applications de podcast restent.",
                 "es": "Un libro aún no publicado ya no muestra su reproductor ni sus descargas de audio en su página; los enlaces a las aplicaciones de pódcast se mantienen."
+            },
+            {
+                "en": "A book not yet released no longer asks for reviews on its page: they appear once it is out.",
+                "fr": "Un livre pas encore paru ne demande plus d'avis sur sa page : ils apparaissent une fois le livre paru.",
+                "es": "Un libro aún no publicado ya no pide reseñas en su página: aparecen una vez publicado."
             }
         ]
     },

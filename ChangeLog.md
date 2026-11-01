@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.28.3
+
+No review asked for a book not out yet
+
+- `book/display.html.twig`: no reviews section until the book is published (01/11/2026)
+- `book/display.html.twig`: no reviews section for a book of a hidden serie (01/11/2026)
+
 ## v2.28.2
 
 Uploads limited to what each field takes, rich text sanitized, the listening page of an unreleased book closed

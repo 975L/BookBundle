@@ -159,7 +159,9 @@ before the flag existed reads as shown.
 
 A book with no date, or with a date still to come, is **à paraître** (`Book::isToBePublished()`, the same
 reading `findAllToBePublished()` gives the listing) and carries a link to a page where a visitor leaves an
-address — a page of its own, the sheet's html being cached per fragment where a form needs a session.
+address — a page of its own, the sheet's html being cached per fragment where a form needs a session. Its page
+shows no reviews section until then, nor does the page of a book of a hidden serie, the form that section
+folds onto answering 404 for a book `BookFavoriteItemProvider` does not name.
 
 `BookReleaseAlert` holds one row per waiting visitor: the book, the address, the locale it was taken in, a
 token and the failed sends counted on it (`attempts`), and **nothing else**. Subscribing is acknowledged at
