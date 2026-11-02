@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.28.4
+
+Corrected stale ci.sh comment
+
+- Corrected `bin/ci.sh` comment and message: vendor holds what composer.lock pins, not symlinks (02/11/2026)
+
 ## v2.28.3
 
 No review asked for a book not out yet
