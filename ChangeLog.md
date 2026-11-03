@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.28.6
+
+bin/ci.sh takes lizard's latest release, as the CI does
+
+- `bin/ci.sh`: lizard takes its latest release, as the CI does (03/11/2026)
+
 ## v2.28.5
 
 CI tests PHP 8.5 and 8.6, bin/ci.sh replays them locally
