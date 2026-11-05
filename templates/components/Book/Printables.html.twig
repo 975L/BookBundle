@@ -1,0 +1,18 @@
+{# <twig:c975LBook:Book:Printables book="{{ book }}" [section="{{ section }}"] [editUrl=""] /> #}
+{% props book, section = {}, editUrl = "" %}
+{% set section = {anchor: 'printables', label: 'label.printables'|trans({}, 'book', book_ui_locale(book.language))}|merge(section) %}
+{# Nothing to print from a book not out yet, as nothing to listen to (see Book:Podcasts) #}
+{% if not book.isToBePublished and book.printables is not empty %}
+    {% set body %}
+        {# One grid per level, in the order the site names them: a parent looks for their child's age rather than for a drawing. A site naming none gets a single grid under no heading #}
+        {% for group in book_printables_by_kind(book) %}
+            {% if group.label %}<h3 class="book-printables__level">{{ group.label }}</h3>{% endif %}
+            <div class="book-printables">
+                {% for printable in group.printables %}
+                    <twig:c975LBook:Book:Printable printable="{{ printable }}"/>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endset %}
+    {{ include('@c975LBook/book/_section.html.twig', {form: 'printables', book: book, section: section, editUrl: editUrl, body: body}) }}
+{% endif %}

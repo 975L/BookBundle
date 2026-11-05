@@ -47,6 +47,7 @@ class BookEditUrlExtensionTest extends TestCase
             'crowdfunding' => '/admin/7/crowdfunding',
             'presse' => '/admin/7/presses',
             'marketing' => '/admin/7/marketings',
+            'printables' => '/admin/7/printables',
             'informations' => '/admin/7/published',
         ], $urls);
     }

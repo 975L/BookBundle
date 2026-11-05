@@ -79,6 +79,13 @@
     --book-lead-color: var(--text);
     --book-lead-family: var(--font-family-title);
 
+    /* A document to print: the width of a thumbnail on a book's page and on the catalog block, and the sheet it is printed on, white whatever the site's theme */
+    --book-printable-min: 150px;
+    --book-printable-min-catalog: 240px;
+    --book-printable-paper: #fff;
+    --book-printable-radius: var(--block-radius-small, 6px);
+    --book-printable-shadow: var(--block-shadow-small, 0 1px 4px 0 rgba(0, 0, 0, 0.25));
+
     /* What parts a text section from its neighbours, having no frame left to do it */
     --book-text-padding-block: 0.5rem;
     --book-text-padding-block-wide: 1rem;

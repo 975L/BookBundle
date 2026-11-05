@@ -102,6 +102,10 @@
                 <source>description.guided_project_book_onix_feed</source>
                 <target>The ONIX 3.0 feed describes each edition holding an ISBN-13 — price, availability, duration, classification — to online bookshops and distributors. For the administrator: it is set in the configuration.</target>
             </trans-unit>
+            <trans-unit id="GaHpoWp">
+                <source>description.guided_project_book_printables</source>
+                <target>Colouring pages, activity sheets, patterns: drop PDFs on a book and its page offers them for printing at once.</target>
+            </trans-unit>
             <trans-unit id="qKPaJ8x">
                 <source>description.guided_project_book_reader</source>
                 <target>The reader plays the recording of an album and turns its pages along with it, at the seconds you give it.</target>
@@ -517,6 +521,26 @@
             <trans-unit id="b3IBzk8">
                 <source>description.guided_step_book_onix_feed_route</source>
                 <target>An address such as "onix.xml" serves the feed on /onix.xml. Empty, it is not served. Save.</target>
+            </trans-unit>
+            <trans-unit id="s.UyuGM">
+                <source>description.guided_step_book_printables_done</source>
+                <target>Once the book is out, a section appears on its page, right before the information, and a block can list all these books on a page of the site.</target>
+            </trans-unit>
+            <trans-unit id="EhuWwah">
+                <source>description.guided_step_book_printables_edit</source>
+                <target>Pick the book that will hold the documents.</target>
+            </trans-unit>
+            <trans-unit id="9ADdrUI">
+                <source>description.guided_step_book_printables_list</source>
+                <target>One row per document: a title, the PDF file and, if your site offers them, a level. The thumbnail comes from the PDF's first page.</target>
+            </trans-unit>
+            <trans-unit id="XhT2pVC">
+                <source>description.guided_step_book_printables_open</source>
+                <target>Documents to print are dropped on the book they come from.</target>
+            </trans-unit>
+            <trans-unit id="6aPMgWR">
+                <source>description.guided_step_book_printables_tab</source>
+                <target>The second tab, which holds the book's files.</target>
             </trans-unit>
             <trans-unit id="rjCPwF3">
                 <source>description.guided_step_book_reader_add</source>
@@ -985,6 +1009,14 @@
             <trans-unit id="ZN0TBrD">
                 <source>label.block_max_strips</source>
                 <target>Number of strips (empty = all)</target>
+            </trans-unit>
+            <trans-unit id="R1IgHIW">
+                <source>label.block_printables</source>
+                <target>Books with documents to print</target>
+            </trans-unit>
+            <trans-unit id="Gd1Ntn7">
+                <source>label.block_printables_description</source>
+                <target>Lists the published books offering documents to print, each leading to its section</target>
             </trans-unit>
             <trans-unit id="LUKicrM">
                 <source>label.block_random</source>
@@ -1726,6 +1758,10 @@
                 <source>label.guided_project_book_onix_feed</source>
                 <target>Open the catalog to bookshops (ONIX)</target>
             </trans-unit>
+            <trans-unit id="pT1QbYD">
+                <source>label.guided_project_book_printables</source>
+                <target>Offer documents to print</target>
+            </trans-unit>
             <trans-unit id="j9o3bim">
                 <source>label.guided_project_book_reader</source>
                 <target>Set up the page-turning reader</target>
@@ -2181,6 +2217,26 @@
             <trans-unit id="wGrW78y">
                 <source>label.guided_step_book_onix_feed_route</source>
                 <target>The feed address</target>
+            </trans-unit>
+            <trans-unit id="lo66gRg">
+                <source>label.guided_step_book_printables_done</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="fsw4ulY">
+                <source>label.guided_step_book_printables_edit</source>
+                <target>Edit a book</target>
+            </trans-unit>
+            <trans-unit id="wWx6YW7">
+                <source>label.guided_step_book_printables_list</source>
+                <target>Add your PDFs</target>
+            </trans-unit>
+            <trans-unit id="IJR7QyX">
+                <source>label.guided_step_book_printables_open</source>
+                <target>Open the list of books</target>
+            </trans-unit>
+            <trans-unit id="9s_P1GA">
+                <source>label.guided_step_book_printables_tab</source>
+                <target>Open the "Page" tab</target>
             </trans-unit>
             <trans-unit id="yilasXR">
                 <source>label.guided_step_book_reader_add</source>
@@ -2745,6 +2801,22 @@
             <trans-unit id="._9LubL">
                 <source>label.previous_version_suffix</source>
                 <target> — previous version</target>
+            </trans-unit>
+            <trans-unit id="RhmJhza">
+                <source>label.printable</source>
+                <target>Document to print (PDF)</target>
+            </trans-unit>
+            <trans-unit id="ytPF5.m">
+                <source>label.printable_kind</source>
+                <target>Level</target>
+            </trans-unit>
+            <trans-unit id="buEZzM2">
+                <source>label.printables</source>
+                <target>To print</target>
+            </trans-unit>
+            <trans-unit id="oELlJcB">
+                <source>label.printables-intro</source>
+                <target>Documents from this book, free to print at home.</target>
             </trans-unit>
             <trans-unit id="JNo2Slc">
                 <source>label.published</source>

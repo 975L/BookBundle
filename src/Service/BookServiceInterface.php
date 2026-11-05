@@ -68,6 +68,10 @@ interface BookServiceInterface
      */
     public function findAllToBePublished(): array;
 
+    // Finds the published books holding a document to print.
+    /** @return Book[] */
+    public function findAllWithPrintables(): array;
+
     // Matches published books on their title only.
     /** @return Book[] empty for an empty search */
     public function search(string $query, ?int $serieId = null): array;

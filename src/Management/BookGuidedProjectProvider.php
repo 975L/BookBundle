@@ -51,6 +51,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->indexProject(),
             $this->bookCreationProject(),
             $this->mediaMoveProject(),
+            $this->bookPrintablesProject(),
             $this->bookCompositionProject(),
             $this->bookListenProject(),
             $this->bookVideoProject(),
@@ -526,6 +527,50 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_composition_done',
                     'description' => 'description.guided_step_book_composition_done',
                     'narration' => 'narration.guided_step_book_composition_done',
+                ],
+            ],
+        ];
+    }
+
+    // A book's documents to print, a gesture of its own and not one more file: they open a section of the page and feed the catalog block
+    private function bookPrintablesProject(): array
+    {
+        return [
+            'slug' => 'book-printables',
+            'label' => 'label.guided_project_book_printables',
+            'description' => 'description.guided_project_book_printables',
+            'translation_domain' => 'book',
+            'order' => 6026,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_printables_open',
+                    'description' => 'description.guided_step_book_printables_open',
+                    'narration' => 'narration.guided_step_book_printables_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_printables_edit',
+                    'description' => 'description.guided_step_book_printables_edit',
+                    'narration' => 'narration.guided_step_book_printables_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    'label' => 'label.guided_step_book_printables_tab',
+                    'description' => 'description.guided_step_book_printables_tab',
+                    'narration' => 'narration.guided_step_book_printables_tab',
+                    'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
+                ],
+                [
+                    'label' => 'label.guided_step_book_printables_list',
+                    'description' => 'description.guided_step_book_printables_list',
+                    'narration' => 'narration.guided_step_book_printables_list',
+                    'highlight' => '[data-book-printables]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_printables_done',
+                    'description' => 'description.guided_step_book_printables_done',
+                    'narration' => 'narration.guided_step_book_printables_done',
                 ],
             ],
         ];

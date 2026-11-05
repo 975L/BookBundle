@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Management;
 use c975L\BookBundle\Controller\Management\BookCrudController;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookPresse;
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Repository\MediaRepository;
 use c975L\UiBundle\Contract\PdfDocumentSourceInterface;
 use c975L\UiBundle\Contract\VichPrivateFileInterface;
@@ -26,6 +27,7 @@ class BookPdfDocumentSource implements PdfDocumentSourceInterface
     private const array FIELDS = [
         BookPresse::class => 'presses',
         BookMarketing::class => 'marketings',
+        BookPrintable::class => 'printables',
     ];
 
     public function __construct(

@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints\File;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
-// The file field of the four collections whose rows hold anything - an image, a PDF, a recording, a video (BookMediaType, BookMarketingType, BookPresseType, BookVideoType). An image is asked for as VichImageType so the row shows the thumbnail EasyAdmin's widget renders for it, and so UiBundle's media-preview.js finds the ".ea-vich-image" wrapper it hangs the preview of a freshly picked file on; anything else stays a plain file field. Serie and Strip name VichImageType directly, their rows only ever being images
+// The file field of the collections whose rows hold anything - an image, a PDF, a recording, a video (BookMediaType, BookMarketingType, BookPresseType, BookVideoType), and of the one narrowing that to a PDF on its own row (BookPrintable). An image is asked for as VichImageType so the row shows the thumbnail EasyAdmin's widget renders for it, and so UiBundle's media-preview.js finds the ".ea-vich-image" wrapper it hangs the preview of a freshly picked file on; anything else stays a plain file field. Serie and Strip name VichImageType directly, their rows only ever being images
 trait MediaFileFieldTrait
 {
     // The row's id, hidden and unmapped: this is what UiBundle's ea-sortable.js reads ([name$="[id]"]) to post the move of a row from one collection to another. Without it the drag lands and the drop puts the row back, nothing saying what to move

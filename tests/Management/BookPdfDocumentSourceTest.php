@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Management\BookPdfDocumentSource;
 use c975L\BookBundle\Repository\MediaRepository;
@@ -35,6 +36,16 @@ class BookPdfDocumentSourceTest extends TestCase
         $this->assertSame('medias/book/presse/contes-du-soir/dossier-de-presse-68d1.pdf', $documents[0]['filename']);
         $this->assertSame('Dossier de presse', $documents[0]['label']);
         $this->assertSame('BookCrudController/4/presses', $documents[0]['editUrl']);
+    }
+
+    // A document to print is edited in its own collection, which is where the dashboard's pencil has to open
+    public function testADocumentToPrintLeadsToItsOwnCollection(): void
+    {
+        $book = $this->createStub(Book::class);
+        $book->method('getId')->willReturn(4);
+        $media = new BookPrintable()->setName('medias/book/printables/contes-du-soir/page-68d1.pdf')->setBook($book);
+
+        $this->assertSame('BookCrudController/4/printables', $this->source([$media])->getPdfDocuments()[0]['editUrl']);
     }
 
     // A document uploaded without a title still has to name itself on the dashboard, and its own file name is the only thing left to name it by

@@ -42,6 +42,7 @@ class BookEditUrlExtension
         'crowdfunding' => 'crowdfunding',
         'presse' => 'presses',
         'marketing' => 'marketings',
+        'printables' => 'printables',
         'informations' => 'published',
     ];
 

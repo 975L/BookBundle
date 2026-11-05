@@ -163,13 +163,52 @@ $book-bp-row-3: 1025px;
     width: 100%;
 }
 
+// PRINTABLES - documents to print, on the same picture grid as a shelf of covers but wider: a landscape page reads at a card's width where a cover reads at a thumbnail's
+.book-printables {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--book-printable-min)), 1fr));
+    gap: var(--card-grid-gap, 12px);
+}
+
+.book-printables--catalog {
+    --book-printable-min: var(--book-printable-min-catalog);
+}
+
+.book-printables__level {
+    margin-block: 1em 0.5em;
+}
+
+.book-printable {
+    display: block;
+    min-width: 0;
+}
+
+.book-printable figure {
+    margin: 0;
+}
+
+// A white sheet stays white whatever the site's theme: it is what comes out of the printer
+.book-printable img {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--book-printable-paper);
+    border-radius: var(--book-printable-radius);
+    box-shadow: var(--book-printable-shadow);
+}
+
+.book-printable figcaption {
+    margin-block-start: 0.4em;
+    text-align: center;
+}
+
 // The people a catalog credits are the exception: they are a handful and not a shelf, so three portraits laid in the columns of a wide grid read as a listing that failed to fill (see Contributor:Contributors). They keep the flex row, which centers what it holds
 .book-cards--centered {
     display: flex;
     justify-content: center;
 }
 
-/* LISTING BLOCKS - the section a "book_series", "book_books", "book_contributors", "book_to_be_published" or "book_serie_strips" block draws around its grid, under the head its editor typed (see templates/components/Listing/Section.html.twig) */
+/* LISTING BLOCKS - the section a "book_series", "book_books", "book_contributors", "book_to_be_published", "book_printables" or "book_serie_strips" block draws around its grid, under the head its editor typed (see templates/components/Listing/Section.html.twig) */
 
 // Cancels SiteBundle's page-wide "section { margin: 1em auto }", which parts two flats meant to touch. Vertical only: the shorthand's "0" would also drop the horizontal "auto" a centered section reads, and beat the negative margins a colored flat breaks out of the measure with. Same rule, same reason, as UiBundle's own page sections (sass/_page-sections.scss), which names the kinds that bundle ships and cannot name this one's
 main :is(.blocks, .block-animation, .block-editable) > .book-listing {

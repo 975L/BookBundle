@@ -446,6 +446,26 @@
                 <source>narration.guided_step_book_onix_feed_route</source>
                 <target>Tapez une adresse, par exemple onix point xml : le flux sera servi à cette adresse du site. Laissée vide, il n'existe pas. Puis enregistrez.</target>
             </trans-unit>
+            <trans-unit id="B3pGNKa">
+                <source>narration.guided_step_book_printables_done</source>
+                <target>Enregistrez : une fois le livre paru, une section apparaît sur sa page, juste avant les informations.</target>
+            </trans-unit>
+            <trans-unit id="QStbWB3">
+                <source>narration.guided_step_book_printables_edit</source>
+                <target>Modifiez le livre qui recevra les documents.</target>
+            </trans-unit>
+            <trans-unit id="TVxwTVM">
+                <source>narration.guided_step_book_printables_list</source>
+                <target>Ajoutez une ligne par document : un titre, le fichier PDF et, si votre site en propose, un niveau. La vignette est tirée de la première page du PDF.</target>
+            </trans-unit>
+            <trans-unit id="O3mhk2L">
+                <source>narration.guided_step_book_printables_open</source>
+                <target>Ouvrez la liste des livres : les documents à imprimer se déposent sur le livre dont ils sont tirés.</target>
+            </trans-unit>
+            <trans-unit id="Laj1ylv">
+                <source>narration.guided_step_book_printables_tab</source>
+                <target>Ouvrez l'onglet « Page », celui qui porte les fichiers du livre.</target>
+            </trans-unit>
             <trans-unit id="rSlOmZ3">
                 <source>narration.guided_step_book_reader_add</source>
                 <target>Ajoutez un block. Une nouvelle ligne ouvre d'elle-même la palette des types.</target>

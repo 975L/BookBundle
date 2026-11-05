@@ -42,6 +42,7 @@ class HeroMarkupTest extends TestCase
 
         $this->assertStringContainsString("'presse'", $hero);
         $this->assertStringContainsString("'marketing'", $hero);
+        $this->assertStringContainsString("'printables'", $hero);
     }
 
     // Buy keeps the full color and every other gesture is stated quietly, whatever its place in the row - the primary button no longer being the last one written

@@ -101,7 +101,7 @@ templates, which render `Book:Hero`, `Serie:Hero` or `Strip:Hero` inside the con
 **The summary is no section.** It is the sentence the page opens on, printed by `Book:Resume` /
 `Serie:Resume` under the hero and outside the sections grid, with no title and no anchor. Neither a book's
 page nor a serie's carries a summary of anchors any more: the hero's row of buttons opens what a reader
-looks for — `pages`, `podcasts`, `apercu`, `shops`, `presse`, `marketing`, in the order the page lays
+looks for — `pages`, `podcasts`, `apercu`, `shops`, `presse`, `marketing`, `printables`, in the order the page lays
 them out, and only those it actually holds —
 and the page keeps its whole width. `sass/_book.scss` opens the two-column layout on
 `.book-page:has(> .book-page__toc)` alone — a page with no toc that grows one gets two columns back.
@@ -110,7 +110,7 @@ and the page keeps its whole width. `sass/_book.scss` opens the two-column layou
 
 | Owner | Keys, in the bundle's order |
 | --- | --- |
-| a book | `pages`, `podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `informations` |
+| a book | `pages`, `podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `printables`, `informations` |
 | a serie | `characters`, `books`, `strips` |
 
 A section is present only when the book actually holds something for it, `informations` excepted — a book
@@ -154,6 +154,7 @@ They all live in `templates/components/` and are overridden in
 | `<twig:c975LBook:Book:Podcasts>` | one card for everything the book is listened to by, plus a link to `book_listen` when the book carries timecodes and pages. While `isToBePublished()`: the podcast apps alone, no player and no download, and the section goes when no link is left |
 | `<twig:c975LBook:Book:Videos>` | one card for everything it is watched by |
 | `<twig:c975LBook:Book:Shops>` | the bookshops, the site's own shop first and in the site colour — titled "Get it free" rather than "Buy" when `Book::isFree()` (a digital edition whose public price is 0) |
+| `<twig:c975LBook:Book:Printables>` | the documents to print, one grid per level (`book_printables_by_kind()`), each `Book:Printable` a thumbnail cut from the PDF and its download — the section right before the informations, absent from a book holding none or still `isToBePublished()` |
 | `<twig:c975LBook:Book:Informations>` | the framed civil status — author, illustrator, everyone else the book credits, serie, editions, languages, versions |
 | `<twig:c975LBook:Book:Card>` | a book in a listing: cover in portrait, summary, language — `:compact="true"` prints it at a thumbnail's width, without its summary |
 | `<twig:c975LBook:Contributor:Hero>` | a person's opening — portrait, backdrop, name, what they are credited under (`Contributor::getRoles()`, which counts only what the catalog still shows), the sentences they are introduced with |
@@ -341,8 +342,8 @@ already resolved, the hidden serie and the missing index included. A trail of on
 
 ## The catalog blocks and their cache
 
-The six kinds putting a selection of the catalog on a page — `book_series`, `book_categories`, `book_books`,
-`book_to_be_published`, `book_serie_strips`, `book_contributors` — resolve their content live through
+The seven kinds putting a selection of the catalog on a page — `book_series`, `book_categories`, `book_books`,
+`book_to_be_published`, `book_printables`, `book_serie_strips`, `book_contributors` — resolve their content live through
 `book_block_*()` (`BookBlockExtension`), on rows UiBundle's `BlockCacheInvalidationListener` does not watch:
 it only ever drops the Block that was edited. They are cached all the same, `Service\BookBlockCacheTagProvider`
 putting `BookBlockCacheInvalidator::CACHE_TAG_CATALOG` on their entry and `Listener\BookCacheInvalidationListener`
@@ -351,7 +352,9 @@ The same tag rides on the menu entries `Management\LinkableRouteProvider` expose
 and on each card of the `book.collection.books` sources (`BookCollectionSourceProvider`, no tag while a book is
 dated ahead); a `book-route-*` setting saved drops it too, a family of pages turned on or off changing those entries.
 
-`book_books` and `book_to_be_published` read `published <= now`, and `book_serie_strips` the same on a planche.
+`book_printables` lists the published books holding a document to print, through `book_block_printables()` and under that same tag; each leads to the section at `book_section_anchor('printables', book.language)`, the anchor as the site named it.
+
+`book_books`, `book_printables` and `book_to_be_published` read `published <= now`, and `book_serie_strips` the same on a planche.
 Their resolver therefore answers `null` — render live, store nothing — for as long as
 `BookRepository::hasScheduled()` or `StripRepository::hasScheduled()` says something is dated ahead: an entry
 never expires, and nothing is saved the day that date comes round. Both answers are read once per request and
@@ -372,7 +375,7 @@ hand, so its entry goes stale on a Block event alone and it needs no resolver at
 `slider` through the slider's own dots, the two staying independent; its pages crossfade rather than slide
 (`.book-reader` overriding the slider's `animation-name`), with no animation under `prefers-reduced-motion`.
 
-The six listing kinds each carry their own head: anchor, eyebrow, title, paragraph, colored flat and a link
+The seven listing kinds each carry their own head: anchor, eyebrow, title, paragraph, colored flat and a link
 closing it (`linkLabel` and `linkUrl`, both needed), shared through
 `Form\Block\AbstractBookListingBlockType` and drawn by the `Listing:Section` component, which wraps the grid
 in `.book-listing` and includes UiBundle's `Section/_head.html.twig`. Do not compose a listing by placing a

@@ -132,6 +132,11 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $marketings;
 
+    #[Assert\Valid]
+    #[ORM\OneToMany(targetEntity: BookPrintable::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
+    private Collection $printables;
+
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $language = null;
 
@@ -173,6 +178,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         $this->videos = new ArrayCollection();
         $this->presses = new ArrayCollection();
         $this->marketings = new ArrayCollection();
+        $this->printables = new ArrayCollection();
         $this->translations = new ArrayCollection();
     }
 
@@ -854,6 +860,31 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
             if ($marketing->getBook() === $this) {
                 $marketing->setBook(null);
             }
+        }
+
+        return $this;
+    }
+
+    /** @return Collection<int, BookPrintable> */
+    public function getPrintables(): Collection
+    {
+        return $this->printables;
+    }
+
+    public function addPrintable(BookPrintable $printable): static
+    {
+        if (!$this->printables->contains($printable)) {
+            $this->printables->add($printable);
+            $printable->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrintable(BookPrintable $printable): static
+    {
+        if ($this->printables->removeElement($printable) && $printable->getBook() === $this) {
+            $printable->setBook(null);
         }
 
         return $this;

@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\Contributor;
@@ -137,6 +138,19 @@ class BookDuplicatorTest extends TestCase
         $this->assertSame('9791234567890', $copy->getEditions()->first()->getIsbn());
         $this->assertSame(48, $copy->getEditions()->first()->getPages());
         $this->assertSame('BD', $copy->getEditions()->first()->getFormat());
+    }
+
+    // A document to print is a file of the book like the others, its level going with it
+    public function testTheCopyOfABookCarriesItsDocumentsToPrint(): void
+    {
+        $book = $this->book();
+        $book->addPrintable(new BookPrintable()->setKind('small')->setTitle('La page'));
+
+        $printables = $this->duplicator->duplicateBook($book)->getPrintables();
+
+        $this->assertCount(1, $printables);
+        $this->assertSame('small', $printables->first()->getKind());
+        $this->assertSame('La page', $printables->first()->getTitle());
     }
 
     // A person is copied with where their books are bought, the row being theirs and not a book's (see ContributorLink)

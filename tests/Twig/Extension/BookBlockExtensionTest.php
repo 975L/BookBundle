@@ -23,7 +23,7 @@ use c975L\BookBundle\Service\StripServiceInterface;
 use c975L\BookBundle\Twig\Extension\BookBlockExtension;
 use PHPUnit\Framework\TestCase;
 
-// What the six catalog block kinds put on a page, resolved live at render rather than stored in the block's data
+// What the seven catalog block kinds put on a page, resolved live at render rather than stored in the block's data
 class BookBlockExtensionTest extends TestCase
 {
     /** @return list<Book> */
@@ -114,6 +114,15 @@ class BookBlockExtensionTest extends TestCase
         $contributorService->expects($this->once())->method('findCredited')->willReturn([new Contributor(), new Contributor(), new Contributor()]);
 
         $this->assertCount(2, $this->extension(contributorService: $contributorService)->getContributors(2));
+    }
+
+    // The books holding a document to print are read whole and cut afterwards, as the people are
+    public function testTheBooksToPrintFromAreReadWholeAndCutAfterwards(): void
+    {
+        $bookService = $this->createMock(BookServiceInterface::class);
+        $bookService->expects($this->once())->method('findAllWithPrintables')->willReturn($this->books(3));
+
+        $this->assertCount(2, $this->extension($bookService)->getPrintables(2));
     }
 
     // No maximum means the whole list, a block left blank printing everything the catalog holds

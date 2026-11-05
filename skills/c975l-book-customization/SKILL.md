@@ -16,7 +16,7 @@ description: "Use this skill when a single site has to bend the c975L BookBundle
 
 ## The vocabulary contract
 
-One class in the app, tagged `book.customization_provider`, answering the five methods. **Every one of them
+One class in the app, tagged `book.customization_provider`, answering the methods below. **Every one of them
 may answer an empty array**, which falls back to the bundle's own defaults — a site declares only what it
 actually renames.
 
@@ -31,7 +31,8 @@ class CatalogCustomization implements BookCustomizationProviderInterface
     {
         return ['epub_local' => ['label' => 'La librairie du coin', 'group' => 'epub', 'icon' => 'images/coin.svg']];
     }
-    public function getSections(): array     { return ['informations' => ['label' => 'Fiche technique'], 'shops' => []]; }
+    public function getPrintableKinds(): array { return ['beginner' => 'Débutants', 'advanced' => 'Confirmés']; }
+    public function getSections(): array     { return ['informations' => ['label' => 'Fiche technique'], 'printables' => ['label' => 'Activités'], 'shops' => []]; }
     public function getDataFormType(): ?string { return CatalogBookDataType::class; }
 }
 ```
@@ -42,6 +43,7 @@ class CatalogCustomization implements BookCustomizationProviderInterface
 | `getEditionKinds()` | `BookEditionKind` | `kind => label` |
 | `getContributorRoles()` | `BookContributorRole` | `role => label` |
 | `getLinkKinds()` | `BookLinkKind` | `kind => ['label', 'group', 'icon']` |
+| `getPrintableKinds()` | no level asked, one grid under no heading | `kind => label` |
 | `getSections()` | the bundle's own page | `key => ['anchor', 'label', 'domain', 'icon', 'animation', 'template', 'form', 'field', 'cache']` |
 | `getDataFormType()` | no extra fields | a form class mapped on `Book::$data` |
 

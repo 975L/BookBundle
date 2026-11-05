@@ -294,6 +294,19 @@ class BookRepository extends ServiceEntityRepository
         return $this->withCovers($books);
     }
 
+    // What the "book_printables" block lists: the books a reader can print something from, each with its documents joined so that the block reads the first one's thumbnail without a query per book
+    /** @return Book[] */
+    public function findAllWithPrintables(): array
+    {
+        return $this->publishedQueryBuilder()
+            ->innerJoin('b.printables', 'printable')
+            ->addSelect('printable')
+            ->addOrderBy('b.id', \SortDirection::Descending)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // What the ONIX feed announces: every current book holding an edition with an ISBN, the dated ones still to come included - a store takes preorders - and those with no date left out, being announced for no day at all. Editions, categories and medias joined in one query, the feed reading them all
     /** @return Book[] */
     public function findAllForOnix(): array

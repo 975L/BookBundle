@@ -14,6 +14,10 @@
                 <source>label.media_without_file</source>
                 <target>Esta entrada no lleva ningún archivo, añada uno o elimine la fila</target>
             </trans-unit>
+            <trans-unit id="PcOHM_7">
+                <source>label.printable_not_pdf</source>
+                <target>Este documento debe ser un archivo PDF</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

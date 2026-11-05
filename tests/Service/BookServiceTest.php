@@ -112,10 +112,12 @@ class BookServiceTest extends TestCase
         $online = $this->books(2, 'en-ligne');
         $toBePublished = $this->books(1, 'a-paraitre');
         $found = $this->books(1, 'trouve');
+        $withPrintables = $this->books(1, 'a-imprimer');
 
         $repository = $this->createStub(BookRepository::class);
         $repository->method('findAllOnline')->willReturn($online);
         $repository->method('findAllToBePublished')->willReturn($toBePublished);
+        $repository->method('findAllWithPrintables')->willReturn($withPrintables);
         $repository->method('search')->willReturn($found);
         $repository->method('countPublished')->willReturn(17);
         $repository->method('findLanguages')->willReturn(['fr', 'en']);
@@ -124,6 +126,7 @@ class BookServiceTest extends TestCase
 
         $this->assertSame($online, $service->findAllOnline());
         $this->assertSame($toBePublished, $service->findAllToBePublished());
+        $this->assertSame($withPrintables, $service->findAllWithPrintables());
         $this->assertSame($found, $service->search('fil'));
         $this->assertSame(17, $service->countPublished());
         $this->assertSame(['fr', 'en'], $service->findLanguages());

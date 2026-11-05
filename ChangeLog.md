@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.29.0
+
+Documents to print on a book's page, and the block listing their books
+
+- [BC-Break] `BookCustomizationProviderInterface::getPrintableKinds()`: the levels a site files its documents to print under (05/11/2026)
+- [BC-Break] `BookServiceInterface::findAllWithPrintables()`: the published books holding a document to print (05/11/2026)
+- `BookPrintable`: a PDF to print, with a title and a level, its thumbnail cut from its first page (05/11/2026)
+- `Book:Printables`, `Book:Printable`: the `printables` section of a book's page, right before the informations (05/11/2026)
+- `Book:Hero`: a button to the `printables` section (05/11/2026)
+- No `printables` section while `isToBePublished()` (05/11/2026)
+- `BookCrudController`: the book's "To print" collection, and its titles on the language screen (05/11/2026)
+- `book_printables` block: the published books holding a document to print, each leading to its section (05/11/2026)
+- `book_printables_by_kind()`, `book_section_anchor()`: the documents by level, a section's anchor as the site named it (05/11/2026)
+- Duplication, export and import carry a book's documents to print (05/11/2026)
+- Guided project `book-printables` (05/11/2026)
+
 ## v2.28.7
 
 Silent hosts asked once more by the link health check

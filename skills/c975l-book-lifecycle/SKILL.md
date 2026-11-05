@@ -63,7 +63,7 @@ Three rules `BookVersionPublisher` exists to enforce, to be honoured by anything
 `BookDuplicator::duplicateBook()`, `duplicateSerie()`, `duplicateStrip()`, `duplicateContributor()` and
 `duplicateCategory()` sit
 behind the **Dupliquer** action of each index and edit screen. A book brings its editions, its files, its
-platform links, its press, its videos, its marketing and its blocks; a serie brings its covers, its logos
+platform links, its press, its videos, its marketing, its documents to print and its blocks; a serie brings its covers, its logos
 and its blocks and **leaves its books and its planches with the original**; a planche brings its plates and
 its blocks; a person brings their portrait, their backdrop and their blocks and **leaves what they signed
 credited to the original** — a copy is a new person the editor then names, never a second author of the
@@ -284,7 +284,7 @@ seen side by side, and two cards sharing a photograph read as a bug. A cover is 
 ## The files the rows declare
 
 `BookFilesHealthCheckProvider` (kind `files-book`) reports every file a row of this bundle names and the
-server no longer holds — a book's covers, videos, press and marketing files, plus a serie's, a strip's and a
+server no longer holds — a book's covers, videos, press, marketing and to-print files, plus a serie's, a strip's and a
 contributor's own pictures. Everything it does is CoreBundle's `AbstractDeclaredFilesHealthCheckProvider`;
 this only names the rows, `MediaRepository::findWithFilename()` walking the media table whatever the owner.
 

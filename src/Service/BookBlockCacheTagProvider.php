@@ -23,6 +23,7 @@ class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, Reset
     private const array BOOK_KINDS = [
         'book_books',
         'book_to_be_published',
+        'book_printables',
     ];
 
     // The kinds reading no date at all: a serie is listed whatever the hour, a category as long as it holds a book the site shows, a person as long as they are credited on something (see BookCategoryRepository::findWithBooks and ContributorRepository::findCredited). Their entry only ever goes stale on a row being saved, which the tag covers - the draw at random set aside, see resolveCatalog()

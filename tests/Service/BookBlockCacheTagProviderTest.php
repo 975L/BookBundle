@@ -26,7 +26,7 @@ class BookBlockCacheTagProviderTest extends TestCase
         $resolvers = $this->resolvers();
 
         $this->assertSame(
-            ['book_series', 'book_categories', 'book_contributors', 'book_books', 'book_to_be_published', 'book_serie_strips'],
+            ['book_series', 'book_categories', 'book_contributors', 'book_books', 'book_to_be_published', 'book_printables', 'book_serie_strips'],
             array_keys($resolvers)
         );
         $this->assertArrayNotHasKey('book_reader', $resolvers);
@@ -57,7 +57,7 @@ class BookBlockCacheTagProviderTest extends TestCase
     {
         $resolvers = $this->resolvers();
 
-        foreach (['book_books', 'book_to_be_published'] as $kind) {
+        foreach (['book_books', 'book_to_be_published', 'book_printables'] as $kind) {
             $this->assertSame([BookBlockCacheInvalidator::CACHE_TAG_CATALOG], $resolvers[$kind](new Block()), $kind);
         }
     }
@@ -67,7 +67,7 @@ class BookBlockCacheTagProviderTest extends TestCase
     {
         $resolvers = $this->resolvers(true);
 
-        foreach (['book_books', 'book_to_be_published'] as $kind) {
+        foreach (['book_books', 'book_to_be_published', 'book_printables'] as $kind) {
             $this->assertNull($resolvers[$kind](new Block()), $kind);
         }
 

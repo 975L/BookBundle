@@ -136,8 +136,8 @@ class BookController extends AbstractController
             return $this->negotiator->vary($request, $askedLanguage);
         }
 
-        // The book, the serie it belongs to, the categories it is filed under and the titles printed under its press cuttings and promotional visuals: all of them are read on this page, and all of them carry words of their own
-        $this->bookTranslator->apply([$book, ...(null === $book->getSerie() ? [] : [$book->getSerie()]), ...$book->getShownCategories(), ...$book->getPresses(), ...$book->getMarketings()]);
+        // The book, the serie it belongs to, the categories it is filed under and the titles printed under its press cuttings, promotional visuals and documents to print: all of them are read on this page, and all of them carry words of their own
+        $this->bookTranslator->apply([$book, ...(null === $book->getSerie() ? [] : [$book->getSerie()]), ...$book->getShownCategories(), ...$book->getPresses(), ...$book->getMarketings(), ...$book->getPrintables()]);
 
         return $this->negotiator->vary($request, $this->render(
             '@c975LBook/book/display.html.twig',

@@ -125,7 +125,7 @@ class MediaTest extends TestCase
     public function testEveryCollectionOfMediasIsCascadedInto(): void
     {
         $owners = [
-            Book::class => ['medias', 'videos', 'presses', 'marketings'],
+            Book::class => ['medias', 'videos', 'presses', 'marketings', 'printables'],
             Serie::class => ['medias'],
             Strip::class => ['medias'],
             Contributor::class => ['medias'],

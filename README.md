@@ -27,7 +27,7 @@ Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to
 ## Features
 
 - Book and series catalog with detail views and listings growing as the visitor scrolls
-- Each book supports media, video, press, and marketing sub-collections with drag-and-drop ordering
+- Each book supports media, video, press, marketing and documents-to-print sub-collections with drag-and-drop ordering
 - Series group books with sorted ordering
 - What a book is about said apart from what it belongs to: flat categories, as many on a book as it deserves, with a page of their own where the site wants one and read as plain keywords where it doesn't
 - The catalog read in every language the site declares: a book, a serie, a category, a planche, a character and a person translated on a language screen of their own row, every public page answering at `/{_locale}/…` as well — a planche only in the languages it was written in
@@ -296,12 +296,12 @@ A book's and a serie's sections are named once, by `book_sections(book)` and `se
 (`Twig\BookSectionsExtension`), and the page reads that list twice: once by the hero, which offers the
 sections a reader comes for, once to decide what to render. A section is therefore never offered by a
 button without being on the page, nor rendered without an anchor pointing at it — `pages`,
-`podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `informations` for a book,
+`podcasts`, `apercu`, `crowdfunding`, `shops`, `presse`, `marketing`, `printables`, `informations` for a book,
 `characters`, `books` and `strips` for a serie. Each section wears UiBundle's `toc-target`, which leaves the room a resting
 summary bar would cover, so a jump doesn't land a title under it.
 
 No page of this bundle carries a summary of anchors: the hero's own row of buttons opens what a reader
-looks for — `pages`, `podcasts`, `apercu`, `shops`, `presse` and `marketing`, in the order the page
+looks for — `pages`, `podcasts`, `apercu`, `shops`, `presse`, `marketing` and `printables`, in the order the page
 lays them out and only those it actually holds — and the bar overflowed on a phone where that row wraps.
 Buy keeps the full color, every other button is stated quietly, and the labels come from the `book`
 translation domain, in the language being read — the book's own where none is (`book_ui_locale()`). The page therefore keeps its
@@ -471,7 +471,7 @@ INSERT INTO book_edition (book_id, kind, isbn, position)
 The index and the edit screen of each of the three carry a **Dupliquer** action (`site-role-editor`, same
 role as editing): it copies the row with everything hanging off it, saves it and opens the copy for editing
 straight away. A book brings along its editions, its files, its platform links, its press, its videos, its
-marketing and its blocks — each file and each link copied exactly once. It **leaves the versions behind**:
+marketing, its documents to print and its blocks — each file and each link copied exactly once. It **leaves the versions behind**:
 a duplicate is a new book the editor then qualifies, where chaining one book behind another is the
 versions gesture's own doing. A serie brings its covers, its logos and its blocks, and **leaves its books and its
 strips with the original**: they belong to the serie they were published in, and duplicating one is its own
@@ -674,6 +674,12 @@ class BookCustomizationProvider implements BookCustomizationProviderInterface
         return ['narrator' => 'label.role_narrator', 'colourist' => 'Coloriste'];
     }
 
+    // The levels this site files its documents to print under, printed as headings in this order - none declared asks for no level and prints one grid
+    public function getPrintableKinds(): array
+    {
+        return ['beginner' => 'Débutants', 'advanced' => 'Confirmés'];
+    }
+
     // How this site lays out a book's page: the order, the words, the look, and what it adds inside a card
     public function getSections(): array
     {
@@ -702,7 +708,7 @@ class BookCustomizationProvider implements BookCustomizationProviderInterface
 
 `getSections()` is what lets a site follow the bundle's page rather than draw its own. The keys are the
 sections themselves — `resume`, `apercu`, `pages`, `edition` (which dresses every edition's section at
-once), `shops`, `podcasts`, `presse`, `marketing`, `serie`, `informations` — and **the order of the array is
+once), `shops`, `podcasts`, `presse`, `marketing`, `printables`, `serie`, `informations` — and **the order of the array is
 the order of the page**, a key left out coming after the declared ones, where the bundle puts it. A site
 declaring nothing gets exactly the page it always had.
 
@@ -835,19 +841,19 @@ php bin/console doctrine:migrations:migrate
 
 One tile per kind, captured on the showcase at [bundles.975l.com](https://bundles.975l.com/pages/blocks/Book) - a kind with several variants shows only its first one, and a kind with no example there has no tile. Colors are the showcase's own theme, not what a site with its own theme renders.
 
-The bundle also ships block kinds of its own. Six put a selection of the catalog on any page of the site — `book_series`, `book_categories`, `book_books`, `book_to_be_published`, `book_serie_strips` and `book_contributors`, which prints the people the catalog credits, each leading to their own page. `book_books` also takes a category slug, so a page prints "our novels" without a listing of its own, and says whether a phone scrolls its covers sideways as one rail rather than stacking the grid — past the phone both are that same grid. `book_serie_strips` names one serie or several, separated by commas, the maximum then applying to each of them, so one block shows as many planches of one serie as of the other. Set to UiBundle's `compact` variant, they print a book at a thumbnail's width, with its cover, its title and its language and without its summary.
+The bundle also ships block kinds of its own. Seven put a selection of the catalog on any page of the site — `book_series`, `book_categories`, `book_books`, `book_to_be_published`, `book_serie_strips`, `book_printables` (see [Documents to print](#documents-to-print)) and `book_contributors`, which prints the people the catalog credits, each leading to their own page. `book_books` also takes a category slug, so a page prints "our novels" without a listing of its own, and says whether a phone scrolls its covers sideways as one rail rather than stacking the grid — past the phone both are that same grid. `book_serie_strips` names one serie or several, separated by commas, the maximum then applying to each of them, so one block shows as many planches of one serie as of the other. Set to UiBundle's `compact` variant, they print a book at a thumbnail's width, with its cover, its title and its language and without its summary.
 
 `book_series` also takes the series to show, named by slug and separated by commas — left empty, the whole catalog, which is what a block composed before that field existed shows. Named, they are drawn in the order they were typed and not the catalog's, every serie of a site commonly sitting at position 0. A slug naming no serie is left out rather than widening the row, so a typo shows. That block also says how each serie is drawn: the card the listing has always printed — the cover with its title under it — a tile the cover fills whole with the text laid over its foot, or a square vignette. The card writes the serie's language out under its title; the tile and the vignette carry the cover alone.
 
-Each of the six listing kinds carries its own head: an anchor, an eyebrow, a title, a paragraph written in the rich text editor and a colored flat, the very fields a `text_section` offers (`AbstractBookListingBlockType`, drawn by the `Listing:Section` component). Written on the listing itself rather than in a text block placed above it: the two were one section on the page and two rows in the back office, and the pair had to be moved, hidden and translated together. Left empty, the listing renders as a bare grid of covers, which is what a page composed before those fields existed shows.
+Each of the seven listing kinds carries its own head: an anchor, an eyebrow, a title, a paragraph written in the rich text editor and a colored flat, the very fields a `text_section` offers (`AbstractBookListingBlockType`, drawn by the `Listing:Section` component). Written on the listing itself rather than in a text block placed above it: the two were one section on the page and two rows in the back office, and the pair had to be moved, hidden and translated together. Left empty, the listing renders as a bare grid of covers, which is what a page composed before those fields existed shows.
 
 Each may also close its head on a link — a label and an address, both needed — laid against the far edge of the title's own line. That is where a listing showing a cut of a catalog points at the whole of it, `displayMore` closing the grid with a card instead: a listing offers either, never both.
 
 They also take how many rows to keep and whether to draw them at random — the whole catalog is shuffled before the maximum applies, so "four books at random" draws from the shelf and not from its first four.
 
-Those six resolve their content at render time, on rows no Block event ever signals a change of, and are cached all the same: their entry carries a catalog tag dropped whenever a book, a serie, a planche, a contributor or one of their medias is saved. The two listing books and the one listing planches decline their entry — rendered live, stored nothing — for as long as something is dated ahead: an entry never expires, and nothing is saved the day a publication date comes round. A listing drawing at random declines its entry too, a cached one freezing a single draw until the catalog itself changed.
+Those seven resolve their content at render time, on rows no Block event ever signals a change of, and are cached all the same: their entry carries a catalog tag dropped whenever a book, a serie, a planche, a contributor or one of their medias is saved. The three listing books and the one listing planches decline their entry — rendered live, stored nothing — for as long as something is dated ahead: an entry never expires, and nothing is saved the day a publication date comes round. A listing drawing at random declines its entry too, a cached one freezing a single draw until the catalog itself changed.
 
-The seventh, `book_reader`, reads an illustrated album page by page along its recording. Its medias are the album's pages in order, then the audio file; its `cues` say at which second of the recording each page is turned. The voice is the clock: it turns the pages, and a page turned by hand moves the playhead to that page's cue. Left without cues, the pages are turned by hand alone. It drives UiBundle's `slider` through the slider's own dots, so the two stay independent. Its pages crossfade rather than slide, and turn without animation under reduced motion. Turning `book-page-sound` on plays a short sound each time the voice moves on to the next page — never on a page turned by hand nor on a jump along the timeline; `pageSound="url"` gives another file than the bundle's own `sounds/page-turn.mp3`.
+The eighth, `book_reader`, reads an illustrated album page by page along its recording. Its medias are the album's pages in order, then the audio file; its `cues` say at which second of the recording each page is turned. The voice is the clock: it turns the pages, and a page turned by hand moves the playhead to that page's cue. Left without cues, the pages are turned by hand alone. It drives UiBundle's `slider` through the slider's own dots, so the two stay independent. Its pages crossfade rather than slide, and turn without animation under reduced motion. Turning `book-page-sound` on plays a short sound each time the voice moves on to the next page — never on a page turned by hand nor on a jump along the timeline; `pageSound="url"` gives another file than the bundle's own `sounds/page-turn.mp3`.
 
 ```twig
 {# Outside a composed page - a story rendered from an entity, say - the component is called directly #}
@@ -867,6 +873,18 @@ Page 3
 ```
 
 It is what the listening pages (`book-route-listen`, left empty by default) turn a book's pages by: a book carrying one is played as a reader, a book without one as its cover and the player — a few pages to leaf through before buying being no book to follow along.
+
+### Documents to print
+
+A book can offer documents a reader prints at home — colouring pages, activity sheets, patterns. They are PDFs, added in the "To print" collection of the book's "Page" tab (`BookPrintable`), each with a title and, on a site declaring `getPrintableKinds()`, a level. UiBundle cuts the thumbnail from the first page, with a placeholder on a host without Ghostscript, and the file is never resized.
+
+The `printables` section (`Book:Printables`) comes right before the informations, has its button in the hero, and stays absent from a book holding none or not out yet. A site calls it what it is through `getSections()`, its order and its anchor included:
+
+```php
+'printables' => ['anchor' => 'activites', 'label' => 'Activités', 'intro' => 'Des activités tirées de ce livre, à imprimer.'],
+```
+
+The `book_printables` block lists the published books holding at least one, each shown by its first document and leading to that section. It takes the head and the selection of the other listing kinds, is cached under the same catalog tag as `book_books`, and is what a site composes into a page of its own: the page, its address and its menu entry stay the site's.
 
 ### Structured data
 
@@ -1040,7 +1058,7 @@ A store answering 429, 500, 502, 503 or 504 — throttling a burst of probes, as
 
 #### A file the database declares and the server no longer has
 
-`Management\BookFilesHealthCheckProvider` (kind `files-book`) reports, as an error, every file a row of this bundle names and the server no longer holds: the covers, videos, press and marketing files of a book, plus a serie's, a strip's and a contributor's own pictures. Everything it does is CoreBundle's `AbstractDeclaredFilesHealthCheckProvider`, this only names the rows to look at.
+`Management\BookFilesHealthCheckProvider` (kind `files-book`) reports, as an error, every file a row of this bundle names and the server no longer holds: the covers, videos, press, marketing and to-print files of a book, plus a serie's, a strip's and a contributor's own pictures. Everything it does is CoreBundle's `AbstractDeclaredFilesHealthCheckProvider`, this only names the rows to look at.
 
 ```bash
 php bin/console c975l:health-check:run --kind=files-book
@@ -1110,7 +1128,7 @@ of them sharing a photograph would read as a bug.
 
 ### Backup
 
-`BookBackupPathProvider` declares `public/medias/book` to ConfigBundle's backup, which mirrors it off-server: the covers, pages, press clippings and marketing files are the only content of this bundle that neither a git clone nor a database dump brings back. Nothing to register.
+`BookBackupPathProvider` declares `public/medias/book` to ConfigBundle's backup, which mirrors it off-server: the covers, pages, press clippings, marketing files and documents to print are the only content of this bundle that neither a git clone nor a database dump brings back. Nothing to register.
 
 ---
 

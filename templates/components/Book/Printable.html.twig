@@ -1,0 +1,12 @@
+{# <twig:c975LBook:Book:Printable printable="{{ printable }}" [url=""] [label=""]/> #}
+{# The thumbnail UiBundle cut from the PDF's first page, read back through its own naming (see Presse.html.twig), and the placeholder for a host without Ghostscript. "url" and "label" let the catalog block lead to the book rather than to the file #}
+{% props printable, url = "", label = "" %}
+{% set imageSrc = printable.name|replace({'.pdf': '.webp'}) %}
+{% set imageSrc = asset_exists(imageSrc) ? imageSrc : "bundles/c975lbook/images/no-cover.webp" %}
+{% set label = label ?: printable.title %}
+<a class="book-printable" href="{{ url ?: asset(printable.name) }}"{% if not url %} download{% endif %}>
+    <figure>
+        <img src="{{ asset(imageSrc) }}" alt="{{ label }}" width="400" height="283" loading="lazy">
+        {% if label %}<figcaption>{{ label }}</figcaption>{% endif %}
+    </figure>
+</a>

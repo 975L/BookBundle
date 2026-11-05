@@ -129,6 +129,8 @@ class BookExportProviderTest extends TestCase
         $item = $this->createProvider($projectDir)->serialize([$book])['items'][0];
 
         $this->assertSame([], $item['medias']);
+        // Exported like every other collection of files, so an archive carries them over
+        $this->assertSame([], $item['printables']);
         $this->assertCount(1, $item['videos']);
         $this->assertSame('https://youtu.be/abc', $item['videos'][0]['youtubeUrl']);
         $this->assertNull($item['videos'][0]['file']);

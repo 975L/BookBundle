@@ -20,7 +20,7 @@ use c975L\BookBundle\Repository\BookRepository;
 use c975L\ConfigBundle\Management\ExportProviderInterface;
 use c975L\UiBundle\Management\BlockDataExporter;
 
-// Serializes the books - their versions, the platforms that sell them, their covers, pages, videos, press clippings and marketing files, real files bundled in the archive - into the shape ContentExporter/BookImportProvider expect. The serie and the translated book a row names travel as slugs rather than as ids, which never match between two environments, and each under its own kind
+// Serializes the books - their versions, the platforms that sell them, their covers, pages, videos, press clippings, marketing files and documents to print, real files bundled in the archive - into the shape ContentExporter/BookImportProvider expect. The serie and the translated book a row names travel as slugs rather than as ids, which never match between two environments, and each under its own kind
 class BookExportProvider implements ExportProviderInterface
 {
     public function __construct(
@@ -103,6 +103,7 @@ class BookExportProvider implements ExportProviderInterface
             'videos' => $this->exportMedias($book->getVideos(), $files),
             'presses' => $this->exportMedias($book->getPresses(), $files),
             'marketings' => $this->exportMedias($book->getMarketings(), $files),
+            'printables' => $this->exportMedias($book->getPrintables(), $files),
         ];
     }
 

@@ -43,6 +43,13 @@ class BookCustomizationRegistry
         return [] === $kinds ? BookMediaKind::defaults() : $kinds;
     }
 
+    // No fallback, unlike the other vocabularies: the bundle never reads these words, a document needing no level to be printed
+    /** @return array<string, string> kind => label */
+    public function getPrintableKinds(): array
+    {
+        return ProviderMerger::merge($this->providers, static fn (BookCustomizationProviderInterface $provider) => $provider->getPrintableKinds());
+    }
+
     // The bundle's own paper/digital/audio when the site names no edition of its own, which is what a catalog holds until it publishes an illustrated or a translated one
     /** @return array<string, string> kind => label */
     public function getEditionKinds(): array

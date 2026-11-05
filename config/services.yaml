@@ -109,6 +109,21 @@ services:
               pickable: true
               cacheable: true
 
+    book.block.printables:
+        class: stdClass
+        tags:
+            - name: ui.block
+              kind: book_printables
+              label: 'label.block_printables'
+              description: 'label.block_printables_description'
+              translation_domain: 'book'
+              category: 'label.category_books'
+              form: 'c975L\BookBundle\Form\Block\PrintablesBlockType'
+              translatable: 'eyebrow, title, content, linkLabel'
+              template: '@c975LBook/blocks/Printables.html.twig'
+              pickable: true
+              cacheable: true
+
     # The kind whose content is its own attached medias rather than a live query: cached on its own Block/Media events alone, and fed by a BlockFixtureProvider where the others need the showcase
     book.block.reader:
         class: stdClass

@@ -1,0 +1,11 @@
+{# Adapter for the dynamic Block system - the books holding a document to print are resolved live (see BookBlockExtension). Each leads to its book's own section, where the documents are: a page of the site lists the stories, and the story offers its drawings. Nothing to print, no section at all: its head would announce an empty row #}
+{% set books = book_block_printables(max ?? null, random ?? false) %}
+{% if books is not empty %}
+    <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" linkLabel="{{ linkLabel|default('') }}" linkUrl="{{ linkUrl|default('') }}" id="{{ anchor_id }}">
+        <div class="book-printables book-printables--catalog">
+            {% for book in books %}
+                <twig:c975LBook:Book:Printable printable="{{ book.printables.first }}" url="{{ book_path('book_display', {'slug': book.slug}) }}#{{ book_section_anchor('printables', book.language) }}" label="{{ book.title }}"/>
+            {% endfor %}
+        </div>
+    </twig:c975LBook:Listing:Section>
+{% endif %}

@@ -68,6 +68,11 @@
     /* --book-lead-line-height: 1.4; */
     /* --book-lead-color: var(--text); */
     /* --book-lead-family: var(--font-family-title); */
+    /* --book-printable-min: 150px; */
+    /* --book-printable-min-catalog: 240px; */
+    /* --book-printable-paper: #fff; */
+    /* --book-printable-radius: var(--block-radius-small, 6px); */
+    /* --book-printable-shadow: var(--block-shadow-small, 0 1px 4px 0 rgba(0, 0, 0, 0.25)); */
     /* --book-text-padding-block: 0.5rem; */
     /* --book-text-padding-block-wide: 1rem; */
     /* --book-text-measure: var(--reading-max-width, 65ch); */

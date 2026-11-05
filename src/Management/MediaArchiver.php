@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 
-// What the export and import providers of this bundle do alike with a file: the six subclasses of Media carry the same columns and the same stored name, whether they hang off a serie, a book, one of its versions or a strip. The name is this hierarchy's own natural key - unique across the table, and the very path the file is served under - so an archive puts its files straight back where they were rather than re-uploading them: a catalog carried to another site answers at the same urls, and an import re-encodes nothing
+// What the export and import providers of this bundle do alike with a file: the subclasses of Media carry the same columns and the same stored name, whether they hang off a serie, a book, one of its versions or a strip. The name is this hierarchy's own natural key - unique across the table, and the very path the file is served under - so an archive puts its files straight back where they were rather than re-uploading them: a catalog carried to another site answers at the same urls, and an import re-encodes nothing
 class MediaArchiver
 {
     // The siblings UiBundle's VichImageResizeListener cuts beside a multi-size image, which only an upload produces: an archive not carrying them would bring the pages back without their zoom, and nothing short of a new upload could make them again

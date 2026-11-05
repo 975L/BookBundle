@@ -46,6 +46,11 @@ class BookCustomizationRegistryTest extends TestCase
                 return $this->contributorRoles;
             }
 
+            public function getPrintableKinds(): array
+            {
+                return ['small' => 'Small'];
+            }
+
             public function getLinkKinds(): array
             {
                 return $this->linkKinds;

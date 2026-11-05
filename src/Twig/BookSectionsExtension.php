@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Twig;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\CharacterMedia;
 use c975L\BookBundle\Entity\Media;
@@ -34,6 +35,7 @@ class BookSectionsExtension
         'podcasts',
         'presse',
         'marketing',
+        'printables',
         'informations',
         'edition',
         'serie',
@@ -73,6 +75,8 @@ class BookSectionsExtension
                 'shops' => [$book->isFree() ? 'label.get_free' : 'label.buy', $shops && [] !== $this->customizationRegistry->getLinksOf($book, 'epub')],
                 'presse' => ['label.presse', !$book->getPresses()->isEmpty()],
                 'marketing' => ['label.marketing', !$book->getMarketings()->isEmpty()],
+                // Right before the informations: what a reader takes away once the book is read, the informations closing the page - nothing to take away from a book not out yet
+                'printables' => ['label.printables', !$book->isToBePublished() && !$book->getPrintables()->isEmpty()],
                 // Always: a book with no field filled in still says when it comes out and who wrote it
                 'informations' => ['label.informations', true],
             ], $locale),
@@ -171,6 +175,43 @@ class BookSectionsExtension
         $declared = $this->customizationRegistry->getSections()[$key] ?? [];
 
         return \is_string($declared['template'] ?? null) ? $declared['template'] : '';
+    }
+
+    // The anchor a section is reached at, which the site may rename (see BookCustomizationProviderInterface::getSections()): what a link from outside the page has to aim at
+    #[AsTwigFunction('book_section_anchor')]
+    public function sectionAnchor(string $key, ?string $locale = null): string
+    {
+        $declared = $this->customizationRegistry->getSections()[$key] ?? [];
+        $anchor = \is_string($declared['anchor'] ?? null) && '' !== $declared['anchor'] ? $declared['anchor'] : $key;
+
+        return $this->translator->trans($anchor, [], \is_string($declared['domain'] ?? null) ? $declared['domain'] : 'book', $locale);
+    }
+
+    // A book's documents to print, one group per level in the order the site names them, then those filed under no level the site still names: a level taken out of the vocabulary must not hide what was uploaded under it. A site naming none gets one group, under no heading
+    /** @return list<array{label: string, printables: list<BookPrintable>}> */
+    #[AsTwigFunction('book_printables_by_kind')]
+    public function printablesByKind(Book $book): array
+    {
+        $kinds = $this->customizationRegistry->getPrintableKinds();
+        $groups = array_fill_keys(array_keys($kinds), []);
+        $unfiled = [];
+
+        foreach ($book->getPrintables() as $printable) {
+            if (isset($groups[(string) $printable->getKind()])) {
+                $groups[(string) $printable->getKind()][] = $printable;
+            } else {
+                $unfiled[] = $printable;
+            }
+        }
+
+        $printed = [];
+        foreach ($groups as $kind => $printables) {
+            if ([] !== $printables) {
+                $printed[] = ['label' => $this->translator->trans($kinds[$kind], [], 'book', $book->getLanguage()), 'printables' => $printables];
+            }
+        }
+
+        return [] === $unfiled ? $printed : [...$printed, ['label' => '', 'printables' => $unfiled]];
     }
 
     // Whatever the book is listened to as

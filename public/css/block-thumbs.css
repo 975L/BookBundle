@@ -48,6 +48,16 @@
   background-color: transparent;
 }
 
+/* Sheets laid side by side, wider than they are tall */
+.ui-block-thumb--book_printables {
+  justify-content: center;
+}
+.ui-block-thumb--book_printables .ui-block-thumb__media {
+  display: block;
+  flex: 0 0 auto;
+  height: 45%;
+}
+
 /* One page at a time, turned by the soundtrack running under it */
 .ui-block-thumb--book_reader .ui-block-thumb__media {
   display: block;

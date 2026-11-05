@@ -446,6 +446,26 @@
                 <source>narration.guided_step_book_onix_feed_route</source>
                 <target>Type an address, for instance onix dot xml: the feed will be served at that address of the site. Left empty, it does not exist. Then save.</target>
             </trans-unit>
+            <trans-unit id="B3pGNKa">
+                <source>narration.guided_step_book_printables_done</source>
+                <target>Save: once the book is out, a section appears on its page, right before the information.</target>
+            </trans-unit>
+            <trans-unit id="QStbWB3">
+                <source>narration.guided_step_book_printables_edit</source>
+                <target>Edit the book that will hold the documents.</target>
+            </trans-unit>
+            <trans-unit id="TVxwTVM">
+                <source>narration.guided_step_book_printables_list</source>
+                <target>Add one row per document: a title, the PDF file and, if your site offers them, a level. The thumbnail comes from the PDF's first page.</target>
+            </trans-unit>
+            <trans-unit id="O3mhk2L">
+                <source>narration.guided_step_book_printables_open</source>
+                <target>Open the list of books: documents to print are dropped on the book they come from.</target>
+            </trans-unit>
+            <trans-unit id="Laj1ylv">
+                <source>narration.guided_step_book_printables_tab</source>
+                <target>Open the "Page" tab, the one holding the book's files.</target>
+            </trans-unit>
             <trans-unit id="rSlOmZ3">
                 <source>narration.guided_step_book_reader_add</source>
                 <target>Add a block. A new row opens the palette of kinds on its own.</target>

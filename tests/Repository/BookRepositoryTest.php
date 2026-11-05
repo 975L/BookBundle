@@ -87,6 +87,18 @@ class BookRepositoryTest extends TestCase
         $this->assertStringContainsString('serie IS NULL OR serie.hidden = false', $this->dql);
     }
 
+    // The block listing the books to print from reads the catalog's own rules, and only the books holding a document, joined so its thumbnail costs no query per book
+    public function testTheBooksHoldingADocumentToPrintFollowTheCatalog(): void
+    {
+        $this->createRepository()->findAllWithPrintables();
+
+        $this->assertStringContainsString('INNER JOIN b.printables printable', $this->dql);
+        $this->assertStringContainsString('printable', explode(' FROM ', $this->dql)[0]);
+        $this->assertStringContainsString('b.hidden = false', $this->dql);
+        $this->assertStringContainsString('b.published <= :now', $this->dql);
+        $this->assertStringContainsString('b.newerVersion IS NULL', $this->dql);
+    }
+
     // The block announcing what is coming is a public read like any other: it was the only one left without the pair
     public function testTheBooksToComeLeaveOutWhatIsSetAside(): void
     {

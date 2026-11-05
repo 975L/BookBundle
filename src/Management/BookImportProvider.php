@@ -18,6 +18,7 @@ use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Enum\BookEditionFileKind;
 use c975L\BookBundle\Enum\BookMediaKind;
@@ -329,7 +330,7 @@ class BookImportProvider implements ImportProviderInterface
         return $written;
     }
 
-    // The book's five families of files, each written over on the name it is served under (see MediaArchiver::sync()) - a version's own files then bound back to it by its kind
+    // The book's families of files, each written over on the name it is served under (see MediaArchiver::sync()) - a version's own files then bound back to it by its kind
     /**
      * @return list<array{0: \c975L\BookBundle\Entity\Media, 1: array}>
      */
@@ -354,6 +355,10 @@ class BookImportProvider implements ImportProviderInterface
 
         if (array_key_exists('marketings', $item)) {
             $written = [...$written, ...$this->mediaArchiver->sync($book->getMarketings(), $item['marketings'], static fn (): BookMarketing => new BookMarketing(), $book->addMarketing(...), $book->removeMarketing(...))];
+        }
+
+        if (array_key_exists('printables', $item)) {
+            $written = [...$written, ...$this->mediaArchiver->sync($book->getPrintables(), $item['printables'], static fn (): BookPrintable => new BookPrintable(), $book->addPrintable(...), $book->removePrintable(...))];
         }
 
         return $written;

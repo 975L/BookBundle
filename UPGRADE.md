@@ -2,6 +2,19 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.29.0
+
+**`BookCustomizationProviderInterface` gets `getPrintableKinds()`**: a site with a class implementing it adds the method before updating, or the container fails with a fatal error. Returning `[]` files its documents to print under no level, and the method can be added while the site is still on an older version, as long as it carries no `#[\Override]` until the update:
+
+```php
+public function getPrintableKinds(): array
+{
+    return [];
+}
+```
+
+A site without such a class has nothing to do. **`BookServiceInterface` gets `findAllWithPrintables()`**, for a site replacing that service. **A site overriding `book/display.html.twig`** adds `'printables': 'Printables'` to its `components` map, or the section stays unprinted while the hero offers its button. Nothing changes on the page until a book is given a document: the `printables` section stays absent, as it does until a book is out, and no column is added (`BookPrintable` lives in `book_media`).
+
 ## v2.28.2
 
 **An address outside http and https is refused when it is typed**: `BookLink::$url`, `ContributorLink::$url`, `Contributor::$website`, `Strip::$sourceUrl`, `Media::$youtubeUrl` (`Assert\Url`), and any scheme but http, https, mailto, tel on a listing block's `linkUrl` (UiBundle's `SafeUrl`). Nothing is rewritten: a stored value that fails stays until its row is next saved, when the editor is told. **A book still to come no longer shows its player nor its audio downloads** on its own page; the podcast app links stay. A site overriding `Book/Podcasts.html.twig` carries the same `isToBePublished` test over. **An upload outside what its field takes is refused**, a stored file staying as it is: an image field takes jpeg, png, webp and gif, no SVG nor AVIF, and a row holding anything (`MediaFileFieldTrait`) also takes pdf, epub, mp3, m4a, ogg, wav, mp4, webm and vtt (`Media::FILE_UPLOAD_EXTENSIONS`), under a site's own media kinds as well.

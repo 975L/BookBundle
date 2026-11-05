@@ -102,6 +102,10 @@
                 <source>description.guided_project_book_onix_feed</source>
                 <target>El flujo ONIX 3.0 describe cada edición con un ISBN-13 — precio, disponibilidad, duración, clasificación — a las librerías en línea y a los distribuidores. Reservado al administrador: se ajusta en la configuración.</target>
             </trans-unit>
+            <trans-unit id="GaHpoWp">
+                <source>description.guided_project_book_printables</source>
+                <target>Dibujos para colorear, fichas de actividades, patrones: suba archivos PDF a un libro y su página los ofrece enseguida para imprimir.</target>
+            </trans-unit>
             <trans-unit id="qKPaJ8x">
                 <source>description.guided_project_book_reader</source>
                 <target>El lector reproduce la grabación de un álbum y pasa sus páginas con ella, en los segundos que usted le indique.</target>
@@ -517,6 +521,26 @@
             <trans-unit id="b3IBzk8">
                 <source>description.guided_step_book_onix_feed_route</source>
                 <target>Una dirección como «onix.xml» sirve el flujo en /onix.xml. Vacía, no se sirve. Guarde.</target>
+            </trans-unit>
+            <trans-unit id="s.UyuGM">
+                <source>description.guided_step_book_printables_done</source>
+                <target>Una vez publicado el libro, aparece una sección en su página, justo antes de la información, y un bloque puede listar todos estos libros en una página del sitio.</target>
+            </trans-unit>
+            <trans-unit id="EhuWwah">
+                <source>description.guided_step_book_printables_edit</source>
+                <target>Elija el libro que recibirá los documentos.</target>
+            </trans-unit>
+            <trans-unit id="9ADdrUI">
+                <source>description.guided_step_book_printables_list</source>
+                <target>Una línea por documento: un título, el archivo PDF y, si su sitio los ofrece, un nivel. La miniatura sale de la primera página del PDF.</target>
+            </trans-unit>
+            <trans-unit id="XhT2pVC">
+                <source>description.guided_step_book_printables_open</source>
+                <target>Los documentos para imprimir se suben al libro del que proceden.</target>
+            </trans-unit>
+            <trans-unit id="6aPMgWR">
+                <source>description.guided_step_book_printables_tab</source>
+                <target>La segunda pestaña, que contiene los archivos del libro.</target>
             </trans-unit>
             <trans-unit id="rjCPwF3">
                 <source>description.guided_step_book_reader_add</source>
@@ -985,6 +1009,14 @@
             <trans-unit id="ZN0TBrD">
                 <source>label.block_max_strips</source>
                 <target>Número de láminas (vacío = todas)</target>
+            </trans-unit>
+            <trans-unit id="R1IgHIW">
+                <source>label.block_printables</source>
+                <target>Libros con documentos para imprimir</target>
+            </trans-unit>
+            <trans-unit id="Gd1Ntn7">
+                <source>label.block_printables_description</source>
+                <target>Lista los libros publicados que ofrecen documentos para imprimir, cada uno lleva a su sección</target>
             </trans-unit>
             <trans-unit id="LUKicrM">
                 <source>label.block_random</source>
@@ -1726,6 +1758,10 @@
                 <source>label.guided_project_book_onix_feed</source>
                 <target>Abrir el catálogo a las librerías (ONIX)</target>
             </trans-unit>
+            <trans-unit id="pT1QbYD">
+                <source>label.guided_project_book_printables</source>
+                <target>Ofrecer documentos para imprimir</target>
+            </trans-unit>
             <trans-unit id="j9o3bim">
                 <source>label.guided_project_book_reader</source>
                 <target>Poner en marcha el lector página a página</target>
@@ -2181,6 +2217,26 @@
             <trans-unit id="wGrW78y">
                 <source>label.guided_step_book_onix_feed_route</source>
                 <target>La dirección del flujo</target>
+            </trans-unit>
+            <trans-unit id="lo66gRg">
+                <source>label.guided_step_book_printables_done</source>
+                <target>Guarde</target>
+            </trans-unit>
+            <trans-unit id="fsw4ulY">
+                <source>label.guided_step_book_printables_edit</source>
+                <target>Edite un libro</target>
+            </trans-unit>
+            <trans-unit id="wWx6YW7">
+                <source>label.guided_step_book_printables_list</source>
+                <target>Añada sus PDF</target>
+            </trans-unit>
+            <trans-unit id="IJR7QyX">
+                <source>label.guided_step_book_printables_open</source>
+                <target>Abra la lista de libros</target>
+            </trans-unit>
+            <trans-unit id="9s_P1GA">
+                <source>label.guided_step_book_printables_tab</source>
+                <target>Abra la pestaña «Página»</target>
             </trans-unit>
             <trans-unit id="yilasXR">
                 <source>label.guided_step_book_reader_add</source>
@@ -2745,6 +2801,22 @@
             <trans-unit id="._9LubL">
                 <source>label.previous_version_suffix</source>
                 <target> — versión anterior</target>
+            </trans-unit>
+            <trans-unit id="RhmJhza">
+                <source>label.printable</source>
+                <target>Documento para imprimir (PDF)</target>
+            </trans-unit>
+            <trans-unit id="ytPF5.m">
+                <source>label.printable_kind</source>
+                <target>Nivel</target>
+            </trans-unit>
+            <trans-unit id="buEZzM2">
+                <source>label.printables</source>
+                <target>Para imprimir</target>
+            </trans-unit>
+            <trans-unit id="oELlJcB">
+                <source>label.printables-intro</source>
+                <target>Documentos de este libro, gratuitos, para imprimir en casa.</target>
             </trans-unit>
             <trans-unit id="JNo2Slc">
                 <source>label.published</source>

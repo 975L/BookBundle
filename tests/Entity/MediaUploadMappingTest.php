@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Tests\Entity;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\ContributorMedia;
 use c975L\BookBundle\Entity\Media;
@@ -34,6 +35,7 @@ class MediaUploadMappingTest extends TestCase
             [BookMarketing::class],
             [BookMedia::class],
             [BookPresse::class],
+            [BookPrintable::class],
             [BookVideo::class],
             [ContributorMedia::class],
             [SerieMedia::class],

@@ -27,7 +27,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-// The files this bundle's own rows declare: the covers, videos, press and marketing files of a book, plus a serie's, a strip's and a contributor's own pictures. Everything the check does is in the parent (see UiBundle's AbstractDeclaredFilesHealthCheckProvider), this only names what to look for
+// The files this bundle's own rows declare: the covers, videos, press, marketing and to-print files of a book, plus a serie's, a strip's and a contributor's own pictures. Everything the check does is in the parent (see UiBundle's AbstractDeclaredFilesHealthCheckProvider), this only names what to look for
 class BookFilesHealthCheckProvider extends AbstractDeclaredFilesHealthCheckProvider
 {
     // Named here rather than restated as a literal wherever a row of this kind is picked out
@@ -63,7 +63,7 @@ class BookFilesHealthCheckProvider extends AbstractDeclaredFilesHealthCheckProvi
         }
     }
 
-    // Four owners behind one table (see Media's single-table inheritance): each is edited from its own screen, and a book's four kinds of file all hang off the book itself
+    // Four owners behind one table (see Media's single-table inheritance): each is edited from its own screen, and a book's kinds of file all hang off the book itself
     private function ownerOf(Media $media): array
     {
         return match (true) {

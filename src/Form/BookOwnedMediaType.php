@@ -24,7 +24,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-// The three collections of files a book holds - videos, presse, marketing - all ask for the same thing: a rank, a title, the file. Only the entity behind the rows, the word naming the file and whether an address can stand in for it change, so BookVideoType, BookPresseType and BookMarketingType declare just that
+// The collections of files a book holds - videos, presse, marketing, documents to print - all ask for the same thing: a rank, a title, the file. Only the entity behind the rows, the word naming the file and whether an address can stand in for it change, so BookVideoType, BookPresseType, BookMarketingType and BookPrintableType declare just that
 abstract class BookOwnedMediaType extends AbstractType
 {
     use MediaFileFieldTrait;

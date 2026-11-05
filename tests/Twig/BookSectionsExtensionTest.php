@@ -17,6 +17,7 @@ use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\CharacterMedia;
 use c975L\BookBundle\Entity\Serie;
@@ -47,6 +48,55 @@ class BookSectionsExtensionTest extends TestCase
     public function testTheSummaryIsNotASectionOfThePage(): void
     {
         $this->assertSame(['informations'], $this->anchors(new Book()->setSummary('Un résumé')));
+    }
+
+    // What a reader prints comes last among what the book offers, the informations closing the page
+    public function testThePrintablesComeRightBeforeTheInformations(): void
+    {
+        $book = new Book()->setPublished(new \DateTimeImmutable('-1 day'));
+        $book->addMarketing(new BookMarketing());
+        $book->addPrintable(new BookPrintable());
+
+        $this->assertSame(['marketing', 'printables', 'informations'], $this->anchors($book));
+    }
+
+    // A book still to come keeps its documents to itself until it is out, like its recording
+    public function testABookNotOutYetOffersNothingToPrint(): void
+    {
+        $coming = new Book()->setPublished(new \DateTimeImmutable('+1 month'));
+        $coming->addPrintable(new BookPrintable());
+
+        $this->assertNotContains('printables', $this->anchors($coming));
+        $this->assertNotContains('printables', $this->anchors(new Book()->addPrintable(new BookPrintable())));
+    }
+
+    // A level names a grid only if it holds a document, in the order the site names them whatever the order of the rows
+    public function testThePrintablesAreGroupedInTheOrderTheSiteNamesItsLevels(): void
+    {
+        $big = new BookPrintable()->setKind('big');
+        $small = new BookPrintable()->setKind('small');
+        $book = new Book()->addPrintable($big)->addPrintable($small);
+
+        $groups = $this->extensionNamingLevels(['small' => 'Small', 'empty' => 'Empty', 'big' => 'Big'])->printablesByKind($book);
+
+        $this->assertSame([['label' => 'Small', 'printables' => [$small]], ['label' => 'Big', 'printables' => [$big]]], $groups);
+    }
+
+    // A level taken out of the vocabulary must not hide what was uploaded under it, and a site naming none gets one grid under no heading
+    public function testADocumentUnderNoLevelTheSiteStillNamesStaysPrinted(): void
+    {
+        $orphan = new BookPrintable()->setKind('gone');
+        $book = new Book()->addPrintable($orphan);
+
+        $this->assertSame([['label' => '', 'printables' => [$orphan]]], $this->extensionNamingLevels(['small' => 'Small'])->printablesByKind($book));
+        $this->assertSame([['label' => '', 'printables' => [$orphan]]], $this->extension($this->translator())->printablesByKind($book));
+    }
+
+    // The block links from another page, so it has to aim at the anchor the site renamed the section to
+    public function testTheAnchorOfASectionIsTheOneTheSiteGaveIt(): void
+    {
+        $this->assertSame('printables', $this->extension($this->translator())->sectionAnchor('printables'));
+        $this->assertSame('colorier', $this->extension($this->translator(), ['printables' => ['anchor' => 'colorier']])->sectionAnchor('printables'));
     }
 
     // The order is the page's own, not the order the conditions happen to be true in
@@ -398,6 +448,15 @@ class BookSectionsExtensionTest extends TestCase
         $registry = new BookCustomizationRegistry([] === $sections ? [] : [$this->siteDeclaring($sections)], self::registryTranslator());
 
         return new BookSectionsExtension($registry, $translator);
+    }
+
+    /** @param array<string, string> $kinds */
+    private function extensionNamingLevels(array $kinds): BookSectionsExtension
+    {
+        $provider = $this->createStub(BookCustomizationProviderInterface::class);
+        $provider->method('getPrintableKinds')->willReturn($kinds);
+
+        return new BookSectionsExtension(new BookCustomizationRegistry([$provider], self::registryTranslator()), $this->translator());
     }
 
     /** @param array<string, array<string, mixed>> $sections */

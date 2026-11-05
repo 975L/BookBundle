@@ -16,6 +16,7 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookEditionFile;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Contributor;
 use c975L\BookBundle\Entity\Serie;
@@ -90,6 +91,29 @@ class BookImportProviderTest extends TestCase
         // A media standing for a YouTube url carries no file and travels all the same
         $this->assertSame('https://youtu.be/abc', $book->getVideos()->first()->getYoutubeUrl());
         $this->assertSame('2024-05-12', $book->getVideos()->first()->getUploadDate()?->format('Y-m-d'));
+
+        $this->removeDir($sourceDir);
+        $this->removeDir($filesDir);
+        $this->removeDir($targetDir);
+    }
+
+    // A document to print comes back on the book, under the level it was filed under
+    public function testRoundTripRebuildsTheDocumentsToPrint(): void
+    {
+        $sourceDir = $this->createProjectDir(['medias/book/printables/tome-2/page.pdf' => 'pdf-bytes']);
+        $source = new Book()->setSlug('tome-2')->setTitle('Tome 2')->addPrintable(new BookPrintable()->setName('medias/book/printables/tome-2/page.pdf')->setKind('small')->setTitle('La page'));
+        $export = $this->createExportProvider($sourceDir)->serialize([$source]);
+
+        $filesDir = $this->extractArchive($export['files']);
+        $targetDir = $this->createProjectDir([]);
+        $persisted = [];
+
+        $this->createProvider($targetDir, persisted: $persisted)->import($export['items'], $filesDir);
+
+        $printable = $this->firstOf($persisted, Book::class)->getPrintables()->first();
+        $this->assertSame('small', $printable->getKind());
+        $this->assertSame('La page', $printable->getTitle());
+        $this->assertSame('pdf-bytes', file_get_contents($targetDir . '/public/medias/book/printables/tome-2/page.pdf'));
 
         $this->removeDir($sourceDir);
         $this->removeDir($filesDir);

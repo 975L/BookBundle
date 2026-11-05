@@ -23,6 +23,7 @@ use c975L\BookBundle\Form\BookLinkType;
 use c975L\BookBundle\Form\BookMarketingType;
 use c975L\BookBundle\Form\BookMediaType;
 use c975L\BookBundle\Form\BookPresseType;
+use c975L\BookBundle\Form\BookPrintableType;
 use c975L\BookBundle\Form\BookVideoType;
 use c975L\BookBundle\Management\BookBlockOwnerResolver;
 use c975L\BookBundle\Management\BookExportProvider;
@@ -443,6 +444,15 @@ class BookCrudController extends AbstractCrudController
                 ->setLabel(false)
                 ->hideOnIndex()
                 ->setEntryType(BookMarketingType::class),
+            // Documents a reader prints from the book's page
+            FormField::addFieldset(t('label.printables', [], 'book'))
+                ->hideOnIndex(),
+            CollectionField::new('printables')
+                ->setLabel(false)
+                ->hideOnIndex()
+                ->setEntryType(BookPrintableType::class)
+                ->setFormTypeOption('by_reference', false)
+                ->setFormTypeOption('row_attr', ['data-book-printables' => '1']),
 
             // Blocks. Crowdfunding
             FormField::addFieldset(t('label.crowdfunding', [], 'book'))
@@ -667,12 +677,12 @@ class BookCrudController extends AbstractCrudController
             ->generateUrl();
     }
 
-    // The titles printed under a book's press cuttings and promotional visuals, through the types they are always edited with - neither "+" nor bin, a file taken away there leaving every language at once
+    // The titles printed under a book's press cuttings, promotional visuals and documents to print, through the types they are always edited with - neither "+" nor bin, a file taken away there leaving every language at once
     /** @return list<FieldInterface> */
     private function mediaTranslationFields(string $locale): array
     {
         $fields = [];
-        foreach (['presses' => [BookPresseType::class, 'label.presse'], 'marketings' => [BookMarketingType::class, 'label.marketing']] as $property => [$entryType, $label]) {
+        foreach (['presses' => [BookPresseType::class, 'label.presse'], 'marketings' => [BookMarketingType::class, 'label.marketing'], 'printables' => [BookPrintableType::class, 'label.printables']] as $property => [$entryType, $label]) {
             $fields[] = FormField::addFieldset(t($label, [], 'book'));
             $fields[] = CollectionField::new($property)
                 ->setLabel(false)

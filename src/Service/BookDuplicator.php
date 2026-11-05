@@ -147,7 +147,7 @@ class BookDuplicator
         return $copy;
     }
 
-    // Copies the book with its files, its platform links, its press, its videos, its marketing and its blocks - it stays in the same serie, and keeps pointing at the same original when it is a translation. The versions are not copied over: a duplicate is a new book, which the editor then qualifies - a new version is published by its own gesture, the only one chaining books one behind the other (see BookVersionPublisher)
+    // Copies the book with its files, its platform links, its press, its videos, its marketing, its documents to print and its blocks - it stays in the same serie, and keeps pointing at the same original when it is a translation. The versions are not copied over: a duplicate is a new book, which the editor then qualifies - a new version is published by its own gesture, the only one chaining books one behind the other (see BookVersionPublisher)
     public function duplicateBook(Book $source): Book
     {
         $now = new \DateTime();
@@ -216,6 +216,10 @@ class BookDuplicator
 
         foreach ($source->getMarketings() as $marketing) {
             $copy->addMarketing($this->cloneMedia($marketing));
+        }
+
+        foreach ($source->getPrintables() as $printable) {
+            $copy->addPrintable($this->cloneMedia($printable));
         }
 
         foreach ($source->getBlocks() as $block) {

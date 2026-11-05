@@ -78,6 +78,13 @@ class BookBlockExtension
         return $this->translated($this->draw($this->bookService->findAllToBePublished(), $max, $random));
     }
 
+    // Same as the contributors: the books holding a document to print are counted in units, and the maximum cuts that list here
+    #[AsTwigFunction('book_block_printables')]
+    public function getPrintables(?int $max = null, bool $random = false): array
+    {
+        return $this->translated($this->draw($this->bookService->findAllWithPrintables(), $max, $random));
+    }
+
     // One serie, or several separated by commas - the maximum then applies to each of them rather than to the row, so a block naming two series shows as many planches of one as of the other (see SerieStripsBlockType)
     #[AsTwigFunction('book_block_serie_strips')]
     public function getSerieStrips(string $serieSlug, ?int $max = null, bool $random = false): array

@@ -95,6 +95,12 @@ class BookService implements BookServiceInterface
         return $this->bookRepository->findAllToBePublished();
     }
 
+    // Finds the published books holding a document to print
+    public function findAllWithPrintables(): array
+    {
+        return $this->bookRepository->findAllWithPrintables();
+    }
+
     // Searches for book
     public function search(string $query, ?int $serieId = null): array
     {

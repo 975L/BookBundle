@@ -446,6 +446,26 @@
                 <source>narration.guided_step_book_onix_feed_route</source>
                 <target>Escriba una dirección, por ejemplo onix punto xml: el flujo se servirá en esa dirección del sitio. Vacía, no existe. Luego guarde.</target>
             </trans-unit>
+            <trans-unit id="B3pGNKa">
+                <source>narration.guided_step_book_printables_done</source>
+                <target>Guarde: una vez publicado el libro, aparece una sección en su página, justo antes de la información.</target>
+            </trans-unit>
+            <trans-unit id="QStbWB3">
+                <source>narration.guided_step_book_printables_edit</source>
+                <target>Edite el libro que recibirá los documentos.</target>
+            </trans-unit>
+            <trans-unit id="TVxwTVM">
+                <source>narration.guided_step_book_printables_list</source>
+                <target>Añada una línea por documento: un título, el archivo PDF y, si su sitio los ofrece, un nivel. La miniatura sale de la primera página del PDF.</target>
+            </trans-unit>
+            <trans-unit id="O3mhk2L">
+                <source>narration.guided_step_book_printables_open</source>
+                <target>Abra la lista de libros: los documentos para imprimir se suben al libro del que proceden.</target>
+            </trans-unit>
+            <trans-unit id="Laj1ylv">
+                <source>narration.guided_step_book_printables_tab</source>
+                <target>Abra la pestaña «Página», la que contiene los archivos del libro.</target>
+            </trans-unit>
             <trans-unit id="rSlOmZ3">
                 <source>narration.guided_step_book_reader_add</source>
                 <target>Añada un bloque. Una nueva fila abre por sí misma la paleta de tipos.</target>
