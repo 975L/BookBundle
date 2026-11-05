@@ -70,7 +70,7 @@ class BookSectionsExtensionTest extends TestCase
         $this->assertNotContains('printables', $this->anchors(new Book()->addPrintable(new BookPrintable())));
     }
 
-    // A level names a grid only if it holds a document, in the order the site names them whatever the order of the rows
+    // A level captions documents only if it holds one, in the order the site names them whatever the order of the rows
     public function testThePrintablesAreGroupedInTheOrderTheSiteNamesItsLevels(): void
     {
         $big = new BookPrintable()->setKind('big');
@@ -82,7 +82,7 @@ class BookSectionsExtensionTest extends TestCase
         $this->assertSame([['label' => 'Small', 'printables' => [$small]], ['label' => 'Big', 'printables' => [$big]]], $groups);
     }
 
-    // A level taken out of the vocabulary must not hide what was uploaded under it, and a site naming none gets one grid under no heading
+    // A level taken out of the vocabulary must not hide what was uploaded under it, and a site naming none gets one group under no label
     public function testADocumentUnderNoLevelTheSiteStillNamesStaysPrinted(): void
     {
         $orphan = new BookPrintable()->setKind('gone');

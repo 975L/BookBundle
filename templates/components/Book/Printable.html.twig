@@ -1,12 +1,12 @@
 {# <twig:c975LBook:Book:Printable printable="{{ printable }}" [url=""] [label=""]/> #}
-{# The thumbnail UiBundle cut from the PDF's first page, read back through its own naming (see Presse.html.twig), and the placeholder for a host without Ghostscript. "url" and "label" let the catalog block lead to the book rather than to the file #}
+{# The thumbnail UiBundle cut from the PDF's first page, read back through its own naming (see Presse.html.twig), and the placeholder for a host without Ghostscript. "label" captions it in place of its title (its level on a book's page, its book on the catalog block), the title staying its alt, and its link's title where it opens the file. "url" leads to the book rather than opening the file in a new tab #}
 {% props printable, url = "", label = "" %}
 {% set imageSrc = printable.name|replace({'.pdf': '.webp'}) %}
 {% set imageSrc = asset_exists(imageSrc) ? imageSrc : "bundles/c975lbook/images/no-cover.webp" %}
-{% set label = label ?: printable.title %}
-<a class="book-printable" href="{{ url ?: asset(printable.name) }}"{% if not url %} download{% endif %}>
+{% set caption = label ?: printable.title %}
+<a class="book-printable" href="{{ url ?: asset(printable.name) }}"{% if not url %}{% if printable.title %} title="{{ printable.title }}"{% endif %} target="_blank" rel="noopener"{% endif %}>
     <figure>
-        <img src="{{ asset(imageSrc) }}" alt="{{ label }}" width="400" height="283" loading="lazy">
-        {% if label %}<figcaption>{{ label }}</figcaption>{% endif %}
+        <img src="{{ asset(imageSrc) }}" alt="{{ printable.title ?: caption }}" width="400" height="283" loading="lazy">
+        {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
     </figure>
 </a>

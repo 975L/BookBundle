@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.29.1
+
+Documents to print in one centred grid, captioned by their level
+
+- `Book:Printables`: the documents in one grid, in the order of the levels, without a heading per level (05/11/2026)
+- `Book:Printable`: captioned by its level, else its title, the title staying its alt and its link's title (05/11/2026)
+- `Book:Printable`: the PDF opens in a new tab instead of being downloaded (05/11/2026)
+- `.book-printables`: a few documents sit centred, on the book's page as on the `book_printables` block (05/11/2026)
+- `.book-printables__level` removed (05/11/2026)
+- `BookCustomizationProviderInterface::getSections()`: the `intro` key declared in its return shape (05/11/2026)
+
 ## v2.29.0
 
 Documents to print on a book's page, and the block listing their books

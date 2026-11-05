@@ -3,6 +3,11 @@
         "date": "2026-11-05",
         "description": [
             {
+                "en": "On a book's page, the documents to print now stand side by side in a single centred grid, each captioned by its level when your site has levels, and a click opens the PDF in a new tab instead of downloading it.",
+                "fr": "Sur la page d'un livre, les documents à imprimer sont désormais côte à côte dans une seule grille centrée, chacun légendé par son niveau si votre site en propose, et un clic ouvre le PDF dans un nouvel onglet au lieu de le télécharger.",
+                "es": "En la página de un libro, los documentos para imprimir aparecen ahora uno al lado del otro en una sola cuadrícula centrada, cada uno con su nivel como leyenda si su sitio los ofrece, y un clic abre el PDF en una nueva pestaña en lugar de descargarlo."
+            },
+            {
                 "en": "A book can now offer documents to print, such as colouring pages or activity sheets: add PDFs in the book's \"Page\" tab, with a title and a level if your site has levels. Once the book is out, they appear in a section of its page, right before the information, with a button at the top of the page, and a new block lists all the books offering some.",
                 "fr": "Un livre peut désormais proposer des documents à imprimer, comme des coloriages ou des fiches d'activités : ajoutez des PDF dans l'onglet « Page » du livre, avec un titre et un niveau si votre site en propose. Une fois le livre paru, ils apparaissent dans une section de sa page, juste avant les informations, avec un bouton en haut de page, et un nouveau bloc liste tous les livres qui en proposent.",
                 "es": "Un libro ahora puede ofrecer documentos para imprimir, como dibujos para colorear o fichas de actividades: añada archivos PDF en la pestaña «Página» del libro, con un título y un nivel si su sitio los ofrece. Una vez publicado el libro, aparecen en una sección de su página, justo antes de la información, con un botón en la parte superior, y un nuevo bloque lista todos los libros que los ofrecen."

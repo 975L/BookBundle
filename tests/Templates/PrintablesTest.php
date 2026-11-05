@@ -43,13 +43,35 @@ class PrintablesTest extends TestCase
         return new BookPrintable()->setName('medias/book/printables/conte/page-1.pdf')->setTitle('La page');
     }
 
-    public function testOnABooksPageTheThumbnailDownloadsThePdf(): void
+    // The PDF opens in the browser, a print from there being one click away, rather than landing among the downloads
+    public function testOnABooksPageTheThumbnailOpensThePdfInANewTab(): void
     {
         $html = $this->render(['printable' => $this->printable()]);
 
-        $this->assertStringContainsString('href="/medias/book/printables/conte/page-1.pdf" download', $html);
-        $this->assertStringContainsString('src="/medias/book/printables/conte/page-1.webp"', $html);
+        $this->assertStringContainsString('href="/medias/book/printables/conte/page-1.pdf" title="La page" target="_blank" rel="noopener"', $html);
+        $this->assertStringNotContainsString('download', $html);
+        $this->assertStringContainsString('src="/medias/book/printables/conte/page-1.webp" alt="La page"', $html);
         $this->assertStringContainsString('<figcaption>La page</figcaption>', $html);
+    }
+
+    // Filed under a level, a document is captioned by it and keeps its title as accessible text
+    public function testALevelCaptionsTheDocumentWhoseTitleStaysItsAlt(): void
+    {
+        $html = $this->render(['printable' => $this->printable(), 'label' => 'Small (2-4)']);
+
+        $this->assertStringContainsString('<figcaption>Small (2-4)</figcaption>', $html);
+        $this->assertStringContainsString('alt="La page"', $html);
+        $this->assertStringContainsString('title="La page"', $html);
+    }
+
+    // The section lays every document in one grid, no heading per level
+    public function testTheSectionPrintsOneGridWithoutHeadings(): void
+    {
+        $section = (string) file_get_contents(__DIR__ . '/../../templates/components/Book/Printables.html.twig');
+
+        $this->assertSame(1, substr_count($section, 'class="book-printables"'));
+        $this->assertStringNotContainsString('<h3', $section);
+        $this->assertStringContainsString('label="{{ group.label }}"', $section);
     }
 
     // On a host without Ghostscript the document has no thumbnail, and a broken image says nothing
@@ -63,7 +85,8 @@ class PrintablesTest extends TestCase
         $html = $this->render(['printable' => $this->printable(), 'url' => '/book/conte#printables', 'label' => 'Le conte']);
 
         $this->assertStringContainsString('href="/book/conte#printables"', $html);
-        $this->assertStringNotContainsString('download', $html);
+        $this->assertStringNotContainsString('target="_blank"', $html);
+        $this->assertStringNotContainsString('title="La page"', $html);
         $this->assertStringContainsString('<figcaption>Le conte</figcaption>', $html);
     }
 }

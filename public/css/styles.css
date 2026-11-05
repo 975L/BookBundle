@@ -307,16 +307,13 @@
 
 .book-printables {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--book-printable-min)), 1fr));
+  grid-template-columns: repeat(auto-fit, min(100%, var(--book-printable-min)));
+  justify-content: center;
   gap: var(--card-grid-gap, 12px);
 }
 
 .book-printables--catalog {
   --book-printable-min: var(--book-printable-min-catalog);
-}
-
-.book-printables__level {
-  margin-block: 1em 0.5em;
 }
 
 .book-printable {

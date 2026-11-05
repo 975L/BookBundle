@@ -54,6 +54,16 @@ class BookPageStyleTest extends TestCase
         $this->assertStringNotContainsString('.book-hero__cover{object-fit:cover', $css, sprintf('"%s" crops the cover to fill its box.', $file));
     }
 
+    // A few documents to print sit centred, the empty columns of a wide grid dropped rather than leaving them on the left
+    #[\PHPUnit\Framework\Attributes\DataProvider('stylesheetProvider')]
+    public function testAFewDocumentsToPrintSitCentred(string $file): void
+    {
+        $css = $this->normalize($file);
+
+        $this->assertStringContainsString('.book-printables{display:grid;grid-template-columns:repeat(auto-fit,min(100%,var(--book-printable-min)));justify-content:center', $css);
+        $this->assertStringNotContainsString('.book-printables__level', $css);
+    }
+
     // Going to the next planche is what a reader does on a strip page: the row reads under it, each side naming where it leads
     #[\PHPUnit\Framework\Attributes\DataProvider('stylesheetProvider')]
     public function testTheNeighbouringPlanchesAreReachedFromARowUnderTheOneBeingRead(string $file): void

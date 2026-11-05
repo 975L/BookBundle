@@ -43,8 +43,8 @@ class CatalogCustomization implements BookCustomizationProviderInterface
 | `getEditionKinds()` | `BookEditionKind` | `kind => label` |
 | `getContributorRoles()` | `BookContributorRole` | `role => label` |
 | `getLinkKinds()` | `BookLinkKind` | `kind => ['label', 'group', 'icon']` |
-| `getPrintableKinds()` | no level asked, one grid under no heading | `kind => label` |
-| `getSections()` | the bundle's own page | `key => ['anchor', 'label', 'domain', 'icon', 'animation', 'template', 'form', 'field', 'cache']` |
+| `getPrintableKinds()` | no level asked, each document captioned by its title | `kind => label` |
+| `getSections()` | the bundle's own page | `key => ['anchor', 'label', 'intro', 'domain', 'icon', 'animation', 'template', 'form', 'field', 'cache']` |
 | `getDataFormType()` | no extra fields | a form class mapped on `Book::$data` |
 
 A **label is a plain word or a translation key**: it goes through the translator in the `book` catalog (or

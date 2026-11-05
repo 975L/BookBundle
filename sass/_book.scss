@@ -163,19 +163,16 @@ $book-bp-row-3: 1025px;
     width: 100%;
 }
 
-// PRINTABLES - documents to print, on the same picture grid as a shelf of covers but wider: a landscape page reads at a card's width where a cover reads at a thumbnail's
+// PRINTABLES - documents to print, on columns of a fixed width wider than a cover's, a landscape page reading at a card's width: auto-fit drops the empty ones, so a few documents sit centred instead of on the left of a wide grid
 .book-printables {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--book-printable-min)), 1fr));
+    grid-template-columns: repeat(auto-fit, min(100%, var(--book-printable-min)));
+    justify-content: center;
     gap: var(--card-grid-gap, 12px);
 }
 
 .book-printables--catalog {
     --book-printable-min: var(--book-printable-min-catalog);
-}
-
-.book-printables__level {
-    margin-block: 1em 0.5em;
 }
 
 .book-printable {

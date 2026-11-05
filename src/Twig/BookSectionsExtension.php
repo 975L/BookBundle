@@ -187,7 +187,7 @@ class BookSectionsExtension
         return $this->translator->trans($anchor, [], \is_string($declared['domain'] ?? null) ? $declared['domain'] : 'book', $locale);
     }
 
-    // A book's documents to print, one group per level in the order the site names them, then those filed under no level the site still names: a level taken out of the vocabulary must not hide what was uploaded under it. A site naming none gets one group, under no heading
+    // A book's documents to print, one group per level in the order the site names them, then those filed under no level the site still names: a level taken out of the vocabulary must not hide what was uploaded under it. A site naming none gets one group, under no label, each document then captioned by its own title
     /** @return list<array{label: string, printables: list<BookPrintable>}> */
     #[AsTwigFunction('book_printables_by_kind')]
     public function printablesByKind(Book $book): array

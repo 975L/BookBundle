@@ -674,7 +674,7 @@ class BookCustomizationProvider implements BookCustomizationProviderInterface
         return ['narrator' => 'label.role_narrator', 'colourist' => 'Coloriste'];
     }
 
-    // The levels this site files its documents to print under, printed as headings in this order - none declared asks for no level and prints one grid
+    // The levels this site files its documents to print under, in this order, each captioning its documents - none declared asks for no level and captions them by their titles
     public function getPrintableKinds(): array
     {
         return ['beginner' => 'Débutants', 'advanced' => 'Confirmés'];
@@ -878,7 +878,7 @@ It is what the listening pages (`book-route-listen`, left empty by default) turn
 
 A book can offer documents a reader prints at home — colouring pages, activity sheets, patterns. They are PDFs, added in the "To print" collection of the book's "Page" tab (`BookPrintable`), each with a title and, on a site declaring `getPrintableKinds()`, a level. UiBundle cuts the thumbnail from the first page, with a placeholder on a host without Ghostscript, and the file is never resized.
 
-The `printables` section (`Book:Printables`) comes right before the informations, has its button in the hero, and stays absent from a book holding none or not out yet. A site calls it what it is through `getSections()`, its order and its anchor included:
+The `printables` section (`Book:Printables`) comes right before the informations, has its button in the hero, and stays absent from a book holding none or not out yet. Its documents stand side by side in one grid, centred when they are few, in the order the site names its levels, then those under none. Each thumbnail is captioned by its level, or by its title when the site names none or the document has none, the title staying the image's alt and the link's title, and a click opens the PDF in a new tab. A site calls it what it is through `getSections()`, its order and its anchor included:
 
 ```php
 'printables' => ['anchor' => 'activites', 'label' => 'Activités', 'intro' => 'Des activités tirées de ce livre, à imprimer.'],
