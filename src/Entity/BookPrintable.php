@@ -25,6 +25,9 @@ class BookPrintable extends Media implements VichMediaNamableInterface
     #[ORM\JoinColumn(nullable: true)]
     private ?Book $book = null;
 
+    // Never stored: the words the site names its documents by, set right before an upload (see BookPrintableNamer)
+    private string $namePrefix = '';
+
     // Checked on the row rather than on the form's field, shared by every collection holding anything: an image here would have no document to print and no thumbnail to show
     #[Assert\Callback]
     public function validatePdf(ExecutionContextInterface $context): void
@@ -50,8 +53,21 @@ class BookPrintable extends Media implements VichMediaNamableInterface
         return $this;
     }
 
+    public function getNamePrefix(): string
+    {
+        return $this->namePrefix;
+    }
+
+    public function setNamePrefix(string $namePrefix): static
+    {
+        $this->namePrefix = $namePrefix;
+
+        return $this;
+    }
+
+    // The prefix first, so a downloaded file says what it is before naming its book
     public function getVichMediaPath(): string
     {
-        return self::MEDIA_DIRECTORY . '/printables/' . ($this->book?->getSlug() ?? 'temp');
+        return self::MEDIA_DIRECTORY . '/printables/' . ('' !== $this->namePrefix ? $this->namePrefix . '-' : '') . ($this->book?->getSlug() ?? 'temp');
     }
 }

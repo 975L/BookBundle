@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.30.0
+
+Documents to print stored under the word the site names them by
+
+- `getSections()`: a `filename` key on `printables`, the word a document to print is stored under (05/11/2026)
+- `BookPrintableNamer`: that word, then the level, in the book's language, before the book's slug (05/11/2026)
+- `BookPrintableNameListener`: the prefix given on every upload, form, import and duplication alike (05/11/2026)
+- `c975l:book:printables:rename`: the stored documents and their thumbnails brought to that name (05/11/2026)
+
 ## v2.29.1
 
 Documents to print in one centred grid, captioned by their level

@@ -71,4 +71,12 @@ class BookPrintableTest extends TestCase
 
         $this->assertSame('medias/book/printables/contes-du-soir', $printable->getVichMediaPath());
     }
+
+    // The words the site names its documents by come before the book's slug
+    public function testItsPrefixComesBeforeTheBooksSlug(): void
+    {
+        $printable = new BookPrintable()->setBook(new Book()->setSlug('contes-du-soir'))->setNamePrefix('activity-beginners');
+
+        $this->assertSame('medias/book/printables/activity-beginners-contes-du-soir', $printable->getVichMediaPath());
+    }
 }

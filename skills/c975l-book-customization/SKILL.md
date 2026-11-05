@@ -32,7 +32,7 @@ class CatalogCustomization implements BookCustomizationProviderInterface
         return ['epub_local' => ['label' => 'La librairie du coin', 'group' => 'epub', 'icon' => 'images/coin.svg']];
     }
     public function getPrintableKinds(): array { return ['beginner' => 'Débutants', 'advanced' => 'Confirmés']; }
-    public function getSections(): array     { return ['informations' => ['label' => 'Fiche technique'], 'printables' => ['label' => 'Activités'], 'shops' => []]; }
+    public function getSections(): array     { return ['informations' => ['label' => 'Fiche technique'], 'printables' => ['label' => 'Activités', 'filename' => 'activite'], 'shops' => []]; }
     public function getDataFormType(): ?string { return CatalogBookDataType::class; }
 }
 ```
@@ -44,7 +44,7 @@ class CatalogCustomization implements BookCustomizationProviderInterface
 | `getContributorRoles()` | `BookContributorRole` | `role => label` |
 | `getLinkKinds()` | `BookLinkKind` | `kind => ['label', 'group', 'icon']` |
 | `getPrintableKinds()` | no level asked, each document captioned by its title | `kind => label` |
-| `getSections()` | the bundle's own page | `key => ['anchor', 'label', 'intro', 'domain', 'icon', 'animation', 'template', 'form', 'field', 'cache']` |
+| `getSections()` | the bundle's own page | `key => ['anchor', 'label', 'intro', 'domain', 'icon', 'animation', 'template', 'form', 'field', 'filename', 'cache']` |
 | `getDataFormType()` | no extra fields | a form class mapped on `Book::$data` |
 
 A **label is a plain word or a translation key**: it goes through the translator in the `book` catalog (or
@@ -62,8 +62,8 @@ rather than throwing: a forgotten declaration is then visible on the page instea
 ### Sections
 
 The order of the array **is** the order of the page. A key left out comes after the declared ones, in the
-bundle's order, keeping the name and the plain card the bundle gives it. Three things a declaration does
-that nothing else can:
+bundle's order, keeping the name and the plain card the bundle gives it. What a declaration does that
+nothing else can:
 
 - `template` adds a fragment of the site's **inside** the card, with the book at hand. Declared under `hero`
   it is included right under the title instead — where a site says what its own books carry.
@@ -72,6 +72,9 @@ that nothing else can:
   it takes, `field` the property it is written in — which is what gives it the same editor's pencil as the
   bundle's sections (`data` for a rubric held in the site's own fields).
 - `animation` is the very entrance effect a block carries, read by UiBundle's `animate-scroll.js`.
+- `filename`, on `printables` only, is the word a document to print is stored under, in the book's language,
+  then its level and its book's slug (`BookPrintableNamer`): the file a reader downloads says what it is.
+  `c975l:book:printables:rename --force` brings the documents uploaded before it to that name.
 - `cache: false` keeps the whole run of sections out of the cache, and so does a `template` without `cache: true` — a fragment may print something of one visitor (a form and its csrf token), so it is cached only when the site declares `cache: true`.
 
 ## The catalog contract

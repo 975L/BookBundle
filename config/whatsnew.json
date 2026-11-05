@@ -3,6 +3,11 @@
         "date": "2026-11-05",
         "description": [
             {
+                "en": "A downloaded document to print now carries in its name what it is and its level, followed by the book, for example a colouring page for the little ones, as your site names them.",
+                "fr": "Un document à imprimer téléchargé porte désormais dans son nom ce qu'il est et son niveau, suivis du livre, par exemple un coloriage pour les petits, selon les mots de votre site.",
+                "es": "Un documento para imprimir descargado lleva ahora en su nombre lo que es y su nivel, seguidos del libro, por ejemplo un dibujo para colorear para los pequeños, según las palabras de su sitio."
+            },
+            {
                 "en": "On a book's page, the documents to print now stand side by side in a single centred grid, each captioned by its level when your site has levels, and a click opens the PDF in a new tab instead of downloading it.",
                 "fr": "Sur la page d'un livre, les documents à imprimer sont désormais côte à côte dans une seule grille centrée, chacun légendé par son niveau si votre site en propose, et un clic ouvre le PDF dans un nouvel onglet au lieu de le télécharger.",
                 "es": "En la página de un libro, los documentos para imprimir aparecen ahora uno al lado del otro en una sola cuadrícula centrada, cada uno con su nivel como leyenda si su sitio los ofrece, y un clic abre el PDF en una nueva pestaña en lugar de descargarlo."
