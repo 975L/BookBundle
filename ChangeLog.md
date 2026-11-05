@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.28.7
+
+Silent hosts asked once more by the link health check
+
+- `BookLinkHealthCheckProvider`: a host not answering is asked once more before being reported (05/11/2026)
+- README lists every status code the link health check retries (05/11/2026)
+
 ## v2.28.6
 
 bin/ci.sh takes lizard's latest release, as the CI does

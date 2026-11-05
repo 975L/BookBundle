@@ -1,5 +1,15 @@
 [
     {
+        "date": "2026-11-05",
+        "description": [
+            {
+                "en": "The check of a book's links asks a site that does not answer a second time before reporting it, which avoids false alerts on working links.",
+                "fr": "La vérification des liens d'un livre interroge une seconde fois un site qui ne répond pas avant de le signaler, ce qui évite les fausses alertes sur des liens qui fonctionnent.",
+                "es": "La comprobación de los enlaces de un libro consulta por segunda vez un sitio que no responde antes de señalarlo, lo que evita falsas alertas en enlaces que funcionan."
+            }
+        ]
+    },
+    {
         "date": "2026-11-01",
         "description": [
             {

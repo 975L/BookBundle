@@ -1036,7 +1036,7 @@ Every book is checked, published or not — a book to be published shows its pre
 
 An address of the site itself — the site's own shop, written as the page reads it (`/shop/...`) — is probed under the address the site declares in `site-url`, and reported as nothing to probe when the site declares none.
 
-A store answering 429 or 503 — throttling a burst of probes, as Google Play does — is asked once more after a pause, and only that second answer is reported.
+A store answering 429, 500, 502, 503 or 504 — throttling a burst of probes, as Google Play does, or failing on its own side — or not answering at all is asked once more after a pause, and only that second answer is reported.
 
 #### A file the database declares and the server no longer has
 

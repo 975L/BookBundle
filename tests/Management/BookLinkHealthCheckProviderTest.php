@@ -90,6 +90,24 @@ class BookLinkHealthCheckProviderTest extends TestCase
         $this->assertSame('label.health_check_link_broken', $rows[0]['summary']);
     }
 
+    // A single probe timing out says nothing of the host: asked once more, the page answering then is what is reported
+    public function testAHostNotAnsweringOnceIsAskedOnceMore(): void
+    {
+        $rows = $this->retriedProvider(null, 200)->runChecks();
+
+        $this->assertSame(HealthCheckResult::STATUS_OK, $rows[0]['status']);
+        $this->assertSame(200, $rows[0]['details']['httpCode']);
+    }
+
+    // A host still silent once asked again is reported as unreachable
+    public function testAHostStillNotAnsweringOnceAskedAgainIsAnError(): void
+    {
+        $rows = $this->retriedProvider(null, null)->runChecks();
+
+        $this->assertSame(HealthCheckResult::STATUS_ERROR, $rows[0]['status']);
+        $this->assertSame('label.health_check_link_unreachable', $rows[0]['summary']);
+    }
+
     // A host that never answered at all is not a page answering 404, and the two read differently on the dashboard
     public function testAHostThatNeverAnsweredIsToldFromAPageAnswering(): void
     {
@@ -210,11 +228,12 @@ class BookLinkHealthCheckProviderTest extends TestCase
             $this->configService($siteUrl),
             $this->adminUrlGenerator(),
             $this->translator(),
+            0,
         );
     }
 
     // One book whose store answers $first, then $second when asked again, with no pause between the two
-    private function retriedProvider(int $first, int $second): BookLinkHealthCheckProvider
+    private function retriedProvider(?int $first, ?int $second): BookLinkHealthCheckProvider
     {
         $checker = $this->createMock(UrlStatusChecker::class);
         $checker->expects($this->exactly(2))->method('status')->willReturnOnConsecutiveCalls($first, $second);

@@ -136,12 +136,12 @@ class BookLinkHealthCheckProvider implements HealthCheckExhaustiveInterface
         return $this->verdict($url, $url, $label, $owner, $link);
     }
 
-    // What the host answered, read from the status code alone: the row is filed under the address as it is stored, whichever one was actually probed
+    // What the host answered, read from the status code alone: the row is filed under the address as it is stored, whichever one was actually probed. No answer at all is asked once more as well, a single probe timing out saying nothing of the host
     /** @return array{url: string, label: string, status: string, summary: string, details: array<string, mixed>, editUrl: ?string} */
     private function verdict(string $url, string $probed, string $label, Book | Contributor $owner, PlatformLinkInterface $link): array
     {
         $code = $this->urlStatusChecker->status($probed);
-        if (\in_array($code, self::RETRY_LATER_CODES, true)) {
+        if (null === $code || \in_array($code, self::RETRY_LATER_CODES, true)) {
             sleep($this->retryDelay);
             $code = $this->urlStatusChecker->status($probed);
         }
