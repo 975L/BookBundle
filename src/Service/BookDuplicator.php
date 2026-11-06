@@ -219,7 +219,7 @@ class BookDuplicator
         }
 
         foreach ($source->getPrintables() as $printable) {
-            $copy->addPrintable($this->cloneMedia($printable));
+            $copy->addPrintable($this->cloneMedia($printable)->setPublishedOn($printable->getPublishedOn()));
         }
 
         foreach ($source->getBlocks() as $block) {

@@ -11,8 +11,10 @@
 namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\SerieMedia;
 use c975L\BookBundle\Management\MediaArchiver;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -69,6 +71,29 @@ class MediaArchiverTest extends TestCase
         $this->assertFileExists($this->projectDir . '/public/' . self::PAGE);
         $this->assertFileExists($this->projectDir . '/public/medias/book/books/page-la-moto/page-abc123-highres.webp');
         $this->assertFileDoesNotExist($this->projectDir . '/public/medias/book/books/page-la-moto/page-abc123-thumb.webp');
+    }
+
+    // A document to print travels with its day both ways, else an import would put out at once what was planned week by week
+    public function testADocumentToPrintKeepsItsDayThroughAnArchive(): void
+    {
+        $name = 'medias/book/printables/coloriage-abc123.pdf';
+        $this->write($name);
+
+        $files = [];
+        $data = $this->archiver()->export(new BookPrintable()->setName($name)->setPublishedOn(new \DateTimeImmutable('2027-01-13')), $files);
+        $this->assertSame('2027-01-13', $data['publishedOn']);
+
+        [[$imported]] = $this->archiver()->sync(new ArrayCollection(), [$data], static fn (): BookPrintable => new BookPrintable(), static fn (): null => null, static fn (): null => null);
+        $this->assertSame('2027-01-13', $imported->getPublishedOn()?->format('Y-m-d'));
+    }
+
+    // Any other media carries no such key
+    public function testAnotherMediaCarriesNoDay(): void
+    {
+        $this->write(self::PAGE);
+
+        $files = [];
+        $this->assertArrayNotHasKey('publishedOn', $this->archiver()->export(new BookMedia()->setName(self::PAGE), $files));
     }
 
     private function archiver(): MediaArchiver

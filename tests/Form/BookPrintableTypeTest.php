@@ -47,16 +47,18 @@ class BookPrintableTypeTest extends TestCase
 
     public function testASiteNamingNoLevelIsNotAskedForOne(): void
     {
-        $this->assertSame(['position', 'title', 'file'], $this->fields([]));
+        $this->assertSame(['position', 'title', 'file', 'publishedOn'], $this->fields([]));
     }
 
     public function testASiteNamingLevelsChoosesOne(): void
     {
-        $this->assertSame(['position', 'title', 'file', 'kind'], $this->fields(['small' => 'Small']));
+        $this->assertSame(['position', 'title', 'file', 'publishedOn', 'kind'], $this->fields(['small' => 'Small']));
     }
 
+    // The day and the level are the same in every language
     public function testALanguageScreenAsksForNoLevel(): void
     {
         $this->assertNotContains('kind', $this->fields(['small' => 'Small'], ['translation_locale' => 'en']));
+        $this->assertNotContains('publishedOn', $this->fields(['small' => 'Small'], ['translation_locale' => 'en']));
     }
 }

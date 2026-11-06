@@ -876,7 +876,7 @@ It is what the listening pages (`book-route-listen`, left empty by default) turn
 
 ### Documents to print
 
-A book can offer documents a reader prints at home — colouring pages, activity sheets, patterns. They are PDFs, added in the "To print" collection of the book's "Page" tab (`BookPrintable`), each with a title and, on a site declaring `getPrintableKinds()`, a level. UiBundle cuts the thumbnail from the first page, with a placeholder on a host without Ghostscript, and the file is never resized.
+A book can offer documents a reader prints at home — colouring pages, activity sheets, patterns. They are PDFs, added in the "To print" collection of the book's "Page" tab (`BookPrintable`), each with a title, an optional publication day and, on a site declaring `getPrintableKinds()`, a level. A document dated ahead stays off the book's page and the `book_printables` block until that day, so a series of colouring pages can come out one at a time with nobody saving anything; undated, it shows as soon as it is saved. Its file keeps its address all the same. UiBundle cuts the thumbnail from the first page, with a placeholder on a host without Ghostscript, and the file is never resized.
 
 The `printables` section (`Book:Printables`) comes right before the informations, has its button in the hero, and stays absent from a book holding none or not out yet. Its documents stand side by side in one grid, centred when they are few, in the order the site names its levels, then those under none. Each thumbnail is captioned by its level, or by its title when the site names none or the document has none, the title staying the image's alt and the link's title, and a click opens the PDF in a new tab. A site calls it what it is through `getSections()`, its order and its anchor included:
 
@@ -886,7 +886,7 @@ The `printables` section (`Book:Printables`) comes right before the informations
 
 `filename` is the word the file is stored under, so the one a reader downloads says what it is: read in the book's language, then followed by the document's level and the book's slug (`activite-debutants-contes-du-soir-<id>.pdf`). Without it a document goes by its book's slug alone. Documents uploaded before it was set, or whose book changed its slug, are brought to that name, thumbnail included, by `php bin/console c975l:book:printables:rename`, which lists them and renames them with `--force`.
 
-The `book_printables` block lists the published books holding at least one, each shown by its first document and leading to that section. It takes the head and the selection of the other listing kinds, is cached under the same catalog tag as `book_books`, and is what a site composes into a page of its own: the page, its address and its menu entry stay the site's.
+The `book_printables` block lists the published books holding at least one document out today, each shown by its first one and leading to that section. It takes the head and the selection of the other listing kinds, is cached under the same catalog tag as `book_books` (rendered live while a book or a document waits for its day), and is what a site composes into a page of its own: the page, its address and its menu entry stay the site's.
 
 ### Structured data
 

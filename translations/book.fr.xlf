@@ -532,7 +532,7 @@
             </trans-unit>
             <trans-unit id="9ADdrUI">
                 <source>description.guided_step_book_printables_list</source>
-                <target>Une ligne par document : un titre, le fichier PDF et, si votre site en propose, un niveau. La vignette est tirée de la première page du PDF.</target>
+                <target>Une ligne par document : un titre, le fichier PDF et, si votre site en propose, un niveau. La vignette est tirée de la première page du PDF. Une date de publication fait apparaître le document ce jour-là, tout seul : pratique pour sortir vos coloriages un par un.</target>
             </trans-unit>
             <trans-unit id="XhT2pVC">
                 <source>description.guided_step_book_printables_open</source>
@@ -2809,6 +2809,14 @@
             <trans-unit id="ytPF5.m">
                 <source>label.printable_kind</source>
                 <target>Niveau</target>
+            </trans-unit>
+            <trans-unit id="DQzNWp0">
+                <source>label.printable_published_on</source>
+                <target>Publié le</target>
+            </trans-unit>
+            <trans-unit id="dD69zYv">
+                <source>label.printable_published_on-help</source>
+                <target>Vide : visible dès l'enregistrement. Une date : le document apparaît ce jour-là, tout seul.</target>
             </trans-unit>
             <trans-unit id="buEZzM2">
                 <source>label.printables</source>

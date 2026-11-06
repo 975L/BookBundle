@@ -456,7 +456,7 @@
             </trans-unit>
             <trans-unit id="TVxwTVM">
                 <source>narration.guided_step_book_printables_list</source>
-                <target>Añada una línea por documento: un título, el archivo PDF y, si su sitio los ofrece, un nivel. La miniatura sale de la primera página del PDF.</target>
+                <target>Añada una línea por documento: un título, el archivo PDF y, si su sitio los ofrece, un nivel. La miniatura sale de la primera página del PDF. Una fecha de publicación hace aparecer el documento ese día, solo: práctico para publicar sus dibujos para colorear uno a uno.</target>
             </trans-unit>
             <trans-unit id="O3mhk2L">
                 <source>narration.guided_step_book_printables_open</source>

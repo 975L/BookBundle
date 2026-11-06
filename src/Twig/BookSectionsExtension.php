@@ -76,7 +76,7 @@ class BookSectionsExtension
                 'presse' => ['label.presse', !$book->getPresses()->isEmpty()],
                 'marketing' => ['label.marketing', !$book->getMarketings()->isEmpty()],
                 // Right before the informations: what a reader takes away once the book is read, the informations closing the page - nothing to take away from a book not out yet
-                'printables' => ['label.printables', !$book->isToBePublished() && !$book->getPrintables()->isEmpty()],
+                'printables' => ['label.printables', !$book->isToBePublished() && [] !== $book->getPublishedPrintables()],
                 // Always: a book with no field filled in still says when it comes out and who wrote it
                 'informations' => ['label.informations', true],
             ], $locale),
@@ -187,7 +187,7 @@ class BookSectionsExtension
         return $this->translator->trans($anchor, [], \is_string($declared['domain'] ?? null) ? $declared['domain'] : 'book', $locale);
     }
 
-    // A book's documents to print, one group per level in the order the site names them, then those filed under no level the site still names: a level taken out of the vocabulary must not hide what was uploaded under it. A site naming none gets one group, under no label, each document then captioned by its own title
+    // A book's documents to print out today, one group per level in the order the site names them, then those filed under no level the site still names: a level taken out of the vocabulary must not hide what was uploaded under it. A site naming none gets one group, under no label, each document then captioned by its own title
     /** @return list<array{label: string, printables: list<BookPrintable>}> */
     #[AsTwigFunction('book_printables_by_kind')]
     public function printablesByKind(Book $book): array
@@ -196,7 +196,7 @@ class BookSectionsExtension
         $groups = array_fill_keys(array_keys($kinds), []);
         $unfiled = [];
 
-        foreach ($book->getPrintables() as $printable) {
+        foreach ($book->getPublishedPrintables() as $printable) {
             if (isset($groups[(string) $printable->getKind()])) {
                 $groups[(string) $printable->getKind()][] = $printable;
             } else {

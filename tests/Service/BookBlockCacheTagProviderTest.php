@@ -83,6 +83,15 @@ class BookBlockCacheTagProviderTest extends TestCase
         $this->assertSame([BookBlockCacheInvalidator::CACHE_TAG_CATALOG], $resolvers['book_books'](new Block()));
     }
 
+    // A document to print dated ahead holds back the listing of the books to print from, and that one only: the day it comes out, no row is saved either
+    public function testAScheduledPrintableDeclinesTheEntryOfThePrintablesListing(): void
+    {
+        $resolvers = $this->resolvers(false, false, true);
+
+        $this->assertNull($resolvers['book_printables'](new Block()));
+        $this->assertSame([BookBlockCacheInvalidator::CACHE_TAG_CATALOG], $resolvers['book_books'](new Block()));
+    }
+
     // A listing drawing its rows at random is rendered live whatever the calendar: a cached entry would freeze one single draw until the catalog itself changed
     public function testAListingDrawingAtRandomDeclinesItsEntry(): void
     {
@@ -111,12 +120,13 @@ class BookBlockCacheTagProviderTest extends TestCase
         $resolvers['book_books'](new Block());
     }
 
-    private function resolvers(bool $scheduledBook = false, bool $scheduledStrip = false): array
+    private function resolvers(bool $scheduledBook = false, bool $scheduledStrip = false, bool $scheduledPrintable = false): array
     {
-        return new BookBlockCacheTagProvider(
-            $this->repository(BookRepository::class, $scheduledBook),
-            $this->repository(StripRepository::class, $scheduledStrip),
-        )->getCacheTagResolvers();
+        $bookRepository = $this->createStub(BookRepository::class);
+        $bookRepository->method('hasScheduled')->willReturn($scheduledBook);
+        $bookRepository->method('hasScheduledPrintables')->willReturn($scheduledPrintable);
+
+        return new BookBlockCacheTagProvider($bookRepository, $this->repository(StripRepository::class, $scheduledStrip))->getCacheTagResolvers();
     }
 
     private function repository(string $class, bool $scheduled): BookRepository | StripRepository

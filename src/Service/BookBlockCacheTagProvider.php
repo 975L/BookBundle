@@ -23,7 +23,6 @@ class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, Reset
     private const array BOOK_KINDS = [
         'book_books',
         'book_to_be_published',
-        'book_printables',
     ];
 
     // The kinds reading no date at all: a serie is listed whatever the hour, a category as long as it holds a book the site shows, a person as long as they are credited on something (see BookCategoryRepository::findWithBooks and ContributorRepository::findCredited). Their entry only ever goes stale on a row being saved, which the tag covers - the draw at random set aside, see resolveCatalog()
@@ -37,6 +36,8 @@ class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, Reset
     private ?bool $scheduledBook = null;
 
     private ?bool $scheduledStrip = null;
+
+    private ?bool $scheduledPrintable = null;
 
     public function __construct(
         private readonly BookRepository $bookRepository,
@@ -56,6 +57,7 @@ class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, Reset
             $resolvers[$kind] = $this->resolveBooks(...);
         }
 
+        $resolvers['book_printables'] = $this->resolvePrintables(...);
         $resolvers['book_serie_strips'] = $this->resolveStrips(...);
 
         return $resolvers;
@@ -66,6 +68,7 @@ class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, Reset
     {
         $this->scheduledBook = null;
         $this->scheduledStrip = null;
+        $this->scheduledPrintable = null;
     }
 
     // The kinds reading no date: nothing but the draw can make their entry go stale
@@ -88,6 +91,21 @@ class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, Reset
         }
 
         return ($this->scheduledBook ??= $this->bookRepository->hasScheduled())
+            ? null
+            : [BookBlockCacheInvalidator::CACHE_TAG_CATALOG];
+    }
+
+    // The books holding a document to print move on two dates: the book's own, and each document's day (see BookPrintable::$publishedOn), which a series of colouring pages coming out one a week always has ahead
+    /**
+     * @return string[]|null
+     */
+    private function resolvePrintables(Block $block): ?array
+    {
+        if (null === $this->resolveBooks($block)) {
+            return null;
+        }
+
+        return ($this->scheduledPrintable ??= $this->bookRepository->hasScheduledPrintables())
             ? null
             : [BookBlockCacheInvalidator::CACHE_TAG_CATALOG];
     }

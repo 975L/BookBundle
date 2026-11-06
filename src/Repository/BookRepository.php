@@ -12,7 +12,9 @@ namespace c975L\BookBundle\Repository;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookEdition;
+use c975L\BookBundle\Entity\BookPrintable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -199,6 +201,20 @@ class BookRepository extends ServiceEntityRepository
         return $counts;
     }
 
+    // Whether a document to print waits for a day still ahead, the same question for the "book_printables" block
+    public function hasScheduledPrintables(): bool
+    {
+        return [] !== $this->getEntityManager()->createQueryBuilder()
+            ->select('printable.id')
+            ->from(BookPrintable::class, 'printable')
+            ->andWhere('printable.publishedOn > :today')
+            ->setParameter('today', new \DateTimeImmutable('today'), Types::DATE_IMMUTABLE)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // Whether a book waits for a date still ahead, which is what tells a listing moving on its own from one only ever changed by a save: the answer is what BookBlockCacheTagProvider caches or renders live on. A book left undated is not one of them - it comes out the day someone dates it, which is an event of its own
     public function hasScheduled(): bool
     {
@@ -294,13 +310,14 @@ class BookRepository extends ServiceEntityRepository
         return $this->withCovers($books);
     }
 
-    // What the "book_printables" block lists: the books a reader can print something from, each with its documents joined so that the block reads the first one's thumbnail without a query per book
+    // What the "book_printables" block lists: the books a reader can print something from today, each with its documents joined so that the block reads the first one's thumbnail without a query per book
     /** @return Book[] */
     public function findAllWithPrintables(): array
     {
         return $this->publishedQueryBuilder()
-            ->innerJoin('b.printables', 'printable')
+            ->innerJoin('b.printables', 'printable', 'WITH', 'printable.publishedOn IS NULL OR printable.publishedOn <= :today')
             ->addSelect('printable')
+            ->setParameter('today', new \DateTimeImmutable('today'), Types::DATE_IMMUTABLE)
             ->addOrderBy('b.id', \SortDirection::Descending)
             ->getQuery()
             ->getResult()

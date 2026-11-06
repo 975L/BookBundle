@@ -532,7 +532,7 @@
             </trans-unit>
             <trans-unit id="9ADdrUI">
                 <source>description.guided_step_book_printables_list</source>
-                <target>One row per document: a title, the PDF file and, if your site offers them, a level. The thumbnail comes from the PDF's first page.</target>
+                <target>One row per document: a title, the PDF file and, if your site offers them, a level. The thumbnail comes from the PDF's first page. A publication date makes the document show up on that day, by itself: handy to release your colouring pages one at a time.</target>
             </trans-unit>
             <trans-unit id="XhT2pVC">
                 <source>description.guided_step_book_printables_open</source>
@@ -2809,6 +2809,14 @@
             <trans-unit id="ytPF5.m">
                 <source>label.printable_kind</source>
                 <target>Level</target>
+            </trans-unit>
+            <trans-unit id="DQzNWp0">
+                <source>label.printable_published_on</source>
+                <target>Published on</target>
+            </trans-unit>
+            <trans-unit id="dD69zYv">
+                <source>label.printable_published_on-help</source>
+                <target>Empty: visible as soon as it is saved. A date: the document shows up on that day, by itself.</target>
             </trans-unit>
             <trans-unit id="buEZzM2">
                 <source>label.printables</source>

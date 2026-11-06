@@ -456,7 +456,7 @@
             </trans-unit>
             <trans-unit id="TVxwTVM">
                 <source>narration.guided_step_book_printables_list</source>
-                <target>Add one row per document: a title, the PDF file and, if your site offers them, a level. The thumbnail comes from the PDF's first page.</target>
+                <target>Add one row per document: a title, the PDF file and, if your site offers them, a level. The thumbnail comes from the PDF's first page. A publication date makes the document show up on that day, by itself: handy to release your colouring pages one at a time.</target>
             </trans-unit>
             <trans-unit id="O3mhk2L">
                 <source>narration.guided_step_book_printables_open</source>

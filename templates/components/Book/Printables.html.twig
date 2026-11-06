@@ -2,7 +2,7 @@
 {% props book, section = {}, editUrl = "" %}
 {% set section = {anchor: 'printables', label: 'label.printables'|trans({}, 'book', book_ui_locale(book.language))}|merge(section) %}
 {# Nothing to print from a book not out yet, as nothing to listen to (see Book:Podcasts) #}
-{% if not book.isToBePublished and book.printables is not empty %}
+{% if not book.isToBePublished and book.publishedPrintables is not empty %}
     {% set body %}
         {# One grid in the order the site names its levels, each document captioned by its level: a parent looks for their child's age rather than for a drawing. A document under no level keeps its own title #}
         <div class="book-printables">

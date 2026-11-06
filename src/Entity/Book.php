@@ -871,6 +871,13 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this->printables;
     }
 
+    // The documents a reader may print today, those dated ahead left out until their day
+    /** @return list<BookPrintable> */
+    public function getPublishedPrintables(): array
+    {
+        return array_values($this->printables->filter(static fn (BookPrintable $printable): bool => $printable->isPublished())->toArray());
+    }
+
     public function addPrintable(BookPrintable $printable): static
     {
         if (!$this->printables->contains($printable)) {

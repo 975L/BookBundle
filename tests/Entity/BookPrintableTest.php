@@ -64,6 +64,27 @@ class BookPrintableTest extends TestCase
         $this->assertCount(0, $book->getPrintables());
     }
 
+    // Out the day it is dated, whatever the hour, and at once when it has no day
+    public function testItIsPublishedFromItsDayOn(): void
+    {
+        $this->assertTrue(new BookPrintable()->isPublished());
+        $this->assertTrue(new BookPrintable()->setPublishedOn(new \DateTimeImmutable('today'))->isPublished());
+        $this->assertTrue(new BookPrintable()->setPublishedOn(new \DateTimeImmutable('yesterday'))->isPublished());
+        $this->assertFalse(new BookPrintable()->setPublishedOn(new \DateTimeImmutable('tomorrow'))->isPublished());
+    }
+
+    // The book's page and the listing read only what is out today, in the order the book holds them
+    public function testTheBookOffersOnlyItsPublishedDocuments(): void
+    {
+        $out = new BookPrintable();
+        $later = new BookPrintable()->setPublishedOn(new \DateTimeImmutable('+7 days'));
+        $today = new BookPrintable()->setPublishedOn(new \DateTimeImmutable('today'));
+        $book = new Book()->addPrintable($out)->addPrintable($later)->addPrintable($today);
+
+        $this->assertSame([$out, $today], $book->getPublishedPrintables());
+        $this->assertSame([], new Book()->addPrintable($later)->getPublishedPrintables());
+    }
+
     // Under a directory of their own, the slug naming the book the way every other file a book owns does
     public function testItsFilesAreStoredUnderTheBooksSlug(): void
     {

@@ -92,7 +92,7 @@ class BookRepositoryTest extends TestCase
     {
         $this->createRepository()->findAllWithPrintables();
 
-        $this->assertStringContainsString('INNER JOIN b.printables printable', $this->dql);
+        $this->assertStringContainsString('INNER JOIN b.printables printable WITH printable.publishedOn IS NULL OR printable.publishedOn <= :today', $this->dql);
         $this->assertStringContainsString('printable', explode(' FROM ', $this->dql)[0]);
         $this->assertStringContainsString('b.hidden = false', $this->dql);
         $this->assertStringContainsString('b.published <= :now', $this->dql);
@@ -167,6 +167,13 @@ class BookRepositoryTest extends TestCase
         $this->createRepository()->hasScheduled();
 
         $this->assertStringContainsString('b.published > :now', $this->dql);
+    }
+
+    // A document to print dated ahead is what keeps the listing of the books to print from rendered live
+    public function testAScheduledDocumentToPrintIsLookedForOnASingleRow(): void
+    {
+        $this->assertFalse($this->createRepository()->hasScheduledPrintables());
+        $this->assertStringContainsString('printable.publishedOn > :today', $this->dql);
     }
 
     // One row is enough to answer, where reading the whole catalog would cost a query per block

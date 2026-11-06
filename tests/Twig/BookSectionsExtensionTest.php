@@ -70,6 +70,17 @@ class BookSectionsExtensionTest extends TestCase
         $this->assertNotContains('printables', $this->anchors(new Book()->addPrintable(new BookPrintable())));
     }
 
+    // A book whose every document waits for its day shows no section yet, and the grouping leaves out what is not out
+    public function testADocumentDatedAheadStaysOffThePage(): void
+    {
+        $later = new BookPrintable()->setKind('small')->setPublishedOn(new \DateTimeImmutable('+7 days'));
+        $this->assertNotContains('printables', $this->anchors(new Book()->setPublished(new \DateTimeImmutable('-1 month'))->addPrintable($later)));
+
+        $out = new BookPrintable()->setKind('small');
+        $book = new Book()->addPrintable($later)->addPrintable($out);
+        $this->assertSame([['label' => 'Small', 'printables' => [$out]]], $this->extensionNamingLevels(['small' => 'Small'])->printablesByKind($book));
+    }
+
     // A level captions documents only if it holds one, in the order the site names them whatever the order of the rows
     public function testThePrintablesAreGroupedInTheOrderTheSiteNamesItsLevels(): void
     {

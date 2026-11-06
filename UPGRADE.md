@@ -2,6 +2,10 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.31.0
+
+**A document to print can be given a publication day.** `book_media` gets a nullable `published_on` column, which `doctrine:schema:update` (or a migration) adds. Nothing changes until a document is dated: an undated one shows as before. **A site overriding `Book/Printables.html.twig` or `blocks/Printables.html.twig`** reads `book.publishedPrintables` instead of `book.printables`, or a document dated ahead shows before its day.
+
 ## v2.29.0
 
 **`BookCustomizationProviderInterface` gets `getPrintableKinds()`**: a site with a class implementing it adds the method before updating, or the container fails with a fatal error. Returning `[]` files its documents to print under no level, and the method can be added while the site is still on an older version, as long as it carries no `#[\Override]` until the update:

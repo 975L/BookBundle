@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Management;
 
+use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\Media;
 use c975L\UiBundle\Contract\VichMultiSizeImageInterface;
 use c975L\UiBundle\Storage\PrivateDirectory;
@@ -45,7 +46,7 @@ class MediaArchiver
             return null;
         }
 
-        return [
+        $data = [
             'name' => $name,
             'kind' => $media->getKind(),
             'title' => $media->getTitle(),
@@ -57,6 +58,13 @@ class MediaArchiver
             'updatedAt' => $media->getUpdatedAt()?->format(\DateTimeInterface::ATOM),
             'file' => $file,
         ];
+
+        // A document to print travels with its day, else an import would put out at once what was planned week by week
+        if ($media instanceof BookPrintable) {
+            $data['publishedOn'] = $media->getPublishedOn()?->format('Y-m-d');
+        }
+
+        return $data;
     }
 
     /**
@@ -150,6 +158,10 @@ class MediaArchiver
             ->setUploadDate(isset($mediaData['uploadDate']) ? new \DateTimeImmutable($mediaData['uploadDate']) : null)
             // The column is not nullable, so an archive predating it dates the row from the import rather than leaving it unwritten
             ->setUpdatedAt(isset($mediaData['updatedAt']) ? new \DateTimeImmutable($mediaData['updatedAt']) : new \DateTimeImmutable());
+
+        if ($media instanceof BookPrintable) {
+            $media->setPublishedOn(isset($mediaData['publishedOn']) ? new \DateTimeImmutable($mediaData['publishedOn']) : null);
+        }
     }
 
     // Registers one physical file for the zip archive and returns the reference the metadata carries, null for a file that has since left the disk so an archive never points at bytes it doesn't hold. The random prefix keeps the same-named files of two medias apart, an archive laying every file of every kind in one flat directory

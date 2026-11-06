@@ -4,7 +4,7 @@
     <twig:c975LBook:Listing:Section eyebrow="{{ eyebrow|default('') }}" title="{{ title|default('') }}" text="{{ content|default('') }}" background="{{ background|default('') }}" linkLabel="{{ linkLabel|default('') }}" linkUrl="{{ linkUrl|default('') }}" id="{{ anchor_id }}">
         <div class="book-printables book-printables--catalog">
             {% for book in books %}
-                <twig:c975LBook:Book:Printable printable="{{ book.printables.first }}" url="{{ book_path('book_display', {'slug': book.slug}) }}#{{ book_section_anchor('printables', book.language) }}" label="{{ book.title }}"/>
+                <twig:c975LBook:Book:Printable printable="{{ book.publishedPrintables|first }}" url="{{ book_path('book_display', {'slug': book.slug}) }}#{{ book_section_anchor('printables', book.language) }}" label="{{ book.title }}"/>
             {% endfor %}
         </div>
     </twig:c975LBook:Listing:Section>

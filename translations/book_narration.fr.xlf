@@ -456,7 +456,7 @@
             </trans-unit>
             <trans-unit id="TVxwTVM">
                 <source>narration.guided_step_book_printables_list</source>
-                <target>Ajoutez une ligne par document : un titre, le fichier PDF et, si votre site en propose, un niveau. La vignette est tirée de la première page du PDF.</target>
+                <target>Ajoutez une ligne par document : un titre, le fichier PDF et, si votre site en propose, un niveau. La vignette est tirée de la première page du PDF. Une date de publication fait apparaître le document ce jour-là, tout seul : pratique pour sortir vos coloriages un par un.</target>
             </trans-unit>
             <trans-unit id="O3mhk2L">
                 <source>narration.guided_step_book_printables_open</source>

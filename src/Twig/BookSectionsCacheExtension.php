@@ -15,7 +15,7 @@ use Twig\Attribute\AsTwigFunction;
 // What book/display.html.twig needs to hold a book's sections in the cache (see book/_sections.html.twig): how long the entry may live, and whether every section the site declares can be held at all
 class BookSectionsCacheExtension
 {
-    // Until the next midnight: four sections compare a date with today's (the publication in Informations, Shops and Podcasts, the end of a crowdfunding), so a page cached on the eve still has to say the book is out the next morning
+    // Until the next midnight: five sections compare a date with today's (the publication in Informations, Shops and Podcasts, the end of a crowdfunding, the day of a document to print), so a page cached on the eve still has to say the book is out the next morning
     #[AsTwigFunction('book_sections_cache_ttl')]
     public static function ttl(?\DateTimeImmutable $now = null): int
     {

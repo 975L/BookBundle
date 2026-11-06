@@ -14,9 +14,10 @@ use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
 use c975L\BookBundle\Service\BookTranslator;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-// A document to print: a rank, a title and the file like every file a book owns, plus the level it is grouped under on a site naming some (see BookCustomizationProviderInterface::getPrintableKinds())
+// A document to print: a rank, a title and the file like every file a book owns, plus the day it comes out and the level it is grouped under on a site naming some (see BookCustomizationProviderInterface::getPrintableKinds())
 class BookPrintableType extends BookOwnedMediaType
 {
     public function __construct(
@@ -30,9 +31,21 @@ class BookPrintableType extends BookOwnedMediaType
     {
         parent::buildForm($builder, $options);
 
-        // A language screen offers the title alone: the level is the same in every language
+        // A language screen offers the title alone: the day and the level are the same in every language
+        if (null !== ($options['translation_locale'] ?? null)) {
+            return;
+        }
+
+        $builder->add('publishedOn', DateType::class, [
+            'label' => 'label.printable_published_on',
+            'help' => 'label.printable_published_on-help',
+            'required' => false,
+            'widget' => 'single_text',
+            'input' => 'datetime_immutable',
+        ]);
+
         $kinds = $this->customizationRegistry->getPrintableKinds();
-        if (null !== ($options['translation_locale'] ?? null) || [] === $kinds) {
+        if ([] === $kinds) {
             return;
         }
 

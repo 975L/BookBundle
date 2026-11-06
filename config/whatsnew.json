@@ -1,5 +1,15 @@
 [
     {
+        "date": "2026-11-06",
+        "description": [
+            {
+                "en": "A document to print can now be given a publication date: it stays hidden until that day, then shows up by itself on the book's page and in the list of books to print from. Handy to release your colouring pages one at a time.",
+                "fr": "Un document à imprimer peut désormais recevoir une date de publication : il reste masqué jusqu'à ce jour-là, puis apparaît tout seul sur la page du livre et dans la liste des livres à imprimer. Pratique pour sortir vos coloriages un par un.",
+                "es": "Un documento para imprimir puede recibir ahora una fecha de publicación: permanece oculto hasta ese día y luego aparece solo en la página del libro y en la lista de libros para imprimir. Práctico para publicar sus dibujos para colorear uno a uno."
+            }
+        ]
+    },
+    {
         "date": "2026-11-05",
         "description": [
             {

@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Entity;
 
 use c975L\UiBundle\Contract\VichMediaNamableInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -24,6 +25,10 @@ class BookPrintable extends Media implements VichMediaNamableInterface
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'printables')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Book $book = null;
+
+    // The day it shows on the site, so documents can come out one at a time: none, it shows as soon as it is saved
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $publishedOn = null;
 
     // Never stored: the words the site names its documents by, set right before an upload (see BookPrintableNamer)
     private string $namePrefix = '';
@@ -51,6 +56,24 @@ class BookPrintable extends Media implements VichMediaNamableInterface
         $this->book = $book;
 
         return $this;
+    }
+
+    public function getPublishedOn(): ?\DateTimeImmutable
+    {
+        return $this->publishedOn;
+    }
+
+    public function setPublishedOn(?\DateTimeImmutable $publishedOn): static
+    {
+        $this->publishedOn = $publishedOn;
+
+        return $this;
+    }
+
+    // Compared day by day like Book::isToBePublished(): a document dated today is out, whatever the hour
+    public function isPublished(): bool
+    {
+        return null === $this->publishedOn || $this->publishedOn->format('Ymd') <= new \DateTime()->format('Ymd');
     }
 
     public function getNamePrefix(): string

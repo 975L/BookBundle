@@ -35,7 +35,13 @@ class PrintablesTest extends TestCase
     // A component a site may call by itself holds the same line as the section list: nothing to print before the book is out
     public function testTheSectionComponentWaitsForTheBookToBeOut(): void
     {
-        $this->assertStringContainsString('{% if not book.isToBePublished and book.printables is not empty %}', (string) file_get_contents(__DIR__ . '/../../templates/components/Book/Printables.html.twig'));
+        $this->assertStringContainsString('{% if not book.isToBePublished and book.publishedPrintables is not empty %}', (string) file_get_contents(__DIR__ . '/../../templates/components/Book/Printables.html.twig'));
+    }
+
+    // The listing shows each book by its first document out today, never by one still waiting for its day
+    public function testTheListingShowsTheFirstDocumentOutToday(): void
+    {
+        $this->assertStringContainsString('printable="{{ book.publishedPrintables|first }}"', (string) file_get_contents(__DIR__ . '/../../templates/blocks/Printables.html.twig'));
     }
 
     private function printable(): BookPrintable

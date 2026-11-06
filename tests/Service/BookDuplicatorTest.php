@@ -140,17 +140,18 @@ class BookDuplicatorTest extends TestCase
         $this->assertSame('BD', $copy->getEditions()->first()->getFormat());
     }
 
-    // A document to print is a file of the book like the others, its level going with it
+    // A document to print is a file of the book like the others, its level and its day going with it
     public function testTheCopyOfABookCarriesItsDocumentsToPrint(): void
     {
         $book = $this->book();
-        $book->addPrintable(new BookPrintable()->setKind('small')->setTitle('La page'));
+        $book->addPrintable(new BookPrintable()->setKind('small')->setTitle('La page')->setPublishedOn(new \DateTimeImmutable('2027-01-13')));
 
         $printables = $this->duplicator->duplicateBook($book)->getPrintables();
 
         $this->assertCount(1, $printables);
         $this->assertSame('small', $printables->first()->getKind());
         $this->assertSame('La page', $printables->first()->getTitle());
+        $this->assertSame('2027-01-13', $printables->first()->getPublishedOn()?->format('Y-m-d'));
     }
 
     // A person is copied with where their books are bought, the row being theirs and not a book's (see ContributorLink)

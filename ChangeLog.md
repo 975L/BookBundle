@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.31.0
+
+Documents to print coming out on a day of their own
+
+- `BookPrintable::$publishedOn`: the day a document to print shows, none showing it at once (06/11/2026)
+- `Book::getPublishedPrintables()`: the documents out today, read by the section and the `book_printables` block (06/11/2026)
+- `BookRepository::hasScheduledPrintables()`: the `book_printables` block rendered live while a document waits for its day (06/11/2026)
+- `BookPrintableType`: the publication day, beside the level (06/11/2026)
+- Export, import and duplication carry the publication day (06/11/2026)
+
 ## v2.30.0
 
 Documents to print stored under the word the site names them by
