@@ -29,6 +29,8 @@ use c975L\BookBundle\Twig\BookPlaysExtension;
 use c975L\BookBundle\Twig\BookTranslationExtension;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\ConfigBundle\Service\LocalizedRouteNegotiator;
+use c975L\UiBundle\Entity\Media as UiMedia;
+use c975L\UiBundle\Repository\MediaRepository;
 use c975L\UiBundle\Service\ImageDimensionsReader;
 use c975L\UiBundle\Service\PlayService;
 use PHPUnit\Framework\TestCase;
@@ -49,9 +51,10 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelperInterface;
 class ListenJsonControllerTest extends TestCase
 {
     /**
-     * @param Book[] $published
+     * @param Book[]    $published
+     * @param UiMedia[] $openings
      */
-    private function createController(array $published = [], bool $translated = true, bool $pageSound = false, string $uriPrefix = '/', ?BookTranslator $bookTranslator = null, string $locale = '', string $playsMinimum = '', bool $bookPages = true, string $projectDir = ''): ListenJsonController
+    private function createController(array $published = [], bool $translated = true, bool $pageSound = false, string $uriPrefix = '/', ?BookTranslator $bookTranslator = null, string $locale = '', string $playsMinimum = '', bool $bookPages = true, string $projectDir = '', array $openings = []): ListenJsonController
     {
         $bookService = $this->createStub(BookServiceInterface::class);
         $bookService->method('findAllPublished')->willReturn($published);
@@ -78,7 +81,11 @@ class ListenJsonControllerTest extends TestCase
 
         // What the mapping answers: its uri_prefix before the file's name, and nothing for a row holding no file
         $uploaderHelper = $this->createStub(UploaderHelperInterface::class);
-        $uploaderHelper->method('asset')->willReturnCallback(static fn (Media $media): ?string => null === $media->getName() ? null : $uriPrefix . $media->getName());
+        $uploaderHelper->method('asset')->willReturnCallback(static fn (Media | UiMedia $media): ?string => $media instanceof UiMedia ? $media->getFilename() : (null === $media->getName() ? null : $uriPrefix . $media->getName()));
+
+        // The opening pictures uploaded as site graphics, asked by their role alone
+        $mediaRepository = $this->createStub(MediaRepository::class);
+        $mediaRepository->method('findBy')->willReturnCallback(static fn (array $criteria): array => [UiMedia::ROLE_APP_OPENING] === array_values($criteria) ? $openings : []);
 
         // Every book heard three times, on the site and in its apps
         $playService = $this->createStub(PlayService::class);
@@ -94,7 +101,7 @@ class ListenJsonControllerTest extends TestCase
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnCallback(static fn (string $key, array $parameters, ?string $domain, ?string $locale): string => 'fr' === $locale ? $key : $locale . ':' . $key);
 
-        $controller = new ListenJsonController($bookService, $this->createStub(BookTranslatedLocales::class), $negotiator, $configService, $packages, new UrlHelper($requestStack), $uploaderHelper, $playService, $registry, $translator, $bookTranslator ?? $this->createStub(BookTranslator::class), new BookTranslationExtension($requestStack), $this->createStub(BookRepository::class), new BookPlaysExtension($playService, $configService), $publicUrlResolver, new BookHighresExtension(new ParameterBag(['kernel.project_dir' => $projectDir]), new ImageDimensionsReader()));
+        $controller = new ListenJsonController($bookService, $this->createStub(BookTranslatedLocales::class), $negotiator, $configService, $packages, new UrlHelper($requestStack), $uploaderHelper, $playService, $registry, $translator, $bookTranslator ?? $this->createStub(BookTranslator::class), new BookTranslationExtension($requestStack), $this->createStub(BookRepository::class), new BookPlaysExtension($playService, $configService), $publicUrlResolver, new BookHighresExtension(new ParameterBag(['kernel.project_dir' => $projectDir]), new ImageDimensionsReader()), $mediaRepository);
         // The play routes under their full address, as UiBundle declares them
         $router = $this->createStub(UrlGeneratorInterface::class);
         $router->method('generate')->willReturnCallback(static fn (string $route, array $parameters): string => 'https://example.com/' . ('ui_play_start' === $route ? 'play-start' : 'play') . '/' . $parameters['ownerType'] . '/' . $parameters['ownerId']);
@@ -290,6 +297,22 @@ class ListenJsonControllerTest extends TestCase
         $this->assertSame(
             'https://example.com/bundles/c975lbook/sounds/page-turn.mp3',
             $this->data($this->createController(pageSound: true)->index($this->request()))['pageSound']
+        );
+    }
+
+    // The opening pictures under absolute urls in their upload order, a row holding no file left out, none at all while none is uploaded
+    public function testGivesTheOpeningPicturesOrNone(): void
+    {
+        $this->assertSame([], $this->data($this->createController()->index($this->request()))['openings']);
+
+        $openings = [
+            new UiMedia()->setRole(UiMedia::ROLE_APP_OPENING)->setFilename('/medias/site/app-opening-1.webp'),
+            new UiMedia()->setRole(UiMedia::ROLE_APP_OPENING),
+            new UiMedia()->setRole(UiMedia::ROLE_APP_OPENING)->setFilename('/medias/site/app-opening-2.webp'),
+        ];
+        $this->assertSame(
+            ['https://example.com/medias/site/app-opening-1.webp', 'https://example.com/medias/site/app-opening-2.webp'],
+            $this->data($this->createController(openings: $openings)->index($this->request()))['openings']
         );
     }
 

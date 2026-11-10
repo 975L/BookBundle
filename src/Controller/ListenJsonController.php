@@ -26,6 +26,8 @@ use c975L\BookBundle\Twig\BookSectionsExtension;
 use c975L\BookBundle\Twig\BookTranslationExtension;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\ConfigBundle\Service\LocalizedRouteNegotiator;
+use c975L\UiBundle\Entity\Media as UiMedia;
+use c975L\UiBundle\Repository\MediaRepository;
 use c975L\UiBundle\Service\PlayService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Asset\Packages;
@@ -59,6 +61,7 @@ class ListenJsonController extends AbstractController
         private readonly BookPlaysExtension $playsExtension,
         private readonly BookPublicUrlResolver $publicUrlResolver,
         private readonly BookHighresExtension $highresExtension,
+        private readonly MediaRepository $mediaRepository,
     ) {
     }
 
@@ -116,6 +119,7 @@ class ListenJsonController extends AbstractController
             'pageSound' => $this->configService->getBool($this->configService->get('book-page-sound'))
                 ? $this->urlHelper->getAbsoluteUrl($this->packages->getUrl('bundles/c975lbook/sounds/page-turn.mp3'))
                 : null,
+            'openings' => $this->openings(),
             'books' => $books,
         ]);
 
@@ -221,6 +225,21 @@ class ListenJsonController extends AbstractController
         }
 
         return $videos;
+    }
+
+    // The pictures an app shows full screen as it opens, uploaded as site graphics (see UiBundle's Media::ROLE_APP_OPENING), oldest first: empty while none is, the app then keeping its own
+    /** @return list<string> */
+    private function openings(): array
+    {
+        $openings = [];
+        foreach ($this->mediaRepository->findBy(['role' => UiMedia::ROLE_APP_OPENING], ['id' => 'ASC']) as $media) {
+            $path = $this->uploaderHelper->asset($media);
+            if (null !== $path) {
+                $openings[] = $this->urlHelper->getAbsoluteUrl($path);
+            }
+        }
+
+        return $openings;
     }
 
     // The book's own page in the language asked, absolute like the files - null where the site serves no book pages (see BookPublicUrlResolver::resolveLocalizedPath()), and null for a book whose url cannot be built rather than no answer for the others

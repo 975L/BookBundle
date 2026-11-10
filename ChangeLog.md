@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.32.0
+
+The listening JSON hands out the app's opening pictures
+
+- `ListenJsonController`: `openings`, the absolute urls of UiBundle's `app-opening` site graphics (10/11/2026)
+- Requires `c975l/core-bundle` ^1.88.0 (10/11/2026)
+- `README.md`, `c975l-book-display-pages` skill: the `openings` field (10/11/2026)
+
 ## v2.31.0
 
 Documents to print coming out on a day of their own
