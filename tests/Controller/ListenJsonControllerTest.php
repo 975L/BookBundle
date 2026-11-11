@@ -360,11 +360,11 @@ class ListenJsonControllerTest extends TestCase
         $this->assertSame(3, $data['plays']);
     }
 
-    // The drawings out today, each with its crayons and its fingerprint, as stored: one dated ahead or holding no file stays out
+    // The drawings out today, each with its crayons, its fingerprint and its level, as stored: one dated ahead or holding no file stays out
     public function testGivesThePublishedDrawingsToColour(): void
     {
         $book = $this->book()
-            ->addColoring(new BookColoring()->setTitle('item-1')->setName('medias/item-1.png')->setFingerprint('abc')->setPalette(['#ff0000', '#1a1a1a']))
+            ->addColoring(new BookColoring()->setTitle('item-1')->setName('medias/item-1.png')->setFingerprint('abc')->setPalette(['#ff0000', '#1a1a1a'])->setKind('small'))
             ->addColoring(new BookColoring()->setName('medias/item-2.png')->setPublishedOn(new \DateTimeImmutable('+7 days')))
             ->addColoring(new BookColoring())
         ;
@@ -372,7 +372,7 @@ class ListenJsonControllerTest extends TestCase
         $data = $this->data($this->createController([$book])->index($this->request()))['books'][0];
 
         $this->assertSame([
-            ['title' => 'item-1', 'url' => 'https://example.com/medias/item-1.png', 'fingerprint' => 'abc', 'palette' => ['#ff0000', '#1a1a1a']],
+            ['title' => 'item-1', 'url' => 'https://example.com/medias/item-1.png', 'fingerprint' => 'abc', 'palette' => ['#ff0000', '#1a1a1a'], 'kind' => 'small'],
         ], $data['colorings']);
     }
 

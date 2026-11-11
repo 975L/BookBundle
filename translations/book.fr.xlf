@@ -212,7 +212,7 @@
             </trans-unit>
             <trans-unit id="In7m337">
                 <source>description.guided_step_book_colorings_list</source>
-                <target>Une ligne par dessin : un titre, le PNG en traits noirs et l'illustration en couleur dont il est tiré, qui donne ses crayons. Une date de publication fait apparaître le dessin ce jour-là, tout seul.</target>
+                <target>Une ligne par dessin : un titre, le PNG en traits noirs et l'illustration en couleur dont il est tiré, qui donne ses crayons, et, si votre site en propose, un niveau. Une date de publication fait apparaître le dessin ce jour-là, tout seul.</target>
             </trans-unit>
             <trans-unit id="8OkeSWe">
                 <source>description.guided_step_book_colorings_open</source>

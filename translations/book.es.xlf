@@ -212,7 +212,7 @@
             </trans-unit>
             <trans-unit id="In7m337">
                 <source>description.guided_step_book_colorings_list</source>
-                <target>Una fila por dibujo: un título, el PNG en trazos negros y la ilustración en color de la que sale, que da sus lápices. Una fecha de publicación hace aparecer el dibujo ese día, solo.</target>
+                <target>Una fila por dibujo: un título, el PNG en trazos negros y la ilustración en color de la que sale, que da sus lápices, y, si su sitio los ofrece, un nivel. Una fecha de publicación hace aparecer el dibujo ese día, solo.</target>
             </trans-unit>
             <trans-unit id="8OkeSWe">
                 <source>description.guided_step_book_colorings_open</source>

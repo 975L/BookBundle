@@ -11,18 +11,21 @@
 namespace c975L\BookBundle\Tests\Command;
 
 use c975L\BookBundle\Command\BookColoringsImportCommand;
+use c975L\BookBundle\Contract\BookCustomizationProviderInterface;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Service\BookColoringPalette;
+use c975L\BookBundle\Service\BookCustomizationRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-// Drawings laid on their books from a manifest: out with the book's documents to print and never before its first day, read again without uploading twice, written only when asked
+// Drawings laid on their books from a manifest, at a level the site names: out with the book's documents to print and never before its first day, read again without uploading twice, written only when asked
 class BookColoringsImportCommandTest extends TestCase
 {
     private string $directory;
@@ -46,6 +49,15 @@ class BookColoringsImportCommandTest extends TestCase
         new Filesystem()->remove($this->directory);
     }
 
+    // The command over the given books, on a site naming the levels "small" and "big"
+    private function command(BookRepository $repository): BookColoringsImportCommand
+    {
+        $provider = $this->createStub(BookCustomizationProviderInterface::class);
+        $provider->method('getPrintableKinds')->willReturn(['small' => 'item-1', 'big' => 'item-2']);
+
+        return new BookColoringsImportCommand($this->createStub(EntityManagerInterface::class), $repository, new BookColoringPalette(), new BookCustomizationRegistry([$provider], $this->createStub(TranslatorInterface::class)));
+    }
+
     /** @param array<string, mixed> $manifest */
     private function import(array $manifest, bool $dryRun = false): CommandTester
     {
@@ -55,22 +67,23 @@ class BookColoringsImportCommandTest extends TestCase
         $repository->method('findOneByNumber')->willReturnCallback(fn (int $number): ?Book => 1 === $number ? $this->book : null);
         $repository->method('findOneBy')->willReturnCallback(fn (array $criteria): ?Book => 'item-1' === $criteria['slug'] ? $this->book : null);
 
-        $tester = new CommandTester(new BookColoringsImportCommand($this->createStub(EntityManagerInterface::class), $repository, new BookColoringPalette()));
+        $tester = new CommandTester($this->command($repository));
         $tester->execute(['manifest' => $this->directory . '/manifest.json', '--dry-run' => $dryRun]);
 
         return $tester;
     }
 
-    // Out with the book's last document to print, its crayons read off the illustration
+    // Out with the book's last document to print, its crayons read off the illustration, at the level the manifest gives
     public function testADrawingComesOutWithItsBooksDocuments(): void
     {
-        $tester = $this->import(['notBefore' => '2027-01-06', 'colorings' => [['book' => 1, 'file' => 'Ecran/item-1.png', 'source' => 'source.png', 'title' => 'item-1']]]);
+        $tester = $this->import(['notBefore' => '2027-01-06', 'colorings' => [['book' => 1, 'file' => 'Ecran/item-1.png', 'source' => 'source.png', 'title' => 'item-1', 'kind' => 'small']]]);
 
         $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
         $coloring = $this->book->getColorings()->first();
         $this->assertInstanceOf(BookColoring::class, $coloring);
         $this->assertSame('2027-01-13', $coloring->getPublishedOn()?->format('Y-m-d'));
         $this->assertSame('item-1', $coloring->getTitle());
+        $this->assertSame('small', $coloring->getKind());
         $this->assertSame(BookColoringPalette::FIXED, \array_slice($coloring->getPalette(), -3));
     }
 
@@ -95,10 +108,24 @@ class BookColoringsImportCommandTest extends TestCase
 
     public function testADryRunWritesNothing(): void
     {
-        $tester = $this->import(['colorings' => [['book' => 1, 'file' => 'Ecran/item-1.png']]], true);
+        $tester = $this->import(['colorings' => [['book' => 1, 'file' => 'Ecran/item-1.png', 'kind' => 'big']]], true);
 
         $this->assertCount(0, $this->book->getColorings());
         $this->assertStringContainsString('item-1.png', $tester->getDisplay());
+        $this->assertStringContainsString('big', $tester->getDisplay());
+    }
+
+    // A level the site doesn't name leaves its drawing out and names it, the others written
+    public function testAnUnknownLevelIsNamed(): void
+    {
+        $tester = $this->import(['colorings' => [['book' => 1, 'file' => 'Ecran/item-1.png', 'kind' => 'item-3'], ['book' => 1, 'file' => 'Ecran/item-1.png', 'kind' => 'small']]]);
+
+        $this->assertSame(Command::FAILURE, $tester->getStatusCode());
+        $this->assertCount(1, $this->book->getColorings());
+        $coloring = $this->book->getColorings()->first();
+        $this->assertInstanceOf(BookColoring::class, $coloring);
+        $this->assertSame('small', $coloring->getKind());
+        $this->assertStringContainsString('niveau inconnu', $tester->getDisplay());
     }
 
     // A book or a file not found is named, the others written
@@ -132,7 +159,7 @@ class BookColoringsImportCommandTest extends TestCase
     public function testAnUnreadableManifestFails(): void
     {
         file_put_contents($this->directory . '/manifest.json', '{');
-        $tester = new CommandTester(new BookColoringsImportCommand($this->createStub(EntityManagerInterface::class), $this->createStub(BookRepository::class), new BookColoringPalette()));
+        $tester = new CommandTester($this->command($this->createStub(BookRepository::class)));
 
         $this->assertSame(Command::FAILURE, $tester->execute(['manifest' => $this->directory . '/manifest.json']));
     }

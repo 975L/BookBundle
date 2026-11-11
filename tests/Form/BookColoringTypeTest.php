@@ -10,17 +10,20 @@
 
 namespace c975L\BookBundle\Tests\Form;
 
+use c975L\BookBundle\Contract\BookCustomizationProviderInterface;
 use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Form\BookColoringType;
 use c975L\BookBundle\Service\BookColoringPalette;
+use c975L\BookBundle\Service\BookCustomizationRegistry;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Event\PostSubmitEvent;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-// A drawing asks for its day and the illustration its crayons are read off, read on the save it is sent with and only when it gives some; a language screen asks for the title alone
+// A drawing asks for its day, its level on a site naming some, and the illustration its crayons are read off, read on the save it is sent with and only when it gives some; a language screen asks for the title alone
 class BookColoringTypeTest extends TestCase
 {
     /** @var list<string> */
@@ -29,8 +32,11 @@ class BookColoringTypeTest extends TestCase
     /** @var list<callable> */
     private array $postSubmit = [];
 
-    /** @param array<string, mixed> $options */
-    private function build(array $options = []): void
+    /**
+     * @param array<string, mixed>  $options
+     * @param array<string, string> $kinds
+     */
+    private function build(array $options = [], array $kinds = []): void
     {
         $this->added = [];
         $this->postSubmit = [];
@@ -48,7 +54,9 @@ class BookColoringTypeTest extends TestCase
             return $builder;
         });
 
-        new BookColoringType(new BookColoringPalette())->buildForm($builder, $options);
+        $provider = $this->createStub(BookCustomizationProviderInterface::class);
+        $provider->method('getPrintableKinds')->willReturn($kinds);
+        new BookColoringType(new BookColoringPalette(), new BookCustomizationRegistry([$provider], $this->createStub(TranslatorInterface::class)))->buildForm($builder, $options);
     }
 
     public function testItAsksForTheDayAndTheIllustration(): void
@@ -56,6 +64,14 @@ class BookColoringTypeTest extends TestCase
         $this->build();
 
         $this->assertSame(['position', 'title', 'file', 'publishedOn', 'source'], $this->added);
+    }
+
+    // The levels of the documents to print, offered for the drawing too
+    public function testASiteNamingLevelsAsksForOne(): void
+    {
+        $this->build([], ['small' => 'item-1', 'big' => 'item-2']);
+
+        $this->assertSame(['position', 'title', 'file', 'publishedOn', 'source', 'kind'], $this->added);
     }
 
     public function testALanguageScreenAsksForTheTitleAlone(): void

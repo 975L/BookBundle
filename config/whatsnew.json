@@ -3,6 +3,11 @@
         "date": "2026-11-11",
         "description": [
             {
+                "en": "Drawings to colour can now take a level, like documents to print, when your site offers some: choose it on each drawing, and your app groups them the same way.",
+                "fr": "Les dessins à colorier peuvent désormais recevoir un niveau, comme les documents à imprimer, quand votre site en propose : choisissez-le sur chaque dessin, et votre appli les regroupe de la même façon.",
+                "es": "Los dibujos para colorear pueden recibir ahora un nivel, como los documentos para imprimir, cuando su sitio los ofrece: elíjalo en cada dibujo, y su aplicación los agrupa de la misma manera."
+            },
+            {
                 "en": "A book can now offer drawings to colour on screen: add a PNG drawing in the book's \"Page\" tab with the coloured illustration it comes from. Its crayons are taken from that illustration's colours, and your app has it coloured with a touch from the day you choose.",
                 "fr": "Un livre peut désormais proposer des dessins à colorier à l'écran : ajoutez un dessin en PNG dans l'onglet « Page » du livre, avec l'illustration en couleur dont il est tiré. Ses crayons sont pris dans les couleurs de cette illustration, et votre appli le fait colorier d'un toucher à partir du jour choisi.",
                 "es": "Un libro puede ofrecer ahora dibujos para colorear en pantalla: añada un dibujo en PNG en la pestaña «Página» del libro, con la ilustración en color de la que sale. Sus lápices se toman de los colores de esa ilustración, y su aplicación lo hace colorear con un toque a partir del día elegido."

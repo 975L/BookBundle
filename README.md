@@ -890,17 +890,17 @@ The `book_printables` block lists the published books holding at least one docum
 
 ### Drawings to colour on screen
 
-A book can also hand an app drawings a child colours touch by touch. They are PNGs of black lines on white, added in the "To colour on screen" collection of the book's "Page" tab (`BookColoring`), each with a title, an optional publication day like a document to print, and the coloured illustration it was drawn from. That illustration is read once, on the save it is sent with, and never stored: `BookColoringPalette` keeps its eighteen most present bright colours, apart from each other and livened up into crayons, in the order of the rainbow, then adds a black, a dark grey and a light grey. Sending it again works the crayons out anew. The PNG is stored as sent, neither resized nor turned to webp, and `BookColoringFingerprintListener` stamps it with the hash of its bytes on every upload, so a reader keeping a child's colours knows when the drawing under them was replaced.
+A book can also hand an app drawings a child colours touch by touch. They are PNGs of black lines on white, added in the "To colour on screen" collection of the book's "Page" tab (`BookColoring`), each with a title, an optional publication day and level like a document to print (the site's `getPrintableKinds()`), and the coloured illustration it was drawn from. That illustration is read once, on the save it is sent with, and never stored: `BookColoringPalette` keeps its eighteen most present bright colours, apart from each other and livened up into crayons, in the order of the rainbow, then adds a black, a dark grey and a light grey. Sending it again works the crayons out anew. The PNG is stored as sent, neither resized nor turned to webp, and `BookColoringFingerprintListener` stamps it with the hash of its bytes on every upload, so a reader keeping a child's colours knows when the drawing under them was replaced.
 
-Nothing shows on the book's page: the drawings out today travel in `book_listen_json`, under each book's `colorings` (`title`, `url`, `fingerprint`, `palette`), read for the whole list by `BookRepository::withColorings()`. The app cuts them into zones itself. Export, import and duplication carry the day and the crayons along.
+Nothing shows on the book's page: the drawings out today travel in `book_listen_json`, under each book's `colorings` (`title`, `url`, `fingerprint`, `palette`, `kind`), read for the whole list by `BookRepository::withColorings()`. The app cuts them into zones itself. Export, import and duplication carry the day and the crayons along.
 
 Many drawings at once go through a manifest rather than the form, `php bin/console c975l:book:colorings:import <manifest.json> [--dry-run]`, its paths relative to it:
 
 ```json
-{"notBefore": "2027-01-06", "colorings": [{"book": 1, "file": "Ecran/item-1.png", "source": "Images/page-1.jpg", "title": "item-1"}]}
+{"notBefore": "2027-01-06", "colorings": [{"book": 1, "file": "Ecran/item-1.png", "source": "Images/page-1.jpg", "title": "item-1", "kind": "small"}]}
 ```
 
-`book` is the number its short link carries, or its slug. Each drawing comes out on the `publishedOn` given, else with the last of its book's documents to print, and never before `notBefore`. Run again, it uploads nothing twice: a drawing already on its book, known by its fingerprint, only gets its title, day and crayons again.
+`book` is the number its short link carries, or its slug. `kind`, optional, is one of the site's levels: a drawing naming another is left out, like one whose day is misspelt. Each drawing comes out on the `publishedOn` given, else with the last of its book's documents to print, and never before `notBefore`. Run again, it uploads nothing twice: a drawing already on its book, known by its fingerprint, only gets its title, day and crayons again.
 
 ### Structured data
 

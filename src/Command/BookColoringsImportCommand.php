@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Service\BookColoringPalette;
+use c975L\BookBundle\Service\BookCustomizationRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 
-// Drawings to colour laid on their books from a manifest, the way an editor would one by one: the PNG uploaded, its crayons read off its illustration, its day set. Each drawing comes out with its book's documents to print, never before the manifest's "notBefore". Run again, it uploads nothing twice: a drawing already on its book, known by its fingerprint, only gets its title, day and crayons again. Manifest: {"notBefore": "2027-01-06", "colorings": [{"book": 1 or "slug", "file": "Ecran/x.png", "source": "Images/Page-0.jpg", "title": "item-1", "publishedOn": "2027-01-13"}]}, paths relative to it, "source", "title" and "publishedOn" optional
+// Drawings to colour laid on their books from a manifest, the way an editor would one by one: the PNG uploaded, its crayons read off its illustration, its day set. Each drawing comes out with its book's documents to print, never before the manifest's "notBefore". Run again, it uploads nothing twice: a drawing already on its book, known by its fingerprint, only gets its title, day and crayons again. Manifest: {"notBefore": "2027-01-06", "colorings": [{"book": 1 or "slug", "file": "Ecran/x.png", "source": "Images/Page-0.jpg", "title": "item-1", "kind": "small", "publishedOn": "2027-01-13"}]}, paths relative to it, "source", "title", "kind" (the level, as for documents to print) and "publishedOn" optional
 #[AsCommand(name: 'c975l:book:colorings:import', description: 'Adds the drawings to colour a JSON manifest lists to their books, each out with its book\'s documents to print. Lists them without writing with --dry-run.')]
 class BookColoringsImportCommand extends Command
 {
@@ -32,6 +33,7 @@ class BookColoringsImportCommand extends Command
         private readonly EntityManagerInterface $em,
         private readonly BookRepository $bookRepository,
         private readonly BookColoringPalette $palette,
+        private readonly BookCustomizationRegistry $customizationRegistry,
     ) {
         parent::__construct();
     }
@@ -85,27 +87,28 @@ class BookColoringsImportCommand extends Command
             $io->listing($written);
         }
         if ([] !== $failed) {
-            $io->warning(['Livre ou fichier introuvable, ou date illisible :', ...$failed]);
+            $io->warning(['Livre ou fichier introuvable, date illisible ou niveau inconnu :', ...$failed]);
         }
         $io->success(\sprintf($dryRun ? '%d dessin(s) à écrire, relancer sans --dry-run pour le faire.' : '%d dessin(s) écrit(s).', \count($written)));
 
         return [] === $failed ? Command::SUCCESS : Command::FAILURE;
     }
 
-    // One drawing on its book, created or brought up to date, flushed on its own so a failure further down keeps what is done. Null for a book or a file not found, throws on a day misspelt
+    // One drawing on its book, created or brought up to date, flushed on its own so a failure further down keeps what is done. Null for a book or a file not found or a level the site doesn't name, throws on a day misspelt
     /** @param array<mixed> $entry */
     private function import(array $entry, string $directory, ?\DateTimeImmutable $notBefore, bool $dryRun): ?string
     {
         $book = $this->book($entry['book'] ?? null);
         $file = \is_string($entry['file'] ?? null) ? $directory . '/' . $entry['file'] : '';
-        if (null === $book || !is_file($file)) {
+        $kind = $entry['kind'] ?? null;
+        if (null === $book || !is_file($file) || !$this->isKnownKind($kind)) {
             return null;
         }
 
         $fingerprint = hash_file('xxh128', $file) ?: null;
         $coloring = $book->getColorings()->findFirst(static fn (int $key, BookColoring $known): bool => $fingerprint === $known->getFingerprint());
         $publishedOn = $this->publishedOn($book, $entry['publishedOn'] ?? null, $notBefore);
-        $line = \sprintf('%s %s : %s, %s', null === $coloring ? '+' : '=', $book->getSlug(), basename($file), $publishedOn?->format('d/m/Y') ?? 'aussitôt');
+        $line = \sprintf('%s %s : %s, %s%s', null === $coloring ? '+' : '=', $book->getSlug(), basename($file), $publishedOn?->format('d/m/Y') ?? 'aussitôt', null === $kind ? '' : ', ' . $kind);
         if ($dryRun) {
             return $line;
         }
@@ -119,6 +122,7 @@ class BookColoringsImportCommand extends Command
         }
         $coloring
             ->setTitle(\is_string($entry['title'] ?? null) ? $entry['title'] : $coloring->getTitle())
+            ->setKind($kind ?? $coloring->getKind())
             ->setPublishedOn($publishedOn);
         $source = \is_string($entry['source'] ?? null) ? $this->palette->fromFile($directory . '/' . $entry['source']) : [];
         if ([] !== $source) {
@@ -127,6 +131,13 @@ class BookColoringsImportCommand extends Command
         $this->em->flush();
 
         return $line;
+    }
+
+    // No level, or one of the site's documents to print: a misspelt one would group its drawing apart, and outrun the column
+    /** @phpstan-assert-if-true ?string $kind */
+    private function isKnownKind(mixed $kind): bool
+    {
+        return null === $kind || (\is_string($kind) && \array_key_exists($kind, $this->customizationRegistry->getPrintableKinds()));
     }
 
     // A number is the one the book's short link carries (see BookRepository::findOneByNumber()), anything else its slug

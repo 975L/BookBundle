@@ -232,15 +232,15 @@ class ListenJsonController extends AbstractController
         return $videos;
     }
 
-    // The drawings a child may colour today, as stored: the app cuts them into zones itself, and keeps the colours given under the fingerprint so a replaced drawing never gets another's. A row holding no file is left out
-    /** @return list<array{title: ?string, url: string, fingerprint: ?string, palette: list<string>}> */
+    // The drawings a child may colour today, as stored, with the level they are grouped under: the app cuts them into zones itself, and keeps the colours given under the fingerprint so a replaced drawing never gets another's. A row holding no file is left out
+    /** @return list<array{title: ?string, url: string, fingerprint: ?string, palette: list<string>, kind: ?string}> */
     private function colorings(Book $book): array
     {
         $colorings = [];
         foreach ($book->getPublishedColorings() as $coloring) {
             $url = $this->url($coloring);
             if (null !== $url) {
-                $colorings[] = ['title' => $coloring->getTitle(), 'url' => $url, 'fingerprint' => $coloring->getFingerprint(), 'palette' => $coloring->getPalette()];
+                $colorings[] = ['title' => $coloring->getTitle(), 'url' => $url, 'fingerprint' => $coloring->getFingerprint(), 'palette' => $coloring->getPalette(), 'kind' => $coloring->getKind()];
             }
         }
 

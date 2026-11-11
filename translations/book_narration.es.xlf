@@ -100,7 +100,7 @@
             </trans-unit>
             <trans-unit id="5hEOJYm">
                 <source>narration.guided_step_book_colorings_list</source>
-                <target>Añada una fila por dibujo: un título, el PNG en trazos negros y la ilustración en color de la que sale. Sus colores dan los lápices del dibujo y luego no se guarda. Una fecha de publicación hace aparecer el dibujo ese día, solo.</target>
+                <target>Añada una fila por dibujo: un título, el PNG en trazos negros y la ilustración en color de la que sale. Sus colores dan los lápices del dibujo y luego no se guarda. Si su sitio los ofrece, elija también un nivel. Una fecha de publicación hace aparecer el dibujo ese día, solo.</target>
             </trans-unit>
             <trans-unit id="8CyB.Lg">
                 <source>narration.guided_step_book_colorings_open</source>

@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.34.2
+
+Drawings to colour grouped under the documents to print's levels
+
+- Drawings to colour grouped under the documents to print's levels: `kind` on the form, in the manifest and in `book_listen_json` (11/11/2026)
+- Guided project `book-colorings`: the level (11/11/2026)
+- `c975l:book:colorings:import`: a level the site doesn't name leaves its drawing out (11/11/2026)
+
 ## v2.34.1
 
 Trash, delete and duplicate confirmations name the row

@@ -100,7 +100,7 @@
             </trans-unit>
             <trans-unit id="5hEOJYm">
                 <source>narration.guided_step_book_colorings_list</source>
-                <target>Add one row per drawing: a title, the black-line PNG, and the coloured illustration it comes from. Its colours give the drawing's crayons, then it is not kept. A publication date makes the drawing show up on that day, by itself.</target>
+                <target>Add one row per drawing: a title, the black-line PNG, and the coloured illustration it comes from. Its colours give the drawing's crayons, then it is not kept. If your site offers them, pick a level too. A publication date makes the drawing show up on that day, by itself.</target>
             </trans-unit>
             <trans-unit id="8CyB.Lg">
                 <source>narration.guided_step_book_colorings_open</source>

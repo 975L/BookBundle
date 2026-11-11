@@ -100,7 +100,7 @@
             </trans-unit>
             <trans-unit id="5hEOJYm">
                 <source>narration.guided_step_book_colorings_list</source>
-                <target>Ajoutez une ligne par dessin : un titre, le PNG en traits noirs, et l'illustration en couleur dont il est tiré. Ses couleurs donnent les crayons du dessin, puis elle n'est pas gardée. Une date de publication fait apparaître le dessin ce jour-là, tout seul.</target>
+                <target>Ajoutez une ligne par dessin : un titre, le PNG en traits noirs, et l'illustration en couleur dont il est tiré. Ses couleurs donnent les crayons du dessin, puis elle n'est pas gardée. Si votre site en propose, choisissez aussi un niveau. Une date de publication fait apparaître le dessin ce jour-là, tout seul.</target>
             </trans-unit>
             <trans-unit id="8CyB.Lg">
                 <source>narration.guided_step_book_colorings_open</source>

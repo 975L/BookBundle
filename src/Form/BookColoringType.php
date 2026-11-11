@@ -13,8 +13,10 @@ namespace c975L\BookBundle\Form;
 use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Service\BookColoringPalette;
+use c975L\BookBundle\Service\BookCustomizationRegistry;
 use c975L\BookBundle\Service\BookTranslator;
 use Symfony\Component\Form\Event\PostSubmitEvent;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,11 +24,12 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\File;
 
-// A drawing to colour on screen: a rank, a title and the PNG like every file a book owns, plus the day it comes out and the coloured illustration its crayons are read off - read once, on the save it is sent with, and never stored (see BookColoringPalette)
+// A drawing to colour on screen: a rank, a title and the PNG like every file a book owns, plus the day it comes out, the level it is grouped under on a site naming some, the same as its documents to print (see BookCustomizationProviderInterface::getPrintableKinds()), and the coloured illustration its crayons are read off - read once, on the save it is sent with, and never stored (see BookColoringPalette)
 class BookColoringType extends BookOwnedMediaType
 {
     public function __construct(
         private readonly BookColoringPalette $palette,
+        private readonly BookCustomizationRegistry $customizationRegistry,
         ?BookTranslator $bookTranslator = null,
     ) {
         parent::__construct($bookTranslator);
@@ -59,6 +62,15 @@ class BookColoringType extends BookOwnedMediaType
                 ],
             ])
         ;
+
+        $kinds = $this->customizationRegistry->getPrintableKinds();
+        if ([] !== $kinds) {
+            $builder->add('kind', ChoiceType::class, [
+                'label' => 'label.printable_kind',
+                'required' => false,
+                'choices' => array_flip($kinds),
+            ]);
+        }
 
         // An illustration that cannot be read leaves the crayons as they were, its constraint telling the editor why
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (PostSubmitEvent $event): void {

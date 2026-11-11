@@ -212,7 +212,7 @@
             </trans-unit>
             <trans-unit id="In7m337">
                 <source>description.guided_step_book_colorings_list</source>
-                <target>One row per drawing: a title, the black-line PNG and the coloured illustration it comes from, which gives its crayons. A publication date makes the drawing show up on that day, by itself.</target>
+                <target>One row per drawing: a title, the black-line PNG and the coloured illustration it comes from, which gives its crayons, and, if your site offers them, a level. A publication date makes the drawing show up on that day, by itself.</target>
             </trans-unit>
             <trans-unit id="8OkeSWe">
                 <source>description.guided_step_book_colorings_open</source>
