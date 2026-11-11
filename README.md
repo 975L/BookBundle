@@ -894,6 +894,14 @@ A book can also hand an app drawings a child colours touch by touch. They are PN
 
 Nothing shows on the book's page: the drawings out today travel in `book_listen_json`, under each book's `colorings` (`title`, `url`, `fingerprint`, `palette`), read for the whole list by `BookRepository::withColorings()`. The app cuts them into zones itself. Export, import and duplication carry the day and the crayons along.
 
+Many drawings at once go through a manifest rather than the form, `php bin/console c975l:book:colorings:import <manifest.json> [--dry-run]`, its paths relative to it:
+
+```json
+{"notBefore": "2027-01-06", "colorings": [{"book": 1, "file": "Ecran/item-1.png", "source": "Images/page-1.jpg", "title": "item-1"}]}
+```
+
+`book` is the number its short link carries, or its slug. Each drawing comes out on the `publishedOn` given, else with the last of its book's documents to print, and never before `notBefore`. Run again, it uploads nothing twice: a drawing already on its book, known by its fingerprint, only gets its title, day and crayons again.
+
 ### Structured data
 
 A book's, a serie's and a strip's page publish their schema.org graph as JSON-LD, built by `BookSnippetBuilder` from the fields those pages already show: author, illustrator, translator, language, publication date, page count, age range, the categories it carries as its `genre`, one `workExample` per released edition, and the volume's rank in its serie (`isPartOf`/`position`, `hasPart` on the serie side), plus one `VideoObject` per video it carries on a platform such as YouTube — an uploaded file, or a platform serving no guessable still, is left out. A video is dated by the day it went online on its platform, fetched once with `php bin/console c975l:book:video-upload-dates` (or typed on the video), the book's publication standing in until then — never later than today.

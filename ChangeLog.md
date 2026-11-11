@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.34.0
+
+Drawings to colour imported in a batch from a manifest
+
+- `c975l:book:colorings:import`: drawings laid on their books from a manifest, out with their documents to print (11/11/2026)
+- `README.md`, `c975l-book-display-pages` skill: the import command (11/11/2026)
+
 ## v2.33.0
 
 Drawings to colour on screen, their crayons read off their illustration
