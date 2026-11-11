@@ -417,6 +417,27 @@ class BookRepository extends ServiceEntityRepository
         ;
     }
 
+    // The drawings to colour of the books the caller already holds, read in one query rather than one per book (see ListenJsonController)
+    /** @param list<Book> $books */
+    public function withColorings(array $books): void
+    {
+        $ids = array_values(array_filter(array_map(static fn (Book $book): ?int => $book->getId(), $books)));
+
+        if ([] === $ids) {
+            return;
+        }
+
+        // The results are dropped on purpose: hydrating them fills the relation of the very books the caller already holds
+        $this->createQueryBuilder('b')
+            ->select('b', 'colorings')
+            ->leftJoin('b.colorings', 'colorings')
+            ->andWhere('b.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // The languages the catalog is actually written in, so a list can be offered per language without any site having to declare which ones it publishes
     /** @return list<string> */
     public function findLanguages(): array

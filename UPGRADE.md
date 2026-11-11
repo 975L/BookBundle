@@ -2,6 +2,10 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.33.0
+
+**A book can hold drawings to colour on screen.** `book_media` gets two nullable columns, `palette` and `fingerprint`, which `doctrine:schema:update` (or a migration) adds; the drawings share the `published_on` column of the documents to print. Nothing changes until a drawing is added: `book_listen_json` answers `colorings: []` for every book.
+
 ## v2.31.0
 
 **A document to print can be given a publication day.** `book_media` gets a nullable `published_on` column, which `doctrine:schema:update` (or a migration) adds. Nothing changes until a document is dated: an undated one shows as before. **A site overriding `Book/Printables.html.twig` or `blocks/Printables.html.twig`** reads `book.publishedPrintables` instead of `book.printables`, or a document dated ahead shows before its day.

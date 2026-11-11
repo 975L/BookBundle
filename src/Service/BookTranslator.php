@@ -37,7 +37,7 @@ class BookTranslator
 
     public const string OWNER_CONTRIBUTOR = 'book_contributor';
 
-    // A picture's own title, which is what a press cutting, a promotional visual and a document to print show under themselves (see Book:Presse, Book:Marketing and Book:Printable)
+    // A picture's own title, which is what a press cutting, a promotional visual and a document to print show under themselves (see Book:Presse, Book:Marketing and Book:Printable), and what names a drawing to colour in an app
     public const string OWNER_MEDIA = 'book_media';
 
     public const string OWNER_SETTINGS = 'book_settings';

@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.33.0
+
+Drawings to colour on screen, their crayons read off their illustration
+
+- `BookColoring`: a book's PNG drawing to colour, with its day, its crayons and its fingerprint, stored as sent (11/11/2026)
+- `PublishedOnTrait`: the publication day `BookPrintable` and `BookColoring` share (11/11/2026)
+- `BookColoringPalette`: eighteen crayons read off the coloured illustration, then black and two greys (11/11/2026)
+- `BookColoringType`: the publication day and the illustration, read once on save and never stored (11/11/2026)
+- `BookColoringFingerprintListener`: the hash of the drawing's bytes written on every upload (11/11/2026)
+- `BookCrudController`: the "To colour on screen" collection in the "Page" tab and on the language screens (11/11/2026)
+- `ListenJsonController`: `colorings`, each book's drawings out today, titled in the asked language, read by `BookRepository::withColorings()` (11/11/2026)
+- Export, import and duplication carry a drawing's day and crayons (11/11/2026)
+- `book-colorings` guided project (11/11/2026)
+- `README.md`, `UPGRADE.md`, `c975l-book-display-pages` skill: the drawings to colour (11/11/2026)
+
 ## v2.32.0
 
 The listening JSON hands out the app's opening pictures

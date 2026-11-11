@@ -90,6 +90,22 @@
                 <source>narration.guided_step_book_character_creation_slug</source>
                 <target>L'adresse est dérivée du nom, et c'est elle qui filtre la liste des planches. Modifiez-la avant la première mise en ligne, pas après.</target>
             </trans-unit>
+            <trans-unit id="yRpyDXg">
+                <source>narration.guided_step_book_colorings_done</source>
+                <target>Enregistrez : une fois le livre paru, l'appli propose ses dessins publiés, chacun avec ses crayons.</target>
+            </trans-unit>
+            <trans-unit id="EEML1wk">
+                <source>narration.guided_step_book_colorings_edit</source>
+                <target>Modifiez le livre qui recevra les dessins.</target>
+            </trans-unit>
+            <trans-unit id="5hEOJYm">
+                <source>narration.guided_step_book_colorings_list</source>
+                <target>Ajoutez une ligne par dessin : un titre, le PNG en traits noirs, et l'illustration en couleur dont il est tiré. Ses couleurs donnent les crayons du dessin, puis elle n'est pas gardée. Une date de publication fait apparaître le dessin ce jour-là, tout seul.</target>
+            </trans-unit>
+            <trans-unit id="8CyB.Lg">
+                <source>narration.guided_step_book_colorings_open</source>
+                <target>Ouvrez la liste des livres : les dessins à colorier se déposent sur le livre dont ils sont tirés.</target>
+            </trans-unit>
             <trans-unit id="exSRKHD">
                 <source>narration.guided_step_book_composition_add</source>
                 <target>Ajoutez un block. Chacun a son type et son propre formulaire, et ils s'empilent dans l'ordre de la page.</target>

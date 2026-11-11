@@ -6,6 +6,10 @@
                 <source>label.character_slug-unique</source>
                 <target>Un personaje de esta serie ya responde a esta dirección</target>
             </trans-unit>
+            <trans-unit id="nHuBlaU">
+                <source>label.coloring_not_png</source>
+                <target>Este dibujo debe ser un archivo PNG</target>
+            </trans-unit>
             <trans-unit id="Ri_Y7jV">
                 <source>label.contributor_role_duplicate</source>
                 <target>Esta persona ya tiene esa parte en el libro, elija otra parte u otra persona</target>

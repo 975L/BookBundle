@@ -54,6 +54,10 @@
                 <source>description.guided_project_book_character_creation</source>
                 <target>Who speaks in the planches: a character, their portrait and the sentence introducing them.</target>
             </trans-unit>
+            <trans-unit id="V9Li2YL">
+                <source>description.guided_project_book_colorings</source>
+                <target>Add PNG drawings to a book with the illustration of each: the app has them coloured with a touch, in the story's own colours.</target>
+            </trans-unit>
             <trans-unit id="YT.YFdA">
                 <source>description.guided_project_book_composition</source>
                 <target>Beyond its own fields, a book's page is composed in blocks: banner, text, gallery, call to action.</target>
@@ -197,6 +201,22 @@
             <trans-unit id="v6XO8dt">
                 <source>description.guided_step_book_character_creation_slug</source>
                 <target>Derived from the name, it is what filters the listing of planches. Change it before the first publication, not after.</target>
+            </trans-unit>
+            <trans-unit id="Ek0rtWb">
+                <source>description.guided_step_book_colorings_done</source>
+                <target>Once the book is out, the app offers its published drawings, each with its crayons.</target>
+            </trans-unit>
+            <trans-unit id="eDpofr.">
+                <source>description.guided_step_book_colorings_edit</source>
+                <target>Pick the book that will hold the drawings.</target>
+            </trans-unit>
+            <trans-unit id="In7m337">
+                <source>description.guided_step_book_colorings_list</source>
+                <target>One row per drawing: a title, the black-line PNG and the coloured illustration it comes from, which gives its crayons. A publication date makes the drawing show up on that day, by itself.</target>
+            </trans-unit>
+            <trans-unit id="8OkeSWe">
+                <source>description.guided_step_book_colorings_open</source>
+                <target>Drawings to colour are added to the book they come from.</target>
             </trans-unit>
             <trans-unit id="QmMk4WE">
                 <source>description.guided_step_book_composition_add</source>
@@ -1390,6 +1410,30 @@
                 <source>label.characters_section</source>
                 <target>Who are they?</target>
             </trans-unit>
+            <trans-unit id="HRhFPBo">
+                <source>label.coloring</source>
+                <target>Drawing (PNG)</target>
+            </trans-unit>
+            <trans-unit id="bTwRHdo">
+                <source>label.coloring_published_on-help</source>
+                <target>Empty: visible as soon as it is saved. A date: the drawing shows up on that day, by itself.</target>
+            </trans-unit>
+            <trans-unit id="ZbWw4qC">
+                <source>label.coloring_source</source>
+                <target>Coloured illustration</target>
+            </trans-unit>
+            <trans-unit id="ZS5yTJO">
+                <source>label.coloring_source-help</source>
+                <target>The illustration the drawing comes from: its colours give the crayons, then it is not kept. Sending it again works the crayons out anew.</target>
+            </trans-unit>
+            <trans-unit id="lB9667S">
+                <source>label.colorings</source>
+                <target>To colour on screen</target>
+            </trans-unit>
+            <trans-unit id="sD3Jww1">
+                <source>label.colorings-help</source>
+                <target>PNG drawings, black lines on white, that a child colours with a touch in the app.</target>
+            </trans-unit>
             <trans-unit id="fBgQMYT">
                 <source>label.contributor</source>
                 <target>Author/illustrator</target>
@@ -1710,6 +1754,10 @@
                 <source>label.guided_project_book_character_creation</source>
                 <target>People a serie</target>
             </trans-unit>
+            <trans-unit id="8CSwMvy">
+                <source>label.guided_project_book_colorings</source>
+                <target>Offer drawings to colour on screen</target>
+            </trans-unit>
             <trans-unit id="xHGOxRr">
                 <source>label.guided_project_book_composition</source>
                 <target>Enrich a book's page</target>
@@ -1861,6 +1909,10 @@
             <trans-unit id="rJJeM9m">
                 <source>label.guided_step_book_character_creation_slug</source>
                 <target>Check their address</target>
+            </trans-unit>
+            <trans-unit id="a3gAtCW">
+                <source>label.guided_step_book_colorings_list</source>
+                <target>Add your drawings</target>
             </trans-unit>
             <trans-unit id="8EtrFFM">
                 <source>label.guided_step_book_composition_add</source>

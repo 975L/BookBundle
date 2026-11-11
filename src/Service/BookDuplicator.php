@@ -222,6 +222,11 @@ class BookDuplicator
             $copy->addPrintable($this->cloneMedia($printable)->setPublishedOn($printable->getPublishedOn()));
         }
 
+        // The crayons go with the drawing, its illustration being read only on the save it is sent with; the fingerprint is written again as the copy's file is
+        foreach ($source->getColorings() as $coloring) {
+            $copy->addColoring($this->cloneMedia($coloring)->setPublishedOn($coloring->getPublishedOn())->setPalette($coloring->getPalette()));
+        }
+
         foreach ($source->getBlocks() as $block) {
             $copy->addBlock($this->cloneBlock($block));
         }

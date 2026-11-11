@@ -90,6 +90,22 @@
                 <source>narration.guided_step_book_character_creation_slug</source>
                 <target>La dirección se deriva del nombre, y es la que filtra la lista de páginas. Modifíquela antes de la primera publicación, no después.</target>
             </trans-unit>
+            <trans-unit id="yRpyDXg">
+                <source>narration.guided_step_book_colorings_done</source>
+                <target>Guarde: una vez publicado el libro, la aplicación ofrece sus dibujos publicados, cada uno con sus lápices.</target>
+            </trans-unit>
+            <trans-unit id="EEML1wk">
+                <source>narration.guided_step_book_colorings_edit</source>
+                <target>Edite el libro que recibirá los dibujos.</target>
+            </trans-unit>
+            <trans-unit id="5hEOJYm">
+                <source>narration.guided_step_book_colorings_list</source>
+                <target>Añada una fila por dibujo: un título, el PNG en trazos negros y la ilustración en color de la que sale. Sus colores dan los lápices del dibujo y luego no se guarda. Una fecha de publicación hace aparecer el dibujo ese día, solo.</target>
+            </trans-unit>
+            <trans-unit id="8CyB.Lg">
+                <source>narration.guided_step_book_colorings_open</source>
+                <target>Abra la lista de libros: los dibujos para colorear se añaden al libro del que salen.</target>
+            </trans-unit>
             <trans-unit id="exSRKHD">
                 <source>narration.guided_step_book_composition_add</source>
                 <target>Añada un bloque. Cada uno tiene su tipo y su propio formulario, y se apilan en el orden de la página.</target>

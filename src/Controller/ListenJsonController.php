@@ -95,16 +95,20 @@ class ListenJsonController extends AbstractController
             }
         }
 
-        // Their credits, videos and series read for the whole list, the series in the asked language as the book's own page shows them
+        // Their credits, videos, drawings and series read for the whole list, the series and the drawings' titles in the asked language as the book's own page shows them
         $listedBooks = array_map(static fn (array $entry): Book => $entry[0], $listed);
         $this->bookRepository->withCreditsAndVideos($listedBooks);
-        $series = [];
+        $this->bookRepository->withColorings($listedBooks);
+        $translated = [];
         foreach ($listedBooks as $book) {
             if (null !== $book->getSerie()) {
-                $series[spl_object_id($book->getSerie())] = $book->getSerie();
+                $translated[spl_object_id($book->getSerie())] = $book->getSerie();
+            }
+            foreach ($book->getPublishedColorings() as $coloring) {
+                $translated[spl_object_id($coloring)] = $coloring;
             }
         }
-        $this->bookTranslator->apply($series);
+        $this->bookTranslator->apply($translated);
 
         // How many times each was heard, on the site and in its apps, read in one go - and said as the book's pages say it, null below the site's minimum (see BookPlaysExtension::shown())
         $plays = $this->playService->totals(BookFavoriteItemProvider::OWNER_TYPE, array_map(static fn (Book $book): int => (int) $book->getId(), $listedBooks));
@@ -173,6 +177,7 @@ class ListenJsonController extends AbstractController
             'serie' => null === $book->getSerie() ? null : ['title' => $book->getSerie()->getTitle(), 'number' => $book->getNumber()],
             'credits' => $this->credits($book, $locale),
             'videos' => $this->videos($book),
+            'colorings' => $this->colorings($book),
             'plays' => $plays,
             'playStart' => $this->generateUrl('ui_play_start', $playOwner, UrlGeneratorInterface::ABSOLUTE_URL),
             'play' => $this->generateUrl('ui_play', $playOwner, UrlGeneratorInterface::ABSOLUTE_URL),
@@ -225,6 +230,21 @@ class ListenJsonController extends AbstractController
         }
 
         return $videos;
+    }
+
+    // The drawings a child may colour today, as stored: the app cuts them into zones itself, and keeps the colours given under the fingerprint so a replaced drawing never gets another's. A row holding no file is left out
+    /** @return list<array{title: ?string, url: string, fingerprint: ?string, palette: list<string>}> */
+    private function colorings(Book $book): array
+    {
+        $colorings = [];
+        foreach ($book->getPublishedColorings() as $coloring) {
+            $url = $this->url($coloring);
+            if (null !== $url) {
+                $colorings[] = ['title' => $coloring->getTitle(), 'url' => $url, 'fingerprint' => $coloring->getFingerprint(), 'palette' => $coloring->getPalette()];
+            }
+        }
+
+        return $colorings;
     }
 
     // The pictures an app shows full screen as it opens, uploaded as site graphics (see UiBundle's Media::ROLE_APP_OPENING), oldest first: empty while none is, the app then keeping its own

@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Management;
 
+use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\Media;
 use c975L\UiBundle\Contract\VichMultiSizeImageInterface;
@@ -59,9 +60,14 @@ class MediaArchiver
             'file' => $file,
         ];
 
-        // A document to print travels with its day, else an import would put out at once what was planned week by week
-        if ($media instanceof BookPrintable) {
+        // A document to print and a drawing to colour travel with their day, else an import would put out at once what was planned week by week
+        if ($media instanceof BookPrintable || $media instanceof BookColoring) {
             $data['publishedOn'] = $media->getPublishedOn()?->format('Y-m-d');
+        }
+
+        // The crayons too, the illustration they were read off being kept nowhere; the fingerprint is written again as the file is imported
+        if ($media instanceof BookColoring) {
+            $data['palette'] = $media->getPalette();
         }
 
         return $data;
@@ -159,8 +165,12 @@ class MediaArchiver
             // The column is not nullable, so an archive predating it dates the row from the import rather than leaving it unwritten
             ->setUpdatedAt(isset($mediaData['updatedAt']) ? new \DateTimeImmutable($mediaData['updatedAt']) : new \DateTimeImmutable());
 
-        if ($media instanceof BookPrintable) {
+        if ($media instanceof BookPrintable || $media instanceof BookColoring) {
             $media->setPublishedOn(isset($mediaData['publishedOn']) ? new \DateTimeImmutable($mediaData['publishedOn']) : null);
+        }
+
+        if ($media instanceof BookColoring) {
+            $media->setPalette(\is_array($mediaData['palette'] ?? null) ? array_values(array_filter($mediaData['palette'], \is_string(...))) : null);
         }
     }
 

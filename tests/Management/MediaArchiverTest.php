@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Tests\Management;
 
+use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\SerieMedia;
@@ -85,6 +86,21 @@ class MediaArchiverTest extends TestCase
 
         [[$imported]] = $this->archiver()->sync(new ArrayCollection(), [$data], static fn (): BookPrintable => new BookPrintable(), static fn (): null => null, static fn (): null => null);
         $this->assertSame('2027-01-13', $imported->getPublishedOn()?->format('Y-m-d'));
+    }
+
+    // A drawing to colour travels with its day and its crayons, the illustration they were read off being kept nowhere
+    public function testADrawingToColourTravelsWithItsDayAndItsCrayons(): void
+    {
+        $name = 'medias/book/colorings/item-1-abc123.png';
+        $this->write($name);
+
+        $files = [];
+        $data = $this->archiver()->export(new BookColoring()->setName($name)->setPublishedOn(new \DateTimeImmutable('2027-01-13'))->setPalette(['#ff0000', '#1a1a1a']), $files);
+        $this->assertSame(['#ff0000', '#1a1a1a'], $data['palette']);
+
+        [[$imported]] = $this->archiver()->sync(new ArrayCollection(), [$data], static fn (): BookColoring => new BookColoring(), static fn (): null => null, static fn (): null => null);
+        $this->assertSame('2027-01-13', $imported->getPublishedOn()?->format('Y-m-d'));
+        $this->assertSame(['#ff0000', '#1a1a1a'], $imported->getPalette());
     }
 
     // Any other media carries no such key

@@ -52,6 +52,7 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
             $this->bookCreationProject(),
             $this->mediaMoveProject(),
             $this->bookPrintablesProject(),
+            $this->bookColoringsProject(),
             $this->bookCompositionProject(),
             $this->bookListenProject(),
             $this->bookVideoProject(),
@@ -571,6 +572,50 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'label' => 'label.guided_step_book_printables_done',
                     'description' => 'description.guided_step_book_printables_done',
                     'narration' => 'narration.guided_step_book_printables_done',
+                ],
+            ],
+        ];
+    }
+
+    // A book's drawings to colour on screen, beside its documents to print and walked the same way: what sets them apart is the illustration their crayons are read off, and that they show in an app rather than on the book's page
+    private function bookColoringsProject(): array
+    {
+        return [
+            'slug' => 'book-colorings',
+            'label' => 'label.guided_project_book_colorings',
+            'description' => 'description.guided_project_book_colorings',
+            'translation_domain' => 'book',
+            'order' => 6027,
+            'role' => $this->roleNeeded(),
+            'steps' => [
+                [
+                    'label' => 'label.guided_step_book_printables_open',
+                    'description' => 'description.guided_step_book_colorings_open',
+                    'narration' => 'narration.guided_step_book_colorings_open',
+                    'url' => $this->bookIndexUrl(),
+                ],
+                [
+                    'label' => 'label.guided_step_book_printables_edit',
+                    'description' => 'description.guided_step_book_colorings_edit',
+                    'narration' => 'narration.guided_step_book_colorings_edit',
+                    'highlight' => '.action-edit',
+                ],
+                [
+                    'label' => 'label.guided_step_book_printables_tab',
+                    'description' => 'description.guided_step_book_printables_tab',
+                    'narration' => 'narration.guided_step_book_printables_tab',
+                    'highlight' => '.form-tabs-tablist .nav-item:nth-child(2) .nav-link',
+                ],
+                [
+                    'label' => 'label.guided_step_book_colorings_list',
+                    'description' => 'description.guided_step_book_colorings_list',
+                    'narration' => 'narration.guided_step_book_colorings_list',
+                    'highlight' => '[data-book-colorings]',
+                ],
+                [
+                    'label' => 'label.guided_step_book_printables_done',
+                    'description' => 'description.guided_step_book_colorings_done',
+                    'narration' => 'narration.guided_step_book_colorings_done',
                 ],
             ],
         ];

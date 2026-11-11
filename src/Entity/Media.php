@@ -36,6 +36,7 @@ use Vich\UploaderBundle\Mapping\Attribute as Vich;
     'character' => CharacterMedia::class,
     'book_edition_file' => BookEditionFile::class,
     'book_printable' => BookPrintable::class,
+    'book_coloring' => BookColoring::class,
 ])]
 abstract class Media implements \Stringable
 {

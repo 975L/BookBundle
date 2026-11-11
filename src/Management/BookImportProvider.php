@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookEditionFile;
@@ -359,6 +360,10 @@ class BookImportProvider implements ImportProviderInterface
 
         if (array_key_exists('printables', $item)) {
             $written = [...$written, ...$this->mediaArchiver->sync($book->getPrintables(), $item['printables'], static fn (): BookPrintable => new BookPrintable(), $book->addPrintable(...), $book->removePrintable(...))];
+        }
+
+        if (array_key_exists('colorings', $item)) {
+            $written = [...$written, ...$this->mediaArchiver->sync($book->getColorings(), $item['colorings'], static fn (): BookColoring => new BookColoring(), $book->addColoring(...), $book->removeColoring(...))];
         }
 
         return $written;

@@ -244,6 +244,16 @@ class BookRepositoryTest extends TestCase
         $this->assertCount(0, $this->dqls);
     }
 
+    // The drawings to colour of the whole list in one query, and none for no book
+    public function testTheDrawingsOfAListAreReadInOneQuery(): void
+    {
+        $this->createRepository()->withColorings([$this->book(1), $this->book(2)]);
+        $this->createRepository()->withColorings([]);
+
+        $this->assertCount(1, $this->dqls);
+        $this->assertStringContainsString('LEFT JOIN b.colorings colorings', $this->dqls[0]);
+    }
+
     // A book as the listing hands it over: only its id is read, the covers query being built on that alone
     private function book(int $id): Book
     {

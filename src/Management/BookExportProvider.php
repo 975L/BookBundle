@@ -104,6 +104,7 @@ class BookExportProvider implements ExportProviderInterface
             'presses' => $this->exportMedias($book->getPresses(), $files),
             'marketings' => $this->exportMedias($book->getMarketings(), $files),
             'printables' => $this->exportMedias($book->getPrintables(), $files),
+            'colorings' => $this->exportMedias($book->getColorings(), $files),
         ];
     }
 

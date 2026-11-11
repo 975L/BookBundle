@@ -54,6 +54,10 @@
                 <source>description.guided_project_book_character_creation</source>
                 <target>Quién habla en las páginas: un personaje, su retrato y la frase que lo presenta.</target>
             </trans-unit>
+            <trans-unit id="V9Li2YL">
+                <source>description.guided_project_book_colorings</source>
+                <target>Añada a un libro dibujos en PNG con la ilustración de cada uno: la aplicación los hace colorear con un toque, con los colores de la historia.</target>
+            </trans-unit>
             <trans-unit id="YT.YFdA">
                 <source>description.guided_project_book_composition</source>
                 <target>Más allá de sus propios campos, la página de un libro se compone con bloques: banner, texto, galería, llamada a la acción.</target>
@@ -197,6 +201,22 @@
             <trans-unit id="v6XO8dt">
                 <source>description.guided_step_book_character_creation_slug</source>
                 <target>Derivada del nombre, es la que filtra la lista de páginas. Modifíquela antes de la primera publicación, no después.</target>
+            </trans-unit>
+            <trans-unit id="Ek0rtWb">
+                <source>description.guided_step_book_colorings_done</source>
+                <target>Una vez publicado el libro, la aplicación ofrece sus dibujos publicados, cada uno con sus lápices.</target>
+            </trans-unit>
+            <trans-unit id="eDpofr.">
+                <source>description.guided_step_book_colorings_edit</source>
+                <target>Elija el libro que recibirá los dibujos.</target>
+            </trans-unit>
+            <trans-unit id="In7m337">
+                <source>description.guided_step_book_colorings_list</source>
+                <target>Una fila por dibujo: un título, el PNG en trazos negros y la ilustración en color de la que sale, que da sus lápices. Una fecha de publicación hace aparecer el dibujo ese día, solo.</target>
+            </trans-unit>
+            <trans-unit id="8OkeSWe">
+                <source>description.guided_step_book_colorings_open</source>
+                <target>Los dibujos para colorear se añaden al libro del que salen.</target>
             </trans-unit>
             <trans-unit id="QmMk4WE">
                 <source>description.guided_step_book_composition_add</source>
@@ -1390,6 +1410,30 @@
                 <source>label.characters_section</source>
                 <target>¿Quiénes son?</target>
             </trans-unit>
+            <trans-unit id="HRhFPBo">
+                <source>label.coloring</source>
+                <target>Dibujo (PNG)</target>
+            </trans-unit>
+            <trans-unit id="bTwRHdo">
+                <source>label.coloring_published_on-help</source>
+                <target>Vacío: visible en cuanto se guarda. Una fecha: el dibujo aparece ese día, solo.</target>
+            </trans-unit>
+            <trans-unit id="ZbWw4qC">
+                <source>label.coloring_source</source>
+                <target>Ilustración en color</target>
+            </trans-unit>
+            <trans-unit id="ZS5yTJO">
+                <source>label.coloring_source-help</source>
+                <target>La ilustración de la que sale el dibujo: sus colores dan los lápices y luego no se guarda. Volver a enviarla recalcula los lápices.</target>
+            </trans-unit>
+            <trans-unit id="lB9667S">
+                <source>label.colorings</source>
+                <target>Para colorear en pantalla</target>
+            </trans-unit>
+            <trans-unit id="sD3Jww1">
+                <source>label.colorings-help</source>
+                <target>Dibujos en PNG, trazos negros sobre fondo blanco, que un niño colorea con un toque en la aplicación.</target>
+            </trans-unit>
             <trans-unit id="fBgQMYT">
                 <source>label.contributor</source>
                 <target>Autor/ilustrador</target>
@@ -1710,6 +1754,10 @@
                 <source>label.guided_project_book_character_creation</source>
                 <target>Poblar una serie</target>
             </trans-unit>
+            <trans-unit id="8CSwMvy">
+                <source>label.guided_project_book_colorings</source>
+                <target>Ofrecer dibujos para colorear en pantalla</target>
+            </trans-unit>
             <trans-unit id="xHGOxRr">
                 <source>label.guided_project_book_composition</source>
                 <target>Enriquecer la página de un libro</target>
@@ -1861,6 +1909,10 @@
             <trans-unit id="rJJeM9m">
                 <source>label.guided_step_book_character_creation_slug</source>
                 <target>Compruebe su dirección</target>
+            </trans-unit>
+            <trans-unit id="a3gAtCW">
+                <source>label.guided_step_book_colorings_list</source>
+                <target>Añada sus dibujos</target>
             </trans-unit>
             <trans-unit id="8EtrFFM">
                 <source>label.guided_step_book_composition_add</source>

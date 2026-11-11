@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Tests\Controller;
 
 use c975L\BookBundle\Controller\ListenJsonController;
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookVideo;
@@ -359,6 +360,22 @@ class ListenJsonControllerTest extends TestCase
         $this->assertSame(3, $data['plays']);
     }
 
+    // The drawings out today, each with its crayons and its fingerprint, as stored: one dated ahead or holding no file stays out
+    public function testGivesThePublishedDrawingsToColour(): void
+    {
+        $book = $this->book()
+            ->addColoring(new BookColoring()->setTitle('item-1')->setName('medias/item-1.png')->setFingerprint('abc')->setPalette(['#ff0000', '#1a1a1a']))
+            ->addColoring(new BookColoring()->setName('medias/item-2.png')->setPublishedOn(new \DateTimeImmutable('+7 days')))
+            ->addColoring(new BookColoring())
+        ;
+
+        $data = $this->data($this->createController([$book])->index($this->request()))['books'][0];
+
+        $this->assertSame([
+            ['title' => 'item-1', 'url' => 'https://example.com/medias/item-1.png', 'fingerprint' => 'abc', 'palette' => ['#ff0000', '#1a1a1a']],
+        ], $data['colorings']);
+    }
+
     // Below the site's minimum the count is withheld, as the book's own page withholds it
     public function testWithholdsThePlaysBelowTheMinimum(): void
     {
@@ -375,6 +392,16 @@ class ListenJsonControllerTest extends TestCase
         $bookTranslator->expects($this->once())->method('apply')->with($this->containsIdentical($serie));
 
         $this->createController([$this->book()->setSerie($serie)], bookTranslator: $bookTranslator)->index($this->request());
+    }
+
+    // A drawing is named as the book's own page names its files, in the language the list is read in
+    public function testTranslatesTheTitlesOfTheDrawings(): void
+    {
+        $coloring = new BookColoring()->setTitle('item-1')->setName('medias/item-1.png');
+        $bookTranslator = $this->createMock(BookTranslator::class);
+        $bookTranslator->expects($this->once())->method('apply')->with($this->containsIdentical($coloring));
+
+        $this->createController([$this->book()->addColoring($coloring)], bookTranslator: $bookTranslator)->index($this->request());
     }
 
     // The roles are named in the language the listening page names them in: the url's when it reads one, the book's own otherwise

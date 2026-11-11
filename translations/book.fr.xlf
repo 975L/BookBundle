@@ -54,6 +54,10 @@
                 <source>description.guided_project_book_character_creation</source>
                 <target>Qui parle dans les planches : un personnage, son portrait et la phrase qui le présente.</target>
             </trans-unit>
+            <trans-unit id="V9Li2YL">
+                <source>description.guided_project_book_colorings</source>
+                <target>Déposez sur un livre des dessins en PNG et l'illustration de chacun : l'appli les fait colorier d'un toucher, avec les couleurs de l'histoire.</target>
+            </trans-unit>
             <trans-unit id="YT.YFdA">
                 <source>description.guided_project_book_composition</source>
                 <target>Au-delà de ses propres champs, une page de livre se compose en blocks : bandeau, texte, galerie, appel à l'action.</target>
@@ -197,6 +201,22 @@
             <trans-unit id="v6XO8dt">
                 <source>description.guided_step_book_character_creation_slug</source>
                 <target>Dérivée du nom, c'est elle qui filtre la liste des planches. Modifiez-la avant la première mise en ligne, pas après.</target>
+            </trans-unit>
+            <trans-unit id="Ek0rtWb">
+                <source>description.guided_step_book_colorings_done</source>
+                <target>Une fois le livre paru, l'appli propose ses dessins publiés, chacun avec ses crayons.</target>
+            </trans-unit>
+            <trans-unit id="eDpofr.">
+                <source>description.guided_step_book_colorings_edit</source>
+                <target>Choisissez le livre qui recevra les dessins.</target>
+            </trans-unit>
+            <trans-unit id="In7m337">
+                <source>description.guided_step_book_colorings_list</source>
+                <target>Une ligne par dessin : un titre, le PNG en traits noirs et l'illustration en couleur dont il est tiré, qui donne ses crayons. Une date de publication fait apparaître le dessin ce jour-là, tout seul.</target>
+            </trans-unit>
+            <trans-unit id="8OkeSWe">
+                <source>description.guided_step_book_colorings_open</source>
+                <target>Les dessins à colorier se déposent sur le livre dont ils sont tirés.</target>
             </trans-unit>
             <trans-unit id="QmMk4WE">
                 <source>description.guided_step_book_composition_add</source>
@@ -1390,6 +1410,30 @@
                 <source>label.characters_section</source>
                 <target>Qui sont-ils ?</target>
             </trans-unit>
+            <trans-unit id="HRhFPBo">
+                <source>label.coloring</source>
+                <target>Dessin (PNG)</target>
+            </trans-unit>
+            <trans-unit id="bTwRHdo">
+                <source>label.coloring_published_on-help</source>
+                <target>Vide : visible dès l'enregistrement. Une date : le dessin apparaît ce jour-là, tout seul.</target>
+            </trans-unit>
+            <trans-unit id="ZbWw4qC">
+                <source>label.coloring_source</source>
+                <target>Illustration en couleur</target>
+            </trans-unit>
+            <trans-unit id="ZS5yTJO">
+                <source>label.coloring_source-help</source>
+                <target>L'illustration dont le dessin est tiré : ses couleurs donnent les crayons, puis elle n'est pas gardée. La renvoyer recalcule les crayons.</target>
+            </trans-unit>
+            <trans-unit id="lB9667S">
+                <source>label.colorings</source>
+                <target>À colorier à l'écran</target>
+            </trans-unit>
+            <trans-unit id="sD3Jww1">
+                <source>label.colorings-help</source>
+                <target>Des dessins en PNG, traits noirs sur fond blanc, qu'un enfant colorie d'un toucher dans l'appli.</target>
+            </trans-unit>
             <trans-unit id="fBgQMYT">
                 <source>label.contributor</source>
                 <target>Auteur/illustrateur</target>
@@ -1710,6 +1754,10 @@
                 <source>label.guided_project_book_character_creation</source>
                 <target>Peupler une série</target>
             </trans-unit>
+            <trans-unit id="8CSwMvy">
+                <source>label.guided_project_book_colorings</source>
+                <target>Proposer des coloriages à l'écran</target>
+            </trans-unit>
             <trans-unit id="xHGOxRr">
                 <source>label.guided_project_book_composition</source>
                 <target>Enrichir la page d'un livre</target>
@@ -1861,6 +1909,10 @@
             <trans-unit id="rJJeM9m">
                 <source>label.guided_step_book_character_creation_slug</source>
                 <target>Vérifiez son adresse</target>
+            </trans-unit>
+            <trans-unit id="a3gAtCW">
+                <source>label.guided_step_book_colorings_list</source>
+                <target>Ajoutez vos dessins</target>
             </trans-unit>
             <trans-unit id="8EtrFFM">
                 <source>label.guided_step_book_composition_add</source>

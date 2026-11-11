@@ -137,6 +137,11 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
     private Collection $printables;
 
+    #[Assert\Valid]
+    #[ORM\OneToMany(targetEntity: BookColoring::class, mappedBy: 'book', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['position' => \SortDirection::Ascending, 'id' => \SortDirection::Ascending])]
+    private Collection $colorings;
+
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $language = null;
 
@@ -179,6 +184,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         $this->presses = new ArrayCollection();
         $this->marketings = new ArrayCollection();
         $this->printables = new ArrayCollection();
+        $this->colorings = new ArrayCollection();
         $this->translations = new ArrayCollection();
     }
 
@@ -892,6 +898,38 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     {
         if ($this->printables->removeElement($printable) && $printable->getBook() === $this) {
             $printable->setBook(null);
+        }
+
+        return $this;
+    }
+
+    /** @return Collection<int, BookColoring> */
+    public function getColorings(): Collection
+    {
+        return $this->colorings;
+    }
+
+    // The drawings a child may colour today, those dated ahead left out until their day
+    /** @return list<BookColoring> */
+    public function getPublishedColorings(): array
+    {
+        return array_values($this->colorings->filter(static fn (BookColoring $coloring): bool => $coloring->isPublished())->toArray());
+    }
+
+    public function addColoring(BookColoring $coloring): static
+    {
+        if (!$this->colorings->contains($coloring)) {
+            $this->colorings->add($coloring);
+            $coloring->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeColoring(BookColoring $coloring): static
+    {
+        if ($this->colorings->removeElement($coloring) && $coloring->getBook() === $this) {
+            $coloring->setBook(null);
         }
 
         return $this;

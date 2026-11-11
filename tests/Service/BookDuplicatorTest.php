@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Service;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookLink;
 use c975L\BookBundle\Entity\BookMedia;
@@ -152,6 +153,19 @@ class BookDuplicatorTest extends TestCase
         $this->assertSame('small', $printables->first()->getKind());
         $this->assertSame('La page', $printables->first()->getTitle());
         $this->assertSame('2027-01-13', $printables->first()->getPublishedOn()?->format('Y-m-d'));
+    }
+
+    public function testTheCopyOfABookCarriesItsDrawingsToColour(): void
+    {
+        $book = $this->book();
+        $book->addColoring(new BookColoring()->setTitle('item-1')->setPublishedOn(new \DateTimeImmutable('2027-01-13'))->setPalette(['#ff0000']));
+
+        $colorings = $this->duplicator->duplicateBook($book)->getColorings();
+
+        $this->assertCount(1, $colorings);
+        $this->assertSame('item-1', $colorings->first()->getTitle());
+        $this->assertSame('2027-01-13', $colorings->first()->getPublishedOn()?->format('Y-m-d'));
+        $this->assertSame(['#ff0000'], $colorings->first()->getPalette());
     }
 
     // A person is copied with where their books are bought, the row being theirs and not a book's (see ContributorLink)
