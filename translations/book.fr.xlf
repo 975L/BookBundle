@@ -32,15 +32,15 @@
             </trans-unit>
             <trans-unit id="X4j.TeG">
                 <source>confirm.delete_permanently</source>
-                <target>Supprimer définitivement cet élément et tous ses fichiers ? Son adresse répondra 410 pour de bon.</target>
+                <target>Supprimer définitivement « %title% » et tous ses fichiers ? Son adresse répondra 410 pour de bon.</target>
             </trans-unit>
             <trans-unit id="gtzKxeG">
                 <source>confirm.duplicate</source>
-                <target>Créer une copie de cet élément avec tout ce qu'il contient ?</target>
+                <target>Créer une copie de « %title% » avec tout son contenu ?</target>
             </trans-unit>
             <trans-unit id="dm8sVDz">
                 <source>confirm.move_to_trash</source>
-                <target>Mettre cet élément à la corbeille ? Sa page ne sera plus servie, mais rien n'est perdu : il peut être restauré.</target>
+                <target>Mettre « %title% » à la corbeille ? Sa page ne sera plus servie, mais rien n'est perdu : tout peut être restauré.</target>
             </trans-unit>
             <trans-unit id="2pKncNB">
                 <source>confirm.publish_new_version</source>

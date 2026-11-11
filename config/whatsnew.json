@@ -6,6 +6,11 @@
                 "en": "A book can now offer drawings to colour on screen: add a PNG drawing in the book's \"Page\" tab with the coloured illustration it comes from. Its crayons are taken from that illustration's colours, and your app has it coloured with a touch from the day you choose.",
                 "fr": "Un livre peut désormais proposer des dessins à colorier à l'écran : ajoutez un dessin en PNG dans l'onglet « Page » du livre, avec l'illustration en couleur dont il est tiré. Ses crayons sont pris dans les couleurs de cette illustration, et votre appli le fait colorier d'un toucher à partir du jour choisi.",
                 "es": "Un libro puede ofrecer ahora dibujos para colorear en pantalla: añada un dibujo en PNG en la pestaña «Página» del libro, con la ilustración en color de la que sale. Sus lápices se toman de los colores de esa ilustración, y su aplicación lo hace colorear con un toque a partir del día elegido."
+            },
+            {
+                "en": "Before moving to the trash, deleting for good or duplicating, the confirmation now names the item concerned, so you know at a glance which one you are about to act on.",
+                "fr": "Avant une mise à la corbeille, une suppression définitive ou une duplication, la confirmation nomme désormais l'élément concerné, pour savoir d'un coup d'œil sur quoi vous allez agir.",
+                "es": "Antes de mover a la papelera, eliminar definitivamente o duplicar, la confirmación nombra ahora el elemento en cuestión, para saber de un vistazo sobre qué va a actuar."
             }
         ]
     },

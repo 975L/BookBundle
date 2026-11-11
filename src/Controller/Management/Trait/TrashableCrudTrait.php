@@ -93,7 +93,7 @@ trait TrashableCrudTrait
         $duplicateAction = Action::new('duplicate', t('action.duplicate', [], 'book'), 'fa fa-copy')
             ->linkToUrl(fn (TrashableInterface $entity): string => $this->actionUrl('duplicate', $entity, self::DUPLICATE_CSRF_TOKEN))
             ->displayIf(static fn (TrashableInterface $entity): bool => !$entity->isDeleted())
-            ->askConfirmation(t('confirm.duplicate', [], 'book'));
+            ->askConfirmation(self::titledConfirmation('confirm.duplicate'));
 
         // Restores a row out of the trash, only shown once already in it
         $restoreAction = Action::new('restore', t('action.restore', [], 'book'), 'fa fa-trash-restore')
@@ -104,7 +104,7 @@ trait TrashableCrudTrait
         $deletePermanentlyAction = Action::new('deletePermanently', t('action.delete_permanently', [], 'config'), 'fa fa-trash')
             ->linkToUrl(fn (TrashableInterface $entity): string => $this->trashActionUrl('deletePermanently', $entity, self::DELETE_PERMANENTLY_CSRF_TOKEN))
             ->displayIf(static fn (TrashableInterface $entity): bool => $entity->isDeleted())
-            ->askConfirmation(t('confirm.delete_permanently', [], 'book'))
+            ->askConfirmation(self::titledConfirmation('confirm.delete_permanently'))
             ->asDangerAction();
 
         // Lets the admin back out of a create/edit without saving - mirrors EasyAdmin's own built-in actions (linkToCrudAction targeting INDEX, same as Action::INDEX itself)
@@ -139,7 +139,7 @@ trait TrashableCrudTrait
             ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $action) => EasyAdminActionHelper::toIconOnly(
                 $action
                     ->setIcon('fa fa-box-archive')
-                    ->askConfirmation(t('confirm.move_to_trash', [], 'book'))
+                    ->askConfirmation(self::titledConfirmation('confirm.move_to_trash'))
                     ->displayIf(static fn (TrashableInterface $entity): bool => !$entity->isDeleted()),
                 $this->translator->trans('action.move_to_trash', [], 'config'),
             ))
@@ -424,6 +424,16 @@ trait TrashableCrudTrait
         }
 
         return $this->publicUrlResolver->resolvePath($this->displayRoute($entity), ['slug' => $slug]);
+    }
+
+    // A confirmation naming the row it acts on, EasyAdmin handing the closure that row - one saved without a title is named by its id
+    private static function titledConfirmation(string $key): \Closure
+    {
+        return static function (TrashableInterface & \Stringable $entity) use ($key): TranslatableMessage {
+            $title = (string) $entity;
+
+            return t($key, ['%title%' => '' !== $title ? $title : '#' . $entity->getId()], 'book');
+        };
     }
 
     // Which public route reads a row: the family's own, unless the controller redeclares this - a serie has two, one below each index (see SerieCrudController)

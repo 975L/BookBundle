@@ -32,15 +32,15 @@
             </trans-unit>
             <trans-unit id="X4j.TeG">
                 <source>confirm.delete_permanently</source>
-                <target>¿Eliminar definitivamente este elemento y todos sus archivos? Su dirección responderá 410 para siempre.</target>
+                <target>¿Eliminar definitivamente «%title%» y todos sus archivos? Su dirección responderá 410 para siempre.</target>
             </trans-unit>
             <trans-unit id="gtzKxeG">
                 <source>confirm.duplicate</source>
-                <target>¿Crear una copia de este elemento con todo lo que contiene?</target>
+                <target>¿Crear una copia de «%title%» con todo lo que contiene?</target>
             </trans-unit>
             <trans-unit id="dm8sVDz">
                 <source>confirm.move_to_trash</source>
-                <target>¿Mover este elemento a la papelera? Su página deja de servirse, pero no se pierde nada: puede restaurarse.</target>
+                <target>¿Mover «%title%» a la papelera? Su página deja de servirse, pero no se pierde nada: puede restaurarse.</target>
             </trans-unit>
             <trans-unit id="2pKncNB">
                 <source>confirm.publish_new_version</source>

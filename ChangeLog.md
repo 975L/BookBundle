@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.34.1
+
+Trash, delete and duplicate confirmations name the row
+
+- Trash, permanent delete and duplicate confirmations name the row they act on (11/11/2026)
+- `easycorp/easyadmin-bundle` required in ^5.10 (11/11/2026)
+
 ## v2.34.0
 
 Drawings to colour imported in a batch from a manifest

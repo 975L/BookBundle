@@ -32,15 +32,15 @@
             </trans-unit>
             <trans-unit id="X4j.TeG">
                 <source>confirm.delete_permanently</source>
-                <target>Permanently delete this item and all its files? Its url will answer 410 for good.</target>
+                <target>Permanently delete "%title%" and all its files? Its url will answer 410 for good.</target>
             </trans-unit>
             <trans-unit id="gtzKxeG">
                 <source>confirm.duplicate</source>
-                <target>Create a copy of this item with everything it holds?</target>
+                <target>Create a copy of "%title%" with everything it holds?</target>
             </trans-unit>
             <trans-unit id="dm8sVDz">
                 <source>confirm.move_to_trash</source>
-                <target>Move this item to the trash? Its page stops being served, but nothing is lost: it can be restored.</target>
+                <target>Move "%title%" to the trash? Its page stops being served, but nothing is lost: it can be restored.</target>
             </trans-unit>
             <trans-unit id="2pKncNB">
                 <source>confirm.publish_new_version</source>

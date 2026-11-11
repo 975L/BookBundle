@@ -227,4 +227,18 @@ class TrashableCrudDeleteTest extends TestCase
             'request_stack' => $requestStack,
         ]);
     }
+
+    // A confirmation names the row it acts on, resolved row by row, and a row saved without a title by its id
+    public function testTheTrashConfirmationNamesTheRow(): void
+    {
+        $confirmation = new \ReflectionMethod(StripCrudController::class, 'titledConfirmation')->invoke(null, 'confirm.move_to_trash');
+        $untitled = new Book()->setTitle('');
+        new \ReflectionProperty(Book::class, 'id')->setValue($untitled, 7);
+
+        $this->assertSame(['%title%' => 'item-1'], $confirmation(new Book()->setTitle('item-1'))->getParameters());
+        $this->assertSame(['%title%' => 'item-2'], $confirmation(new Book()->setTitle('item-2'))->getParameters());
+        $this->assertSame(['%title%' => '#7'], $confirmation($untitled)->getParameters());
+        $this->assertSame('confirm.move_to_trash', $confirmation($untitled)->getMessage());
+        $this->assertSame('book', $confirmation($untitled)->getDomain());
+    }
 }
