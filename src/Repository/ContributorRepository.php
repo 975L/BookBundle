@@ -179,7 +179,7 @@ class ContributorRepository extends ServiceEntityRepository
         return $contributor;
     }
 
-    // What a person's page is made of, filled one collection at a time rather than in the single query this used to be: the five collections crossed one another row by row, and someone signing sixty books turned six hundred covers into billions of rows - a temporary table MariaDB gave up writing after a hundred seconds. The same lesson findCredited() drew from its own five joins, and the same remedy; unlike preloadRoles() though, each collection is filtered here, a page showing only what the catalog still shows
+    // What a person's page is made of, filled one collection at a time rather than in the single query this used to be: the five collections crossed one another row by row, and someone signing sixty books turned six hundred covers into billions of rows - a temporary table MariaDB gave up writing after a hundred seconds. The same lesson findCredited() drew from its own five joins, and the same remedy. Each collection is read whole, what the catalog no longer shows being left out where the page reads it (see Contributor::getBooks() and getSeries()): a join filtering them would leave the collections holding part of their rows for the rest of the request
     private function preloadWorks(Contributor $contributor): void
     {
         // Where the site says the rest in its own words, read by the template as contributor.blocks
@@ -193,7 +193,7 @@ class ContributorRepository extends ServiceEntityRepository
         // The books they signed or illustrated and the covers their cards print, each one's replaced version joined for the reason preloadRoles() joins it: an inverse one-to-one cannot be a lazy proxy, so a book filled without it costs one more query (see Book::$previousVersion)
         foreach (['authoredBooks', 'illustratedBooks'] as $association) {
             $this->preloadQueryBuilder([$contributor])
-                ->leftJoin('c.' . $association, 'books', 'WITH', 'books.isDeleted = false AND books.hidden = false AND books.newerVersion IS NULL')
+                ->leftJoin('c.' . $association, 'books')
                 ->addSelect('books')
                 ->leftJoin('books.medias', 'booksMedias')
                 ->addSelect('booksMedias')
@@ -207,7 +207,7 @@ class ContributorRepository extends ServiceEntityRepository
         // The series, which carry no such link and are read as they are
         foreach (['authoredSeries', 'illustratedSeries'] as $association) {
             $this->preloadQueryBuilder([$contributor])
-                ->leftJoin('c.' . $association, 'series', 'WITH', 'series.isDeleted = false AND series.hidden = false')
+                ->leftJoin('c.' . $association, 'series')
                 ->addSelect('series')
                 ->leftJoin('series.medias', 'seriesMedias')
                 ->addSelect('seriesMedias')
@@ -216,11 +216,11 @@ class ContributorRepository extends ServiceEntityRepository
             ;
         }
 
-        // What they narrated or translated, read under the same conditions as what they signed - Contributor::getBooks() merges the three
+        // What they narrated or translated - Contributor::getBooks() merges the three
         $this->preloadQueryBuilder([$contributor])
             ->leftJoin('c.credits', 'credit')
             ->addSelect('credit')
-            ->leftJoin('credit.book', 'creditedBook', 'WITH', 'creditedBook.isDeleted = false AND creditedBook.hidden = false AND creditedBook.newerVersion IS NULL')
+            ->leftJoin('credit.book', 'creditedBook')
             ->addSelect('creditedBook')
             ->leftJoin('creditedBook.medias', 'creditedBookMedias')
             ->addSelect('creditedBookMedias')

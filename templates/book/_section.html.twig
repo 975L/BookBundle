@@ -13,7 +13,8 @@
     {% if section.intro|default('') %}
         <p class="book-section__intro">{{ section.intro }}</p>
     {% endif %}
-    {{ body|default('')|raw }}
+    {# A capture of its caller's, already marked safe: printed as is without a raw #}
+    {{ body|default('') }}
     {% if section.template|default('') %}
         {{ include(section.template, {book: book|default(null), section: section}) }}
     {% endif %}

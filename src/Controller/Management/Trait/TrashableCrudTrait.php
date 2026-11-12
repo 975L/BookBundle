@@ -92,17 +92,20 @@ trait TrashableCrudTrait
         // Duplicates the row with everything that belongs to it into a new one, saved immediately (see duplicate() and BookDuplicator) - built as a url rather than linked to the crud action, so the csrf token the action checks travels with it
         $duplicateAction = Action::new('duplicate', t('action.duplicate', [], 'book'), 'fa fa-copy')
             ->linkToUrl(fn (TrashableInterface $entity): string => $this->actionUrl('duplicate', $entity, self::DUPLICATE_CSRF_TOKEN))
+            ->renderAsForm()
             ->displayIf(static fn (TrashableInterface $entity): bool => !$entity->isDeleted())
             ->askConfirmation(self::titledConfirmation('confirm.duplicate'));
 
         // Restores a row out of the trash, only shown once already in it
         $restoreAction = Action::new('restore', t('action.restore', [], 'book'), 'fa fa-trash-restore')
             ->linkToUrl(fn (TrashableInterface $entity): string => $this->trashActionUrl('restore', $entity, self::RESTORE_CSRF_TOKEN))
+            ->renderAsForm()
             ->displayIf(static fn (TrashableInterface $entity): bool => $entity->isDeleted());
 
         // Removes the row for good, only shown once already in the trash - built as a url rather than linked to the crud action, so the csrf token the action checks travels with it
         $deletePermanentlyAction = Action::new('deletePermanently', t('action.delete_permanently', [], 'config'), 'fa fa-trash')
             ->linkToUrl(fn (TrashableInterface $entity): string => $this->trashActionUrl('deletePermanently', $entity, self::DELETE_PERMANENTLY_CSRF_TOKEN))
+            ->renderAsForm()
             ->displayIf(static fn (TrashableInterface $entity): bool => $entity->isDeleted())
             ->askConfirmation(self::titledConfirmation('confirm.delete_permanently'))
             ->asDangerAction();
@@ -184,7 +187,7 @@ trait TrashableCrudTrait
     }
 
     // Duplicates the row with everything it holds, saved immediately, then opens the copy for editing (see the duplicateEntity() of each screen and BookDuplicator)
-    #[AdminRoute('/{entityId}/duplicate')]
+    #[AdminRoute('/{entityId}/duplicate', options: ['methods' => ['POST']])]
     public function duplicate(AdminContext $context, EntityManagerInterface $entityManager, Request $request): Response
     {
         $this->denyAccessUnlessGranted($this->configService->get('site-role-editor'));
@@ -242,7 +245,7 @@ trait TrashableCrudTrait
     }
 
     // Restores the row out of the trash - back on the site exactly as it left it
-    #[AdminRoute('/{entityId}/restore')]
+    #[AdminRoute('/{entityId}/restore', options: ['methods' => ['POST']])]
     public function restore(AdminContext $context, Request $request): Response
     {
         $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
@@ -259,7 +262,7 @@ trait TrashableCrudTrait
     }
 
     // Removes the row for good, its url left answering 410 rather than dropping back to a 404 (see BookTrashManager::deletePermanently()) - only reachable once already in the trash
-    #[AdminRoute('/{entityId}/delete-permanently')]
+    #[AdminRoute('/{entityId}/delete-permanently', options: ['methods' => ['POST']])]
     public function deletePermanently(AdminContext $context, Request $request): Response
     {
         $this->denyAccessUnlessGranted($this->configService->get('site-role-admin'));
@@ -349,7 +352,7 @@ trait TrashableCrudTrait
             ->createAsGlobalAction();
     }
 
-    // The url of a catalog row button, its csrf token in the query string - the action is a GET, which an <img> on a third-party page would otherwise fire on a logged-in admin
+    // The url of a catalog row button, its csrf token in the query string - the button posts it, a GET writing nothing
     private function actionUrl(string $action, TrashableInterface $entity, string $tokenId): string
     {
         return $this->adminUrlGenerator
@@ -369,7 +372,7 @@ trait TrashableCrudTrait
             ->generateUrl();
     }
 
-    // The url of a trash row button, its csrf token in the query string - the action is a GET, which an <img> on a third-party page would otherwise fire on a logged-in admin
+    // The url of a trash row button, its csrf token in the query string - the button posts it, a GET writing nothing
     private function trashActionUrl(string $action, TrashableInterface $entity, string $tokenId): string
     {
         return $this->adminUrlGenerator

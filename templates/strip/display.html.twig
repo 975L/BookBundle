@@ -5,10 +5,11 @@
 {% set title = strip.title %}
 {# A planche's summary is often its reply alone, a line too short to describe the page (ConfigBundle's ContentQualityAnalyzer::DESCRIPTION_MIN_LENGTH, 50): it is then said inside a sentence naming the planche and the site. Its paragraphs are parted by a space, stripped they would glue #}
 {% set summaryText = strip.summary|default('')|replace({'</p>': ' '})|striptags|trim %}
-{% set summarySocialNetwork = summaryText|length >= 50 ? strip.summary : ('text.meta_strip'|trans({'%title%': strip.title, '%site%': config('site-name'), '%summary%': summaryText}, 'book'))|trim %}
+{# A planche still to come is announced without giving itself away: neither its reply nor its drawing reach the metas, which fall back on the url's own, and it stays out of search engines until it is out #}
+{% set summarySocialNetwork = not isPublished ? null : (summaryText|length >= 50 ? strip.summary : ('text.meta_strip'|trans({'%title%': strip.title, '%site%': config('site-name'), '%summary%': summaryText}, 'book'))|trim) %}
 {# What a share shows, read by role and no longer by rank (see Strip::getShareMedia()) #}
-{% set ogMedia = strip.shareMedia %}
-{% set ogImage = absolute_url(asset(ogMedia ?: "bundles/c975lbook/images/no-cover.webp")) %}
+{% set ogImage = isPublished ? absolute_url(asset(strip.shareMedia ?: "bundles/c975lbook/images/no-cover.webp")) : null %}
+{% set robots = isPublished ? null : 'noindex, follow' %}
 {% set language = strip.serie ? strip.serie.language : null %}
 
 {# Editor-only: the pencil UiBundle floats over anything carrying "data-block-edit-url" (see its assets/js/block-edit-overlay.js), leading to the very field the section is written in. Gated on the very role the edit screen asks for (see configureCrud()), the same one the blocks below go by: a pencil leading to a 403 would be worse than no pencil #}
@@ -79,9 +80,9 @@
         {% endif %}
     </div>
 
-    {# The strip's structured data, built by BookSnippetBuilder; "raw" as a {% set %} drops the function's is_safe marking, the builder escaping what could close the tag #}
-    {% set jsonLd = strip_json_ld(strip, ogImage, url('strip_display', {'slug': strip.slug})) %}
+    {# The strip's structured data, built by BookSnippetBuilder; captured rather than set, which keeps the function's is_safe marking - the builder escaping what could close the tag #}
+    {% set jsonLd %}{{ strip_json_ld(strip, ogImage, url('strip_display', {'slug': strip.slug})) }}{% endset %}
     {% if jsonLd %}
-        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
 {% endblock %}

@@ -117,7 +117,7 @@ class BookSnippetBuilder
         $name = trim((string) $strip->getTitle());
         $published = $strip->getPublished();
 
-        // A strip still to come publishes nothing, its page being a 404 until the day it comes out
+        // A strip still to come publishes nothing, its page announcing the day it comes out and nothing more
         if ('' === $name || null === $published || $published > new \DateTime()) {
             return [];
         }
@@ -277,7 +277,7 @@ class BookSnippetBuilder
         return $persons;
     }
 
-    // One node per edition carrying an ISBN, each a Book of its own as schema.org expects of a workExample. An edition not out yet is left out: its ISBN names a book nobody can get
+    // One node per edition carrying an ISBN, each a Book of its own as schema.org expects of a workExample - one not out yet included, its offer saying it is pre-ordered (see offer())
     private function editions(Book $book, string $url = ''): array
     {
         $editions = [];
@@ -309,21 +309,19 @@ class BookSnippetBuilder
         return $editions;
     }
 
-    // The edition's public price as the ONIX feed announces it, pre-ordered until the book comes out; none without a price
+    // The edition's public price as the ONIX feed announces it: discontinued once out of print, pre-ordered until the book comes out - undated included -, in stock otherwise; none without a price
     private function offer(Book $book, BookEdition $edition, string $url): array
     {
         if (null === $edition->getPrice()) {
             return [];
         }
 
-        $published = $book->getPublished();
-
         return $this->clean([
             '@type' => 'Offer',
             'url' => $url,
             'price' => number_format($edition->getPrice() / 100, 2, '.', ''),
             'priceCurrency' => $edition->getCurrency(),
-            'availability' => 'https://schema.org/' . (null !== $published && $published > new \DateTime() ? 'PreOrder' : 'InStock'),
+            'availability' => 'https://schema.org/' . ($edition->isOutOfPrint() ? 'Discontinued' : ($book->isToBePublished() ? 'PreOrder' : 'InStock')),
         ]);
     }
 
@@ -375,7 +373,8 @@ class BookSnippetBuilder
     {
         $name = trim((string) $book?->getTitle());
 
-        if (null === $book || '' === $name) {
+        // One in the trash, set aside or in a serie set aside answers 410 or 404, and is named nowhere; one a newer version replaced keeps its page
+        if (null === $book || '' === $name || $book->isDeleted() || $book->isHidden() || ($book->getSerie()?->isHidden() ?? false)) {
             return [];
         }
 
@@ -451,9 +450,10 @@ class BookSnippetBuilder
     {
         $now = new \DateTime();
 
+        // What the serie's page lists: out today, neither in the trash, set aside, nor replaced by a newer version
         $volumes = array_values(array_filter(
             $serie->getBooks()->toArray(),
-            static fn (Book $book) => null !== $book->getPublished() && $book->getPublished() <= $now,
+            static fn (Book $book) => null !== $book->getPublished() && $book->getPublished() <= $now && $book->isShownInCatalog(),
         ));
 
         usort($volumes, static fn (Book $first, Book $second) => $first->getPublished() <=> $second->getPublished());

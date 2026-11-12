@@ -47,9 +47,11 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(max: 100)]
     private ?string $title = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(max: 100)]
     private ?string $slug = null;
 
     #[ORM\Column(nullable: true)]
@@ -65,6 +67,7 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     private ?string $summary = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
     #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $sourceUrl = null;
 

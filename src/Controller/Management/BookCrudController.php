@@ -85,7 +85,7 @@ class BookCrudController extends AbstractCrudController
         configureActions as private trashableActions;
     }
 
-    // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
+    // The two actions of the trash are posted by their row button, their token travelling in the url it posts to (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
     public const string RESTORE_CSRF_TOKEN = 'book_book_restore';
     public const string DELETE_PERMANENTLY_CSRF_TOKEN = 'book_book_delete_permanently';
     public const string DUPLICATE_CSRF_TOKEN = 'book_book_duplicate';
@@ -567,6 +567,7 @@ class BookCrudController extends AbstractCrudController
     {
         $publishVersion = Action::new('publishVersion', t('action.publish_new_version', [], 'book'), 'fa fa-code-branch')
             ->linkToUrl(fn (Book $book): string => $this->publishVersionUrl($book))
+            ->renderAsForm()
             // A book already replaced is not replaced a second time: the version replacing it is what comes in versions in its turn, so a third version chains onto the second
             ->displayIf(static fn (Book $book): bool => !$book->isDeleted() && !$book->getNewerVersion() instanceof Book)
             ->askConfirmation(t('confirm.publish_new_version', [], 'book'));
@@ -611,7 +612,7 @@ class BookCrudController extends AbstractCrudController
     }
 
     // Sets aside what the book published so far: a twin book is born, takes the released editions with their files and their platforms, and names this one as the version replacing it. The book itself does not move address - it is the one outside links carry and it must lead to the most recent text - and starts again with editions to fill (see BookVersionPublisher)
-    #[AdminRoute('/{entityId}/publish-version')]
+    #[AdminRoute('/{entityId}/publish-version', options: ['methods' => ['POST']])]
     public function publishVersion(AdminContext $context, EntityManagerInterface $entityManager, Request $request): Response
     {
         $this->denyAccessUnlessGranted($this->configService->get('site-role-editor'));
@@ -628,6 +629,23 @@ class BookCrudController extends AbstractCrudController
             return $this->redirect($this->bookIndexUrl());
         }
 
+        // One transaction for the whole gesture: a failure past the first flush would otherwise leave the chained version detached, back in the catalog
+        $title = $entityManager->wrapInTransaction(fn (): string => $this->setAsidePreviousVersion($book, $entityManager));
+
+        $this->addFlash('success', $this->translator->trans('flash.version_published', ['%title%' => $title], 'book'));
+
+        return $this->redirect(
+            $this->adminUrlGenerator
+                ->setController(self::class)
+                ->setAction(Action::EDIT)
+                ->setEntityId($book->getId())
+                ->generateUrl()
+        );
+    }
+
+    // The twin born, the chain picked up and what came out moved onto it, its title returned for the flash
+    private function setAsidePreviousVersion(Book $book, EntityManagerInterface $entityManager): string
+    {
         // The version already set aside, read before the twin is born: the twin takes its place beside the book, and it hangs behind the twin - a third version chains onto the second (see Book::$newerVersion)
         $chained = $book->getPreviousVersion();
 
@@ -637,7 +655,7 @@ class BookCrudController extends AbstractCrudController
             $entityManager->flush();
         }
 
-        $title = (string) $book->getTitle() . $this->translator->trans('label.previous_version_suffix', [], 'book');
+        $title = $this->versionPublisher->previousTitle($book, $this->translator->trans('label.previous_version_suffix', [], 'book'));
         $previous = $this->versionPublisher->createPreviousVersion($book, $title);
 
         // Saved before any move: an edition can only name a book the database knows (see BookVersionPublisher::moveEdition())
@@ -657,18 +675,10 @@ class BookCrudController extends AbstractCrudController
 
         $entityManager->flush();
 
-        $this->addFlash('success', $this->translator->trans('flash.version_published', ['%title%' => $title], 'book'));
-
-        return $this->redirect(
-            $this->adminUrlGenerator
-                ->setController(self::class)
-                ->setAction(Action::EDIT)
-                ->setEntityId($book->getId())
-                ->generateUrl()
-        );
+        return $title;
     }
 
-    // The button's address, its csrf token in the request: the action is a GET, which an image laid on a third-party page would otherwise fire for a logged-in editor
+    // The button's address, its csrf token in the request: the button posts it, a GET writing nothing
     private function publishVersionUrl(Book $book): string
     {
         return $this->adminUrlGenerator

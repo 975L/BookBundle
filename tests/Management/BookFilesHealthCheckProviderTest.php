@@ -12,6 +12,8 @@ namespace c975L\BookBundle\Tests\Management;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\Character;
+use c975L\BookBundle\Entity\CharacterMedia;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\SerieMedia;
@@ -134,5 +136,17 @@ class BookFilesHealthCheckProviderTest extends TestCase
 
         $this->assertCount(1, $rows);
         $this->assertSame('La Guilde des Seigneurs', $rows[0]['label']);
+    }
+
+    // A character's portrait is named after the character and leads to its own screen
+    public function testACharacterPortraitIsNamedAfterItsCharacter(): void
+    {
+        $character = new Character()->setName('item-1');
+        new \ReflectionProperty(Character::class, 'id')->setValue($character, 3);
+
+        $rows = $this->createProvider([[new CharacterMedia()->setName('medias/book/characters/item-1.webp')->setCharacter($character), true]])->runChecks();
+
+        $this->assertSame('item-1', $rows[0]['label']);
+        $this->assertSame('/management/edit', $rows[0]['editUrl']);
     }
 }

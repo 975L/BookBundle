@@ -37,9 +37,11 @@ class Character implements \Stringable
     private int $position = 0;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Length(max: 50)]
     private ?string $name = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(max: 100)]
     private ?string $slug = null;
 
     // What the card says of them, in the words the site wrote it - the real name, the character in a sentence, whatever the presentation carried
@@ -48,6 +50,7 @@ class Character implements \Stringable
 
     // What parts one serie's people into more than one row of cards - "heroes" and "villains" of the same books, told apart on the page without being two series. Left empty, a serie presents its characters as one row, which is what most do
     #[ORM\Column(length: 50, nullable: true)]
+    #[Assert\Length(max: 50)]
     private ?string $groupName = null;
 
     #[ORM\ManyToOne(targetEntity: Serie::class, inversedBy: 'characters')]

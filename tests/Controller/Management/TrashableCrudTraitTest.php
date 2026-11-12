@@ -61,6 +61,19 @@ class TrashableCrudTraitTest extends TestCase
         }
     }
 
+    // A row action that writes is posted by its button, never reached by a GET a link, a prefetch or an image on a third-party page would fire
+    #[DataProvider('controllers')]
+    public function testTheActionsThatWriteArePostedOnly(string $controller): void
+    {
+        $actions = BookCrudController::class === $controller ? ['duplicate', 'restore', 'deletePermanently', 'publishVersion'] : ['duplicate', 'restore', 'deletePermanently'];
+
+        foreach ($actions as $action) {
+            $route = new \ReflectionMethod($controller, $action)->getAttributes(AdminRoute::class)[0]->newInstance();
+
+            $this->assertSame(['POST'], $route->options['methods'] ?? null, sprintf('"%s::%s()" answers a GET', $controller, $action));
+        }
+    }
+
     // The words the shared code is given to name this very family
     #[DataProvider('controllers')]
     public function testEachScreenNamesItsOwnTableRouteAndWording(string $controller): void

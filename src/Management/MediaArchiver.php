@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Management;
 use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Entity\BookPrintable;
 use c975L\BookBundle\Entity\Media;
+use c975L\ConfigBundle\Management\ArchivePath;
 use c975L\UiBundle\Contract\VichMultiSizeImageInterface;
 use c975L\UiBundle\Storage\PrivateDirectory;
 use Doctrine\Common\Collections\Collection;
@@ -87,27 +88,39 @@ class MediaArchiver
      */
     public function sync(Collection $medias, array $mediasData, callable $factory, callable $attach, callable $detach): array
     {
+        // A row with no name (a hosted video) matches nothing: they are all set aside, the archive's own nameless entries each getting a row of their own
         $existing = [];
+        $nameless = [];
         foreach ($medias as $media) {
-            $existing[(string) $media->getName()] = $media;
+            if (null === $media->getName() || '' === $media->getName()) {
+                $nameless[] = $media;
+
+                continue;
+            }
+            $existing[$media->getName()] = $media;
         }
 
         $written = [];
-        $kept = [];
         foreach ($mediasData as $mediaData) {
             $name = (string) ($mediaData['name'] ?? '');
-            $media = $existing[$name] ?? $factory();
+
+            // A name this bundle would never write is not stored, else the next export would carry it into its zip - a row the site already holds under it is left as it is, neither written over nor detached
+            if ('' !== $name && !$this->isSafeName($name)) {
+                unset($existing[$name]);
+                continue;
+            }
+
+            $media = '' !== $name && isset($existing[$name]) ? $existing[$name] : $factory();
+            unset($existing[$name]);
             $this->fill($media, $mediaData);
             $this->em->persist($media);
             $attach($media);
-            $kept[$name] = true;
             $written[] = [$media, $mediaData];
         }
 
-        foreach ($existing as $name => $media) {
-            if (!isset($kept[$name])) {
-                $detach($media);
-            }
+        // What the archive no longer holds is detached, the former nameless rows with it
+        foreach ([...array_values($existing), ...$nameless] as $media) {
+            $detach($media);
         }
 
         return $written;
@@ -127,24 +140,29 @@ class MediaArchiver
         foreach ($written as [$media, $mediaData]) {
             $entry = $mediaData['file'] ?? null;
             $name = $media->getName();
-            if (null === $entry || null === $name || !$this->isSafeName($name)) {
-                continue;
-            }
-
-            $archivedPath = $filesDir . '/' . $entry;
-            if (!is_file($archivedPath)) {
+            // Read inside the archive's own folder only: a manifest naming "../.env" or a symlink out of it copies nothing (see ArchivePath)
+            $archivedPath = \is_string($entry) ? ArchivePath::resolve($filesDir, $entry) : null;
+            if (null === $archivedPath || null === $name || !$this->isSafeName($name)) {
                 continue;
             }
             $this->filesystem->copy($archivedPath, $this->path($media, $name), true);
 
+            // Written again off the bytes laid back, the copy going round Vich and its listener (see BookColoringFingerprintListener)
+            if ($media instanceof BookColoring) {
+                $media->setFingerprint(hash_file('xxh128', $archivedPath) ?: null);
+            }
+
             // Laid back beside it under the names the stored file gives them, for an archive holding them (see registerFile())
             foreach ($this->derivativeSuffixes($media) as $suffix) {
-                $archivedDerivative = Media::derivedFilename($archivedPath, $suffix);
-                if (is_file($archivedDerivative)) {
+                $archivedDerivative = ArchivePath::resolve($filesDir, Media::derivedFilename($entry, $suffix));
+                if (null !== $archivedDerivative) {
                     $this->filesystem->copy($archivedDerivative, $this->path($media, Media::derivedFilename($name, $suffix)), true);
                 }
             }
         }
+
+        // The fingerprints written above
+        $this->em->flush();
     }
 
     // One row filled with what the archive says of it, its name kept as it is so the file it points at is the one restoreFiles() lays back
@@ -208,11 +226,12 @@ class MediaArchiver
         return $this->projectDir . '/' . (PrivateDirectory::resolve($media) ?? 'public') . '/' . $name;
     }
 
-    // Whether a name out of an archive is one this bundle would write: it is only honoured under this bundle's own media directory, and only as a plain relative name - a "../" or an absolute path would have an import lay files anywhere the process can write, and a null byte would have PHP stop reading the name where C does
+    // Whether a name out of an archive is one this bundle would write: it is only honoured under this bundle's own media directory, only as a plain relative name - a "../" or an absolute path would have an import lay files anywhere the process can write, and a null byte would have PHP stop reading the name where C does - and only with an extension an upload takes: a ".php" or an ".html" laid under public/ would be run or served from the site's own origin
     private function isSafeName(string $name): bool
     {
         return str_starts_with($name, Media::MEDIA_DIRECTORY . '/')
             && !str_contains($name, "\0")
-            && !\in_array('..', explode('/', $name), true);
+            && !\in_array('..', explode('/', $name), true)
+            && \in_array(strtolower(pathinfo($name, \PATHINFO_EXTENSION)), Media::FILE_UPLOAD_EXTENSIONS, true);
     }
 }

@@ -36,6 +36,7 @@ class BookColoring extends Media implements VichMediaNamableInterface
 
     // A hash of the drawing's bytes, written on every upload (see BookColoringFingerprintListener)
     #[ORM\Column(length: 32, nullable: true)]
+    #[Assert\Length(max: 32)]
     private ?string $fingerprint = null;
 
     // Checked on the row like a document to print's PDF: a photo or a webp here would leave no clean line to cut zones along

@@ -64,6 +64,14 @@ class BookEditionTest extends TestCase
         $this->assertSame([], new Book()->getData());
     }
 
+    // Typed with its hyphens or spaces, an ISBN is stored bare so it fits its 13 characters, the X of an ISBN-10 kept
+    public function testAnIsbnIsStoredBare(): void
+    {
+        $this->assertSame('9782123456789', new BookEdition()->setIsbn('978-2-12345-678-9')->getIsbn());
+        $this->assertSame('284875024X', new BookEdition()->setIsbn('2 84875 024 x')->getIsbn());
+        $this->assertNull(new BookEdition()->setIsbn(null)->getIsbn());
+    }
+
     // A price is optional, the currency is not: ONIX writes it upper case, ShopBundle stores it lower case
     public function testAnEditionHoldsItsPriceInAnUpperCaseCurrency(): void
     {

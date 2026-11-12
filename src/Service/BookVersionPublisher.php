@@ -27,6 +27,8 @@ class BookVersionPublisher
     // The column's length, which the suffix must not overflow
     private const int SLUG_MAX_LENGTH = 100;
 
+    private const int TITLE_MAX_LENGTH = 100;
+
     public function __construct(
         private readonly BookRepository $bookRepository,
         private readonly SluggerInterface $slugger,
@@ -42,8 +44,7 @@ class BookVersionPublisher
         $previous = new Book()
             ->setTitle($title)
             ->setSlug($slug ?? $this->previousSlug($book))
-            // The column is nullable, its setter is not
-            ->setSummary((string) $book->getSummary())
+            ->setSummary($book->getSummary())
             ->setAuthor($book->getAuthor())
             ->setIllustrator($book->getIllustrator())
             ->setPublished($book->getPublished())
@@ -69,6 +70,12 @@ class BookVersionPublisher
         $this->translationCopier->copy(BookTranslator::OWNER_BOOK, $book, $previous, ['summary']);
 
         return $previous;
+    }
+
+    // The twin's title, the book's own cut so the suffix naming it still fits the column
+    public function previousTitle(Book $book, string $suffix): string
+    {
+        return mb_substr((string) $book->getTitle(), 0, self::TITLE_MAX_LENGTH - mb_strlen($suffix)) . $suffix;
     }
 
     // The address proposed for the twin. The book keeps its own: it is the one outside links and the search engines carry, and it must lead to the current version

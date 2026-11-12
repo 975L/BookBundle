@@ -118,18 +118,19 @@ class SerieRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Serie[] Series of planches holding at least one planche
+     * @return Serie[] Series of planches holding at least one planche out today, as findWithBooks() reads its books - a serie whose planches are all to come would lead to an empty list
      */
     public function findWithStrips(): array
     {
         return $this->createQueryBuilder('s')
-            ->innerJoin('s.strips', 'st', 'WITH', 'st.isDeleted = false AND st.hidden = false')
+            ->innerJoin('s.strips', 'st', 'WITH', 'st.isDeleted = false AND st.hidden = false AND st.published IS NOT NULL AND st.published <= :now')
             ->leftJoin('s.medias', 'm')
             ->addSelect('m')
             ->andWhere('s.isDeleted = false')
             ->andWhere('s.hidden = false')
             ->andWhere('s.kind IS NULL OR s.kind = :kind')
             ->setParameter('kind', SerieKind::Strip->value)
+            ->setParameter('now', new \DateTime())
             ->orderBy('s.position', \SortDirection::Ascending)
             ->addOrderBy('s.title', \SortDirection::Ascending)
             ->getQuery()
@@ -137,12 +138,12 @@ class SerieRepository extends ServiceEntityRepository
         ;
     }
 
-    // A serie with its books sorted, the unpublished ones first. The serie itself is looked up whatever its state - a serie in the trash has to be found for its page to answer 410 rather than a plain 404 (see SerieController::display()) - where the books it lists leave it as soon as they are trashed. A book replaced by a newer version leaves the list of its serie, as it left the catalog: it keeps its page, reached from the search or from the version replacing it (see Book::$newerVersion)
+    // A serie with all its books sorted, the unpublished ones first. The serie itself is looked up whatever its state - a serie in the trash has to be found for its page to answer 410 rather than a plain 404 (see SerieController::display()). Its books are joined whole and the page lists Serie::getShownBooks(): a join filtering them would leave the collection holding part of its rows for the rest of the request
     public function findOneBySlugWithSortedBooks(string $slug): ?Serie
     {
         return $this->createQueryBuilder('s')
             ->select('s', 'b', 'bm')
-            ->leftJoin('s.books', 'b', 'WITH', 'b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL')
+            ->leftJoin('s.books', 'b')
             ->leftJoin('b.medias', 'bm')
             ->where('s.slug = :slug')
             ->setParameter('slug', $slug)

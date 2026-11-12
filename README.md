@@ -479,7 +479,9 @@ decision, taken book by book. A strip brings its plates and its blocks. Each row
 too, blocks and pictures included (UiBundle's `TranslationCopier`), written once the copy is saved.
 
 The copy is a new row from top to bottom: its title carries a `(copie)` suffix, its slug is freed of any
-collision (`UniqueSlug`), and every uploaded file is copied on disk rather than shared with the source —
+collision (`UniqueSlug`), it is **saved set aside** (*Masqué* ticked) — a book, a serie or a strip copied
+would otherwise enter the catalog, the listings and the feeds at once, under the original's date and ISBN —
+and every uploaded file is copied on disk rather than shared with the source —
 the copy runs back through Vich's normal pipeline (`ReplacingFile`), so deleting one of the two never takes
 the other's image with it. Everything else is carried over as it stands, an ISBN included: the copy is made
 to be reworked, and what has to change is the editor's call. `Service\BookDuplicator` builds that graph and
@@ -1070,7 +1072,7 @@ Every book is checked, published or not — a book to be published shows its pre
 
 An address of the site itself — the site's own shop, written as the page reads it (`/shop/...`) — is probed under the address the site declares in `site-url`, and reported as nothing to probe when the site declares none.
 
-A store answering 429, 500, 502, 503 or 504 — throttling a burst of probes, as Google Play does, or failing on its own side — or not answering at all is asked once more after a pause, and only that second answer is reported.
+A store answering 429, 500, 502, 503 or 504 — throttling a burst of probes, as Google Play does, or failing on its own side — or not answering at all is asked once more after a pause, and only that second answer is reported. A store still failing on its own side (5xx) or still silent is a **warning**, an outage nobody on the site can fix; a page it says is gone (404, 410) stays an **error**, the editor's to correct.
 
 #### A file the database declares and the server no longer has
 
@@ -1101,7 +1103,8 @@ on the same screen. Both are restricted to `site-role-admin`, like the raw table
 Ids never need to match between the two sites. Every row is matched on what it actually answers at — a serie,
 a book, a strip, a category and a person by their slug, a version by its kind within its book, a platform by the version
 and the kind together, a file by the name it is served under. A book naming a serie or an author this
-environment doesn't hold yet has them created on the fly, so the four kinds import in whichever order the
+environment doesn't hold yet has them created on the fly — a serie created that way is set aside until its own
+archive brings it, shown as that archive says —, so the four kinds import in whichever order the
 archive lists them, and a book translating another is bound once the whole archive has been read. A person
 created that way holds nothing but a name and a slug, and is the only row an archive naming a namesake fills
 in rather than doubling — somebody the site has actually written up keeps their page.

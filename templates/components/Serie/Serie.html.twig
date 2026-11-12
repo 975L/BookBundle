@@ -2,7 +2,7 @@
 {# The serie as a listing shows it. "variant": how the card is drawn - the thumbnail with the title under it the listing has always shown, a tile the cover fills behind the text, or a square vignette #}
 {% props serie, editable = false, variant = '', level = 'h3', priority = false %}
 {# "priority": the first cover of a listing opening its page, fetched first rather than lazily #}
-{% set loading = priority ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"' %}
+{% set loading %}{% if priority %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}{% endset %}
 {# "editable": the pencil leading to the serie's screen, drawn by UiBundle's overlay above what carries the url - the same condition as a book's card, a listing rendered outside the blocks cache #}
 {% set editUrl = editable|default(false) and is_granted(config('site-role-editor')) ? serie_edit_url(serie) : null %}
 {# Matched, not interpolated: the value comes from stored block data and must not write any class name #}
@@ -18,7 +18,7 @@
 {% if variant == 'tiles' %}
     <a class="serie-tile" href="{{ serie_path(serie) }}"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
 {# A real <img> and not a CSS background: a background-image needs a style attribute no CSP nonce covers, and the browser would not know the picture's size before it lands #}
-        <img class="serie-tile__img" src="{{ asset(imageSrc) }}" alt="{{ imageAlt }}" {{ loading|raw }}>
+        <img class="serie-tile__img" src="{{ asset(imageSrc) }}" alt="{{ imageAlt }}" {{ loading }}>
         <div class="serie-tile__body">
             <{{ level }} class="serie-tile__title">{{ serie.title }}</{{ level }}>
 {# The one line the client writes on the serie itself, reduced to plain text: the summary is stored as editor HTML, which a tile has no room to render #}
@@ -28,7 +28,7 @@
 {% elseif variant == 'thumbnails' %}
     <a class="serie-thumb" href="{{ serie_path(serie) }}"{% if editUrl %} data-block-edit-url="{{ editUrl }}"{% endif %}>
         <span class="serie-thumb__frame">
-            <img class="serie-thumb__img" src="{{ asset(imageSrc) }}" alt="{{ imageAlt }}" {{ loading|raw }}>
+            <img class="serie-thumb__img" src="{{ asset(imageSrc) }}" alt="{{ imageAlt }}" {{ loading }}>
         </span>
         <{{ level }} class="serie-thumb__title">{{ serie.title }}</{{ level }}>
     </a>

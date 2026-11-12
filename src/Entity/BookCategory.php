@@ -24,6 +24,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // What a book is about, where a Serie is what it belongs to: a book sits in one serie and carries as many categories as it deserves. Flat and many-to-many, which is what a "tag" is once it has a page of its own - a site naming them "Genres", "Thèmes" or "Rayons" translates the label rather than storing a second family (see the "label.category" keys of the book catalog). Optional from end to end: a site creating none shows none, and one leaving "book-route-categories" empty keeps the pages off the site altogether (see BookRoutePrefix)
 #[ORM\Entity(repositoryClass: BookCategoryRepository::class)]
@@ -45,9 +46,11 @@ class BookCategory implements HasBlocksInterface, TrashableInterface, \Stringabl
     private int $position = 0;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(max: 100)]
     private ?string $title = null;
 
     #[ORM\Column(length: 100, unique: true)]
+    #[Assert\Length(max: 100)]
     private ?string $slug = null;
 
     // What the category page says of itself, and what its meta description is built from: a listing carrying nothing but a title is a page with no content of its own

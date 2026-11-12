@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Tests\Controller;
 use c975L\BookBundle\Controller\ListenController;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookMedia;
+use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
 use c975L\BookBundle\Service\BookTranslator;
@@ -125,6 +126,13 @@ class ListenControllerTest extends TestCase
         $this->expectException(NotFoundHttpException::class);
 
         $this->createController($this->book(hidden: true))->display('la-moto-et-la-biche', new Request());
+    }
+
+    public function testABookOfASerieSetAsideIsNotFound(): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        $this->createController($this->book()->setSerie(new Serie()->setHidden(true)))->display('la-moto-et-la-biche', new Request());
     }
 
     // The listings leave out a book still to come: its recording stays unreachable by its slug too, undated or dated later

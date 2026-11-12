@@ -310,13 +310,14 @@ class BookRepository extends ServiceEntityRepository
         return $this->withCovers($books);
     }
 
-    // What the "book_printables" block lists: the books a reader can print something from today, each with its documents joined so that the block reads the first one's thumbnail without a query per book
+    // What the "book_printables" block lists: the books a reader can print something from today, each with all its documents joined so that the block reads the first one out (Book::getPublishedPrintables()) without a query per book - the filter an EXISTS rather than a join, which would cross the documents with themselves or leave the collection holding part of its rows
     /** @return Book[] */
     public function findAllWithPrintables(): array
     {
         return $this->publishedQueryBuilder()
-            ->innerJoin('b.printables', 'printable', 'WITH', 'printable.publishedOn IS NULL OR printable.publishedOn <= :today')
-            ->addSelect('printable')
+            ->andWhere('EXISTS (SELECT 1 FROM ' . BookPrintable::class . ' printable WHERE printable.book = b AND (printable.publishedOn IS NULL OR printable.publishedOn <= :today))')
+            ->leftJoin('b.printables', 'printables')
+            ->addSelect('printables')
             ->setParameter('today', new \DateTimeImmutable('today'), Types::DATE_IMMUTABLE)
             ->addOrderBy('b.id', \SortDirection::Descending)
             ->getQuery()
@@ -337,7 +338,8 @@ class BookRepository extends ServiceEntityRepository
             ->addSelect('edition')
             ->leftJoin('edition.files', 'editionFile')
             ->addSelect('editionFile')
-            ->leftJoin('b.categories', 'category', 'WITH', 'category.isDeleted = false')
+            // Whole, the trashed ones being left out where the feed reads them (see BookOnixBuilder::subjects())
+            ->leftJoin('b.categories', 'category')
             ->addSelect('category')
             ->leftJoin('b.medias', 'media')
             ->addSelect('media')

@@ -75,6 +75,8 @@ class BookImportProviderTest extends TestCase
         // The serie this environment doesn't hold yet, created on the fly rather than dropped
         $this->assertSame('la-compagnie', $book->getSerie()?->getSlug());
         $this->assertSame('La Compagnie des Ombres', $book->getSerie()?->getTitle());
+        // Set aside until the serie's own archive brings it: a shell with no cover nor summary stays off the public lists
+        $this->assertTrue($book->getSerie()?->isHidden());
 
         $edition = $book->getEdition('paperback');
         $this->assertSame('9781234567897', $edition?->getIsbn());
@@ -235,6 +237,27 @@ class BookImportProviderTest extends TestCase
         $this->assertFileDoesNotExist($targetDir . '/public/../../etc/book.webp');
 
         $this->removeDir($filesDir);
+        $this->removeDir($targetDir);
+    }
+
+    // A file kind this version doesn't know - an archive from a newer site - leaves that file out, the rest of the import written
+    public function testAnUnknownEditionFileKindLeavesThatFileOut(): void
+    {
+        $targetDir = $this->createProjectDir([]);
+        $persisted = [];
+
+        $this->createProvider($targetDir, persisted: $persisted)->import([[
+            'slug' => 'tome-1',
+            'title' => 'Tome 1',
+            'editions' => [['kind' => 'paperback', 'files' => [
+                ['name' => 'medias/book/editions/item-1.epub', 'kind' => 'epub'],
+                ['name' => 'medias/book/editions/item-1.zip', 'kind' => 'item-2'],
+            ]]],
+        ]]);
+
+        $book = array_values(array_filter($persisted, static fn (object $entity): bool => $entity instanceof Book))[0];
+        $this->assertCount(1, $book->getEdition('paperback')?->getFiles() ?? []);
+
         $this->removeDir($targetDir);
     }
 

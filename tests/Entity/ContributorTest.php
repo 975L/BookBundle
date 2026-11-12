@@ -166,4 +166,20 @@ class ContributorTest extends TestCase
         $this->assertCount(1, $contributor->getBackgrounds());
         $this->assertCount(2, $contributor->getMedias());
     }
+
+    // Their page lists what the catalog lists, whichever hat they wore: a book in the trash, set aside or replaced leaves it, and so does a serie trashed or set aside
+    public function testWhatTheCatalogNoLongerShowsLeavesTheirPage(): void
+    {
+        $contributor = new Contributor();
+        $contributor->getAuthoredBooks()->add($shown = new Book());
+        $contributor->getAuthoredBooks()->add(new Book()->setHidden(true));
+        $contributor->getIllustratedBooks()->add(new Book()->setIsDeleted(true));
+        $contributor->getAuthoredBooks()->add(new Book()->setNewerVersion(new Book()));
+        $contributor->getAuthoredBooks()->add(new Book()->setSerie(new Serie()->setHidden(true)));
+        $contributor->getAuthoredSeries()->add($serie = new Serie());
+        $contributor->getIllustratedSeries()->add(new Serie()->setHidden(true));
+
+        $this->assertSame([$shown], $contributor->getBooks());
+        $this->assertSame([$serie], $contributor->getSeries());
+    }
 }

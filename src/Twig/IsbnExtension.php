@@ -61,9 +61,9 @@ class IsbnExtension
         return $found;
     }
 
-    // A number read through its digits alone, an ISBN being stored bare and declared hyphenated
+    // A number read through its digits alone and the X check digit of an ISBN-10, an ISBN being stored bare and declared hyphenated
     private static function digits(string $value): string
     {
-        return preg_replace('/\D/', '', $value) ?? '';
+        return strtoupper(preg_replace('/[^0-9X]/i', '', $value) ?? '');
     }
 }

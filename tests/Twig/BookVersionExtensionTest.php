@@ -62,6 +62,15 @@ class BookVersionExtensionTest extends TestCase
         $this->assertSame([], BookVersionExtension::versions($current));
     }
 
+    public function testAVersionSetAsideIsNotOffered(): void
+    {
+        $current = self::book('Chat et Chocolat');
+        $previous = self::book('Chat et Chocolat - Édition originale')->setHidden(true);
+        $previous->setNewerVersion($current);
+
+        $this->assertSame([], BookVersionExtension::versions($current));
+    }
+
     // A third version chains onto the second: from the first, both read, the most recent first
     public function testAChainIsWalkedFromWhicheverEndTheVisitorArrivedAt(): void
     {

@@ -104,6 +104,15 @@ class BookOnixBuilderTest extends TestCase
         $this->assertSame(3.0, $xpath->evaluate('count(' . $subjects . '[o:MainSubject])'));
     }
 
+    // A category in the trash files the book under nothing, the feed reading the categories whole
+    public function testACategoryInTheTrashIsNoSubject(): void
+    {
+        $book = $this->book();
+        $book->addCategory(new BookCategory()->setTitle('item-1')->setCodes(['clil' => '3000'])->setIsDeleted(true));
+
+        $this->assertNotContains('3000', $this->values($this->read([$book]), '//o:Product[1]//o:Subject/o:SubjectCode'));
+    }
+
     public function testAPricedEditionIsSoldAtItsPrice(): void
     {
         $xpath = $this->read([$this->book()]);

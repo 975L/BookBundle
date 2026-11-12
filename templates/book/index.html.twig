@@ -47,8 +47,8 @@
         {% set itemPath = book_path('book_display', {slug: item.slug}) %}
         {% if itemPath %}{% set entries = entries|merge([{name: item.title, url: absolute_url(itemPath)}]) %}{% endif %}
     {% endfor %}
-    {% set jsonLd = book_item_list_json_ld(entries, (books.getCurrentPageNumber - 1) * books.getItemNumberPerPage) %}
+    {% set jsonLd %}{{ book_item_list_json_ld(entries, (books.getCurrentPageNumber - 1) * books.getItemNumberPerPage) }}{% endset %}
     {% if jsonLd %}
-        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
 {% endblock %}

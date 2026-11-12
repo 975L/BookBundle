@@ -11,9 +11,11 @@
 namespace c975L\BookBundle\Management;
 
 use c975L\BookBundle\Controller\Management\BookCrudController;
+use c975L\BookBundle\Controller\Management\CharacterCrudController;
 use c975L\BookBundle\Controller\Management\ContributorCrudController;
 use c975L\BookBundle\Controller\Management\SerieCrudController;
 use c975L\BookBundle\Controller\Management\StripCrudController;
+use c975L\BookBundle\Entity\CharacterMedia;
 use c975L\BookBundle\Entity\ContributorMedia;
 use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\SerieMedia;
@@ -63,13 +65,14 @@ class BookFilesHealthCheckProvider extends AbstractDeclaredFilesHealthCheckProvi
         }
     }
 
-    // Four owners behind one table (see Media's single-table inheritance): each is edited from its own screen, and a book's kinds of file all hang off the book itself
+    // Five owners behind one table (see Media's single-table inheritance): each is edited from its own screen, and a book's kinds of file all hang off the book itself
     private function ownerOf(Media $media): array
     {
         return match (true) {
             $media instanceof SerieMedia => [SerieCrudController::class, $media->getSerie()],
             $media instanceof StripMedia => [StripCrudController::class, $media->getStrip()],
             $media instanceof ContributorMedia => [ContributorCrudController::class, $media->getContributor()],
+            $media instanceof CharacterMedia => [CharacterCrudController::class, $media->getCharacter()],
             default => [BookCrudController::class, method_exists($media, 'getBook') ? $media->getBook() : null],
         };
     }

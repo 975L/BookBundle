@@ -30,11 +30,13 @@ class ContributorLink implements PlatformLinkInterface, \Stringable
 
     // The platform, stored as the site's own word and read from the very vocabulary a book's links are read from (see BookCustomizationRegistry): a store selling both is declared once
     #[ORM\Column(length: 30)]
+    #[Assert\Length(max: 30)]
     #[Assert\NotBlank]
     private ?string $kind = null;
 
     // The whole address, as the platform hands it over: an affiliate identifier, a country, an author identifier are all part of it, and none of them is deducible from the person
     #[ORM\Column(length: 255)]
+    #[Assert\Length(max: 255)]
     #[Assert\NotBlank]
     #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $url = null;

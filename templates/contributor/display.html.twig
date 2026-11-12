@@ -45,8 +45,8 @@
     </div>
 
     {# The person as the entity a search engine files them under, built by BookSnippetBuilder; what they signed is published by the books themselves, each naming its author #}
-    {% set jsonLd = contributor_json_ld(contributor, ogImage, contributor_url(contributor)) %}
+    {% set jsonLd %}{{ contributor_json_ld(contributor, ogImage, contributor_url(contributor)) }}{% endset %}
     {% if jsonLd %}
-        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
 {% endblock %}

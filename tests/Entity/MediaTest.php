@@ -14,6 +14,7 @@ use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\Media;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Entity\StripMedia;
@@ -63,6 +64,10 @@ class MediaTest extends TestCase
     public function testAnUnknownExtensionFallsBackOnABinaryMimeType(): void
     {
         $this->assertSame('application/octet-stream', new BookMedia()->setName('medias/book/archive.xyz')->getMimeType());
+        // A stored AVIF keeps being served as an image, while no new one is taken in
+        $this->assertSame('image/avif', new BookMedia()->setName('medias/book/cover.avif')->getMimeType());
+        $this->assertNotContains('avif', Media::FILE_UPLOAD_EXTENSIONS);
+        $this->assertNotContains('image/avif', Media::IMAGE_UPLOAD_TYPES);
         $this->assertSame('application/octet-stream', new BookMedia()->getMimeType());
     }
 

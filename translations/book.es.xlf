@@ -336,7 +336,7 @@
             </trans-unit>
             <trans-unit id="Pu.1HXm">
                 <source>description.guided_step_book_duplication_duplicate</source>
-                <target>Confirme, y la copia se guarda en el acto con sus archivos, sus enlaces y sus bloques, y luego se abre en su propia pantalla de edición. Los libros de una serie nunca se copian con ella: duplicar uno es una decisión aparte.</target>
+                <target>Confirme, y la copia se guarda en el acto, oculta, con sus archivos, sus enlaces y sus bloques, y luego se abre en su propia pantalla de edición: desmarque «Oculto» una vez retocada. Los libros de una serie nunca se copian con ella: duplicar uno es una decisión aparte.</target>
             </trans-unit>
             <trans-unit id="NmG1rVc">
                 <source>description.guided_step_book_duplication_open</source>
@@ -829,6 +829,10 @@
             <trans-unit id="zlKuted">
                 <source>flash.contributor_restored</source>
                 <target>El autor/ilustrador ha sido restaurado.</target>
+            </trans-unit>
+            <trans-unit id="GaG0Yzc">
+                <source>flash.import_waiting_serie</source>
+                <target>Serie creada oculta a la espera de su propia importación, con lo que la espera: %list%</target>
             </trans-unit>
             <trans-unit id="eNUVmpk">
                 <source>flash.media_move_failed</source>
@@ -2760,7 +2764,7 @@
             </trans-unit>
             <trans-unit id="uNwDDu9">
                 <source>label.newer_version-help</source>
-                <target>El libro que sustituye a este — una versión recién ilustrada, revisada o recompuesta. Relleno, este libro sale del catálogo pero conserva su página, su ISBN y su lugar en el sitemap: se llega a él desde el que lo sustituye.</target>
+                <target>El libro que sustituye a este — una versión recién ilustrada, revisada o recompuesta. Relleno, este libro sale del catálogo pero conserva su página, su ISBN y su lugar en el sitemap: se llega a él desde el que lo sustituye. Enlazarlo solo al publicar la nueva versión: este libro sale del catálogo enseguida, aunque la nueva siga oculta o por publicar.</target>
             </trans-unit>
             <trans-unit id="C62419s">
                 <source>label.next</source>

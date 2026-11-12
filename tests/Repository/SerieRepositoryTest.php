@@ -29,12 +29,12 @@ class SerieRepositoryTest extends TestCase
     /** What the next query answers, the ones after it answering nothing @var list<list<Serie>> */
     private array $results = [];
 
-    // A serie's page lists what its catalog lists: a book a newer version replaces leaves it, as it left the trash-free listing
-    public function testASeriePageLeavesOutABookAlreadyReplaced(): void
+    // The books are joined whole and filtered when read (see Serie::getShownBooks()): a join filtering them would leave the collection holding part of its rows for the rest of the request
+    public function testASeriePageJoinsItsBooksWhole(): void
     {
         $this->createRepository()->findOneBySlugWithSortedBooks('histoires-de-contes-du-soir');
 
-        $this->assertStringContainsString('b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL', $this->dql);
+        $this->assertStringContainsString('LEFT JOIN s.books b LEFT JOIN', $this->dql);
     }
 
     // The list of series holds those a reader can open a book from: one whose books are all replaced offers nothing to browse
@@ -68,6 +68,14 @@ class SerieRepositoryTest extends TestCase
         $this->assertStringContainsString('INNER JOIN s.strips st WITH st.isDeleted = false', $this->dql);
     }
 
+    // A serie whose planches are all to come leads to an empty list: it waits for its first one to be out
+    public function testASerieHoldingOnlyPlanchesToComeIsNotListed(): void
+    {
+        $this->createRepository()->findWithStrips();
+
+        $this->assertStringContainsString('st.published IS NOT NULL AND st.published <= :now', $this->dql);
+    }
+
     // A serie set aside leaves every public list at once - the front's, the sitemap's and the link picker's, all three reading this very method (see Entity\Trait\HideableTrait)
     public function testTheListingLeavesOutTheSeriesSetAside(): void
     {
@@ -93,13 +101,13 @@ class SerieRepositoryTest extends TestCase
         $this->assertStringContainsString('st.hidden = false', $this->dql);
     }
 
-    // The serie itself is looked up whatever its state - its page answers 410 out of the trash and 404 set aside, which both need the row - where the books it lists leave it
-    public function testASeriePageLeavesOutTheBooksSetAside(): void
+    // The serie itself is looked up whatever its state - its page answers 410 out of the trash and 404 set aside, which both need the row
+    public function testASeriePageFindsTheSerieWhateverItsState(): void
     {
         $this->createRepository()->findOneBySlugWithSortedBooks('histoires-de-contes-du-soir');
 
-        $this->assertStringContainsString('b.hidden = false', $this->dql);
         $this->assertStringNotContainsString('s.hidden', $this->dql);
+        $this->assertStringNotContainsString('s.isDeleted', $this->dql);
     }
 
     // The covers the cards of the listing read, in one query for the whole list: the collection cannot be joined into the listing itself, whose setMaxResults() would then cut rows and not series

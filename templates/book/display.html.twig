@@ -55,12 +55,12 @@
             {% if plays %}
                 <p class="text text-center text-muted">{{ 'label.listen_plays'|trans({'%count%': plays}, 'book', book_ui_locale(book.language)) }}</p>
             {% endif %}
-            {# Held in the cache the blocks are held in, one entry per book and language of the page: emptied as soon as anything a section prints changes (see BookCacheInvalidationListener), and at midnight for the sections comparing a date with today's. Rendered live for an editor, whose sections carry their pencils, and when a section of the site's asks so #}
+            {# Held in the cache the blocks are held in, one entry per book, language of the page and language its labels are written in: emptied as soon as anything a section prints changes (see BookCacheInvalidationListener), and at midnight for the sections comparing a date with today's. Rendered live for an editor, whose sections carry their pencils, and when a section of the site's asks so #}
             {% set params = {book: book, sections: sections, components: components, editUrls: editUrls} %}
             {% if editUrls or not book_sections_cacheable(sections) %}
                 {{ include('@c975LBook/book/_sections.html.twig', params) }}
             {% else %}
-                {% cache 'book_sections_' ~ book.id ~ '_' ~ app.request.locale ttl(book_sections_cache_ttl()) tags(['book_catalog', 'blocks_all']) %}
+                {% cache 'book_sections_' ~ book.id ~ '_' ~ app.request.locale ~ '_' ~ book_ui_locale(book.language) ttl(book_sections_cache_ttl()) tags(['book_catalog', 'blocks_all']) %}
                     {{ include('@c975LBook/book/_sections.html.twig', params) }}
                 {% endcache %}
             {% endif %}
@@ -73,9 +73,9 @@
         {% endif %}
     </div>
 
-    {# The book's structured data, built by BookSnippetBuilder; "raw" as a {% set %} drops the function's is_safe marking, the builder escaping what could close the tag #}
-    {% set jsonLd = book_json_ld(book, ogImage, url('book_display', {'slug': book.slug}), config('book-rating')|to_bool) %}
+    {# The book's structured data, built by BookSnippetBuilder; captured rather than set, which keeps the function's is_safe marking - the builder escaping what could close the tag #}
+    {% set jsonLd %}{{ book_json_ld(book, ogImage, url('book_display', {'slug': book.slug}), config('book-rating')|to_bool) }}{% endset %}
     {% if jsonLd %}
-        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
 {% endblock %}

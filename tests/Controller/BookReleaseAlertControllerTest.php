@@ -13,9 +13,11 @@ namespace c975L\BookBundle\Tests\Controller;
 use c975L\BookBundle\Controller\BookReleaseAlertController;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookReleaseAlert;
+use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookReleaseAlertServiceInterface;
 use c975L\BookBundle\Service\BookTranslator;
+use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use c975L\UiBundle\Service\FormBotProtection;
 use c975L\UiBundle\Service\RateLimiterGuard;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +26,10 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -34,34 +40,40 @@ class BookReleaseAlertControllerTest extends TestCase
 {
     private ?string $bookPath = '/livre/le-livre';
 
-    private function createController(BookReleaseAlertServiceInterface $releaseAlertService, bool $validCsrfToken = true): BookReleaseAlertController
+    private RequestStack $requestStack;
+
+    protected function setUp(): void
     {
-        $botProtection = $this->createStub(FormBotProtection::class);
-        $botProtection->method('isSuspicious')->willReturn(false);
+        $this->requestStack = new RequestStack();
+    }
+
+    // The real bot protection, a site-form-delay of 0 so a display then a submission in the same second is a human's
+    private function createController(BookReleaseAlertServiceInterface $releaseAlertService, bool $validCsrfToken = true, ?FormInterface $form = null): BookReleaseAlertController
+    {
+        $config = $this->createStub(ConfigServiceInterface::class);
+        $config->method('get')->willReturn(0);
 
         $urlResolver = $this->createStub(BookPublicUrlResolver::class);
         $urlResolver->method('resolvePath')->willReturnCallback(fn (): ?string => $this->bookPath);
         $urlResolver->method('resolveLocalizedPath')->willReturnCallback(fn (): ?string => $this->bookPath);
 
         $translator = $this->createStub(TranslatorInterface::class);
-        $translator->method('trans')->willReturn('a message');
+        $translator->method('trans')->willReturnArgument(0);
+
+        $rateLimiterGuard = $this->createStub(RateLimiterGuard::class);
+        $rateLimiterGuard->method('isAcceptedForIp')->willReturn(true);
 
         $controller = new BookReleaseAlertController(
             $releaseAlertService,
             $urlResolver,
-            $botProtection,
-            $this->createStub(RateLimiterGuard::class),
+            new FormBotProtection($config),
+            $rateLimiterGuard,
             $translator,
             $this->createStub(BookTranslator::class),
         );
 
-        $form = $this->createStub(FormInterface::class);
-        $form->method('getName')->willReturn('book_release_alert');
-        $form->method('isSubmitted')->willReturn(false);
-        $form->method('createView')->willReturn(new FormView());
-
         $formFactory = $this->createStub(FormFactoryInterface::class);
-        $formFactory->method('create')->willReturn($form);
+        $formFactory->method('create')->willReturn($form ?? $this->form(false));
 
         $twig = $this->createStub(Environment::class);
         $twig->method('render')->willReturn('<page>');
@@ -73,9 +85,97 @@ class BookReleaseAlertControllerTest extends TestCase
         $container->set('form.factory', $formFactory);
         $container->set('twig', $twig);
         $container->set('security.csrf.token_manager', $csrfTokenManager);
+        $container->set('request_stack', $this->requestStack);
         $controller->setContainer($container);
 
         return $controller;
+    }
+
+    // A form answering submitted and valid once a POST is handled, never before
+    private function form(bool $submitsValid): FormInterface
+    {
+        $handled = false;
+        $email = $this->createStub(FormInterface::class);
+        $email->method('getData')->willReturn('waiting@example.org');
+
+        $form = $this->createStub(FormInterface::class);
+        $form->method('getName')->willReturn('book_release_alert');
+        $form->method('handleRequest')->willReturnCallback(function (Request $request) use (&$handled, $form): FormInterface {
+            $handled = $request->isMethod('POST');
+
+            return $form;
+        });
+        $form->method('isSubmitted')->willReturnCallback(static function () use (&$handled, $submitsValid): bool {
+            return $submitsValid && $handled;
+        });
+        $form->method('isValid')->willReturn($submitsValid);
+        $form->method('get')->willReturn($email);
+        $form->method('createView')->willReturn(new FormView());
+
+        return $form;
+    }
+
+    // A request on the session given, carrying its cookie when the visitor already holds one
+    private function request(string $method = 'GET', ?Session $session = null, bool $withCookie = false): Request
+    {
+        $session ??= $this->session();
+        $request = Request::create('/book/release-alert/1', $method, 'POST' === $method ? ['book_release_alert' => ['email' => 'waiting@example.org']] : []);
+        $request->setSession($session);
+        if ($withCookie) {
+            $request->cookies->set($session->getName(), 'session-id');
+        }
+        $this->requestStack->push($request);
+
+        return $request;
+    }
+
+    private function session(): Session
+    {
+        return new Session(new MockArraySessionStorage(), flashes: new FlashBag());
+    }
+
+    // A visitor's first submission: the page displayed armed the timer, so the POST that follows subscribes
+    public function testAPostAfterTheFormWasDisplayedSubscribes(): void
+    {
+        $releaseAlertService = $this->createMock(BookReleaseAlertServiceInterface::class);
+        $releaseAlertService->expects($this->once())->method('subscribe')->willReturn(true);
+        $controller = $this->createController($releaseAlertService, form: $this->form(true));
+        $session = $this->session();
+
+        $controller->new($this->request('GET', $session), $book = $this->book());
+        $response = $controller->new($this->request('POST', $session, true), $book);
+
+        $this->assertSame(302, $response->getStatusCode());
+    }
+
+    // A POST with a session but no display timed before it (a second tab, a session expired meanwhile) is shown back filled, with a word on why, and never run
+    public function testAPostWithASessionButNoTimerIsShownBackWithoutSubscribing(): void
+    {
+        $releaseAlertService = $this->createMock(BookReleaseAlertServiceInterface::class);
+        $releaseAlertService->expects($this->never())->method('subscribe');
+        $session = $this->session();
+
+        $response = $this->createController($releaseAlertService, form: $this->form(true))->new($this->request('POST', $session, true), $this->book());
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(['text.form_resend'], $session->getFlashBag()->get('warning'));
+        // Armed by that display, so the visitor's next submission goes through
+        $this->assertNotNull($session->get('book_release_alert_started_at'));
+    }
+
+    // A direct re-POST with neither session nor display never went through the form: dropped before the form even reads it
+    public function testAPostWithNoSessionAndNoTimerIsDroppedUnread(): void
+    {
+        $releaseAlertService = $this->createMock(BookReleaseAlertServiceInterface::class);
+        $releaseAlertService->expects($this->never())->method('subscribe');
+        $form = $this->createMock(FormInterface::class);
+        $form->method('getName')->willReturn('book_release_alert');
+        $form->method('createView')->willReturn(new FormView());
+        $form->expects($this->never())->method('handleRequest');
+
+        $response = $this->createController($releaseAlertService, form: $form)->new($this->request('POST'), $this->book());
+
+        $this->assertSame(200, $response->getStatusCode());
     }
 
     private function book(bool $hidden = false, bool $deleted = false): Book
@@ -92,7 +192,7 @@ class BookReleaseAlertControllerTest extends TestCase
     public function testTheFormIsShownOnABookTheSiteStillShows(): void
     {
         $response = $this->createController($this->createStub(BookReleaseAlertServiceInterface::class))
-            ->new(new Request(), $this->book())
+            ->new($this->request(), $this->book())
         ;
 
         $this->assertSame(200, $response->getStatusCode());
@@ -104,7 +204,16 @@ class BookReleaseAlertControllerTest extends TestCase
         $this->expectException(NotFoundHttpException::class);
 
         $this->createController($this->createStub(BookReleaseAlertServiceInterface::class))
-            ->new(new Request(), $this->book(hidden: true))
+            ->new($this->request(), $this->book(hidden: true))
+        ;
+    }
+
+    public function testABookOfASerieSetAsideIsNotFound(): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        $this->createController($this->createStub(BookReleaseAlertServiceInterface::class))
+            ->new($this->request(), $this->book()->setSerie(new Serie()->setHidden(true)))
         ;
     }
 
@@ -113,7 +222,7 @@ class BookReleaseAlertControllerTest extends TestCase
         $this->expectException(NotFoundHttpException::class);
 
         $this->createController($this->createStub(BookReleaseAlertServiceInterface::class))
-            ->new(new Request(), $this->book(deleted: true))
+            ->new($this->request(), $this->book(deleted: true))
         ;
     }
 
@@ -125,7 +234,7 @@ class BookReleaseAlertControllerTest extends TestCase
         $this->expectException(NotFoundHttpException::class);
 
         $this->createController($this->createStub(BookReleaseAlertServiceInterface::class))
-            ->new(new Request(), $this->book())
+            ->new($this->request(), $this->book())
         ;
     }
 

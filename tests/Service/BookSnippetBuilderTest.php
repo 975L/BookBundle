@@ -234,6 +234,24 @@ class BookSnippetBuilderTest extends TestCase
         $this->assertSame('https://schema.org/PreOrder', $this->builder->buildBook($book)['workExample'][0]['offers']['availability']);
     }
 
+    // A book with no date yet is announced to come, not in stock
+    public function testAnUndatedEditionIsOfferedForPreOrder(): void
+    {
+        $book = $this->book()->setPublished(null);
+        $book->getEdition('paper')->setPrice(500);
+
+        $this->assertSame('https://schema.org/PreOrder', $this->builder->buildBook($book)['workExample'][0]['offers']['availability']);
+    }
+
+    // An edition out of print is no longer sold
+    public function testAnEditionOutOfPrintIsDiscontinued(): void
+    {
+        $book = $this->book();
+        $book->getEdition('paper')->setPrice(500)->setOutOfPrint(true);
+
+        $this->assertSame('https://schema.org/Discontinued', $this->builder->buildBook($book)['workExample'][0]['offers']['availability']);
+    }
+
     // The platforms are given as identities, the offer being the publisher's own price. They belong to the book and are read by the gesture the edition serves - a recording is listened to where the podcast apps carry it, a book is bought where the bookshops sell it
     public function testAFormatIsReachedWhereTheGestureItServesIsOffered(): void
     {
@@ -270,6 +288,16 @@ class BookSnippetBuilderTest extends TestCase
         );
     }
 
+    // A translation in the trash or set aside answers 410 or 404, and the graph names neither
+    public function testATranslationOffTheSiteIsNotNamed(): void
+    {
+        $book = $this->book()->setSlug('tome-1');
+        $book->addTranslation(new Book()->setTitle('Volume 1')->setSlug('volume-1')->setLanguage('en')->setHidden(true));
+        $book->addTranslation(new Book()->setTitle('Tomo 1')->setSlug('tomo-1')->setLanguage('es')->setIsDeleted(true));
+
+        $this->assertArrayNotHasKey('workTranslation', $this->builder->buildBook($book));
+    }
+
     // The rank is read off the publication dates, the entity carrying no volume number of its own
     public function testABookKnowsItsRankAmongTheVolumesOfItsSerie(): void
     {
@@ -299,6 +327,17 @@ class BookSnippetBuilderTest extends TestCase
     {
         $serie = $this->serie();
         $serie->addBook(new Book()->setTitle('Tome 3')->setPublished(new \DateTime('+1 year')));
+
+        $this->assertCount(2, $this->builder->buildSerie($serie)['hasPart']);
+    }
+
+    // What the serie's page leaves out, the graph leaves out too: a volume set aside, in the trash or replaced by a newer version
+    public function testAVolumeOffTheSerieListIsLeftOut(): void
+    {
+        $serie = $this->serie();
+        $serie->addBook(new Book()->setTitle('Tome 3')->setPublished(new \DateTime('2026-07-01'))->setHidden(true));
+        $serie->addBook(new Book()->setTitle('Tome 4')->setPublished(new \DateTime('2026-08-01'))->setIsDeleted(true));
+        $serie->addBook(new Book()->setTitle('Tome 5')->setPublished(new \DateTime('2026-09-01'))->setNewerVersion(new Book()));
 
         $this->assertCount(2, $this->builder->buildSerie($serie)['hasPart']);
     }

@@ -111,7 +111,7 @@ class SectionAnchorsTest extends TestCase
     // The contents of a card travel as an already-rendered string, never as a block the caller overrides: a block declared around a component's slot never reaches the inside of it, and the cards came out titled and empty - which the Twig lint and every test reading a template alike saw as perfectly fine
     public function testEachSectionHandsItsContentsOverAsAString(): void
     {
-        $this->assertStringContainsString("{{ body|default('')|raw }}", $this->sectionFragment(), 'The card no longer prints the contents it was handed, so every section of the page comes out empty.');
+        $this->assertStringContainsString("{{ body|default('') }}", $this->sectionFragment(), 'The card no longer prints the contents it was handed, so every section of the page comes out empty.');
         $this->assertStringNotContainsString('{% block body %}', $this->sectionFragment());
 
         foreach ($this->templates() as $file => $twig) {

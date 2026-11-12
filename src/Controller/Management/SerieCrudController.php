@@ -64,7 +64,7 @@ class SerieCrudController extends AbstractCrudController
         deleteEntity as private trashableDeleteEntity;
     }
 
-    // The two actions of the trash are reached by a GET, so their token travels in the url the row buttons carry (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
+    // The two actions of the trash are posted by their row button, their token travelling in the url it posts to (see trashActionUrl()) - a confirmation modal only holds a click back, never a request forged elsewhere
     public const string RESTORE_CSRF_TOKEN = 'book_serie_restore';
     public const string DELETE_PERMANENTLY_CSRF_TOKEN = 'book_serie_delete_permanently';
     public const string DUPLICATE_CSRF_TOKEN = 'book_serie_duplicate';

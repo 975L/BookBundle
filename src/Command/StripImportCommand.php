@@ -202,6 +202,8 @@ class StripImportCommand extends Command
         $updatedAt = new \DateTimeImmutable();
         $created = 0;
         $skipped = 0;
+        // The slugs already in database, read once, then those this very run writes: nothing is flushed before the end, and a table carrying a slug twice would otherwise write it twice
+        $taken = array_fill_keys(array_map(static fn (Strip $strip): string => (string) $strip->getSlug(), $this->em->getRepository(Strip::class)->findAll()), true);
 
         foreach ($rows as $row) {
             $slug = $row['slug'] ?? null;
@@ -210,6 +212,14 @@ class StripImportCommand extends Command
                 ++$skipped;
                 continue;
             }
+
+            // Run again, the planches already imported are left as they are: a second row under the same slug would fail the whole flush
+            if (isset($taken[$slug])) {
+                $io->text("  Row id={$row['id']} ({$slug}) already imported — skipped.");
+                ++$skipped;
+                continue;
+            }
+            $taken[$slug] = true;
 
             $number = isset($row[$options['numberColumn']]) ? (int) $row[$options['numberColumn']] : (int) $row['id'];
             $numFormatted = sprintf('%03d', $number);

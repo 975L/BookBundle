@@ -71,7 +71,7 @@ same books.
 
 A book **leaves its versions behind**: a duplicate is a new book the editor then qualifies, where chaining
 one book behind another is the versions gesture's own doing. The title gets a `(copie)` suffix, the slug is
-freed of collisions, `Book::$data` travels whole, and **every uploaded file is copied on disk** rather than
+freed of collisions, the copy of a book, a serie or a planche is **saved set aside** (`hidden`) until the editor reworks it, `Book::$data` travels whole, and **every uploaded file is copied on disk** rather than
 shared — deleting one of the two must never take the other's image with it. Each row copied brings its
 translations too, blocks and pictures included, through UiBundle's `TranslationCopier`, written on the flush that
 saves the copy. The service persists nothing, so a command or a listener of the app can call it.
@@ -124,6 +124,8 @@ The back office writes them on a language screen, the row's own edit screen open
 | `BookCategoryRepository::findAll()` | the public listing of categories — trash and rows set aside both dropped |
 | `BookCategoryRepository::findWithBooks()`, `SerieRepository::findWithBooks()` | the ones holding at least one book the catalog actually lists, the publication date included — an empty one, or one holding only titles still to come, would head a page with nothing under it |
 | `BookRepository::findPublishedByCategory()` | the catalog cut down to one category, every rule of `findAllPublished()` kept, and nothing at all for a category set aside |
+| `SerieRepository::findWithStrips()` | the series holding at least one planche out today — one whose planches are all to come leads to an empty list |
+| `SerieRepository::findOneBySlugWithSortedBooks()`, `ContributorRepository::findOneBySlugWithWorks()` | the row whatever its state, its collections joined **whole**: the page reads `Serie::getShownBooks()`, `Contributor::getBooks()` and `getSeries()`, which leave out the trash, what is set aside and what a newer version replaced — a join filtering a collection would leave it holding part of its rows for the rest of the request |
 | `ContributorRepository::findOneByName()` | never someone in the trash: an import would credit them on a book, their page would answer 410, and the foreign key would refuse to remove them for good |
 
 Every read above also drops what is set aside, `findAll()` excepted; `SerieRepository::findAll()` is the
@@ -212,7 +214,9 @@ The ten export/import providers carry a serie, a book, a planche, a person or a 
 included — as a zip, through ConfigBundle's **Export sync (everything)** shortcut, each index's **Export
 selection** batch action and the **Import content** screen. `MediaArchiver` puts the files in and takes them
 back out; `SerieResolver` matches a serie and `BookCategoryResolver` the categories a book names, both
-creating on the fly what this environment doesn't hold yet. **Everything is matched by slug, never by id**,
+creating on the fly what this environment doesn't hold yet - a serie created so is set aside until its own archive brings it.
+**A manifest is untrusted**: every file it names is read through ConfigBundle's `ArchivePath::resolve()` (a path out of the archive copies nothing),
+and an entry whose stored name is not under `medias/book/` with an upload's extension (`Media::FILE_UPLOAD_EXTENSIONS`) is not stored at all. **Everything is matched by slug, never by id**,
 and an import never deletes what the archive does not name — a book's `categories` are the one list replaced
 whole, an archive saying which categories the book carries and a category taken off it there coming off it
 here too. A book archive exported before 2.15 still lands its `extract` files as `page`. An edition carries its `files`

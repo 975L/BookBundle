@@ -43,6 +43,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(max: 100)]
     private ?string $title = null;
 
     // Nullable where the column was not: a book is often recorded before the person signing it has a page of their own, and the back office would refuse the save
@@ -53,6 +54,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     private ?\DateTimeInterface $published = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Length(max: 100)]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -72,6 +74,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     private ?Serie $serie = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
     private ?string $age = null;
 
     // The id breaks the ties on every collection below: a position is typed in the back-office and a date is shared by two rows, so nothing here is unique on its own and the database was free to order the rows sharing one as it liked
@@ -84,6 +87,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
 
     // The volume number, which is the book's rank in its serie - named as Strip::$number is, the two being the same thing
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Assert\Range(min: 0, max: 32767)]
     private ?int $number = null;
 
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
@@ -143,6 +147,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     private Collection $colorings;
 
     #[ORM\Column(length: 5, nullable: true)]
+    #[Assert\Length(max: 5)]
     private ?string $language = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'translations')]
@@ -162,6 +167,8 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     private ?self $previousVersion = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Length(max: 100)]
+    #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $crowdfunding = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -270,7 +277,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this->translated['summary'] ?? $this->summary;
     }
 
-    public function setSummary(string $summary): static
+    public function setSummary(?string $summary): static
     {
         $this->summary = $summary;
 

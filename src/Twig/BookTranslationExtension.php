@@ -39,10 +39,10 @@ class BookTranslationExtension
         $original = $book->getTranslationBook() ?? $book;
         $family = [$original, ...$original->getTranslations()];
 
-        // A book in the trash is off the site: offered as a language, the switch would send the reader straight to its 410
+        // A book in the trash, set aside or in a serie set aside is off the site: offered as a language, the switch would send the reader straight to its 410 or 404
         return array_values(array_filter(
             $family,
-            static fn (Book $other): bool => $other !== $book && !$other->isDeleted() && null !== $other->getLanguage()
+            static fn (Book $other): bool => $other !== $book && !$other->isDeleted() && !$other->isHidden() && !($other->getSerie()?->isHidden() ?? false) && null !== $other->getLanguage()
         ));
     }
 

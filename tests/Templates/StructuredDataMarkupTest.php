@@ -12,7 +12,7 @@ namespace c975L\BookBundle\Tests\Templates;
 
 use PHPUnit\Framework\TestCase;
 
-// A {% set %} drops the html-safe marking of a json_ld() payload, serving the graph escaped and unreadable to a parser: this reads that the templates still say "raw"
+// A {% set x = %} drops the html-safe marking of a json_ld() payload, serving the graph escaped and unreadable to a parser: this reads that the templates print a direct call or a capture, which keep it
 class StructuredDataMarkupTest extends TestCase
 {
     // Every printed variable inside a <script type="application/ld+json"> tag of the bundle's templates
@@ -23,14 +23,15 @@ class StructuredDataMarkupTest extends TestCase
         $printed = 0;
 
         foreach ($this->templates() as $path) {
-            preg_match_all(self::PATTERN, (string) file_get_contents($path), $matches);
+            $template = (string) file_get_contents($path);
+            preg_match_all(self::PATTERN, $template, $matches);
 
             foreach ($matches[1] as $expression) {
                 ++$printed;
 
-                // A direct call keeps the function's own is_safe marking, a variable needs "raw" back - both are correct, anything else is escaped
+                // A direct call keeps the function's own is_safe marking, a variable captured by {% set x %}...{% endset %} is marked safe too - anything else is escaped
                 $this->assertTrue(
-                    str_contains($expression, '|raw') || str_contains($expression, '('),
+                    str_contains($expression, '(') || str_contains($template, '{% set ' . $expression . ' %}'),
                     sprintf('"%s" prints "%s" escaped: the graph is served as &quot; and no parser reads it.', $path, $expression)
                 );
             }

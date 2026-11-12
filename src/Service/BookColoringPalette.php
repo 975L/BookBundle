@@ -140,9 +140,10 @@ class BookColoringPalette
     /** @return array{float, float, float} */
     private function toHsl(int $red, int $green, int $blue): array
     {
-        $r = $red / 255;
-        $g = $green / 255;
-        $b = $blue / 255;
+        // Divided by a float, so pure black and pure white stay floats and the grey check below holds
+        $r = $red / 255.0;
+        $g = $green / 255.0;
+        $b = $blue / 255.0;
         $max = max($r, $g, $b);
         $min = min($r, $g, $b);
         $lightness = ($max + $min) / 2;

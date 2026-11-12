@@ -68,4 +68,10 @@ class IsbnExtensionTest extends TestCase
         $this->assertSame('978-2-488750-24-0', $extension->isbnFilter('978-2-488750-24-0'));
         $this->assertSame('978-2-488750-24-0', $extension->isbnFilter(9782488750240));
     }
+
+    // The X check digit of an ISBN-10 is part of the number, not a separator
+    public function testTheCheckDigitXOfAnIsbn10IsKept(): void
+    {
+        $this->assertSame('284875024X', $this->extension()->isbnFilter('2-84875-024-x'));
+    }
 }

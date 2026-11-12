@@ -25,8 +25,8 @@ class BookVersionExtension
         $family = [...self::chain($book, static fn (Book $step): ?Book => $step->getNewerVersion())];
         $family = [...array_reverse($family), ...self::chain($book, static fn (Book $step): ?Book => $step->getPreviousVersion())];
 
-        // A book in the trash is off the site: offered as a version, the link would send the reader straight to its 410
-        return array_values(array_filter($family, static fn (Book $other): bool => !$other->isDeleted()));
+        // A book in the trash, set aside or in a serie set aside is off the site: offered as a version, the link would send the reader straight to its 410 or 404
+        return array_values(array_filter($family, static fn (Book $other): bool => !$other->isDeleted() && !$other->isHidden() && !($other->getSerie()?->isHidden() ?? false)));
     }
 
     // One side of the chain, step by step. Followed rather than read in one jump: a third version chains onto the second, and the guard is there for a chain closed by hand, which would spin the loop forever

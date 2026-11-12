@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Entity;
 
 use c975L\BookBundle\Repository\BookReleaseAlertRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // One visitor waiting on one book coming out. Held against the book and not against an edition: a book is published once, in every format at once, where ShopBundle's stock alert waits on the item that ran out
 #[ORM\Entity(repositoryClass: BookReleaseAlertRepository::class)]
@@ -31,14 +32,17 @@ class BookReleaseAlert
 
     // The same length ShopBundle's stock alert gives its own address column, the two holding addresses of the same visitors
     #[ORM\Column(length: 100)]
+    #[Assert\Length(max: 100)]
     private string $email;
 
     // The language the subscription was taken in, there being nothing else to read it from: both e-mails are composed in it rather than in whatever the nightly command happens to run under
     #[ORM\Column(length: 5)]
+    #[Assert\Length(max: 5)]
     private string $locale;
 
     // What the unsubscribe link carries, in place of the address itself - a link naming an email address is a link that leaks one
     #[ORM\Column(length: 16, unique: true)]
+    #[Assert\Length(max: 16)]
     private string $token;
 
     // Read by the purge: a book announced and never published leaves its waiting list behind, and an address kept for a parution that never comes is an address kept for nothing (see BookReleaseAlertService::PENDING_RETENTION_MONTHS)

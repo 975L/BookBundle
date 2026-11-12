@@ -48,7 +48,7 @@ abstract class Media implements \Stringable
     // What an image field takes, read off the file's own bytes by the form's File constraint: the four whose stored extension UiMediaNamer decides itself, never the name the browser sent. No SVG, which runs its scripts when opened directly from the site's own origin
     public const array IMAGE_UPLOAD_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
-    // What a row holding anything takes (see MediaFileFieldTrait): an image, a document, a recording, a video or the pages' timecodes - what MIME_TYPES below names, without the SVG and the AVIF, under the names the detection gives them
+    // What a row holding anything takes (see MediaFileFieldTrait): an image, a document, a recording, a video or the pages' timecodes - what MIME_TYPES below names, without the SVG, under the names the detection gives them
     public const array FILE_UPLOAD_TYPES = [
         ...self::IMAGE_UPLOAD_TYPES,
         'application/pdf',
@@ -67,7 +67,7 @@ abstract class Media implements \Stringable
     // The names those rows go by: the bytes alone do not settle it, "<!--ftypmp42 --><svg onload=...>" being detected as a video and UiMediaNamer keeping the ".svg" it was sent under, where it runs on the site's own origin
     public const array FILE_UPLOAD_EXTENSIONS = ['jpg', 'jpeg', 'jfif', 'png', 'webp', 'gif', 'pdf', 'epub', 'mp3', 'm4a', 'ogg', 'oga', 'wav', 'mp4', 'webm', 'vtt'];
 
-    // UiBundle's Slider and Image components read a media through the same accessors as UiBundle's own Media entity - the nine below fill that contract without adding a column, the display metadata they stand for having no home in this hierarchy
+    // UiBundle's Slider and Image components read a media through the same accessors as UiBundle's own Media entity - the nine below fill that contract without adding a column, the display metadata they stand for having no home in this hierarchy. AVIF stays named here so a file already stored keeps being served as an image, where uploads and imports refuse it (FILE_UPLOAD_EXTENSIONS)
     private const array MIME_TYPES = [
         'avif' => 'image/avif',
         'epub' => 'application/epub+zip',
@@ -99,13 +99,16 @@ abstract class Media implements \Stringable
     private ?int $position = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
     private ?string $kind = null;
 
     // 255 and no longer 100: the stored name is a path Vich builds from the media's own kind and its owner's slug (see the getVichMediaPath of each subclass), and the namer appends a uniqid and an extension to it - a book whose slug runs past fifty characters overflowed the column, the database turning the upload away mid-flush once the file had already been written to disk
     #[ORM\Column(length: 255, nullable: true, unique: true)]
+    #[Assert\Length(max: 255)]
     private ?string $name = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Length(max: 100)]
     private ?string $title = null;
 
     #[ORM\Column(nullable: true)]
@@ -113,6 +116,7 @@ abstract class Media implements \Stringable
 
     // The player's whole address and no longer the id alone: it is what an editor pastes, and what the rendering hands as is to the iframe (see BookVideoNoCookieListener, which brings it back to its platform's canonical form)
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
     #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $youtubeUrl = null;
 

@@ -336,7 +336,7 @@
             </trans-unit>
             <trans-unit id="Pu.1HXm">
                 <source>description.guided_step_book_duplication_duplicate</source>
-                <target>Confirmez, et la copie est enregistrée aussitôt avec ses fichiers, ses liens et ses blocs, puis s'ouvre sur son propre écran d'édition. Les livres d'une série ne sont jamais copiés avec elle : dupliquer l'un est une décision à part.</target>
+                <target>Confirmez, et la copie est enregistrée aussitôt, masquée, avec ses fichiers, ses liens et ses blocs, puis s'ouvre sur son propre écran d'édition : décochez « Masqué » une fois retravaillée. Les livres d'une série ne sont jamais copiés avec elle : dupliquer l'un est une décision à part.</target>
             </trans-unit>
             <trans-unit id="NmG1rVc">
                 <source>description.guided_step_book_duplication_open</source>
@@ -829,6 +829,10 @@
             <trans-unit id="zlKuted">
                 <source>flash.contributor_restored</source>
                 <target>L'auteur/illustrateur a été restauré.</target>
+            </trans-unit>
+            <trans-unit id="GaG0Yzc">
+                <source>flash.import_waiting_serie</source>
+                <target>Série créée masquée en attendant son propre import, avec ce qui l’attend : %list%</target>
             </trans-unit>
             <trans-unit id="eNUVmpk">
                 <source>flash.media_move_failed</source>
@@ -2760,7 +2764,7 @@
             </trans-unit>
             <trans-unit id="uNwDDu9">
                 <source>label.newer_version-help</source>
-                <target>Le livre qui remplace celui-ci — une version nouvellement illustrée, revue ou recomposée. Rempli, ce livre quitte le catalogue mais garde sa page, son ISBN et sa place dans le sitemap : on le rejoint depuis celui qui le remplace.</target>
+                <target>Le livre qui remplace celui-ci — une version nouvellement illustrée, revue ou recomposée. Rempli, ce livre quitte le catalogue mais garde sa page, son ISBN et sa place dans le sitemap : on le rejoint depuis celui qui le remplace. Ne le relier qu’au moment de publier la nouvelle version : il quitte le catalogue aussitôt, même si celle-ci est encore masquée ou à paraître.</target>
             </trans-unit>
             <trans-unit id="C62419s">
                 <source>label.next</source>

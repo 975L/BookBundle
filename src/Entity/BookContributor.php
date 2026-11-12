@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // The part someone takes in a book - narrating it, translating it - held by the row that joins the two rather than by a column of its own: a person is a narrator on one title and a translator on the next, and a column per role would have to be added to every catalog the day one credits a colourist. Author and illustrator are not written here: they are the book's own columns, the only two a book inherits from its serie (see Book::getEffectiveAuthor())
 #[ORM\Entity]
@@ -33,6 +34,7 @@ class BookContributor implements \Stringable
     private ?Contributor $contributor = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\Length(max: 30)]
     private ?string $role = null;
 
     // The order the credits are laid in the back office, which is the order the book's page prints them

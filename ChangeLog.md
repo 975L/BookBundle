@@ -1,5 +1,43 @@
 # Changelog
 
+## v2.35.0
+
+Drafts kept off the site, archives read safely, posted admin actions
+
+- `BookColoringPalette`: pure black and pure white no longer divide by zero (12/11/2026)
+- [BC-Break] A serie's books and a person's works are joined whole and filtered when read: `Serie::getShownBooks()` replaces `serie.books` in `serie/display.html.twig`, `Contributor::getBooks()` and `getSeries()` leave out what the catalog no longer shows (12/11/2026)
+- `BookReleaseAlertController`: a submission with no timed display is shown back filled (`text.form_resend`), `isSuspicious()` read before `handleRequest()`, the timer armed right before rendering (12/11/2026)
+- Duplicate, restore, delete for good and publish a new version are posted by their button, their routes refusing a GET (12/11/2026)
+- A strip still to come keeps its announcement page without its drawing nor its reply in the metas, and out of search engines (12/11/2026)
+- A copy of a book, a serie or a strip is saved hidden (12/11/2026)
+- `StripRepository::search()`: characters matched through a join, the DQL no longer refused (12/11/2026)
+- `StripRepository::findAllPublishedBySerie()`: medias read in one query (12/11/2026)
+- `SerieRepository::findWithStrips()`: only series holding a strip out today (12/11/2026)
+- A book of a hidden serie answers 404 on its page, its listening page and its release alert page, and is neither offered as a translation or a version nor listed on a person's page (12/11/2026)
+- `Assert\Length` on every string column, `Assert\Range` on `Book::$number`, `Assert\PositiveOrZero` on the prices, `Assert\Url` on `Book::$crowdfunding` (12/11/2026)
+- `BookEdition::setIsbn()` and the `isbn` filter keep digits and the X of an ISBN-10 only (12/11/2026)
+- `Book::setSummary()` accepts null (12/11/2026)
+- Publishing a new version cuts the twin's title to its column and runs in one transaction (12/11/2026)
+- `book_categories` block no longer cached while a book is scheduled (12/11/2026)
+- JSON-LD: translations and volumes hidden, trashed or replaced no longer named; offers `PreOrder` while undated, `Discontinued` out of print (12/11/2026)
+- "Translations" and "Other versions" links leave out hidden books (12/11/2026)
+- Book sections cache keyed on the labels' language too (12/11/2026)
+- `newerVersion` help: link it only when the new version is published (12/11/2026)
+- `MediaArchiver`: manifest paths read through `ArchivePath::resolve()`, stored names with an upload's extension only, nameless videos one row each, a drawing's fingerprint written again (12/11/2026)
+- `c975l:book:colorings:import`: paths read through `ArchivePath::resolve()`, PNG only (12/11/2026)
+- `BookLinkHealthCheckProvider`: a store down or silent is a warning (12/11/2026)
+- `strip:import` skips the strips already imported, and a slug the table carries twice (12/11/2026)
+- Files health check: a character's portrait named and linked to its screen (12/11/2026)
+- A serie created by a book's or a strip's import is hidden until its own import, the import screen listing what waits for it (12/11/2026)
+- AVIF refused on upload and on import alike, a stored one still served as `image/avif` (12/11/2026)
+- Book import: an edition file of an unknown kind is left out (12/11/2026)
+- `BookOnixBuilder`: trashed categories left out of the subjects, categories joined whole (12/11/2026)
+- `BookRepository::findAllWithPrintables()`: documents to print joined whole, filtered through an `EXISTS` (12/11/2026)
+- JSON-LD printed through a capture instead of `|raw` (12/11/2026)
+- [BC-Break] `book/_section.html.twig` prints `body` without `|raw`: a site's section hands it a `{% set %}…{% endset %}` capture (12/11/2026)
+- `CodeRulesTest` on `CodeRulesTestCase` (12/11/2026)
+- `c975l/core-bundle` required in ^1.90 (12/11/2026)
+
 ## v2.34.2
 
 Drawings to colour grouped under the documents to print's levels

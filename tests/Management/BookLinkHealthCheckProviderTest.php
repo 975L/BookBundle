@@ -81,12 +81,12 @@ class BookLinkHealthCheckProviderTest extends TestCase
         $this->assertSame(200, $rows[0]['details']['httpCode']);
     }
 
-    // A store still unavailable once asked again is reported, a check that would let it through checking nothing
-    public function testAStoreStillUnavailableOnceAskedAgainIsAnError(): void
+    // A store still unavailable once asked again is reported, as a warning: the outage is the store's, not the editor's to fix
+    public function testAStoreStillUnavailableOnceAskedAgainIsAWarning(): void
     {
         $rows = $this->retriedProvider(503, 503)->runChecks();
 
-        $this->assertSame(HealthCheckResult::STATUS_ERROR, $rows[0]['status']);
+        $this->assertSame(HealthCheckResult::STATUS_WARNING, $rows[0]['status']);
         $this->assertSame('label.health_check_link_broken', $rows[0]['summary']);
     }
 
@@ -99,12 +99,12 @@ class BookLinkHealthCheckProviderTest extends TestCase
         $this->assertSame(200, $rows[0]['details']['httpCode']);
     }
 
-    // A host still silent once asked again is reported as unreachable
-    public function testAHostStillNotAnsweringOnceAskedAgainIsAnError(): void
+    // A host still silent once asked again is reported as unreachable, a warning for the same reason
+    public function testAHostStillNotAnsweringOnceAskedAgainIsAWarning(): void
     {
         $rows = $this->retriedProvider(null, null)->runChecks();
 
-        $this->assertSame(HealthCheckResult::STATUS_ERROR, $rows[0]['status']);
+        $this->assertSame(HealthCheckResult::STATUS_WARNING, $rows[0]['status']);
         $this->assertSame('label.health_check_link_unreachable', $rows[0]['summary']);
     }
 
@@ -113,7 +113,7 @@ class BookLinkHealthCheckProviderTest extends TestCase
     {
         $rows = $this->provider([$this->book('Contes du Soir', 'contes-du-soir', ['spotify' => 'https://gone.example/x'])], ['https://gone.example/x' => null])->runChecks();
 
-        $this->assertSame(HealthCheckResult::STATUS_ERROR, $rows[0]['status']);
+        $this->assertSame(HealthCheckResult::STATUS_WARNING, $rows[0]['status']);
         $this->assertSame('label.health_check_link_unreachable', $rows[0]['summary']);
         $this->assertNull($rows[0]['details']['httpCode']);
     }

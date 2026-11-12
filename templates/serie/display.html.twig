@@ -43,7 +43,7 @@
                 <section id="books" class="toc-target" lang="{{ serie.language }}">
                     <h2>{{ 'label.serie_books'|trans({}, 'book', book_ui_locale(serie.language)) }}</h2>
                     <twig:c975LBook:Book:Search serie="{{ serie }}" heading="h3"/>
-                    <twig:c975LBook:Book:Books books="{{ serie.books }}" displayMore="false" :editable="editUrls is not empty"/>
+                    <twig:c975LBook:Book:Books books="{{ serie.shownBooks }}" displayMore="false" :editable="editUrls is not empty"/>
                 </section>
             {% endif %}
             {% if 'strips' in anchors %}
@@ -81,9 +81,9 @@
         </div>
     </div>
 
-    {# The serie's structured data, whose hasPart says "tome 1 of 12" to a machine; "raw" as a {% set %} drops the function's is_safe marking, the builder escaping what could close the tag #}
-    {% set jsonLd = serie_json_ld(serie, ogImage, serie_url(serie)) %}
+    {# The serie's structured data, whose hasPart says "tome 1 of 12" to a machine; captured rather than set, which keeps the function's is_safe marking - the builder escaping what could close the tag #}
+    {% set jsonLd %}{{ serie_json_ld(serie, ogImage, serie_url(serie)) }}{% endset %}
     {% if jsonLd %}
-        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
 {% endblock %}

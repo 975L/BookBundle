@@ -131,7 +131,8 @@ class StripRepository extends ServiceEntityRepository
             $query->setMaxResults($number);
         }
 
-        return $query->getQuery()->getResult();
+        // The thumbnails each card shows, read in one query for the whole list rather than one per card
+        return $this->withMedias($query->getQuery()->getResult());
     }
 
     public function findAllByCharacter(string $character): array
@@ -311,8 +312,11 @@ class StripRepository extends ServiceEntityRepository
             return [];
         }
 
+        // Who speaks is a relation since the characters became entities: joined and matched on their name, each planche counted once however many of them match
         $builder = $this->createQueryBuilder('s')
             ->leftJoin('s.serie', 'serie')
+            ->leftJoin('s.characters', 'c')
+            ->distinct()
         ;
 
         if (null !== $serieId) {
@@ -324,7 +328,7 @@ class StripRepository extends ServiceEntityRepository
 
         return $builder
             // The summary too: a planche is looked for by what is said in it as much as by its title or by who says it - and a title numbering the plate ("Réplique 042") answers nothing a visitor would type
-            ->andWhere('s.title LIKE :query OR s.characters LIKE :query OR s.summary LIKE :query')
+            ->andWhere('s.title LIKE :query OR c.name LIKE :query OR s.summary LIKE :query')
             ->andWhere('s.isDeleted = false')
             ->andWhere('s.hidden = false')
             ->andWhere('serie IS NULL OR serie.hidden = false')

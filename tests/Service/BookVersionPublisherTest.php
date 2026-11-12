@@ -111,6 +111,16 @@ class BookVersionPublisherTest extends TestCase
         $this->assertSame([[BookTranslator::OWNER_BOOK, $book, $previous, ['summary']]], $copied);
     }
 
+    // A title near the column's length is cut so the suffix still fits, rather than failing the flush after the chain was already undone
+    public function testThePreviousTitleFitsTheColumn(): void
+    {
+        $title = $this->publisher()->previousTitle(new Book()->setTitle(str_repeat('é', 100)), ' — previous version');
+
+        $this->assertSame(100, mb_strlen($title));
+        $this->assertStringEndsWith(' — previous version', $title);
+        $this->assertSame('Tome 1 — previous version', $this->publisher()->previousTitle(new Book()->setTitle('Tome 1'), ' — previous version'));
+    }
+
     private function publisher(?Book $collides = null, ?TranslationCopier $translationCopier = null): BookVersionPublisher
     {
         $repository = $this->createStub(BookRepository::class);

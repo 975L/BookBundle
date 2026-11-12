@@ -90,6 +90,7 @@ class PlatformLinkValidationTest extends TestCase
         yield 'contributor website' => [new Contributor(), Contributor::class, 'website'];
         yield 'strip source' => [new Strip(), Strip::class, 'sourceUrl'];
         yield 'video' => [new BookVideo(), Media::class, 'youtubeUrl'];
+        yield 'crowdfunding' => [new Book(), Book::class, 'crowdfunding'];
     }
 
     // Read off the attribute rather than by validating the owner, whose UniqueEntity asks for the Doctrine services a unit test has none of (see BookContributorTest)
@@ -97,6 +98,14 @@ class PlatformLinkValidationTest extends TestCase
     {
         $this->assertCount(1, new \ReflectionProperty(Book::class, 'links')->getAttributes(Assert\Valid::class));
         $this->assertCount(1, new \ReflectionProperty(Contributor::class, 'links')->getAttributes(Assert\Valid::class));
+    }
+
+    // A volume number beyond its SMALLINT column, or below zero, is refused before the flush
+    public function testAVolumeNumberStaysWithinItsColumn(): void
+    {
+        $this->assertCount(0, $this->validator()->validateProperty(new Book()->setNumber(12), 'number'));
+        $this->assertCount(1, $this->validator()->validateProperty(new Book()->setNumber(40000), 'number'));
+        $this->assertCount(1, $this->validator()->validateProperty(new Book()->setNumber(-1), 'number'));
     }
 
     private function validator(): ValidatorInterface

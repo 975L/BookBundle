@@ -224,6 +224,11 @@ class BookOnixBuilder
     {
         $written = [];
         foreach ($book->getCategories() as $category) {
+            // A category in the trash files the book under nothing any more
+            if ($category->isDeleted()) {
+                continue;
+            }
+
             foreach (BookSubjectScheme::cases() as $scheme) {
                 foreach ($category->getCodesOf($scheme) as $code) {
                     $onixScheme = $scheme->onixScheme($code);

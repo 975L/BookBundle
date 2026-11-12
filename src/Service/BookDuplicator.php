@@ -104,6 +104,8 @@ class BookDuplicator
             ->setLanguage($source->getLanguage())
             ->setAuthor($source->getAuthor())
             ->setIllustrator($source->getIllustrator())
+            // Set aside until the editor reworks it: a copy otherwise enters the catalog, the listings and the feeds at once, under the original's date and ISBN
+            ->setHidden(true)
             ->setCreation($now)
             ->setModification($now)
             ->setUser($this->currentUser());
@@ -154,8 +156,7 @@ class BookDuplicator
         $copy = new Book()
             ->setTitle($this->copyTitle($source->getTitle(), 100))
             ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->bookRepository->findOneBy(['slug' => $candidate])))
-            // The column is nullable, its setter is not - a book with no summary yet copies as one with an empty summary
-            ->setSummary((string) $source->getSummary())
+            ->setSummary($source->getSummary())
             ->setAuthor($source->getAuthor())
             ->setIllustrator($source->getIllustrator())
             ->setPublished($source->getPublished())
@@ -168,6 +169,8 @@ class BookDuplicator
             ->setCrowdfundingEndDate($source->getCrowdfundingEndDate())
             // The whole payload rather than key by key: what a site adds to a book stays true of its copy, and a key added later needs nothing here
             ->setData($source->getData())
+            // Set aside until the editor reworks it: a copy otherwise enters the catalog, the listings and the feeds at once, under the original's date and ISBN
+            ->setHidden(true)
             ->setCreation($now)
             ->setModification($now)
             ->setUser($this->currentUser());
@@ -249,6 +252,8 @@ class BookDuplicator
             ->setSourceUrl($source->getSourceUrl())
             ->setPublished($source->getPublished())
             ->setSerie($source->getSerie())
+            // Set aside until the editor reworks it: a copy otherwise enters the catalog, the listings and the feeds at once, under the original's date and ISBN
+            ->setHidden(true)
             ->setCreation($now)
             ->setModification($now)
             ->setUser($this->currentUser());

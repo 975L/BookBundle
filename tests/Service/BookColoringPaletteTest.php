@@ -65,6 +65,12 @@ class BookColoringPaletteTest extends TestCase
         $this->assertSame(BookColoringPalette::FIXED, new BookColoringPalette()->fromFile($this->image([[128, 128, 128], [20, 20, 20], [250, 250, 250]])));
     }
 
+    // Pure black and pure white, the lines and the paper of a colouring page, are greys too
+    public function testPureBlackAndWhiteGiveTheFixedColoursAlone(): void
+    {
+        $this->assertSame(BookColoringPalette::FIXED, new BookColoringPalette()->fromFile($this->image([[0, 0, 0], [255, 255, 255]])));
+    }
+
     // A dull colour comes out as a crayon: saturated enough, and in the order of the rainbow
     public function testDullColoursAreLivenedAndSortedByHue(): void
     {

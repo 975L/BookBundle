@@ -100,4 +100,17 @@ class SerieTest extends TestCase
         $this->assertSame(['Les Héros', 'Les méchants', ''], array_keys($groups));
         $this->assertCount(1, $groups['']);
     }
+
+    // A serie's page lists what its catalog lists: neither a book in the trash, one set aside, nor one a newer version replaces, the others in the collection's order
+    public function testTheShownBooksLeaveOutWhatTheCatalogLeavesOut(): void
+    {
+        $serie = new Serie();
+        $serie->addBook($first = new Book()->setTitle('item-1'));
+        $serie->addBook(new Book()->setTitle('item-2')->setHidden(true));
+        $serie->addBook(new Book()->setTitle('item-3')->setIsDeleted(true));
+        $serie->addBook(new Book()->setTitle('item-4')->setNewerVersion(new Book()));
+        $serie->addBook($last = new Book()->setTitle('item-5'));
+
+        $this->assertSame([$first, $last], $serie->getShownBooks());
+    }
 }

@@ -11,6 +11,7 @@
 namespace c975L\BookBundle\Tests\Twig;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Twig\BookTranslationExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,6 +46,24 @@ class BookTranslationExtensionTest extends TestCase
     {
         [$original, $english, $spanish] = self::family();
         $english->setIsDeleted(true);
+
+        $this->assertSame([$spanish], BookTranslationExtension::translations($original));
+    }
+
+    // One set aside answers 404, and the switch would send the reader there
+    public function testATranslationSetAsideIsNotOffered(): void
+    {
+        [$original, $english, $spanish] = self::family();
+        $english->setHidden(true);
+
+        $this->assertSame([$spanish], BookTranslationExtension::translations($original));
+    }
+
+    // One told in a serie set aside answers 404 as well
+    public function testATranslationOfASerieSetAsideIsNotOffered(): void
+    {
+        [$original, $english, $spanish] = self::family();
+        $english->setSerie(new Serie()->setHidden(true));
 
         $this->assertSame([$spanish], BookTranslationExtension::translations($original));
     }

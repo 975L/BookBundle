@@ -40,9 +40,9 @@
         {name: 'label.categories'|trans({}, 'book', book_ui_locale(language)), url: absolute_url(book_path('book_category_index'))},
         {name: category.title, url: absolute_url(app.request.pathinfo)}
     ] %}
-    {% set jsonLd = book_breadcrumb_json_ld(trail) %}
+    {% set jsonLd %}{{ book_breadcrumb_json_ld(trail) }}{% endset %}
     {% if jsonLd %}
-        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
     {% set trail = [] %}
 {% endif %}
@@ -56,8 +56,8 @@
 {% endif %}
 {% if trail is not empty and current is not empty %}
     {% set trail = trail|merge([{name: current, url: absolute_url(app.request.pathinfo)}]) %}
-    {% set jsonLd = book_breadcrumb_json_ld(trail) %}
+    {% set jsonLd %}{{ book_breadcrumb_json_ld(trail) }}{% endset %}
     {% if jsonLd %}
-        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
 {% endif %}

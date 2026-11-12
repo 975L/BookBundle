@@ -66,46 +66,31 @@ class BookReleaseAlertController extends AbstractController
         $bookPath = $this->bookPublicUrlResolver->resolveLocalizedPath('book_display', ['slug' => $book->getSlug()]);
 
         // Nothing is offered on what the site does not show, nor on a book it does not serve at all: a stale link is answered with a 404 rather than with a page promising an e-mail nobody will send
-        if ($book->isHidden() || $book->isDeleted() || null === $bookPath) {
+        if ($book->isHidden() || ($book->getSerie()?->isHidden() ?? false) || $book->isDeleted() || null === $bookPath) {
             throw $this->createNotFoundException();
         }
 
         $form = $this->createForm(BookReleaseAlertType::class);
 
-        // Checked before handleRequest(), which is then skipped entirely so the bot gets the same answer and no hint - same reading as ShopBundle's stock alert
-        $suspicious = $request->isMethod('POST')
-            && $this->botProtection->isSuspicious($request, $form->getName(), self::SESSION_KEY);
+        // Checked before handleRequest(), which is then skipped entirely so the bot gets the same answer and no hint; a submission with no timed display (a second tab, a session expired while the visitor typed) is shown back filled and never run - the same reading as ShopBundle's stock alert
+        [$untimed, $suspicious] = $this->classifySubmission($request, $form->getName());
 
         if (!$suspicious) {
             $form->handleRequest($request);
         }
 
-        if (!$suspicious && $form->isSubmitted() && $form->isValid()) {
-            // Counted per caller and not per address, an IPv6 subscriber holding a block far larger than any ceiling could count - see RateLimiterGuard::isAcceptedForIp()
-            $clientIp = $request->getClientIp();
+        if ($untimed) {
+            $this->addFlash('warning', $this->translator->trans('text.form_resend', [], 'ui'));
+        }
 
-            if (null !== $clientIp && !$this->rateLimiterGuard->isAcceptedForIp($this->releaseAlertLimiterFactory, $clientIp)) {
-                $this->addFlash('warning', $this->translator->trans('text.too_many_attempts', [], 'ui'));
-            } else {
-                $subscribed = $this->releaseAlertService->subscribe($book, (string) $form->get('email')->getData(), $request->getLocale());
-
-                // Two ways of being refused, and they do not say the same thing to the visitor: the book is already out, or the catalog no longer carries it - a serie set aside or a newer edition, neither of which the 404 above catches
-                $message = match (true) {
-                    $subscribed => 'text.release_alert_subscribed',
-                    $book->isToBePublished() => 'text.release_alert_unavailable',
-                    default => 'text.release_alert_already_published',
-                };
-
-                $this->addFlash(
-                    $subscribed ? 'success' : 'warning',
-                    $this->translator->trans($message, [], 'book')
-                );
-
+        if (!$untimed && !$suspicious && $form->isSubmitted() && $form->isValid()) {
+            $subscribed = $this->subscribe($request, $book, (string) $form->get('email')->getData());
+            if ($subscribed) {
                 return $this->redirect($bookPath);
             }
         }
 
-        // Armed here rather than before isSuspicious(), which consumes the key on every submission: a page displayed again after a typo would otherwise re-arm the timer to now and read 0 second elapsed, turning every correction into a suspicious submission
+        // Armed at display, once the submission is handled and never before isSuspicious() on the same request: a page shown again after a typo is timed from that very display
         $this->botProtection->startTimer($request, self::SESSION_KEY);
 
         // Its title in the language the page is read in, which is what the heading and the introduction quote
@@ -116,6 +101,50 @@ class BookReleaseAlertController extends AbstractController
             'form' => $form->createView(),
             'book' => $book,
         ]);
+    }
+
+    // Whether a POST comes with no timed display (shown back filled) or looks like a bot (dropped), as [untimed, suspicious] - isUntimed() asked first, isSuspicious() consuming the timer
+    /** @return array{bool, bool} */
+    private function classifySubmission(Request $request, string $formName): array
+    {
+        if (!$request->isMethod('POST')) {
+            return [false, false];
+        }
+
+        if ($this->botProtection->isUntimed($request, self::SESSION_KEY)) {
+            return [true, false];
+        }
+
+        return [false, $this->botProtection->isSuspicious($request, $formName, self::SESSION_KEY)];
+    }
+
+    // Records the alert and says so, true once it is done; false when the caller hit the ceiling, the form then shown again with the warning
+    private function subscribe(Request $request, Book $book, string $email): bool
+    {
+        // Counted per caller and not per address, an IPv6 subscriber holding a block far larger than any ceiling could count - see RateLimiterGuard::isAcceptedForIp()
+        $clientIp = $request->getClientIp();
+
+        if (null !== $clientIp && !$this->rateLimiterGuard->isAcceptedForIp($this->releaseAlertLimiterFactory, $clientIp)) {
+            $this->addFlash('warning', $this->translator->trans('text.too_many_attempts', [], 'ui'));
+
+            return false;
+        }
+
+        $subscribed = $this->releaseAlertService->subscribe($book, $email, $request->getLocale());
+
+        // Two ways of being refused, and they do not say the same thing to the visitor: the book is already out, or the catalog no longer carries it - a serie set aside or a newer edition, neither of which the 404 above catches
+        $message = match (true) {
+            $subscribed => 'text.release_alert_subscribed',
+            $book->isToBePublished() => 'text.release_alert_unavailable',
+            default => 'text.release_alert_already_published',
+        };
+
+        $this->addFlash(
+            $subscribed ? 'success' : 'warning',
+            $this->translator->trans($message, [], 'book')
+        );
+
+        return true;
     }
 
     // UNSUBSCRIBE

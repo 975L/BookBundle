@@ -38,18 +38,15 @@ class ContributorRepositoryTest extends TestCase
         $this->assertStringContainsString('ib.isDeleted = false AND ib.hidden = false AND ib.newerVersion IS NULL', $this->dql);
     }
 
-    // A person's page lists the series it lists the books: one trashed or set aside leaves it, its link answering 410 or 404
-    public function testAPersonPageLeavesOutTheSeriesTrashedOrSetAside(): void
+    // What a person signed is joined whole and filtered when read (see Contributor::getBooks() and getSeries()): a join filtering a collection would leave it holding part of its rows for the rest of the request
+    public function testAPersonPageJoinsTheirWorksWhole(): void
     {
         $this->result = [new Contributor()];
 
         $this->createRepository()->findOneBySlugWithWorks('laurent-marquet');
 
-        foreach (['c.authoredSeries', 'c.illustratedSeries'] as $association) {
-            $this->assertTrue(
-                array_any($this->dqls, fn (string $dql): bool => str_contains($dql, 'LEFT JOIN ' . $association . ' series WITH series.isDeleted = false AND series.hidden = false')),
-                $association . ' is joined without the filter that keeps a trashed or set-aside serie off the page',
-            );
+        foreach ($this->dqls as $dql) {
+            $this->assertStringNotContainsString(' WITH ', $dql);
         }
     }
 

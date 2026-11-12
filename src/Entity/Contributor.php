@@ -46,10 +46,12 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
 
     // The length the author column carried on Book and Serie, so no existing name is cut on the way in
     #[ORM\Column(length: 50)]
+    #[Assert\Length(max: 50)]
     private ?string $name = null;
 
     // Unique in database and not only through #[UniqueEntity]: the migration off the four string columns inserts in SQL, where no validator runs, and two names slugifying alike would both come in and make their page answer with an error
     #[ORM\Column(length: 100, unique: true)]
+    #[Assert\Length(max: 100)]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -57,6 +59,7 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
 
     // The address of their own site, held once by the person rather than once per book: the four author_website/illustrator_website columns said the same thing as many times as they were retyped
     #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Length(max: 100)]
     #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $website = null;
 
@@ -253,15 +256,13 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
     /** @return list<Book> */
     public function getBooks(): array
     {
-        $books = [];
-        foreach ([...$this->authoredBooks, ...$this->illustratedBooks] as $book) {
-            $books[spl_object_id($book)] = $book;
-        }
+        // The ones they only narrated or translated belong on their page just as much - a voice reading a story is credited on it, and their page would otherwise stand empty
+        $credited = array_map(static fn (BookContributor $credit): ?Book => $credit->getBook(), $this->credits->toArray());
 
-        // The ones they only narrated or translated belong on their page just as much - a voice reading a story is credited on it, and their page would otherwise stand empty. Read here and not only in the query: the two collections above are filtered by the joins that fetch them (see ContributorRepository::findOneBySlugWithWorks()), where a credit is a row of its own whose book loads whatever its state - a book set aside or replaced would come back on their page through it
-        foreach ($this->credits as $credit) {
-            $book = $credit->getBook();
-            if (null !== $book && !$book->isHidden() && !$book->isDeleted() && null === $book->getNewerVersion()) {
+        // What the catalog no longer shows is left out here, the collections being read whole (see ContributorRepository::findOneBySlugWithWorks()): a book in the trash, set aside, in a serie set aside or replaced by a newer version (Book::isShownInCatalog())
+        $books = [];
+        foreach ([...$this->authoredBooks, ...$this->illustratedBooks, ...$credited] as $book) {
+            if (null !== $book && $book->isShownInCatalog()) {
                 $books[spl_object_id($book)] = $book;
             }
         }
@@ -275,7 +276,9 @@ class Contributor implements HasBlocksInterface, TrashableInterface, \Stringable
     {
         $series = [];
         foreach ([...$this->authoredSeries, ...$this->illustratedSeries] as $serie) {
-            $series[spl_object_id($serie)] = $serie;
+            if (!$serie->isHidden() && !$serie->isDeleted()) {
+                $series[spl_object_id($serie)] = $serie;
+            }
         }
 
         return array_values($series);

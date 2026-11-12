@@ -71,6 +71,9 @@ class StripImportProvider implements ImportProviderInterface
 
         $this->mediaArchiver->restoreFiles($written, $filesDir);
 
+        // What waits for its serie's own archive, said on the import screen
+        $this->serieResolver->reportWaiting();
+
         return ['created' => $created, 'updated' => $updated];
     }
 
@@ -87,7 +90,7 @@ class StripImportProvider implements ImportProviderInterface
 
         $this->fillStripPublication($strip, $item);
 
-        $strip->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
+        $strip->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series, (string) $item['title']));
 
         // After the serie, which is who the characters are looked for in
         $this->fillStripCharacters($strip, $item);

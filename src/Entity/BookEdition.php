@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 // An edition a book comes out under - paper, digital, audio - each with its ISBN and its release date. These were three "isbn_*" columns on the book itself, which said nothing of when each came out and could hold no fourth: an edition is a row now, its name a value the site can redeclare (see c975L\BookBundle\Contract\BookCustomizationProviderInterface), the same gesture as BookLink for the shops. An edition is not a version of the text: a rewritten, revised or newly illustrated book comes out in all those editions too, and is therefore a book apart (see Book::$newerVersion)
 #[ORM\Entity]
@@ -32,9 +33,11 @@ class BookEdition implements \Stringable
     private ?Book $book = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\Length(max: 30)]
     private ?string $kind = null;
 
     #[ORM\Column(length: 13, nullable: true)]
+    #[Assert\Length(max: 13)]
     private ?string $isbn = null;
 
     #[ORM\Column(nullable: true)]
@@ -42,6 +45,7 @@ class BookEdition implements \Stringable
 
     // What this version is physically - "15 x 21 cm", "PDF", "MP3" - held here rather than on the book: a paperback and an ebook of the same story are never the same object
     #[ORM\Column(length: 50, nullable: true)]
+    #[Assert\Length(max: 50)]
     private ?string $format = null;
 
     #[ORM\Column(nullable: true)]
@@ -49,10 +53,12 @@ class BookEdition implements \Stringable
 
     // The public price of this edition, tax included and in cents like ShopBundle's - what the ONIX feed announces to the stores. Empty, the edition is announced without a price
     #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero]
     private ?int $price = null;
 
     // ISO 4217, upper case as ONIX writes it
     #[ORM\Column(length: 3, options: ['default' => 'EUR'])]
+    #[Assert\Length(max: 3)]
     private string $currency = 'EUR';
 
     // The files this edition is sold as, private, one per kind at most (see BookEditionFile and BookEditionFileKind)
@@ -115,7 +121,8 @@ class BookEdition implements \Stringable
 
     public function setIsbn(?string $isbn): static
     {
-        $this->isbn = $isbn;
+        // Hyphens and spaces dropped as typed, the column holding the bare characters; the X check digit of an ISBN-10 kept
+        $this->isbn = null === $isbn ? null : strtoupper((string) preg_replace('/[^0-9X]/i', '', $isbn));
 
         return $this;
     }

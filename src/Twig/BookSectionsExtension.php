@@ -332,7 +332,7 @@ class BookSectionsExtension
         return $this->sections([
             // Above what the serie holds and not below it: a serie opens on who peoples it, and that presentation is read before the hundred planches it explains
             'characters' => ['label.characters_section', $this->hasPresentedCharacters($serie)],
-            'books' => ['label.serie_books', !$serie->getBooks()->isEmpty()],
+            'books' => ['label.serie_books', [] !== $serie->getShownBooks()],
             'strips' => ['label.strips', !$serie->getStrips()->isEmpty()],
         ], $serie->getLanguage());
     }

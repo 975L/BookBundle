@@ -88,6 +88,9 @@ class BookImportProvider implements ImportProviderInterface
 
         $this->mediaArchiver->restoreFiles($written, $filesDir);
 
+        // What waits for its serie's own archive, said on the import screen
+        $this->serieResolver->reportWaiting();
+
         return ['created' => $created, 'updated' => $updated];
     }
 
@@ -114,7 +117,7 @@ class BookImportProvider implements ImportProviderInterface
         $this->fillBookCrowdfunding($book, $item);
         $this->fillBookPublication($book, $item);
 
-        $book->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series));
+        $book->setSerie($this->serieResolver->resolve($item['serie'] ?? null, $item['serieTitle'] ?? null, $series, (string) $item['title']));
 
         $this->fillBookCategories($book, $item, $categories);
     }
@@ -315,9 +318,15 @@ class BookImportProvider implements ImportProviderInterface
                 continue;
             }
 
+            // A kind this version of the bundle doesn't know leaves its file out, rather than the whole import
+            $filesData = array_values(array_filter(
+                \is_array($editionData['files']) ? $editionData['files'] : [],
+                static fn (mixed $fileData): bool => \is_array($fileData) && null !== BookEditionFileKind::tryFrom((string) ($fileData['kind'] ?? '')),
+            ));
+
             $files = $this->mediaArchiver->sync(
                 $edition->getFiles(),
-                $editionData['files'],
+                $filesData,
                 static fn (): BookEditionFile => new BookEditionFile(),
                 static fn (BookEditionFile $file): BookEdition => $edition->setFileOf(BookEditionFileKind::from((string) $file->getKind()), $file),
                 static fn (BookEditionFile $file): bool => $edition->getFiles()->removeElement($file),

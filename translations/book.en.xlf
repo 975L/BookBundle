@@ -336,7 +336,7 @@
             </trans-unit>
             <trans-unit id="Pu.1HXm">
                 <source>description.guided_step_book_duplication_duplicate</source>
-                <target>Confirm, and the copy is saved at once with its files, its links and its blocks, then opens on its own edit screen. The books of a serie are never copied along: duplicating one is its own decision.</target>
+                <target>Confirm, and the copy is saved at once, hidden, with its files, its links and its blocks, then opens on its own edit screen: untick "Hidden" once it is reworked. The books of a serie are never copied along: duplicating one is its own decision.</target>
             </trans-unit>
             <trans-unit id="NmG1rVc">
                 <source>description.guided_step_book_duplication_open</source>
@@ -829,6 +829,10 @@
             <trans-unit id="zlKuted">
                 <source>flash.contributor_restored</source>
                 <target>The author/illustrator has been restored.</target>
+            </trans-unit>
+            <trans-unit id="GaG0Yzc">
+                <source>flash.import_waiting_serie</source>
+                <target>Serie created hidden until its own import, with what waits for it: %list%</target>
             </trans-unit>
             <trans-unit id="eNUVmpk">
                 <source>flash.media_move_failed</source>
@@ -2760,7 +2764,7 @@
             </trans-unit>
             <trans-unit id="uNwDDu9">
                 <source>label.newer_version-help</source>
-                <target>The book that replaces this one — a newly illustrated, revised or reset version. Filled in, this book leaves the catalog but keeps its page, its ISBN and its place in the sitemap: it is reached from the one that replaces it.</target>
+                <target>The book that replaces this one — a newly illustrated, revised or reset version. Filled in, this book leaves the catalog but keeps its page, its ISBN and its place in the sitemap: it is reached from the one that replaces it. Link it only when the new version is published: this book leaves the catalog at once, even while the new one is still hidden or to come.</target>
             </trans-unit>
             <trans-unit id="C62419s">
                 <source>label.next</source>

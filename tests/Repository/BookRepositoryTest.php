@@ -87,13 +87,15 @@ class BookRepositoryTest extends TestCase
         $this->assertStringContainsString('serie IS NULL OR serie.hidden = false', $this->dql);
     }
 
-    // The block listing the books to print from reads the catalog's own rules, and only the books holding a document, joined so its thumbnail costs no query per book
+    // The block listing the books to print from reads the catalog's own rules, and only the books holding a document out today - its documents joined whole so its thumbnail costs no query per book, the filter an EXISTS that neither crosses them nor leaves the collection holding part of its rows
     public function testTheBooksHoldingADocumentToPrintFollowTheCatalog(): void
     {
         $this->createRepository()->findAllWithPrintables();
 
-        $this->assertStringContainsString('INNER JOIN b.printables printable WITH printable.publishedOn IS NULL OR printable.publishedOn <= :today', $this->dql);
-        $this->assertStringContainsString('printable', explode(' FROM ', $this->dql)[0]);
+        $this->assertStringContainsString('printable WHERE printable.book = b AND (printable.publishedOn IS NULL OR printable.publishedOn <= :today))', $this->dql);
+        $this->assertStringContainsString('LEFT JOIN b.printables printables', $this->dql);
+        $this->assertStringNotContainsString(' printable,', explode(' FROM ', $this->dql)[0] . ',');
+        $this->assertStringContainsString(' printables', explode(' FROM ', $this->dql)[0]);
         $this->assertStringContainsString('b.hidden = false', $this->dql);
         $this->assertStringContainsString('b.published <= :now', $this->dql);
         $this->assertStringContainsString('b.newerVersion IS NULL', $this->dql);

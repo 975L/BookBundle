@@ -15,6 +15,7 @@ use c975L\BookBundle\Entity\BookColoring;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Service\BookColoringPalette;
 use c975L\BookBundle\Service\BookCustomizationRegistry;
+use c975L\ConfigBundle\Management\ArchivePath;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -99,9 +100,10 @@ class BookColoringsImportCommand extends Command
     private function import(array $entry, string $directory, ?\DateTimeImmutable $notBefore, bool $dryRun): ?string
     {
         $book = $this->book($entry['book'] ?? null);
-        $file = \is_string($entry['file'] ?? null) ? $directory . '/' . $entry['file'] : '';
+        // Read beside the manifest only, and a PNG only: a path out of its folder or another kind of file is left out like a missing one (see ArchivePath)
+        $file = ArchivePath::resolve($directory, $entry['file'] ?? null);
         $kind = $entry['kind'] ?? null;
-        if (null === $book || !is_file($file) || !$this->isKnownKind($kind)) {
+        if (null === $book || null === $file || 'png' !== strtolower(pathinfo($file, \PATHINFO_EXTENSION)) || !$this->isKnownKind($kind)) {
             return null;
         }
 
@@ -116,7 +118,7 @@ class BookColoringsImportCommand extends Command
         if (null === $coloring) {
             $coloring = new BookColoring()
                 ->setPosition($book->getColorings()->count() + 1)
-                ->setFile(new ReplacingFile($file));
+                ->setFile(new ReplacingFile($file, true, false, false));
             $book->addColoring($coloring);
             $this->em->persist($coloring);
         }
@@ -124,7 +126,8 @@ class BookColoringsImportCommand extends Command
             ->setTitle(\is_string($entry['title'] ?? null) ? $entry['title'] : $coloring->getTitle())
             ->setKind($kind ?? $coloring->getKind())
             ->setPublishedOn($publishedOn);
-        $source = \is_string($entry['source'] ?? null) ? $this->palette->fromFile($directory . '/' . $entry['source']) : [];
+        $sourcePath = ArchivePath::resolve($directory, $entry['source'] ?? null);
+        $source = null !== $sourcePath ? $this->palette->fromFile($sourcePath) : [];
         if ([] !== $source) {
             $coloring->setPalette($source);
         }

@@ -146,10 +146,12 @@ class BookLinkHealthCheckProvider implements HealthCheckExhaustiveInterface
             $code = $this->urlStatusChecker->status($probed);
         }
 
+        // A third-party outage - no answer, or a failure on the store's own side - is a warning nobody here can fix; a page the store says is gone is the editor's to correct
         [$status, $message] = match (true) {
-            null === $code => [HealthCheckResult::STATUS_ERROR, 'label.health_check_link_unreachable'],
+            null === $code => [HealthCheckResult::STATUS_WARNING, 'label.health_check_link_unreachable'],
             $code < 400 => [HealthCheckResult::STATUS_OK, 'label.health_check_link_ok'],
             \in_array($code, self::REFUSED_CODES, true) => [HealthCheckResult::STATUS_SKIPPED, 'label.health_check_link_refused'],
+            $code >= 500 => [HealthCheckResult::STATUS_WARNING, 'label.health_check_link_broken'],
             default => [HealthCheckResult::STATUS_ERROR, 'label.health_check_link_broken'],
         };
 

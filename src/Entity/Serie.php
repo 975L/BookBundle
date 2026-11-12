@@ -45,18 +45,22 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
     private int $position = 0;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Length(max: 50)]
     private ?string $title = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Length(max: 50)]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $summary = null;
 
     #[ORM\Column(length: 10, nullable: true)]
+    #[Assert\Length(max: 10)]
     private ?string $kind = null;
 
     #[ORM\Column(length: 5, nullable: true)]
+    #[Assert\Length(max: 5)]
     private ?string $language = null;
 
     // The two people a serie credits, which every book it holds inherits unless it names its own (see Book::getEffectiveAuthor())
@@ -250,6 +254,13 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
     public function getBooks(): Collection
     {
         return $this->books;
+    }
+
+    // What its page lists, in the collection's order: neither in the trash, set aside, nor replaced by a newer version - read here rather than by a join filtering the collection, which would leave it holding part of its rows for the rest of the request
+    /** @return list<Book> */
+    public function getShownBooks(): array
+    {
+        return array_values($this->books->filter(static fn (Book $book): bool => $book->isShownInCatalog())->toArray());
     }
 
     public function addBook(Book $book): static

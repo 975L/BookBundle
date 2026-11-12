@@ -1,5 +1,25 @@
 [
     {
+        "date": "2026-11-12",
+        "description": [
+            {
+                "en": "A duplicated book, serie or strip is now saved hidden: rework it, then untick \"Hidden\" to put it online. It no longer shows up in the catalog straight away with the original's date and ISBN.",
+                "fr": "Un livre, une série ou une planche dupliqués sont désormais enregistrés masqués : retravaillez la copie, puis décochez « Masqué » pour la mettre en ligne. Elle n'apparaît plus aussitôt au catalogue avec la date et l'ISBN de l'original.",
+                "es": "Un libro, una serie o una plancha duplicados se guardan ahora ocultos: retoque la copia y desmarque «Oculto» para publicarla. Ya no aparece enseguida en el catálogo con la fecha y el ISBN del original."
+            },
+            {
+                "en": "In the link check, a store that is down or does not answer is now a warning rather than an error: there is nothing to fix on your side. A page the store says is gone stays an error.",
+                "fr": "Dans la vérification des liens, une boutique en panne ou qui ne répond pas est désormais un avertissement plutôt qu'une erreur : il n'y a rien à corriger de votre côté. Une page que la boutique dit disparue reste une erreur.",
+                "es": "En la verificación de enlaces, una tienda caída o que no responde es ahora un aviso y no un error: no hay nada que corregir por su parte. Una página que la tienda da por desaparecida sigue siendo un error."
+            },
+            {
+                "en": "An ISBN can now be typed with its hyphens or spaces: it is stored as its bare digits.",
+                "fr": "Un ISBN peut désormais être saisi avec ses tirets ou ses espaces : il est enregistré sans eux.",
+                "es": "Un ISBN puede escribirse ahora con sus guiones o espacios: se guarda sin ellos."
+            }
+        ]
+    },
+    {
         "date": "2026-11-11",
         "description": [
             {

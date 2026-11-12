@@ -130,6 +130,16 @@ class SerieImportProviderTest extends TestCase
         $this->assertTrue(array_values(array_filter($persisted, static fn (object $e) => $e instanceof Serie))[0]->isDeleted());
     }
 
+    // The shell a book's import set aside is brought onto the site by the serie's own archive
+    public function testImportShowsTheShellABookImportSetAside(): void
+    {
+        $shell = new Serie()->setSlug('la-compagnie')->setTitle('la-compagnie')->setHidden(true);
+
+        $this->createProvider(sys_get_temp_dir(), $shell)->import([['slug' => 'la-compagnie', 'title' => 'La Compagnie']]);
+
+        $this->assertFalse($shell->isHidden());
+    }
+
     public function testImportDetachesTheMediasTheArchiveNoLongerHolds(): void
     {
         $existing = new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie')->setCreation(new \DateTime())->setModification(new \DateTime());

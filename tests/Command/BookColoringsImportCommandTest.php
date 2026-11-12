@@ -138,6 +138,22 @@ class BookColoringsImportCommandTest extends TestCase
         $this->assertStringContainsString('missing.png', $tester->getDisplay());
     }
 
+    // A path out of the manifest's folder or a file other than a PNG is left out like a missing one
+    public function testAFileOutsideTheManifestOrNotAPngIsLeftOut(): void
+    {
+        new Filesystem()->dumpFile($this->directory . '/Ecran/item-2.php', 'script');
+        new Filesystem()->dumpFile(\dirname($this->directory) . '/outside-' . basename($this->directory) . '.png', 'drawing');
+
+        $tester = $this->import(['colorings' => [
+            ['book' => 1, 'file' => '../outside-' . basename($this->directory) . '.png'],
+            ['book' => 1, 'file' => 'Ecran/item-2.php'],
+        ]]);
+        new Filesystem()->remove(\dirname($this->directory) . '/outside-' . basename($this->directory) . '.png');
+
+        $this->assertSame(Command::FAILURE, $tester->getStatusCode());
+        $this->assertCount(0, $this->book->getColorings());
+    }
+
     // A day misspelt leaves its drawing out and names it, the others written
     public function testAMisspeltDayIsNamed(): void
     {

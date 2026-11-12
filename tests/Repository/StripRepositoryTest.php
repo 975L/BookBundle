@@ -10,12 +10,20 @@
 
 namespace c975L\BookBundle\Tests\Repository;
 
+use c975L\BookBundle\Entity\Contributor;
+use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Repository\StripRepository;
+use c975L\ConfigBundle\Contract\UserInterface;
+use Doctrine\Common\EventManager;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\ResolveTargetEntityListener;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
 
@@ -44,8 +52,37 @@ class StripRepositoryTest extends TestCase
         $this->createRepository()->search('poulet');
 
         $this->assertStringContainsString('s.title LIKE :query', $this->dql);
-        $this->assertStringContainsString('s.characters LIKE :query', $this->dql);
+        $this->assertStringContainsString('c.name LIKE :query', $this->dql);
         $this->assertStringContainsString('s.summary LIKE :query', $this->dql);
+    }
+
+    // The search's DQL handed to Doctrine's own parser on the real mapping: a collection path in a LIKE is refused there, which a captured string never shows
+    public function testSearchIsAQueryDoctrineAccepts(): void
+    {
+        $this->createRepository()->search('poulet', 3);
+
+        $config = ORMSetup::createAttributeMetadataConfig([__DIR__ . '/../../src/Entity'], true);
+        $config->enableNativeLazyObjects(true);
+        // The site's user is the application's own entity: any mapped one stands in for it, the query never reading it
+        $eventManager = new EventManager();
+        $resolver = new ResolveTargetEntityListener();
+        $resolver->addResolveTargetEntity(UserInterface::class, Contributor::class, []);
+        $eventManager->addEventSubscriber($resolver);
+        $entityManager = new EntityManager(DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true], $config), $config, $eventManager);
+
+        $this->assertStringContainsString('DISTINCT', $entityManager->createQuery($this->dql)->getSQL());
+    }
+
+    // A serie's listing reads its thumbnails in one query for the whole list
+    public function testTheMediasOfASeriesListingAreReadInOneQuery(): void
+    {
+        $repository = $this->createRepository();
+        $this->results = [[$this->strip(1), $this->strip(2)]];
+
+        $repository->findAllPublishedBySerie(new Serie());
+
+        $this->assertCount(2, $this->dqls);
+        $this->assertStringContainsString('LEFT JOIN s.medias medias', $this->dql);
     }
 
     // Surrounded by wildcards: what is looked for is a word inside a line of dialogue, never the whole of it

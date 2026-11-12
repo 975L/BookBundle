@@ -17,6 +17,7 @@ use c975L\BookBundle\Entity\StripMedia;
 use c975L\BookBundle\Repository\SerieRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -144,6 +145,30 @@ class StripImportCommandTest extends TestCase
         $this->assertStringContainsString('1 strips created and flushed. 1 skipped.', $this->squash($tester->getDisplay()));
     }
 
+    // Run again, a planche already imported is passed over rather than written twice under its slug
+    public function testAPlancheAlreadyImportedIsSkipped(): void
+    {
+        $tester = $this->import([
+            ['id' => 1, 'slug' => 'planche-1', 'title' => 'Planche 1'],
+            ['id' => 2, 'slug' => 'planche-2', 'title' => 'Planche 2'],
+        ], existing: new Strip()->setSlug('planche-1'));
+
+        $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
+        $this->assertSame(['planche-2'], array_map(static fn (Strip $strip): ?string => $strip->getSlug(), $this->strips()));
+        $this->assertStringContainsString('1 strips created and flushed. 1 skipped.', $this->squash($tester->getDisplay()));
+    }
+
+    // A table carrying a slug twice writes it once, nothing being flushed before the end
+    public function testASlugTwiceInTheTableIsWrittenOnce(): void
+    {
+        $this->import([
+            ['id' => 1, 'slug' => 'planche-1', 'title' => 'Planche 1'],
+            ['id' => 2, 'slug' => 'planche-1', 'title' => 'Planche 1 bis'],
+        ]);
+
+        $this->assertCount(1, $this->strips());
+    }
+
     // What a dry run is for: the same report, and nothing written
     public function testADryRunWritesNothing(): void
     {
@@ -210,7 +235,7 @@ class StripImportCommandTest extends TestCase
      * @param list<array<string, mixed>> $rows
      * @param array<string, mixed>       $options
      */
-    private function import(array $rows, array $options = [], bool $serieFound = true): CommandTester
+    private function import(array $rows, array $options = [], bool $serieFound = true, ?Strip $existing = null): CommandTester
     {
         $connection = $this->createStub(Connection::class);
         $connection->method('fetchAllAssociative')->willReturn($rows);
@@ -218,7 +243,11 @@ class StripImportCommandTest extends TestCase
         $serieRepository = $this->createStub(SerieRepository::class);
         $serieRepository->method('findOneBy')->willReturn($serieFound ? new Serie()->setTitle('La tribu') : null);
 
+        $stripRepository = $this->createStub(EntityRepository::class);
+        $stripRepository->method('findAll')->willReturn(null === $existing ? [] : [$existing]);
+
         $entityManager = $this->createStub(EntityManagerInterface::class);
+        $entityManager->method('getRepository')->willReturn($stripRepository);
         $entityManager
             ->method('persist')
             ->willReturnCallback(function (object $entity): void {

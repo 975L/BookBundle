@@ -11,7 +11,9 @@
 namespace c975L\BookBundle\Tests\Controller;
 
 use c975L\BookBundle\Controller\BookController;
+use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookSettings;
+use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Repository\BookSettingsRepository;
 use c975L\BookBundle\Service\BookServiceInterface;
 use c975L\BookBundle\Service\BookTranslatedLocales;
@@ -23,6 +25,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Twig\Environment;
 
 // The catalog's index reads the single settings row for its own line and the blocks above its listing, whose absence is the ordinary state of a catalog that never opened the back-office screen
@@ -94,5 +97,26 @@ class BookControllerTest extends TestCase
         $negotiator->method('vary')->willReturnCallback(static fn (Request $request, Response $response): Response => $response);
 
         return $negotiator;
+    }
+
+    // A book told in a serie set aside is off the site as its serie is, by slug as by number
+    public function testABookOfASerieSetAsideIsNotFound(): void
+    {
+        $bookService = $this->createStub(BookServiceInterface::class);
+        $bookService->method('findOneBySlug')->willReturn(new Book()->setSlug('tome-1')->setSerie(new Serie()->setHidden(true)));
+
+        $controller = new BookController(
+            $bookService,
+            $this->createStub(BookSettingsRepository::class),
+            $this->createStub(BookTranslatedLocales::class),
+            $this->createStub(BookTranslator::class),
+            $this->createNegotiator(),
+            $this->createStub(LocalizedUrlGenerator::class),
+        );
+        $controller->setContainer(new Container());
+
+        $this->expectException(NotFoundHttpException::class);
+
+        $controller->display('tome-1', new Request());
     }
 }

@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Entity;
 use c975L\UiBundle\Contract\VichMediaNamableInterface;
 use c975L\UiBundle\Contract\VichPrivateFileInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 // A file an edition holds - its EPUB, its PDF, its printable booklet, its MP3, the covers as drawn (see BookEditionFileKind, stored in Media::$kind) - kept out of public/ since most of it is what a buyer pays for. The catalog is its one home: the shop gets a copy of it, the stores fetching files read it here (see GooglePlayFeedController)
@@ -26,6 +27,7 @@ class BookEditionFile extends Media implements VichPrivateFileInterface, VichMed
 
     // What the file sells for in the shop, tax included and in cents like ShopBundle's - a file of its own, the EPUB and the booklet of one edition rarely going for the same price. The ONIX announces the edition's price, not this one
     #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero]
     private ?int $price = null;
 
     // An EPUB whose pages are read aloud along their text (media overlays) - what the shop tells the buyer, who can turn the voice off in the reader

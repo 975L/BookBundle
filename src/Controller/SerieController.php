@@ -166,7 +166,7 @@ class SerieController extends AbstractController
         $characters = $this->stripService->findCharactersBySerie($serie);
 
         // The serie, the books it holds, the people it presents and the ones its planches name, then the planches it tells, all read on this page (see BookTranslator::apply)
-        $this->bookTranslator->apply([$serie, ...$serie->getBooks(), ...$serie->getCharacters(), ...$characters]);
+        $this->bookTranslator->apply([$serie, ...$serie->getShownBooks(), ...$serie->getCharacters(), ...$characters]);
         $this->bookTranslator->apply($strips);
 
         return $this->negotiator->vary($request, $this->render(

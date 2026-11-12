@@ -19,16 +19,16 @@ use Symfony\Contracts\Service\ResetInterface;
 // Every kind of this bundle resolves its content live at render time (see BookBlockExtension), which no Block/Media event ever signals a change of - so each entry carries the catalog tag BookCacheInvalidationListener drops whenever a book, a serie, a planche, a contributor or one of their medias changes. That is what lets those kinds be cached at all rather than declared "cacheable: false", the same way ShopBundle's own are
 class BookBlockCacheTagProvider implements BlockCacheTagProviderInterface, ResetInterface
 {
-    // The kinds listing what is out today, which is a question of the hour it is asked at: their queries read "published <= now" (see BookRepository::publishedQueryBuilder and findAllToBePublished), and a book dated next week moves from the second listing to the first with nobody saving anything
+    // The kinds listing what is out today, which is a question of the hour it is asked at: their queries read "published <= now" (see BookRepository::publishedQueryBuilder, findAllToBePublished and BookCategoryRepository::findWithBooks), and a book dated next week moves from the second listing to the first - or brings its category in - with nobody saving anything
     private const array BOOK_KINDS = [
         'book_books',
         'book_to_be_published',
+        'book_categories',
     ];
 
-    // The kinds reading no date at all: a serie is listed whatever the hour, a category as long as it holds a book the site shows, a person as long as they are credited on something (see BookCategoryRepository::findWithBooks and ContributorRepository::findCredited). Their entry only ever goes stale on a row being saved, which the tag covers - the draw at random set aside, see resolveCatalog()
+    // The kinds reading no date at all: a serie is listed whatever the hour, a person as long as they are credited on something (see ContributorRepository::findCredited). Their entry only ever goes stale on a row being saved, which the tag covers - the draw at random set aside, see resolveCatalog()
     private const array DATELESS_KINDS = [
         'book_series',
-        'book_categories',
         'book_contributors',
     ];
 

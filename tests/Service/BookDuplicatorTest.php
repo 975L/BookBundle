@@ -104,6 +104,7 @@ class BookDuplicatorTest extends TestCase
         $this->assertCount(1, $copy->getBlocks());
         $this->assertCount(0, $copy->getBooks());
         $this->assertSame(['text' => 'Un texte'], $copy->getBlocks()->first()->getData());
+        $this->assertTrue($copy->isHidden());
     }
 
     // What the book and each of its blocks say in the site's other languages go with the copy, written once it is saved (see TranslationCopier)
@@ -197,6 +198,8 @@ class BookDuplicatorTest extends TestCase
         $this->assertSame(1, $copy->getNumber());
         $this->assertSame(['showcase' => true], $copy->getData());
         $this->assertNull($copy->getId());
+        // Set aside until reworked, rather than published at once under the original's date and ISBN
+        $this->assertTrue($copy->isHidden());
     }
 
     public function testAHostedVideoIsCopiedWithoutTheNameBuiltOffItsUrl(): void
@@ -233,6 +236,7 @@ class BookDuplicatorTest extends TestCase
         $this->assertCount(1, $copy->getMedias());
         $this->assertCount(1, $copy->getBlocks());
         $this->assertNull($copy->getMedias()->first()->getName());
+        $this->assertTrue($copy->isHidden());
     }
 
     public function testALongTitleIsCutToWhatTheColumnTakes(): void

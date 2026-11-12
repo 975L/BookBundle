@@ -33,8 +33,8 @@
         {% set itemPath = book_path('book_display', {'slug': book.slug}) %}
         {% if itemPath %}{% set entries = entries|merge([{name: book.title, url: absolute_url(itemPath)}]) %}{% endif %}
     {% endfor %}
-    {% set jsonLd = book_item_list_json_ld(entries) %}
+    {% set jsonLd %}{{ book_item_list_json_ld(entries) }}{% endset %}
     {% if jsonLd %}
-        <script type="application/ld+json">{{ jsonLd|raw }}</script>
+        <script type="application/ld+json">{{ jsonLd }}</script>
     {% endif %}
 {% endblock %}
