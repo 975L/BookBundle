@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Replays the CI locally, but on fresh dependencies: the development machine's vendor stays at the versions of its composer.lock, which can lag behind Packagist. This script works on a clean copy, where `composer update` only sees the published versions - exactly what GitHub sees. The ten bundles carry this file byte for byte: change it in all of them at once.
+# Replays the CI locally, but on fresh dependencies: the development machine's vendor stays at the versions of its composer.lock, which can lag behind Packagist. This script works on a clean copy, where `composer update` only sees the published versions - exactly what GitHub sees. Every c975L bundle carries this file byte for byte: change it in all of them at once.
 
 set -euo pipefail
 
@@ -37,9 +37,10 @@ CopyRepository() {
         "$ROOT/" "$1/"
 }
 
-# Runs the tests of one other PHP version in its own copy, resolving its own dependencies since a lock made on one version may not install on another; phpunit is called directly, its shebang would otherwise pick the machine's default PHP
+# Runs the tests of one other PHP version in its own copy, resolving its own dependencies since a lock made on one version may not install on another; phpunit is called directly, its shebang would otherwise pick the machine's default PHP; a lower priority leaves the CPU to `composer qa`, whose Rector workers fail under load with a false syntax error
 TestVersion() {
     local Version=$1 Directory="$WORK/php$1"
+    renice -n 10 "$BASHPID" > /dev/null
     export TMPDIR="$Directory.tmp"
     mkdir -p "$TMPDIR"
     cd "$Directory"

@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.35.2
+
+CI replay leaves the CPU to composer qa
+
+- `bin/ci.sh`: the tests on the other PHP versions run at a lower priority, so that Rector's workers no longer fail under load (13/11/2026)
+
 ## v2.35.1
 
 CI replay runs the other PHP versions in parallel
