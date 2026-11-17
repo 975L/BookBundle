@@ -133,7 +133,7 @@ class BookSnippetBuilderTest extends TestCase
     // A book announced for later never dates its video in the future, which Google flags
     public function testAnUploadDateIsNeverLaterThanToday(): void
     {
-        $book = $this->book()->setPublished(new \DateTime('+1 year'))->addVideo(new BookVideo()->setYoutubeUrl('https://www.youtube.com/watch?v=7xb-GaWG0c8'));
+        $book = $this->book()->setPublished(new \DateTimeImmutable('+1 year'))->addVideo(new BookVideo()->setYoutubeUrl('https://www.youtube.com/watch?v=7xb-GaWG0c8'));
 
         $this->assertLessThanOrEqual(new \DateTimeImmutable(), new \DateTimeImmutable($this->builder->buildBook($book)['video'][0]['uploadDate']));
     }
@@ -228,7 +228,7 @@ class BookSnippetBuilderTest extends TestCase
     // A book still to come is pre-ordered, not in stock
     public function testAForthcomingEditionIsOfferedForPreOrder(): void
     {
-        $book = $this->book()->setPublished(new \DateTime('+1 year'));
+        $book = $this->book()->setPublished(new \DateTimeImmutable('+1 year'));
         $book->getEdition('paper')->setPrice(500);
 
         $this->assertSame('https://schema.org/PreOrder', $this->builder->buildBook($book)['workExample'][0]['offers']['availability']);
@@ -326,7 +326,7 @@ class BookSnippetBuilderTest extends TestCase
     public function testAVolumeStillToBePublishedIsLeftOut(): void
     {
         $serie = $this->serie();
-        $serie->addBook(new Book()->setTitle('Tome 3')->setPublished(new \DateTime('+1 year')));
+        $serie->addBook(new Book()->setTitle('Tome 3')->setPublished(new \DateTimeImmutable('+1 year')));
 
         $this->assertCount(2, $this->builder->buildSerie($serie)['hasPart']);
     }
@@ -335,9 +335,9 @@ class BookSnippetBuilderTest extends TestCase
     public function testAVolumeOffTheSerieListIsLeftOut(): void
     {
         $serie = $this->serie();
-        $serie->addBook(new Book()->setTitle('Tome 3')->setPublished(new \DateTime('2026-07-01'))->setHidden(true));
-        $serie->addBook(new Book()->setTitle('Tome 4')->setPublished(new \DateTime('2026-08-01'))->setIsDeleted(true));
-        $serie->addBook(new Book()->setTitle('Tome 5')->setPublished(new \DateTime('2026-09-01'))->setNewerVersion(new Book()));
+        $serie->addBook(new Book()->setTitle('Tome 3')->setPublished(new \DateTimeImmutable('2026-07-01'))->setHidden(true));
+        $serie->addBook(new Book()->setTitle('Tome 4')->setPublished(new \DateTimeImmutable('2026-08-01'))->setIsDeleted(true));
+        $serie->addBook(new Book()->setTitle('Tome 5')->setPublished(new \DateTimeImmutable('2026-09-01'))->setNewerVersion(new Book()));
 
         $this->assertCount(2, $this->builder->buildSerie($serie)['hasPart']);
     }
@@ -373,7 +373,7 @@ class BookSnippetBuilderTest extends TestCase
     // Its page is a 404 until the day it comes out, and a graph would index what nobody can read
     public function testAStripStillToComePublishesNothing(): void
     {
-        $this->assertSame([], $this->builder->buildStrip($this->strip()->setPublished(new \DateTime('+1 year'))));
+        $this->assertSame([], $this->builder->buildStrip($this->strip()->setPublished(new \DateTimeImmutable('+1 year'))));
         $this->assertSame([], $this->builder->buildStrip(new Strip()->setTitle('Sans date')));
     }
 
@@ -401,7 +401,7 @@ class BookSnippetBuilderTest extends TestCase
             ->setSummary('Une histoire de pirates')
             ->setAuthor(self::contributor())
             ->setLanguage('fr')
-            ->setPublished(new \DateTime('2026-01-15', new \DateTimeZone('UTC')))
+            ->setPublished(new \DateTimeImmutable('2026-01-15', new \DateTimeZone('UTC')))
             ->setAge('7-10')
             ->addEdition(self::edition('paper', '9791092030143'))
             ->addEdition(self::edition('digital', '9791092030150'))
@@ -416,7 +416,7 @@ class BookSnippetBuilderTest extends TestCase
             ->setNumber(12)
             ->setSummary('<p>Deux chevaliers se croisent</p>')
             ->setSourceUrl('https://example.org/source')
-            ->setPublished(new \DateTime('2026-02-01'))
+            ->setPublished(new \DateTimeImmutable('2026-02-01'))
         ;
 
         // The serie names the author of the strips it holds, a strip carrying none of its own
@@ -534,7 +534,7 @@ class BookSnippetBuilderTest extends TestCase
     private function serie(): Serie
     {
         $serie = new Serie()->setTitle('La Compagnie des Ombres');
-        $serie->addBook(new Book()->setTitle('Tome 2')->setPublished(new \DateTime('2026-06-01')));
+        $serie->addBook(new Book()->setTitle('Tome 2')->setPublished(new \DateTimeImmutable('2026-06-01')));
         $serie->addBook($this->book());
 
         return $serie;

@@ -152,7 +152,7 @@ class BookSectionsExtensionTest extends TestCase
     // The campaign card is opened by the address alone: a book with an end date and nowhere to pledge has nothing to print
     public function testTheCampaignIsOfferedByTheAddressAndNotByTheDate(): void
     {
-        $dateOnly = new Book()->setCrowdfundingEndDate(new \DateTime('+1 month'));
+        $dateOnly = new Book()->setCrowdfundingEndDate(new \DateTimeImmutable('+1 month'));
         $this->assertNotContains('crowdfunding', $this->anchors($dateOnly));
 
         $book = new Book()->setCrowdfunding('https://example.com/campagne');
@@ -164,7 +164,7 @@ class BookSectionsExtensionTest extends TestCase
     {
         $book = new Book()
             ->setCrowdfunding('https://example.com/campagne')
-            ->setCrowdfundingEndDate(new \DateTime('-1 month'))
+            ->setCrowdfundingEndDate(new \DateTimeImmutable('-1 month'))
         ;
 
         $this->assertContains('crowdfunding', $this->anchors($book));

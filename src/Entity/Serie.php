@@ -70,11 +70,11 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\ManyToOne(targetEntity: Contributor::class, inversedBy: 'illustratedSeries')]
     private ?Contributor $illustrator = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $creation = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $creation = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $modification = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $modification = null;
 
     // The id breaks the ties on every collection below: a position is typed in the back-office and a date is shared by two rows, so nothing here is unique on its own and the database was free to order the rows sharing one as it liked
     #[ORM\ManyToMany(targetEntity: Block::class, cascade: ['persist', 'remove'])]
@@ -224,26 +224,26 @@ class Serie implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getCreation(): ?\DateTimeInterface
+    public function getCreation(): ?\DateTimeImmutable
     {
         return $this->creation;
     }
 
     public function setCreation(\DateTimeInterface $creation): static
     {
-        $this->creation = $creation;
+        $this->creation = \DateTimeImmutable::createFromInterface($creation);
 
         return $this;
     }
 
-    public function getModification(): ?\DateTimeInterface
+    public function getModification(): ?\DateTimeImmutable
     {
         return $this->modification;
     }
 
     public function setModification(\DateTimeInterface $modification): static
     {
-        $this->modification = $modification;
+        $this->modification = \DateTimeImmutable::createFromInterface($modification);
 
         return $this;
     }

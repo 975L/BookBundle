@@ -43,7 +43,7 @@ class BookReleaseAlertRepository extends ServiceEntityRepository
             ->andWhere('b.newerVersion IS NULL')
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.published IS NOT NULL AND b.published <= :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->orderBy('a.attempts', \SortDirection::Ascending)
             ->addOrderBy('a.id', \SortDirection::Ascending)
             ->setMaxResults($limit)

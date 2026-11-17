@@ -39,7 +39,7 @@ class BookVersionPublisher
     // The twin carrying the version set aside: the same book, the same number, the same language, the same people credited. No blocks, no reader ratings - those belong to the page being kept, which is the one outside links reach - and of the translations only the summary's, the one text copied over as it stands (see TranslationCopier). The title is the one the editor writes, in the book's language: the bundle presumes no reason for the replacement - original edition, unillustrated text, second edition - and that title is what names the cross link from one version to the other (see Book/Hero.html.twig)
     public function createPreviousVersion(Book $book, string $title, ?string $slug = null): Book
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
 
         $previous = new Book()
             ->setTitle($title)

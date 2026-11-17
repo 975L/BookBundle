@@ -41,8 +41,8 @@ trait TrashableCrudTrait
 
     public function persistEntity(EntityManagerInterface $entityManager, mixed $entity): void
     {
-        $entity->setCreation(new \DateTime());
-        $entity->setModification(new \DateTime());
+        $entity->setCreation(new \DateTimeImmutable());
+        $entity->setModification(new \DateTimeImmutable());
         $entity->setUser($this->getUser());
 
         parent::persistEntity($entityManager, $entity);
@@ -56,7 +56,7 @@ trait TrashableCrudTrait
             $this->trashManager->redirectSlugChange($this->displayRoute($entity), (string) $originalSlug, (string) $entity->getSlug());
         }
 
-        $entity->setModification(new \DateTime());
+        $entity->setModification(new \DateTimeImmutable());
         $entity->setUser($this->getUser());
 
         parent::updateEntity($entityManager, $entity);

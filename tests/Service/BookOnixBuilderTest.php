@@ -172,19 +172,19 @@ class BookOnixBuilderTest extends TestCase
     // A book dated ahead is announced, for the stores to take preorders
     public function testABookStillToComeIsForthcoming(): void
     {
-        $book = $this->book()->setPublished(new \DateTime('+1 month'));
+        $book = $this->book()->setPublished(new \DateTimeImmutable('+1 month'));
         $xpath = $this->read([$book]);
 
         $this->assertSame('02', $xpath->evaluate('string(//o:Product[1]/o:PublishingDetail/o:PublishingStatus)'));
         $this->assertSame('10', $xpath->evaluate('string(//o:Product[1]//o:ProductAvailability)'));
         $this->assertSame('02', $xpath->evaluate('string(//o:Product[2]//o:UnpricedItemType)'));
-        $this->assertSame(new \DateTime('+1 month')->format('Ymd'), $xpath->evaluate('string(//o:Product[1]//o:PublishingDate/o:Date)'));
+        $this->assertSame(new \DateTimeImmutable('+1 month')->format('Ymd'), $xpath->evaluate('string(//o:Product[1]//o:PublishingDate/o:Date)'));
     }
 
     // An edition no longer sold is announced out of print, a store keeping its record without selling it
     public function testAnEditionOutOfPrintIsAnnouncedSo(): void
     {
-        $book = $this->book()->setPublished(new \DateTime('+1 month'));
+        $book = $this->book()->setPublished(new \DateTimeImmutable('+1 month'));
         $book->getEditions()->first()->setOutOfPrint(true);
         $xpath = $this->read([$book]);
 
@@ -219,7 +219,7 @@ class BookOnixBuilderTest extends TestCase
     public function testAnUnknownKindIsAPrintedBook(): void
     {
         $edition = new BookEdition()->setKind('hardcover')->setIsbn('9782488750011');
-        $book = new Book()->setTitle('Relié')->setPublished(new \DateTime('2026-01-01'))->addEdition($edition);
+        $book = new Book()->setTitle('Relié')->setPublished(new \DateTimeImmutable('2026-01-01'))->addEdition($edition);
 
         $this->assertFalse(BookOnixBuilder::isEbook($edition));
         $this->assertSame('BC', $this->read([$book])->evaluate('string(//o:Product/o:DescriptiveDetail/o:ProductForm)'));
@@ -227,7 +227,7 @@ class BookOnixBuilderTest extends TestCase
 
     public function testAnEditionWithoutIsbnIsNoProduct(): void
     {
-        $book = new Book()->setTitle('Sans ISBN')->setPublished(new \DateTime('2026-01-01'));
+        $book = new Book()->setTitle('Sans ISBN')->setPublished(new \DateTimeImmutable('2026-01-01'));
         $book->addEdition(new BookEdition()->setKind('paper'));
 
         $this->assertSame(0.0, $this->read([$book])->evaluate('count(//o:Product)'));
@@ -236,7 +236,7 @@ class BookOnixBuilderTest extends TestCase
     // An ISBN-10 would go out truncated under an ISBN-13 identifier
     public function testAnEditionWithAnIsbn10IsNoProduct(): void
     {
-        $book = new Book()->setTitle('Ancien ISBN')->setPublished(new \DateTime('2026-01-01'));
+        $book = new Book()->setTitle('Ancien ISBN')->setPublished(new \DateTimeImmutable('2026-01-01'));
         $book->addEdition(new BookEdition()->setKind('paper')->setIsbn('2-07-036024-X'));
 
         $this->assertSame(0.0, $this->read([$book])->evaluate('count(//o:Product)'));
@@ -253,7 +253,7 @@ class BookOnixBuilderTest extends TestCase
             ->setAuthor($author)
             ->setSerie(new Serie()->setTitle('Contes'))
             ->setNumber(3)
-            ->setPublished(new \DateTime('2026-01-01'));
+            ->setPublished(new \DateTimeImmutable('2026-01-01'));
 
         $book->addEdition(new BookEdition()->setKind('digital')->setIsbn('978-2-488750-01-1')->setPages(24)->setPrice(499));
         $book->addEdition(new BookEdition()->setKind('audio')->setIsbn('9782488750028'));

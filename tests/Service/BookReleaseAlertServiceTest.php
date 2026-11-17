@@ -103,7 +103,7 @@ class BookReleaseAlertServiceTest extends TestCase
         return new Book()
             ->setTitle('Le livre')
             ->setSlug('le-livre')
-            ->setPublished(null === $published ? null : new \DateTime($published))
+            ->setPublished(null === $published ? null : new \DateTimeImmutable($published))
         ;
     }
 

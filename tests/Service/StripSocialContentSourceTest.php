@@ -27,7 +27,7 @@ class StripSocialContentSourceTest extends TestCase
 
     private function createStrip(int $id, string $published = '-1 month'): Strip
     {
-        $strip = new Strip()->setTitle('Planche ' . $id)->setSlug('planche-' . $id)->setSummary('<p>Le loup</p>')->setPublished(new \DateTime($published));
+        $strip = new Strip()->setTitle('Planche ' . $id)->setSlug('planche-' . $id)->setSummary('<p>Le loup</p>')->setPublished(new \DateTimeImmutable($published));
         $strip->addMedia(new StripMedia()->setKind('card')->setName('medias/book/strips/card-' . $id . '.webp'));
         new \ReflectionProperty(Strip::class, 'id')->setValue($strip, $id);
 

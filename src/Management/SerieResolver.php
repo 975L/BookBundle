@@ -66,7 +66,7 @@ class SerieResolver
         $serie = $this->serieRepository->findOneBy(['slug' => $slug]);
         if (null === $serie) {
             // The title falls back on the slug for an archive that doesn't carry one, the column being required - whatever the serie's own kind imports later writes over it. Set aside meanwhile: a shell with no cover nor summary stays off the index, the sitemap and the menus until SerieImportProvider brings the real one, shown as its archive says
-            $serie = new Serie()->setSlug($slug)->setTitle($title ?? $slug)->setHidden(true)->setCreation(new \DateTime())->setModification(new \DateTime());
+            $serie = new Serie()->setSlug($slug)->setTitle($title ?? $slug)->setHidden(true)->setCreation(new \DateTimeImmutable())->setModification(new \DateTimeImmutable());
             $this->em->persist($serie);
         }
 

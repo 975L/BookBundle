@@ -78,8 +78,8 @@ class SerieExportProviderTest extends TestCase
         return new Serie()
             ->setSlug('contes-du-soir')
             ->setTitle('Contes du Soir')
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'));
     }
 
     private function createProvider(string $projectDir, ?SerieRepository $serieRepository = null): SerieExportProvider

@@ -183,7 +183,7 @@ class BookReleaseAlertControllerTest extends TestCase
         return new Book()
             ->setTitle('Le livre')
             ->setSlug('le-livre')
-            ->setPublished(new \DateTime('+2 months'))
+            ->setPublished(new \DateTimeImmutable('+2 months'))
             ->setHidden($hidden)
             ->setIsDeleted($deleted)
         ;

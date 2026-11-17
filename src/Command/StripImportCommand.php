@@ -198,7 +198,7 @@ class StripImportCommand extends Command
     /** @return array{0: int, 1: int} */
     private function importRows(SymfonyStyle $io, array $rows, Serie $serie, array $options): array
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $updatedAt = new \DateTimeImmutable();
         $created = 0;
         $skipped = 0;
@@ -256,7 +256,7 @@ class StripImportCommand extends Command
     }
 
     // The strip a source row describes, its summary and its source url written by the caller from the files beside it
-    private function buildStrip(array $row, Serie $serie, int $number, \DateTime $now, bool $dryRun): Strip
+    private function buildStrip(array $row, Serie $serie, int $number, \DateTimeImmutable $now, bool $dryRun): Strip
     {
         $strip = new Strip();
         $strip->setSerie($serie);
@@ -268,7 +268,7 @@ class StripImportCommand extends Command
         $strip->setModification($now);
 
         if (!empty($row['published'])) {
-            $strip->setPublished(new \DateTime($row['published']));
+            $strip->setPublished(new \DateTimeImmutable($row['published']));
         }
 
         return $strip;

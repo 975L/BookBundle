@@ -40,8 +40,8 @@ class BookCategoryImportProviderTest extends TestCase
             ->setSummary('Des récits au long cours')
             ->setCodes(['clil' => '3435', 'thema' => 'FV 1DDF-FR-VG'])
             ->setPosition(2)
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'));
 
         $export = new BookCategoryExportProvider($this->createStub(BookCategoryRepository::class), new BlockDataExporter(sys_get_temp_dir()))
             ->serialize([$category]);
@@ -93,7 +93,7 @@ class BookCategoryImportProviderTest extends TestCase
     // Matched by slug and never by the exported id: a second import writes over the row the site already answers that slug with
     public function testImportWritesOverTheCategoryTheSiteAlreadyHoldsAtThatSlug(): void
     {
-        $existing = new BookCategory()->setSlug('romans')->setTitle('Anciens romans')->setCreation(new \DateTime())->setModification(new \DateTime());
+        $existing = new BookCategory()->setSlug('romans')->setTitle('Anciens romans')->setCreation(new \DateTimeImmutable())->setModification(new \DateTimeImmutable());
 
         $result = $this->createProvider($existing)->import([['slug' => 'romans', 'title' => 'Romans']]);
 

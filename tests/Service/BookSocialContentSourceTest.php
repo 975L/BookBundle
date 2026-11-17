@@ -44,7 +44,7 @@ class BookSocialContentSourceTest extends TestCase
 
     private function createBook(int $id, string $published = '-1 year'): Book
     {
-        $book = new Book()->setTitle('Livre ' . $id)->setSlug('livre-' . $id)->setSummary('<p>Une histoire</p>')->setLanguage('fr')->setPublished(new \DateTime($published));
+        $book = new Book()->setTitle('Livre ' . $id)->setSlug('livre-' . $id)->setSummary('<p>Une histoire</p>')->setLanguage('fr')->setPublished(new \DateTimeImmutable($published));
         new \ReflectionProperty(Book::class, 'id')->setValue($book, $id);
 
         return $book;

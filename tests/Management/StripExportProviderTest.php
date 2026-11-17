@@ -78,8 +78,8 @@ class StripExportProviderTest extends TestCase
             ->setTitle('La tuile')
             ->addCharacter(new Character()->setName('Le Seigneur')->setSlug('le-seigneur'))
             ->addCharacter(new Character()->setName('Alwin')->setSlug('alwin'))
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'));
     }
 
     private function createProvider(string $projectDir, ?StripRepository $stripRepository = null): StripExportProvider

@@ -35,6 +35,6 @@ trait PublishedOnTrait
     // Compared day by day like Book::isToBePublished(): a row dated today is out, whatever the hour
     public function isPublished(): bool
     {
-        return null === $this->publishedOn || $this->publishedOn->format('Ymd') <= new \DateTime()->format('Ymd');
+        return null === $this->publishedOn || $this->publishedOn->format('Ymd') <= new \DateTimeImmutable()->format('Ymd');
     }
 }

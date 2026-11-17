@@ -70,7 +70,7 @@ class StripSocialContentSource implements BrowsableSocialContentSourceInterface,
         $strip = $this->stripRepository->find((int) $sourceId);
         $published = $strip?->getPublished();
 
-        return $strip instanceof Strip && !$strip->isDeleted() && !$strip->isHidden() && !($strip->getSerie()?->isHidden() ?? false) && null !== $published && $published <= new \DateTime()
+        return $strip instanceof Strip && !$strip->isDeleted() && !$strip->isHidden() && !($strip->getSerie()?->isHidden() ?? false) && null !== $published && $published <= new \DateTimeImmutable()
             ? $this->toContent($strip)
             : null;
     }

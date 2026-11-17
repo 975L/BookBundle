@@ -2,6 +2,13 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.36.0
+
+**Entity dates are immutable** (same SQL columns, no migration): their getters return `\DateTimeImmutable`.
+Code calling `modify()`, `setTime()`, `add()`... on them must use the returned date
+(`$date = $date->modify('+1 day')`), the call no longer changing the entity's own. The setters still accept a
+`\DateTime`; a form field mapped to one of these dates needs `'input' => 'datetime_immutable'`.
+
 ## v2.33.0
 
 **A book can hold drawings to colour on screen.** `book_media` gets two nullable columns, `palette` and `fingerprint`, which `doctrine:schema:update` (or a migration) adds; the drawings share the `published_on` column of the documents to print. Nothing changes until a drawing is added: `book_listen_json` answers `colorings: []` for every book.

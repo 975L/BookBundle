@@ -43,8 +43,8 @@ class BookExportProviderTest extends TestCase
             ->setTitle('Contes du Soir')
             ->setAuthor(self::contributor())
             ->setSummary('Une histoire')
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'));
 
         $bookRepository = $this->createMock(BookRepository::class);
         // findBy([]) rather than a published-only query: the trash travels too
@@ -146,8 +146,8 @@ class BookExportProviderTest extends TestCase
             ->setTitle('Tome 1')
             ->setAuthor(self::contributor())
             ->setSummary('Résumé')
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'));
     }
 
     private function createProvider(string $projectDir, ?BookRepository $bookRepository = null): BookExportProvider

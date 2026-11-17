@@ -104,8 +104,8 @@ class ContributorExportProviderTest extends TestCase
             ->setSummary('Elle écrit des histoires du soir.')
             ->setWebsite('https://camille-ferrand.example')
             ->setPosition(3)
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'));
     }
 
     private function createProvider(string $projectDir, ?ContributorRepository $contributorRepository = null): ContributorExportProvider

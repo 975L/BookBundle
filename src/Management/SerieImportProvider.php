@@ -105,8 +105,8 @@ class SerieImportProvider implements ImportProviderInterface
     {
         $serie
             // Both columns are required, so an archive predating them dates the serie from the import rather than leaving it unwritten
-            ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
-            ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime())
+            ->setCreation(isset($item['creation']) ? new \DateTimeImmutable($item['creation']) : new \DateTimeImmutable())
+            ->setModification(isset($item['modification']) ? new \DateTimeImmutable($item['modification']) : new \DateTimeImmutable())
             // Optional like the rest, an archive predating the trash importing as a serie that is not in it - which is what such an archive describes
             ->setIsDeleted($item['isDeleted'] ?? false)
             // Absent from an archive written before the flag existed, and read there as "shown"

@@ -44,8 +44,8 @@ class ContributorResolver
             $contributor = new Contributor()
                 ->setName($name)
                 ->setSlug($this->uniqueSlug($name, $resolved))
-                ->setCreation(new \DateTime())
-                ->setModification(new \DateTime())
+                ->setCreation(new \DateTimeImmutable())
+                ->setModification(new \DateTimeImmutable())
             ;
             $this->em->persist($contributor);
         }

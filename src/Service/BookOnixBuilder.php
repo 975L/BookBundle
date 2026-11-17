@@ -77,7 +77,7 @@ class BookOnixBuilder
     {
         $isbn = $this->isbn($edition);
         $printIsbn = $this->printIsbn($book, $edition);
-        $forthcoming = $book->getPublished() > new \DateTime();
+        $forthcoming = $book->getPublished() > new \DateTimeImmutable();
 
         $xml->startElement('Product');
         $xml->writeElement('RecordReference', parse_url($baseUrl, \PHP_URL_HOST) . '.' . $isbn);

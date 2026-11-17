@@ -67,8 +67,8 @@ class BookCategoryImportProvider implements ImportProviderInterface
             ->setCodes($item['codes'] ?? (isset($item['code']) ? ['clil' => $item['code']] : null))
             ->setPosition($item['position'] ?? 0)
             // Both columns are required, so an archive predating them dates the category from the import rather than leaving it unwritten
-            ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
-            ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime())
+            ->setCreation(isset($item['creation']) ? new \DateTimeImmutable($item['creation']) : new \DateTimeImmutable())
+            ->setModification(isset($item['modification']) ? new \DateTimeImmutable($item['modification']) : new \DateTimeImmutable())
             ->setIsDeleted($item['isDeleted'] ?? false)
             ->setHidden($item['hidden'] ?? false);
     }

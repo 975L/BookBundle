@@ -51,7 +51,7 @@ class BookCategoryResolver
 
         if (null === $category) {
             // The title falls back on the slug for an archive that doesn't carry one, the column being required - whatever the category's own kind imports later writes over it
-            $category = new BookCategory()->setSlug($slug)->setTitle($slug)->setCreation(new \DateTime())->setModification(new \DateTime());
+            $category = new BookCategory()->setSlug($slug)->setTitle($slug)->setCreation(new \DateTimeImmutable())->setModification(new \DateTimeImmutable());
             $this->em->persist($category);
         }
 

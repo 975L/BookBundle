@@ -148,7 +148,7 @@ class BookDemoFixtureProviderTest extends TestCase
     // Every other date is written down, so a demo reloaded between two takes of the same recorded sequence reads the same back
     public function testThePublishedBooksCarryAFrozenDateInThePast(): void
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
 
         foreach ($this->fixtures($this->createProvider()) as $entity) {
             if ($entity instanceof Book && null !== $entity->getPublished()) {

@@ -97,7 +97,7 @@ class StripRepository extends ServiceEntityRepository
             ->orderBy('s.published', \SortDirection::Descending)
             // Two planches published the same day are read newest first all the same, on the id the navigation from one to the next ties on too (see findPreviousNext) - a number is nullable where an id never is
             ->addOrderBy('s.id', \SortDirection::Descending)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
         ;
     }
 
@@ -115,7 +115,7 @@ class StripRepository extends ServiceEntityRepository
             ->addOrderBy('s.published', \SortDirection::Descending)
             ->addOrderBy('s.id', \SortDirection::Descending)
             ->setParameter('serie', $serie)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
         ;
 
         if (null !== $character && '' !== $character) {
@@ -149,7 +149,7 @@ class StripRepository extends ServiceEntityRepository
             ->orderBy('s.published', \SortDirection::Descending)
             ->addOrderBy('s.id', \SortDirection::Descending)
             ->setParameter('character', $character)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getResult()
         ;
@@ -163,7 +163,7 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.isDeleted = false')
             ->andWhere('s.hidden = false')
             ->andWhere('s.published > :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->setMaxResults(1)
             ->getQuery()
             ->getResult()
@@ -182,7 +182,7 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
             ->setParameter('number', $number)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->orderBy('s.id', \SortDirection::Ascending)
             ->setMaxResults(1)
             ->getQuery()
@@ -203,7 +203,7 @@ class StripRepository extends ServiceEntityRepository
             ->addOrderBy('s.id', \SortDirection::Descending)
             ->setMaxResults(1)
             ->setParameter('serie', $strip->getSerie())
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->setParameter('current', $strip->getPublished())
             ->setParameter('id', $strip->getId())
             ->getQuery()
@@ -221,7 +221,7 @@ class StripRepository extends ServiceEntityRepository
             ->addOrderBy('s.id', \SortDirection::Ascending)
             ->setMaxResults(1)
             ->setParameter('serie', $strip->getSerie())
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->setParameter('current', $strip->getPublished())
             ->setParameter('id', $strip->getId())
             ->getQuery()
@@ -248,7 +248,7 @@ class StripRepository extends ServiceEntityRepository
             ->addOrderBy('s.id', $direction)
             ->setMaxResults(1)
             ->setParameter('serie', $strip->getSerie())
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -299,7 +299,7 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('s.published <= :now')
             ->orderBy('c.name', \SortDirection::Ascending)
             ->setParameter('serie', $serie)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getResult()
         ;
@@ -334,7 +334,7 @@ class StripRepository extends ServiceEntityRepository
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('s.published IS NOT NULL')
             ->andWhere('s.published <= :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->setParameter('query', '%' . $query . '%')
             ->orderBy('s.published', \SortDirection::Descending)
             ->addOrderBy('s.id', \SortDirection::Descending)

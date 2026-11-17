@@ -153,7 +153,7 @@ class BookImportProviderTest extends TestCase
     public function testImportWritesOverTheBookTheSiteAlreadyHoldsAtThatSlug(): void
     {
         $existing = new Book()->setSlug('tome-1')->setTitle('Ancien titre')->setAuthor(self::contributor('LM', 'lm'))->setSummary('')
-            ->setCreation(new \DateTime())->setModification(new \DateTime());
+            ->setCreation(new \DateTimeImmutable())->setModification(new \DateTimeImmutable());
         $existing->addEdition(new BookEdition()->setKind('ebook'));
         $existing->addLink(new BookLink()->setKind('epub_fnac')->setUrl('https://fnac.example/ancien'));
 
@@ -175,7 +175,7 @@ class BookImportProviderTest extends TestCase
     public function testImportMatchesAnExistingFileByTheNameItIsServedUnder(): void
     {
         $existing = new Book()->setSlug('tome-1')->setTitle('Tome 1')->setAuthor(self::contributor('LM', 'lm'))->setSummary('')
-            ->setCreation(new \DateTime())->setModification(new \DateTime());
+            ->setCreation(new \DateTimeImmutable())->setModification(new \DateTimeImmutable());
         $kept = new BookMedia()->setName('medias/book/books/cover-tome-1/c.webp')->setTitle('Ancien')->setUpdatedAt(new \DateTimeImmutable());
         $dropped = new BookMedia()->setName('medias/book/books/cover-tome-1/old.webp')->setUpdatedAt(new \DateTimeImmutable());
         $existing->addMedia($kept);
@@ -195,7 +195,7 @@ class BookImportProviderTest extends TestCase
     public function testImportReadsAPreRenameExtractAsAPage(): void
     {
         $existing = new Book()->setSlug('tome-1')->setTitle('Tome 1')->setAuthor(self::contributor('LM', 'lm'))->setSummary('')
-            ->setCreation(new \DateTime())->setModification(new \DateTime());
+            ->setCreation(new \DateTimeImmutable())->setModification(new \DateTimeImmutable());
         $page = new BookMedia()->setName('medias/book/books/page-tome-1/p1.webp')->setKind('extract')->setUpdatedAt(new \DateTimeImmutable());
         $existing->addMedia($page);
 
@@ -269,8 +269,8 @@ class BookImportProviderTest extends TestCase
             ->setAuthor(self::contributor())
             ->setSummary('Résumé')
             ->setData(['dedication' => 'Pour Alwin'])
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'))
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'))
             ->setSerie(new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie des Ombres'));
 
         $edition = new BookEdition()->setKind('paperback')->setIsbn('9781234567897')->setPages(48)->setPosition(0);

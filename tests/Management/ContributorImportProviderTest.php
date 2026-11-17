@@ -45,8 +45,8 @@ class ContributorImportProviderTest extends TestCase
             ->setSummary('Écrit des histoires de chevaliers')
             ->setWebsite('https://example.org/tim')
             ->setPosition(3)
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'));
         $contributor->addPortrait(new ContributorMedia()->setName('medias/book/contributors/portrait-tim-loval/p.webp')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable('2026-02-01 09:00:00')));
 
         $export = new ContributorExportProvider($this->createStub(ContributorRepository::class), new BlockDataExporter($sourceDir), new MediaArchiver($this->createStub(EntityManagerInterface::class), $sourceDir))
@@ -76,7 +76,7 @@ class ContributorImportProviderTest extends TestCase
     // A book naming them was imported first, so ContributorResolver already gave them a row: filled in here rather than doubled, which would split their page in two
     public function testAShellCreatedByAnEarlierBookImportIsFilledInRatherThanDoubled(): void
     {
-        $shell = new Contributor()->setName('Tim Loval')->setSlug('tim-loval')->setCreation(new \DateTime())->setModification(new \DateTime());
+        $shell = new Contributor()->setName('Tim Loval')->setSlug('tim-loval')->setCreation(new \DateTimeImmutable())->setModification(new \DateTimeImmutable());
         $persisted = [];
 
         $result = $this->createProvider(sys_get_temp_dir(), existingByName: $shell, persisted: $persisted)
@@ -94,8 +94,8 @@ class ContributorImportProviderTest extends TestCase
             ->setName('Tim Loval')
             ->setSlug('tim-loval')
             ->setSummary('Écrit des histoires de chevaliers')
-            ->setCreation(new \DateTime())
-            ->setModification(new \DateTime());
+            ->setCreation(new \DateTimeImmutable())
+            ->setModification(new \DateTimeImmutable());
         $persisted = [];
 
         $result = $this->createProvider(sys_get_temp_dir(), existingByName: $local, persisted: $persisted)
@@ -118,7 +118,7 @@ class ContributorImportProviderTest extends TestCase
 
     public function testImportDetachesTheMediasTheArchiveNoLongerHolds(): void
     {
-        $existing = new Contributor()->setSlug('tim-loval')->setName('Tim Loval')->setCreation(new \DateTime())->setModification(new \DateTime());
+        $existing = new Contributor()->setSlug('tim-loval')->setName('Tim Loval')->setCreation(new \DateTimeImmutable())->setModification(new \DateTimeImmutable());
         $kept = new ContributorMedia()->setName('medias/book/contributors/portrait-tim-loval/p.webp')->setKind('portrait')->setUpdatedAt(new \DateTimeImmutable());
         $existing->addMedia($kept);
         $existing->addMedia(new ContributorMedia()->setName('medias/book/contributors/background-tim-loval/b.webp')->setKind('background')->setUpdatedAt(new \DateTimeImmutable()));

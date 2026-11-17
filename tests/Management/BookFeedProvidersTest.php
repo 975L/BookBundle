@@ -72,8 +72,8 @@ class BookFeedProvidersTest extends TestCase
         return new Strip()
             ->setTitle('Planche 1')
             ->setSlug('planche-1')
-            ->setPublished(new \DateTime('2026-10-01'))
-            ->setModification(new \DateTime('2026-10-02'))
+            ->setPublished(new \DateTimeImmutable('2026-10-01'))
+            ->setModification(new \DateTimeImmutable('2026-10-02'))
             ->addPageMedia(new StripMedia()->setName('medias/book/strip/planche-1.webp'));
     }
 
@@ -97,7 +97,7 @@ class BookFeedProvidersTest extends TestCase
 
     public function testABookLinksToItsPage(): void
     {
-        $book = new Book()->setTitle('Tome 1')->setSlug('tome-1')->setPublished(new \DateTime('2026-09-15'))->setModification(new \DateTime('2026-09-20'));
+        $book = new Book()->setTitle('Tome 1')->setSlug('tome-1')->setPublished(new \DateTimeImmutable('2026-09-15'))->setModification(new \DateTimeImmutable('2026-09-20'));
         $entries = $this->bookProvider([$book])->getEntries(20);
 
         $this->assertCount(1, $entries);

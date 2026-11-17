@@ -211,10 +211,10 @@ class BookImportProvider implements ImportProviderInterface
     private function fillBookDates(Book $book, array $item): void
     {
         $book
-            ->setPublished(isset($item['published']) ? new \DateTime($item['published']) : null)
+            ->setPublished(isset($item['published']) ? new \DateTimeImmutable($item['published']) : null)
             // Both columns are required, so an archive predating them dates the book from the import rather than leaving it unwritten
-            ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
-            ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime());
+            ->setCreation(isset($item['creation']) ? new \DateTimeImmutable($item['creation']) : new \DateTimeImmutable())
+            ->setModification(isset($item['modification']) ? new \DateTimeImmutable($item['modification']) : new \DateTimeImmutable());
     }
 
     // The campaign, if the book ever ran one: the deadline means nothing without it, hence the pair kept together
@@ -222,7 +222,7 @@ class BookImportProvider implements ImportProviderInterface
     {
         $book
             ->setCrowdfunding($item['crowdfunding'] ?? null)
-            ->setCrowdfundingEndDate(isset($item['crowdfundingEndDate']) ? new \DateTime($item['crowdfundingEndDate']) : null);
+            ->setCrowdfundingEndDate(isset($item['crowdfundingEndDate']) ? new \DateTimeImmutable($item['crowdfundingEndDate']) : null);
     }
 
     // Where the book stands rather than what it says: a round-trip must not put back on the site what an admin had taken off it

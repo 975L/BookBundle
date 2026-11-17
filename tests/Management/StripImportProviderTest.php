@@ -49,9 +49,9 @@ class StripImportProviderTest extends TestCase
             ->setTitle('La tuile')
             ->setNumber(12)
             ->setSummary('Une planche')
-            ->setPublished(new \DateTime('2026-03-04'))
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'))
+            ->setPublished(new \DateTimeImmutable('2026-03-04'))
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'))
             ->setSerie(new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie des Ombres'));
         $strip->addCharacter(new Character()->setName('Le Seigneur')->setSlug('le-seigneur'));
         $strip->addCharacter(new Character()->setName('Alwin')->setSlug('alwin'));

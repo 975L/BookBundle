@@ -101,7 +101,7 @@ class BookSitemapProviderTest extends TestCase
             ->setTitle('Tome 1')
             ->setSlug('tome-1')
             ->setSummary('Une histoire de pirates')
-            ->setModification(new \DateTime('2026-01-15'));
+            ->setModification(new \DateTimeImmutable('2026-01-15'));
     }
 
     private function serie(): Serie
@@ -110,7 +110,7 @@ class BookSitemapProviderTest extends TestCase
             ->setTitle('La Compagnie des Ombres')
             ->setSlug('la-compagnie-des-ombres')
             ->setSummary('Le résumé de la série')
-            ->setModification(new \DateTime('2026-02-20'));
+            ->setModification(new \DateTimeImmutable('2026-02-20'));
     }
 
     private function strip(): Strip
@@ -118,7 +118,7 @@ class BookSitemapProviderTest extends TestCase
         return new Strip()
             ->setTitle('Planche 1')
             ->setSlug('planche-1')
-            ->setModification(new \DateTime('2026-03-25'));
+            ->setModification(new \DateTimeImmutable('2026-03-25'));
     }
 
     private function category(): BookCategory
@@ -127,7 +127,7 @@ class BookSitemapProviderTest extends TestCase
             ->setTitle('Romans')
             ->setSlug('romans')
             ->setSummary('Le résumé de la catégorie')
-            ->setModification(new \DateTime('2026-05-10'));
+            ->setModification(new \DateTimeImmutable('2026-05-10'));
     }
 
     private function contributor(): Contributor
@@ -136,7 +136,7 @@ class BookSitemapProviderTest extends TestCase
             ->setName('Tim Loval')
             ->setSlug('tim-loval')
             ->setSummary('Auteur des Triados')
-            ->setModification(new \DateTime('2026-04-30'));
+            ->setModification(new \DateTimeImmutable('2026-04-30'));
     }
 
     // The name is what the written file is called, public/sitemap-book.xml, and what the index declares

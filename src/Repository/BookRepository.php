@@ -224,7 +224,7 @@ class BookRepository extends ServiceEntityRepository
             // A book set aside stays out of every listing the day its date comes round, so it is no reason to keep rendering them live
             ->andWhere('b.hidden = false')
             ->andWhere('b.published > :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->setMaxResults(1)
             ->getQuery()
             ->getResult()
@@ -265,7 +265,7 @@ class BookRepository extends ServiceEntityRepository
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.published IS NOT NULL AND b.published <= :now')
             ->orderBy('b.published', \SortDirection::Descending)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
         ;
 
         // A book replaced by a newer version keeps its page and its place in the sitemap, it only stops being browsed
@@ -302,7 +302,7 @@ class BookRepository extends ServiceEntityRepository
             ->andWhere('b.published > :now OR b.published IS NULL')
             ->orderBy('b.published', \SortDirection::Descending)
             ->addOrderBy('b.id', \SortDirection::Descending)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->getQuery()
             ->getResult()
         ;
@@ -485,7 +485,7 @@ class BookRepository extends ServiceEntityRepository
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('b.published IS NOT NULL')
             ->andWhere('b.published <= :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->setParameter('query', '%' . $query . '%')
             ->orderBy('b.published', \SortDirection::Descending)
             ->getQuery()

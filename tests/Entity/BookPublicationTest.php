@@ -23,14 +23,14 @@ class BookPublicationTest extends TestCase
 
     public function testABookDatedTomorrowIsStillToCome(): void
     {
-        $this->assertTrue(new Book()->setPublished(new \DateTime('+1 day'))->isToBePublished());
+        $this->assertTrue(new Book()->setPublished(new \DateTimeImmutable('+1 day'))->isToBePublished());
     }
 
     // Compared day by day and not to the current instant: a book dated today is out, whatever the hour the question is asked at
     public function testABookDatedTodayIsOut(): void
     {
-        $this->assertFalse(new Book()->setPublished(new \DateTime('today'))->isToBePublished());
-        $this->assertFalse(new Book()->setPublished(new \DateTime('-1 day'))->isToBePublished());
+        $this->assertFalse(new Book()->setPublished(new \DateTimeImmutable('today'))->isToBePublished());
+        $this->assertFalse(new Book()->setPublished(new \DateTimeImmutable('-1 day'))->isToBePublished());
     }
 
     // The last of the chain of versions, the book itself when nothing replaces it

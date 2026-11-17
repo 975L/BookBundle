@@ -71,14 +71,14 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
     #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $sourceUrl = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $published = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $published = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $creation = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $creation = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $modification = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $modification = null;
 
     #[ORM\ManyToOne(targetEntity: Serie::class, inversedBy: 'strips')]
     #[ORM\JoinColumn(nullable: false)]
@@ -219,38 +219,38 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getPublished(): ?\DateTimeInterface
+    public function getPublished(): ?\DateTimeImmutable
     {
         return $this->published;
     }
 
     public function setPublished(?\DateTimeInterface $published): static
     {
-        $this->published = $published;
+        $this->published = null === $published ? null : \DateTimeImmutable::createFromInterface($published);
 
         return $this;
     }
 
-    public function getCreation(): ?\DateTimeInterface
+    public function getCreation(): ?\DateTimeImmutable
     {
         return $this->creation;
     }
 
     public function setCreation(\DateTimeInterface $creation): static
     {
-        $this->creation = $creation;
+        $this->creation = \DateTimeImmutable::createFromInterface($creation);
 
         return $this;
     }
 
-    public function getModification(): ?\DateTimeInterface
+    public function getModification(): ?\DateTimeImmutable
     {
         return $this->modification;
     }
 
     public function setModification(\DateTimeInterface $modification): static
     {
-        $this->modification = $modification;
+        $this->modification = \DateTimeImmutable::createFromInterface($modification);
 
         return $this;
     }

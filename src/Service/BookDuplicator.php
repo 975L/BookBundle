@@ -58,7 +58,7 @@ class BookDuplicator
     // Copies the person, their portrait, their background and their blocks - not what they signed, which stays credited to the original: a copy is a new person the editor then names, never a second author of the same books
     public function duplicateContributor(Contributor $source): Contributor
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $copy = new Contributor()
             ->setName($this->copyTitle($source->getName(), 50))
             ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->contributorRepository->findOneBy(['slug' => $candidate])))
@@ -95,7 +95,7 @@ class BookDuplicator
     // Copies the serie itself, its covers, its logos and its blocks - not its books nor its strips, which stay with the original
     public function duplicateSerie(Serie $source): Serie
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $copy = new Serie()
             ->setTitle($this->copyTitle($source->getTitle(), 50))
             ->setSlug($this->copySlug((string) $source->getSlug(), 50, fn (string $candidate): bool => null !== $this->serieRepository->findOneBy(['slug' => $candidate])))
@@ -128,7 +128,7 @@ class BookDuplicator
     // Copies the category with its editorial blocks - the books it holds stay where they are: a copy is a new heading an editor then files books under, not a second name for the same shelf
     public function duplicateCategory(BookCategory $source): BookCategory
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $copy = new BookCategory()
             ->setTitle($this->copyTitle($source->getTitle(), 100))
             ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->categoryRepository->findOneBy(['slug' => $candidate])))
@@ -152,7 +152,7 @@ class BookDuplicator
     // Copies the book with its files, its platform links, its press, its videos, its marketing, its documents to print and its blocks - it stays in the same serie, and keeps pointing at the same original when it is a translation. The versions are not copied over: a duplicate is a new book, which the editor then qualifies - a new version is published by its own gesture, the only one chaining books one behind the other (see BookVersionPublisher)
     public function duplicateBook(Book $source): Book
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $copy = new Book()
             ->setTitle($this->copyTitle($source->getTitle(), 100))
             ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->bookRepository->findOneBy(['slug' => $candidate])))
@@ -243,7 +243,7 @@ class BookDuplicator
     // Copies the strip with its plates and its blocks - it stays in the same serie and keeps its number, the copy being made to be reworked, not to be published as the next one
     public function duplicateStrip(Strip $source): Strip
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
         $copy = new Strip()
             ->setTitle($this->copyTitle($source->getTitle(), 100))
             ->setSlug($this->copySlug((string) $source->getSlug(), 100, fn (string $candidate): bool => null !== $this->stripRepository->findOneBy(['slug' => $candidate])))

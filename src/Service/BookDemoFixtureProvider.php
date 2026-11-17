@@ -73,8 +73,8 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
                 ->setLanguage($this->language())
                 ->setAuthor($author)
                 ->setPosition($position + 1)
-                ->setCreation(new \DateTime(self::CREATION))
-                ->setModification(new \DateTime(self::CREATION));
+                ->setCreation(new \DateTimeImmutable(self::CREATION))
+                ->setModification(new \DateTimeImmutable(self::CREATION));
 
             foreach ($this->pictures('serie', $spec['slug']) as $index => $image) {
                 // Past the three kinds there is nothing left for a picture to be, so it is left aside rather than filed as a second backdrop
@@ -116,8 +116,8 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
             ->setName($name)
             ->setSlug($slug)
             ->setPosition($position)
-            ->setCreation(new \DateTime(self::CREATION))
-            ->setModification(new \DateTime(self::CREATION));
+            ->setCreation(new \DateTimeImmutable(self::CREATION))
+            ->setModification(new \DateTimeImmutable(self::CREATION));
     }
 
     /**
@@ -125,7 +125,7 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
      */
     private function book(array $spec, Serie $serie, Contributor $author, Contributor $illustrator): Book
     {
-        $date = new \DateTime($spec['creation']);
+        $date = new \DateTimeImmutable($spec['creation']);
 
         $book = new Book();
 
@@ -140,7 +140,7 @@ class BookDemoFixtureProvider implements DemoFixtureLinkerInterface, DemoFixture
             ->setSerie($serie)
             ->setNumber($spec['number'])
             ->setAge($spec['age'])
-            ->setPublished(null === $spec['published'] ? null : new \DateTime($spec['published']))
+            ->setPublished(null === $spec['published'] ? null : new \DateTimeImmutable($spec['published']))
             ->setCreation($date)
             ->setModification($date);
 

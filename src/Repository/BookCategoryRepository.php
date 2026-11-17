@@ -78,7 +78,7 @@ class BookCategoryRepository extends ServiceEntityRepository
             ->andWhere('serie IS NULL OR serie.hidden = false')
             ->andWhere('c.isDeleted = false')
             ->andWhere('c.hidden = false')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTimeImmutable())
             ->orderBy('c.position', \SortDirection::Ascending)
             ->addOrderBy('c.title', \SortDirection::Ascending)
             ->getQuery()

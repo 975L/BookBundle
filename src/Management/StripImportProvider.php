@@ -154,10 +154,10 @@ class StripImportProvider implements ImportProviderInterface
     private function fillStripPublication(Strip $strip, array $item): void
     {
         $strip
-            ->setPublished(isset($item['published']) ? new \DateTime($item['published']) : null)
+            ->setPublished(isset($item['published']) ? new \DateTimeImmutable($item['published']) : null)
             // Both columns are required, so an archive predating them dates the strip from the import rather than leaving it unwritten
-            ->setCreation(isset($item['creation']) ? new \DateTime($item['creation']) : new \DateTime())
-            ->setModification(isset($item['modification']) ? new \DateTime($item['modification']) : new \DateTime())
+            ->setCreation(isset($item['creation']) ? new \DateTimeImmutable($item['creation']) : new \DateTimeImmutable())
+            ->setModification(isset($item['modification']) ? new \DateTimeImmutable($item['modification']) : new \DateTimeImmutable())
             ->setIsDeleted($item['isDeleted'] ?? false)
             // Absent from an archive written before the flag existed, and read there as "shown"
             ->setHidden($item['hidden'] ?? false);

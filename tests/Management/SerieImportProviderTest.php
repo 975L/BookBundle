@@ -52,8 +52,8 @@ class SerieImportProviderTest extends TestCase
             ->setKind('bd')
             ->setLanguage('fr')
             ->setAuthor(new Contributor()->setName('Laurent Marquet')->setSlug('laurent-marquet'))
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'));
         $serie->addCover(new SerieMedia()->setName('medias/book/series/cover-la-compagnie/c.webp')->setPosition(0)->setUpdatedAt(new \DateTimeImmutable('2026-02-01 09:00:00')));
 
         $export = new SerieExportProvider($this->createStub(SerieRepository::class), new BlockDataExporter($sourceDir), new MediaArchiver($this->createStub(EntityManagerInterface::class), $sourceDir))
@@ -86,8 +86,8 @@ class SerieImportProviderTest extends TestCase
         $serie = new Serie()
             ->setSlug('la-compagnie')
             ->setTitle('La Compagnie des Ombres')
-            ->setCreation(new \DateTime('2026-01-02 10:00:00'))
-            ->setModification(new \DateTime('2026-01-03 11:00:00'));
+            ->setCreation(new \DateTimeImmutable('2026-01-02 10:00:00'))
+            ->setModification(new \DateTimeImmutable('2026-01-03 11:00:00'));
         $character = new Character()
             ->setName('Alwin')
             ->setSlug('alwin')
@@ -142,7 +142,7 @@ class SerieImportProviderTest extends TestCase
 
     public function testImportDetachesTheMediasTheArchiveNoLongerHolds(): void
     {
-        $existing = new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie')->setCreation(new \DateTime())->setModification(new \DateTime());
+        $existing = new Serie()->setSlug('la-compagnie')->setTitle('La Compagnie')->setCreation(new \DateTimeImmutable())->setModification(new \DateTimeImmutable());
         $kept = new SerieMedia()->setName('medias/book/series/cover-la-compagnie/c.webp')->setKind('cover')->setUpdatedAt(new \DateTimeImmutable());
         $existing->addMedia($kept);
         $existing->addMedia(new SerieMedia()->setName('medias/book/series/logo-la-compagnie/l.webp')->setKind('logo')->setUpdatedAt(new \DateTimeImmutable()));

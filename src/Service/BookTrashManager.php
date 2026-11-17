@@ -38,7 +38,7 @@ class BookTrashManager
     {
         $entity
             ->setIsDeleted(true)
-            ->setModification(new \DateTime());
+            ->setModification(new \DateTimeImmutable());
 
         $this->entityManager->flush();
     }
@@ -48,7 +48,7 @@ class BookTrashManager
     {
         $entity
             ->setIsDeleted(false)
-            ->setModification(new \DateTime());
+            ->setModification(new \DateTimeImmutable());
 
         $this->entityManager->flush();
     }

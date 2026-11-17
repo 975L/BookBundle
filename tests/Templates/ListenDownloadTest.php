@@ -49,15 +49,15 @@ class ListenDownloadTest extends TestCase
     // The book's own page offers the listening page only when it answers (see ListenController::display()), on a book carrying its timecodes and its pages
     public function testTheBooksPageLinksToTheListeningPageOnlyWhenItAnswers(): void
     {
-        $this->assertStringNotContainsString('url="/listen"', $this->podcasts(new \DateTime('+1 year'), withLink: true));
+        $this->assertStringNotContainsString('url="/listen"', $this->podcasts(new \DateTimeImmutable('+1 year'), withLink: true));
         $this->assertStringNotContainsString('url="/listen"', $this->podcasts(null, withLink: true));
-        $this->assertStringContainsString('url="/listen"', $this->podcasts(new \DateTime('2020-01-01'), withLink: true));
+        $this->assertStringContainsString('url="/listen"', $this->podcasts(new \DateTimeImmutable('2020-01-01'), withLink: true));
     }
 
     // The page of a book still to come: the app links and none of the recording, the file's address included
     public function testABookToComeShowsItsPodcastAppsAndNotItsRecording(): void
     {
-        $page = $this->podcasts(new \DateTime('+1 year'), withLink: true);
+        $page = $this->podcasts(new \DateTimeImmutable('+1 year'), withLink: true);
 
         $this->assertStringContainsString('https://example.com/spotify', $page);
         $this->assertStringNotContainsString('c975LUi:Audio:Audio', $page);
@@ -73,7 +73,7 @@ class ListenDownloadTest extends TestCase
 
     public function testABookOutShowsItsRecordingAndItsDownloads(): void
     {
-        $page = $this->podcasts(new \DateTime('2020-01-01'), withLink: true);
+        $page = $this->podcasts(new \DateTimeImmutable('2020-01-01'), withLink: true);
 
         $this->assertStringContainsString('c975LUi:Audio:Audio', $page);
         $this->assertStringContainsString('label.download', $page);
@@ -82,7 +82,7 @@ class ListenDownloadTest extends TestCase
     }
 
     // The component's own file, only its {% props %} tag and the card around it left out: nothing here parses a <twig:> tag, which comes out as text and can be read
-    private function podcasts(?\DateTime $published, bool $withLink): string
+    private function podcasts(?\DateTimeImmutable $published, bool $withLink): string
     {
         $source = (string) preg_replace('/\{% props .*? %\}/', '', (string) file_get_contents(__DIR__ . '/../../templates/components/Book/Podcasts.html.twig'));
 

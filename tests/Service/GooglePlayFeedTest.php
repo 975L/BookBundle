@@ -77,7 +77,7 @@ class GooglePlayFeedTest extends TestCase
     // A book sent nowhere near Google does not rename the file, a new EPUB on an ebook sent does
     public function testOnlyTheBooksSentAndTheirFilesDateTheOnix(): void
     {
-        $paper = new Book()->setTitle('Papier')->setModification(new \DateTime('2026-06-01'));
+        $paper = new Book()->setTitle('Papier')->setModification(new \DateTimeImmutable('2026-06-01'));
         $paper->addEdition(new BookEdition()->setKind('paper')->setIsbn('9782488750059')->setChannels(['google']));
         $book = $this->book();
         $book->getEditions()->first()->getFileOf(BookEditionFileKind::Epub)->setUpdatedAt(new \DateTimeImmutable('2026-04-01'));
@@ -167,7 +167,7 @@ class GooglePlayFeedTest extends TestCase
 
     private function book(): Book
     {
-        $book = new Book()->setTitle('Le Loup')->setPublished(new \DateTime('2026-01-01'))->setModification(new \DateTime('2026-03-01'));
+        $book = new Book()->setTitle('Le Loup')->setPublished(new \DateTimeImmutable('2026-01-01'))->setModification(new \DateTimeImmutable('2026-03-01'));
         $book->addEdition(new BookEdition()->setKind('digital')->setIsbn('9782488750011')->setChannels(['google'])
             ->setFileOf(BookEditionFileKind::Epub, self::file('loup-digital.epub'))
             ->setFileOf(BookEditionFileKind::Booklet, self::file('loup-digital.pdf')));

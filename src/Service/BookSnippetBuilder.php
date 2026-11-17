@@ -118,7 +118,7 @@ class BookSnippetBuilder
         $published = $strip->getPublished();
 
         // A strip still to come publishes nothing, its page announcing the day it comes out and nothing more
-        if ('' === $name || null === $published || $published > new \DateTime()) {
+        if ('' === $name || null === $published || $published > new \DateTimeImmutable()) {
             return [];
         }
 
@@ -448,7 +448,7 @@ class BookSnippetBuilder
      */
     private function publishedVolumes(Serie $serie): array
     {
-        $now = new \DateTime();
+        $now = new \DateTimeImmutable();
 
         // What the serie's page lists: out today, neither in the trash, set aside, nor replaced by a newer version
         $volumes = array_values(array_filter(

@@ -50,8 +50,8 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\ManyToOne(targetEntity: Contributor::class, inversedBy: 'authoredBooks')]
     private ?Contributor $author = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $published = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $published = null;
 
     #[ORM\Column(length: 100)]
     #[Assert\Length(max: 100)]
@@ -63,11 +63,11 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[ORM\ManyToOne(targetEntity: Contributor::class, inversedBy: 'illustratedBooks')]
     private ?Contributor $illustrator = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $creation = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $creation = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $modification = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $modification = null;
 
     #[ORM\ManyToOne(targetEntity: Serie::class, inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: true)]
@@ -171,8 +171,8 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     #[Assert\Url(protocols: ['http', 'https'])]
     private ?string $crowdfunding = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTime $crowdfundingEndDate = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $crowdfundingEndDate = null;
 
     // "SET NULL" and not the default: this only records who created the book, and deleting that account must not be blocked by it
     #[ORM\ManyToOne]
@@ -233,14 +233,14 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getPublished(): ?\DateTimeInterface
+    public function getPublished(): ?\DateTimeImmutable
     {
         return $this->published;
     }
 
     public function setPublished(?\DateTimeInterface $published): static
     {
-        $this->published = $published;
+        $this->published = null === $published ? null : \DateTimeImmutable::createFromInterface($published);
 
         return $this;
     }
@@ -248,7 +248,7 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     // A book still to come, which is what the catalog's "à paraître" listing shows and what the release alert is offered on. Compared day by day and not to the current instant: a book dated today is out, whatever the hour
     public function isToBePublished(): bool
     {
-        return null === $this->published || $this->published->format('Ymd') > new \DateTime()->format('Ymd');
+        return null === $this->published || $this->published->format('Ymd') > new \DateTimeImmutable()->format('Ymd');
     }
 
     // Whether the catalog still shows it at all, the parution left out: the conditions BookRepository::publishedQueryBuilder() reads a book by, minus the date, gathered here for what has to answer them in PHP - a release alert taken on a book the catalog has dropped is an e-mail that will never be sent (see BookReleaseAlertRepository::findReleased())
@@ -296,26 +296,26 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getCreation(): ?\DateTimeInterface
+    public function getCreation(): ?\DateTimeImmutable
     {
         return $this->creation;
     }
 
     public function setCreation(\DateTimeInterface $creation): static
     {
-        $this->creation = $creation;
+        $this->creation = \DateTimeImmutable::createFromInterface($creation);
 
         return $this;
     }
 
-    public function getModification(): ?\DateTimeInterface
+    public function getModification(): ?\DateTimeImmutable
     {
         return $this->modification;
     }
 
     public function setModification(\DateTimeInterface $modification): static
     {
-        $this->modification = $modification;
+        $this->modification = \DateTimeImmutable::createFromInterface($modification);
 
         return $this;
     }
@@ -1074,14 +1074,14 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
-    public function getCrowdfundingEndDate(): ?\DateTime
+    public function getCrowdfundingEndDate(): ?\DateTimeImmutable
     {
         return $this->crowdfundingEndDate;
     }
 
-    public function setCrowdfundingEndDate(?\DateTime $crowdfundingEndDate): static
+    public function setCrowdfundingEndDate(?\DateTimeInterface $crowdfundingEndDate): static
     {
-        $this->crowdfundingEndDate = $crowdfundingEndDate;
+        $this->crowdfundingEndDate = null === $crowdfundingEndDate ? null : \DateTimeImmutable::createFromInterface($crowdfundingEndDate);
 
         return $this;
     }

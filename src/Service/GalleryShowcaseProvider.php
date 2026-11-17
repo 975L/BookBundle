@@ -128,7 +128,7 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
                 ->setTitle($this->trans($spec['title']))
                 ->setSlug($spec['slug'])
                 ->setLanguage($this->trans(BookSampleCatalog::LANGUAGE_KEY))
-                ->setPublished(new \DateTime($spec['published']));
+                ->setPublished(new \DateTimeImmutable($spec['published']));
 
             $books[] = $this->covered($book, $spec['slug'], $rank);
         }
@@ -168,7 +168,7 @@ class GalleryShowcaseProvider implements GalleryShowcaseProviderInterface
             $strip = new Strip()
                 ->setTitle("Planche {$i}")
                 ->setSlug("planche-{$i}")
-                ->setPublished(new \DateTime("-{$i} week"));
+                ->setPublished(new \DateTimeImmutable("-{$i} week"));
 
             // Rotated so the three planches don't share one photo, as the placeholder pool is rotated everywhere else
             if ([] !== $images) {

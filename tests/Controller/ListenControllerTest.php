@@ -62,7 +62,7 @@ class ListenControllerTest extends TestCase
             ->setSlug('la-moto-et-la-biche')
             ->setHidden($hidden)
             ->setIsDeleted($deleted)
-            ->setPublished(new \DateTime('2020-01-01'))
+            ->setPublished(new \DateTimeImmutable('2020-01-01'))
         ;
         if ($audio) {
             $book->addMedia(new BookMedia()->setKind('audio_mp3')->setName('histoire.mp3'));
@@ -137,7 +137,7 @@ class ListenControllerTest extends TestCase
 
     // The listings leave out a book still to come: its recording stays unreachable by its slug too, undated or dated later
     #[DataProvider('unreleasedDates')]
-    public function testABookStillToComeIsNotFound(?\DateTime $published): void
+    public function testABookStillToComeIsNotFound(?\DateTimeImmutable $published): void
     {
         $this->expectException(NotFoundHttpException::class);
 
@@ -148,7 +148,7 @@ class ListenControllerTest extends TestCase
     public static function unreleasedDates(): iterable
     {
         yield 'undated' => [null];
-        yield 'dated later' => [new \DateTime('+1 year')];
+        yield 'dated later' => [new \DateTimeImmutable('+1 year')];
     }
 
     // Replaced by a newer version, it leaves the listings but keeps its own page: a link to its recording goes on answering, there being nothing to hide in a book already out
