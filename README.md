@@ -466,6 +466,16 @@ INSERT INTO book_edition (book_id, kind, isbn, position)
     SELECT id, 'audio', isbn_audio, 2 FROM book_book WHERE isbn_audio <> '';
 ```
 
+### Publishing a strip from a manifest
+
+A planche can be written without the back-office, by a script or a runner on another machine, through `php bin/console c975l:book:strip:publish <manifest.json> [--dry-run]`, run where the catalog lives (`--env=prod` over ssh, the files sent beside the manifest first):
+
+```json
+{"serie": "catalog", "number": 11, "title": "item-1", "published": "2026-12-03", "summary": "<p>…</p>", "characters": ["item-2"], "sourceUrl": "https://example.com/item-1", "page": "011-page1.jpg", "panels": ["011-Cases-page1.jpg", "011-Cases-page2.jpg"]}
+```
+
+The planche of that number in the serie is brought up to date, or created with the serie's slug followed by its title's, suffixed `-2`, `-3`… when another planche already carries it. It is saved **visible**, the listings showing it only from its `published` day on, which is how a planche is scheduled. Its page and panels are uploaded through Vich in the manifest's order, in place of those it had, and a manifest naming no file leaves its medias as they were. A character the serie does not hold is left out with a warning, never created under a name that may be misspelt; a file missing or out of the manifest's folder, a day not written `YYYY-MM-DD`, or a planche of that number in the trash (to restore first), refuses the whole manifest, nothing written. The last line printed is `STRIP <id> <address>`, for the caller to link the planche.
+
 ### Duplicating a book, a serie or a strip
 
 The index and the edit screen of each of the three carry a **Dupliquer** action (`site-role-editor`, same

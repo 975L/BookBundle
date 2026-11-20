@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.37.0
+
+Strip published from a JSON manifest
+
+- `c975l:book:strip:publish <manifest.json>` creates or updates a planche, visible from its day, its page and panels uploaded, and prints its address (20/11/2026)
+
 ## v2.36.0
 
 [BC-Break] Book, series, strips, categories and contributors dates stored as immutable dates

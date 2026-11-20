@@ -20,7 +20,7 @@ class SkillsTest extends TestCase
 
     private const string NAME_PATTERN = '#^[a-z][a-z0-9]*(_[a-z0-9]+)+(\([^)]*\))?$#';
 
-    private const string COMMAND_PATTERN = '/(?:c975l:)?strip:[a-z-:]+/';
+    private const string COMMAND_PATTERN = '/(?:c975l:(?:book:)?)?strip:[a-z-:]+/';
 
     private const string COMPONENT_PATTERN = '/<twig:c975LBook:([A-Za-z:]+)/';
 
@@ -133,7 +133,7 @@ class SkillsTest extends TestCase
     private function commandNames(): array
     {
         // Any command name written as a literal - an AsCommand attribute, a NAME constant
-        return $this->matchesInSources("/'((?:c975l:)?strip:[a-z0-9:-]+)'/");
+        return $this->matchesInSources("/'((?:c975l:(?:book:)?)?strip:[a-z0-9:-]+)'/");
     }
 
     // Whether a name this bundle doesn't declare itself is one the ecosystem does somewhere - a config slug of ConfigBundle's, a block context of UiBundle's, a Twig option a template passes. The installed vendor tree is what makes it visible, so a checkout without dependencies lets those through rather than failing on what it cannot see
