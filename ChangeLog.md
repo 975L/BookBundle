@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.37.1
+
+A scheduled strip can be held by its teaser
+
+- A strip scheduled for a day to come can be named as the source of a social post (20/11/2026)
+
 ## v2.37.0
 
 Strip published from a JSON manifest

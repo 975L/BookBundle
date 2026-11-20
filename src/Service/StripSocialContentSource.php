@@ -64,13 +64,12 @@ class StripSocialContentSource implements BrowsableSocialContentSourceInterface,
         return null;
     }
 
-    // Null for a planche taken off the site since its post was prepared, or whose serie was
+    // Null for a planche taken off the site since its post was prepared, or whose serie was, or one given no day; a planche scheduled for a day to come is one already, held by the post prepared for that day (its teaser), the series drawing only from the planches out
     public function getContent(string $sourceId): ?SocialContent
     {
         $strip = $this->stripRepository->find((int) $sourceId);
-        $published = $strip?->getPublished();
 
-        return $strip instanceof Strip && !$strip->isDeleted() && !$strip->isHidden() && !($strip->getSerie()?->isHidden() ?? false) && null !== $published && $published <= new \DateTimeImmutable()
+        return $strip instanceof Strip && !$strip->isDeleted() && !$strip->isHidden() && !($strip->getSerie()?->isHidden() ?? false) && null !== $strip->getPublished()
             ? $this->toContent($strip)
             : null;
     }

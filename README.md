@@ -573,7 +573,7 @@ another the rest, a book of no series left out once some are picked;
 `StripSocialContentSource` (`strip`) hands out the published planches, oldest first, never twice. Each
 post carries the public page's address, the cover or the planche's page as its image, the summary and the
 serie, in the book's language. A row with no public address — `site-url` unset, or its pages not served on this site — is never
-handed out, and a row taken off the site since its post was prepared is dropped. Which rows went out where
+handed out, and a row taken off the site since its post was prepared is dropped. A planche scheduled for a day to come is a content already, so the teaser prepared for its day can name it as its `source` (`c975l:social:draft`), the series still drawing only from the planches out. Which rows went out where
 is SocialBundle's to record; a site without it never asks.
 
 Both sources also implement `BrowsableSocialContentSourceInterface`, so a post's content can be changed on its screen with SocialBundle's "Changer le contenu": another book or planche still free is picked among the latest published - a book in its own series, `getContentScope()` answering the series' id (null for a book of none, and always for a planche). Where SocialBundle is installed, the books and planches admin lists gain a "Réseaux sociaux" column whose badge says whether a post holds the row — reserved by a draft or published, with the date — read through the optional `SocialContentStatusProviderInterface` for the rows of the page shown (`c975L\UiBundle\Controller\Management\Trait\SocialStatusCrudTrait`, shared with the other bundles' lists); on a site without SocialBundle the column simply isn't there.

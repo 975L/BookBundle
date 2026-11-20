@@ -86,6 +86,15 @@ class StripSocialContentSourceTest extends TestCase
         $this->assertNull($this->createSource([$strip])->getContent('1'));
     }
 
+    // A planche scheduled for a day to come can be held by the post prepared for that day, one given no day cannot
+    public function testAScheduledPlancheIsAContentAlready(): void
+    {
+        $this->assertSame('1', $this->createSource([$this->createStrip(1, '+1 month')])->getContent('1')?->sourceId);
+
+        $strip = $this->createStrip(1)->setPublished(null);
+        $this->assertNull($this->createSource([$strip])->getContent('1'));
+    }
+
     // What a post's planche is chosen among: the ones still free, the latest first
     public function testTheContentsToChooseAreTheFreePlanchesLatestFirst(): void
     {
