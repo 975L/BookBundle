@@ -11,6 +11,9 @@
 namespace c975L\BookBundle\Tests\Templates;
 
 use PHPUnit\Framework\TestCase;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
+use Twig\Source;
 
 // What a planche's page shows: a site reading its planches for their words shows the card alone, its medias being the same reply set in an image
 class StripDisplayCompositionTest extends TestCase
@@ -30,6 +33,22 @@ class StripDisplayCompositionTest extends TestCase
     public function testAPlancheReadForItsDrawingStillShowsItsMedias(): void
     {
         $this->assertStringContainsString('c975LBook:Strip:Medias', $this->drawingBranch());
+    }
+
+    // A planche dated ahead announces its title, its day and the release alert, and shows neither its reply nor its drawing before that day
+    public function testAPlancheStillToComeOffersTheAlertAndHidesItsContent(): void
+    {
+        $display = $this->contents(self::DISPLAY);
+
+        $this->assertSame(1, preg_match('/\{%\s*elseif strip\.published is not null\s*%\}(.+?)\{%\s*endif\s*%\}\s*<\/div>/s', $display, $matches), 'The page no longer has a branch for a planche still to come - check this test still says what it means.');
+        $branch = $matches[1];
+
+        $this->assertStringContainsString('c975LUi:Hero:Hero', $branch);
+        $this->assertStringContainsString('book_release_alert_strip_new', $branch);
+        $this->assertStringNotContainsString('Strip:Medias', $branch);
+        $this->assertStringNotContainsString('summary', $branch);
+        // The source parses: a broken tag would only show on the day somebody opens a scheduled planche
+        new Environment(new ArrayLoader())->tokenize(new Source($display, 'display'));
     }
 
     // What the page shows when the site reads a planche for its words

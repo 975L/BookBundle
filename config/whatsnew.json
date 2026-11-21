@@ -1,5 +1,20 @@
 [
     {
+        "date": "2026-11-21",
+        "description": [
+            {
+                "en": "An AI agent holding an agent token of an account editing the catalog can list and read the books, add a draft and write its title and summary; publishing stays yours, from the back office.",
+                "fr": "Un agent IA muni d'un jeton d'agent d'un compte qui édite le catalogue peut lister et lire les livres, ajouter un brouillon et rédiger son titre et son résumé ; la publication reste la vôtre, depuis le back-office.",
+                "es": "Un agente de IA con un token de agente de una cuenta que edita el catálogo puede listar y leer los libros, añadir un borrador y redactar su título y su resumen; la publicación sigue siendo suya, desde el back-office."
+            },
+            {
+                "en": "The page of a strip scheduled for a day to come now shows its title and its date, and lets readers leave their address to be told by e-mail the day it comes out.",
+                "fr": "La page d'une planche programmée affiche désormais son titre et sa date, et permet aux lecteurs de laisser leur adresse pour être prévenus par courriel le jour de sa parution.",
+                "es": "Una página de cómic programada muestra ahora su título y su fecha, y permite a los lectores dejar su dirección para recibir un aviso por correo el día de su publicación."
+            }
+        ]
+    },
+    {
         "date": "2026-11-12",
         "description": [
             {

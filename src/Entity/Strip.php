@@ -231,6 +231,20 @@ class Strip implements HasBlocksInterface, TrashableInterface, \Stringable
         return $this;
     }
 
+    // A planche dated ahead, which its page announces and a release alert is offered on. Unlike a book, an undated planche is a draft its page answers 404 for, not one still to come
+    public function isToBePublished(): bool
+    {
+        return null !== $this->published && $this->published->format('Ymd') > new \DateTimeImmutable()->format('Ymd');
+    }
+
+    // Whether the site still shows it at all, the date left out: StripRepository::publishedQueryBuilder()'s conditions, gathered for what has to answer them in PHP (see BookReleaseAlertRepository::findReleased())
+    public function isShownInCatalog(): bool
+    {
+        return !$this->isDeleted()
+            && !$this->isHidden()
+            && (null === $this->serie || !$this->serie->isHidden());
+    }
+
     public function getCreation(): ?\DateTimeImmutable
     {
         return $this->creation;

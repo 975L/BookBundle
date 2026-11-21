@@ -1046,6 +1046,13 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => '#Strip_number',
                 ],
                 [
+                    // A day to come keeps the planche off the lists, its page announcing it and offering the release alert until then
+                    'label' => 'label.guided_step_book_strip_creation_published',
+                    'description' => 'description.guided_step_book_strip_creation_published',
+                    'narration' => 'narration.guided_step_book_strip_creation_published',
+                    'highlight' => '#Strip_published',
+                ],
+                [
                     'label' => 'label.guided_step_book_strip_creation_characters',
                     'description' => 'description.guided_step_book_strip_creation_characters',
                     'narration' => 'narration.guided_step_book_strip_creation_characters',

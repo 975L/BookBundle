@@ -686,6 +686,10 @@
                 <source>description.guided_step_book_strip_creation_open</source>
                 <target>La liste de toutes les planches, d'où l'on crée la suivante.</target>
             </trans-unit>
+            <trans-unit id="DlIbzRk">
+                <source>description.guided_step_book_strip_creation_published</source>
+                <target>Une date à venir garde la planche hors des listes : sa page l'annonce avec sa date et propose aux lecteurs d'être prévenus de sa parution.</target>
+            </trans-unit>
             <trans-unit id="JL9wRS1">
                 <source>description.guided_step_book_strip_creation_serie</source>
                 <target>La série est ce qui la fait lire à la suite des autres, et le fil d'Ariane y remonte.</target>
@@ -2422,6 +2426,10 @@
                 <source>label.guided_step_book_strip_creation_open</source>
                 <target>Ouvrez les planches</target>
             </trans-unit>
+            <trans-unit id="ibSAfpH">
+                <source>label.guided_step_book_strip_creation_published</source>
+                <target>Dater la parution</target>
+            </trans-unit>
             <trans-unit id="Lvu9crm">
                 <source>label.guided_step_book_strip_creation_save</source>
                 <target>Enregistrez</target>
@@ -2924,7 +2932,7 @@
             </trans-unit>
             <trans-unit id="5VP4hMt">
                 <source>label.release_alert_email_help</source>
-                <target>Elle ne sert qu'à vous prévenir de la parution de ce livre.</target>
+                <target>Elle ne sert qu'à vous prévenir de cette parution.</target>
             </trans-unit>
             <trans-unit id="8_vS6eM">
                 <source>label.release_alert_intro</source>
@@ -3066,6 +3074,26 @@
                 <source>label.strip_page</source>
                 <target>Planche complète</target>
             </trans-unit>
+            <trans-unit id="Ek58H82">
+                <source>label.strip_read_serie</source>
+                <target>Lire les planches de %serie%</target>
+            </trans-unit>
+            <trans-unit id="ggs_2Ko">
+                <source>label.strip_released_intro</source>
+                <target>Vous aviez demandé à être prévenu de la parution de %strip% : elle est en ligne.</target>
+            </trans-unit>
+            <trans-unit id="uiP2FBD">
+                <source>label.strip_released_last</source>
+                <target>C'est le seul message que vous recevrez pour cette planche, et votre adresse vient d'être supprimée de la liste.</target>
+            </trans-unit>
+            <trans-unit id="MDSgnQp">
+                <source>label.strip_released_read</source>
+                <target>Lire la planche</target>
+            </trans-unit>
+            <trans-unit id="PKyQJzb">
+                <source>label.strip_released_subject</source>
+                <target>La planche que vous attendiez est parue</target>
+            </trans-unit>
             <trans-unit id="DSj269.">
                 <source>label.strip_search</source>
                 <target>Chercher une planche</target>
@@ -3085,6 +3113,10 @@
             <trans-unit id="RyLMKF9">
                 <source>label.strip_social_reserved</source>
                 <target>Réservée %date%</target>
+            </trans-unit>
+            <trans-unit id="dMmVK80">
+                <source>label.strip_to_be_published</source>
+                <target>Planche à paraître</target>
             </trans-unit>
             <trans-unit id="D88P91q">
                 <source>label.strip_transcription</source>
@@ -3232,7 +3264,7 @@
             </trans-unit>
             <trans-unit id="dxjjuJP">
                 <source>text.release_alert_unsubscribe_confirm</source>
-                <target>Un clic et votre adresse quitte cette liste d'attente : vous ne serez pas prévenu de la parution du livre.</target>
+                <target>Un clic et votre adresse quitte cette liste d'attente : vous ne serez pas prévenu de cette parution.</target>
             </trans-unit>
             <trans-unit id="ofTxT19">
                 <source>text.release_alert_unsubscribed</source>
@@ -3241,6 +3273,18 @@
             <trans-unit id="7TID4un">
                 <source>text.series</source>
                 <target>Cette histoire fait partie de notre série</target>
+            </trans-unit>
+            <trans-unit id="vHINqha">
+                <source>text.strip_release_alert_already_published</source>
+                <target>Cette planche est déjà parue : vous pouvez la lire dès maintenant.</target>
+            </trans-unit>
+            <trans-unit id="X24pGlU">
+                <source>text.strip_release_alert_unavailable</source>
+                <target>Cette planche n'est plus en ligne, aucun courriel de parution ne sera envoyé.</target>
+            </trans-unit>
+            <trans-unit id="qkILXsD">
+                <source>text.strip_release_date</source>
+                <target>Parution le %date%</target>
             </trans-unit>
         </body>
     </file>

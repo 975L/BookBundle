@@ -610,6 +610,10 @@
                 <source>narration.guided_step_book_strip_creation_open</source>
                 <target>El panel le lleva a las páginas, la lista desde donde se crea la siguiente.</target>
             </trans-unit>
+            <trans-unit id="6hvsliu">
+                <source>narration.guided_step_book_strip_creation_published</source>
+                <target>Feche la publicación. Una fecha futura mantiene la página fuera de las listas: su página la anuncia con su fecha y ofrece a los lectores recibir un aviso por correo el día de su publicación.</target>
+            </trans-unit>
             <trans-unit id="yEIKblJ">
                 <source>narration.guided_step_book_strip_creation_save</source>
                 <target>Guarde con el botón situado en la parte inferior del formulario.</target>

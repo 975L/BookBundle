@@ -68,15 +68,28 @@
             </div>
 
         {% elseif strip.published is not null %}
-            <twig:c975LUi:Alert:Alert type="warning">
-                {{ 'label.to_be_published'|trans({}, 'book', book_ui_locale(language)) }} {{ strip.published|date("d/m/Y") }}
-            </twig:c975LUi:Alert:Alert>
+            {# A planche dated ahead announces itself in UiBundle's hero - where it sits, its title, its day, and the two ways on - while neither its reply nor its drawing show before that day #}
+            {% set uiLocale = book_ui_locale(language) %}
+            {# A link rather than a form, as on a book's page: a form needs a session and a csrf token, which a cached page must never carry (see BookReleaseAlertController). Left out where the alert page would answer 404 - a planche of a serie set aside #}
+            {% set alertUrl = strip.shownInCatalog ? localized_path('book_release_alert_strip_new', {'id': strip.id}) : '' %}
             {# To its serie, which holds the listing of planches; to the index of planche series when it has none and the site serves it - the "book-route-strips" setting emptied, that route answers nothing (see BookRoutePrefix) #}
             {% if strip.serie and serie_path(strip.serie) %}
-                <twig:c975LUi:Button:Button label="{{ strip.serie.title }}" url="{{ serie_path(strip.serie) }}"/>
+                {% set backLabel = 'label.strip_read_serie'|trans({'%serie%': strip.serie.title}, 'book', uiLocale) %}
+                {% set backUrl = serie_path(strip.serie) %}
             {% elseif config('book-route-strips')|default('') is not empty %}
-                <twig:c975LUi:Button:Button label="{{ 'label.strips_series'|trans({}, 'book', book_ui_locale(language)) }}" url="{{ book_path('strip_index') }}"/>
+                {% set backLabel = 'label.strips_series'|trans({}, 'book', uiLocale) %}
+                {% set backUrl = book_path('strip_index') %}
             {% endif %}
+            <twig:c975LBook:Breadcrumb serie="{{ strip.serie }}" current="{{ strip.title }}" language="{{ language }}"/>
+            <twig:c975LUi:Hero:Hero
+                badge="{{ 'label.strip_to_be_published'|trans({}, 'book', uiLocale) }}"
+                title="{{ strip.title }}"
+                subtitle="{{ 'text.strip_release_date'|trans({'%date%': strip.published|date('d/m/Y')}, 'book', uiLocale) }}"
+                primaryLabel="{{ 'label.release_alert_notify_me'|trans({}, 'book', uiLocale) }}"
+                primaryUrl="{{ alertUrl }}"
+                secondaryLabel="{{ backLabel|default('') }}"
+                secondaryUrl="{{ backUrl|default('') }}"
+            />
         {% endif %}
     </div>
 

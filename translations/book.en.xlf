@@ -686,6 +686,10 @@
                 <source>description.guided_step_book_strip_creation_open</source>
                 <target>The list of every strip, where the next one is created.</target>
             </trans-unit>
+            <trans-unit id="DlIbzRk">
+                <source>description.guided_step_book_strip_creation_published</source>
+                <target>A date to come keeps the strip off the lists: its page announces it with its date and offers readers to be told when it comes out.</target>
+            </trans-unit>
             <trans-unit id="JL9wRS1">
                 <source>description.guided_step_book_strip_creation_serie</source>
                 <target>The serie is what has it read after the others, and the breadcrumb goes back up to it.</target>
@@ -2422,6 +2426,10 @@
                 <source>label.guided_step_book_strip_creation_open</source>
                 <target>Open the strips</target>
             </trans-unit>
+            <trans-unit id="ibSAfpH">
+                <source>label.guided_step_book_strip_creation_published</source>
+                <target>Date the release</target>
+            </trans-unit>
             <trans-unit id="Lvu9crm">
                 <source>label.guided_step_book_strip_creation_save</source>
                 <target>Save</target>
@@ -2924,7 +2932,7 @@
             </trans-unit>
             <trans-unit id="5VP4hMt">
                 <source>label.release_alert_email_help</source>
-                <target>It is only used to tell you when this book comes out.</target>
+                <target>It is only used to tell you when this comes out.</target>
             </trans-unit>
             <trans-unit id="8_vS6eM">
                 <source>label.release_alert_intro</source>
@@ -3066,6 +3074,26 @@
                 <source>label.strip_page</source>
                 <target>Whole page</target>
             </trans-unit>
+            <trans-unit id="Ek58H82">
+                <source>label.strip_read_serie</source>
+                <target>Read the strips of %serie%</target>
+            </trans-unit>
+            <trans-unit id="ggs_2Ko">
+                <source>label.strip_released_intro</source>
+                <target>You asked to be told when %strip% came out: it is now online.</target>
+            </trans-unit>
+            <trans-unit id="uiP2FBD">
+                <source>label.strip_released_last</source>
+                <target>This is the only message you get for this strip, and your address has just been deleted from the list.</target>
+            </trans-unit>
+            <trans-unit id="MDSgnQp">
+                <source>label.strip_released_read</source>
+                <target>Read the strip</target>
+            </trans-unit>
+            <trans-unit id="PKyQJzb">
+                <source>label.strip_released_subject</source>
+                <target>The strip you were waiting for is out</target>
+            </trans-unit>
             <trans-unit id="DSj269.">
                 <source>label.strip_search</source>
                 <target>Search for a strip</target>
@@ -3085,6 +3113,10 @@
             <trans-unit id="RyLMKF9">
                 <source>label.strip_social_reserved</source>
                 <target>Reserved %date%</target>
+            </trans-unit>
+            <trans-unit id="dMmVK80">
+                <source>label.strip_to_be_published</source>
+                <target>Upcoming strip</target>
             </trans-unit>
             <trans-unit id="D88P91q">
                 <source>label.strip_transcription</source>
@@ -3232,7 +3264,7 @@
             </trans-unit>
             <trans-unit id="dxjjuJP">
                 <source>text.release_alert_unsubscribe_confirm</source>
-                <target>One click and your address leaves this waiting list, and you will not be told when the book comes out.</target>
+                <target>One click and your address leaves this waiting list, and you will not be told when it comes out.</target>
             </trans-unit>
             <trans-unit id="ofTxT19">
                 <source>text.release_alert_unsubscribed</source>
@@ -3241,6 +3273,18 @@
             <trans-unit id="7TID4un">
                 <source>text.series</source>
                 <target>This story is part of our series</target>
+            </trans-unit>
+            <trans-unit id="vHINqha">
+                <source>text.strip_release_alert_already_published</source>
+                <target>This strip is already out: you can read it right now.</target>
+            </trans-unit>
+            <trans-unit id="X24pGlU">
+                <source>text.strip_release_alert_unavailable</source>
+                <target>This strip is no longer online, so no release e-mail will be sent for it.</target>
+            </trans-unit>
+            <trans-unit id="qkILXsD">
+                <source>text.strip_release_date</source>
+                <target>Out on %date%</target>
             </trans-unit>
         </body>
     </file>

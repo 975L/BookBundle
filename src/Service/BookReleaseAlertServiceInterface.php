@@ -12,16 +12,20 @@ namespace c975L\BookBundle\Service;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookReleaseAlert;
+use c975L\BookBundle\Entity\Strip;
 
 interface BookReleaseAlertServiceInterface
 {
     // Puts an address on the waiting list of a book still to come and acknowledges it by e-mail; false when the book is already out, and false when the catalog no longer carries it - set aside, replaced, or held by a serie set aside - the nightly run reading those same conditions, nothing being stored and no e-mail sent
     public function subscribe(Book $book, string $email, string $locale): bool;
 
+    // Same for a planche dated ahead; false when it is already out or the site no longer shows it
+    public function subscribeToStrip(Strip $strip, string $email, string $locale): bool;
+
     // Drops the subscription, the button of the page the confirmation e-mail's link opens leading here
     public function unsubscribe(BookReleaseAlert $releaseAlert): void;
 
-    // Tells the visitors waiting on a book that it is out, at most $limit of them in one run
+    // Tells the visitors waiting on a book or a planche that it is out, at most $limit of them in one run
     /** @return int how many were told */
     public function notifyReleased(int $limit): int;
 

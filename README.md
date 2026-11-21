@@ -185,6 +185,7 @@ showcase — contributes the same file through its own stylesheet provider.
 | `book_listen_json` | *unset* | `book-route-listen` | The listening pages as JSON, at the prefix followed by `.json`: each book's recording, cover and fourth cover, pages and timecodes under absolute urls, its serie, credits, videos and listens, the address of its own page (null where the site serves none), plus the fields of its own the site lists in `book-listen-data`, and under `openings` the absolute urls of UiBundle's `app-opening` site graphics, the pictures an app shows as it opens, and under each book's `colorings` its drawings to colour out today (see [Drawings to colour on screen](#drawings-to-colour-on-screen)), answered with a weak `ETag` |
 | `book_onix` | *unset* | `book-route-onix` | The catalog as an ONIX 3.0 feed (see [ONIX feed](#onix-feed)) |
 | `book_release_alert_new` | `/book/release-alert/{id}` | — | Where an address is left to be told a book is out — `noindex` |
+| `book_release_alert_strip_new` | `/book/release-alert/strip/{id}` | — | The same for a scheduled planche — `noindex` |
 | `book_release_alert_unsubscribe` | `/book/release-alert/{token}/unsubscribe` | — | The link the acknowledgement e-mail carries, opening a page with a button — `noindex` |
 | `book_release_alert_unsubscribe_confirm` | `/book/release-alert/{token}/unsubscribe` | — | That button, in `POST` — what actually drops the subscription |
 
@@ -559,8 +560,14 @@ by a newer version is not published, and nobody is told about it. The subscripti
 conditions (`Book::isShownInCatalog()`), so an address is never taken for a book the nightly run would
 skip — the acknowledgement would have promised a message that never comes.
 
-The two messages are `EmailTemplate` rows an admin composes, `book_release_alert_confirmation` and
-`book_released`, seeded by `php bin/console c975l:ui:email-templates:ensure` and sent under the site-wide
+**A planche dated ahead is waited on the same way.** Its page shows UiBundle's hero — the
+breadcrumb, its title, its day, the link to be told and the way to its serie — while its reply and its
+drawing stay hidden until then. The row names the planche in place of a book (`BookReleaseAlert::$strip`),
+an undated planche is a draft nobody can subscribe to, and the nightly run reads
+`StripRepository::publishedQueryBuilder()`'s conditions for it (`Strip::isShownInCatalog()`).
+
+The messages are `EmailTemplate` rows an admin composes, `book_release_alert_confirmation` and
+`book_released` for a book, `strip_release_alert_confirmation` and `strip_released` for a planche, seeded by `php bin/console c975l:ui:email-templates:ensure` and sent under the site-wide
 `email-*` addresses — this bundle declares no address of its own.
 
 ### Posting the catalog on social networks
@@ -1170,6 +1177,17 @@ of them sharing a photograph would read as a bug.
 > And if you'd like to support the work directly, the **Sponsor** button at the top of the GitHub page is there for that. Thank you!
 
 ---
+
+## MCP tools
+
+The catalog brings its tools to the site's MCP endpoint, `/api/mcp`, which c975l/core-bundle serves and opens (see its README, "Opening the site to AI agents"): `Mcp\BookMcpProvider`, under the `book` key of the agent tokens, for an account holding `site-role-editor` as on the back office.
+
+| Tool | Does |
+| --- | --- |
+| `book_list` | The books whose title holds the `search` words, every book without them, drafts included, the latest first |
+| `book_get` | A `book`: title, summary, number, serie, publication day (none for a draft) |
+| `book_create` | A draft book added with its `title` and an optional `summary`, its slug made unique; publishing stays a human's |
+| `book_edit` | Only the `title` or `summary` given of a `book` changed |
 
 ## AI agent skills
 

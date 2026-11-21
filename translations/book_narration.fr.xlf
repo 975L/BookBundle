@@ -610,6 +610,10 @@
                 <source>narration.guided_step_book_strip_creation_open</source>
                 <target>Le panneau vous emmène sur les planches, la liste d'où l'on crée la suivante.</target>
             </trans-unit>
+            <trans-unit id="6hvsliu">
+                <source>narration.guided_step_book_strip_creation_published</source>
+                <target>Datez la parution. Une date à venir garde la planche hors des listes : sa page l'annonce avec sa date et propose aux lecteurs d'être prévenus par courriel le jour où elle paraît.</target>
+            </trans-unit>
             <trans-unit id="yEIKblJ">
                 <source>narration.guided_step_book_strip_creation_save</source>
                 <target>Enregistrez avec le bouton en bas du formulaire.</target>

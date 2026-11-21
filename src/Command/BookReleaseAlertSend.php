@@ -18,10 +18,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-// Run nightly: a book is dated to the day, so it comes out at 00:00 and the run that follows tells everyone waiting. Nothing listens to the back-office save instead - a listener would fire from the editor's own request, without batching nor retry, and would fire again each time the date is edited
+// Run nightly: a book or a planche is dated to the day, so it comes out at 00:00 and the run that follows tells everyone waiting. Nothing listens to the back-office save instead - a listener would fire from the editor's own request, without batching nor retry, and would fire again each time the date is edited
 #[AsCommand(
     name: 'c975l:book:release-alerts:send',
-    description: 'Tells the visitors waiting on a book that it has come out, and drops the lists of books that never did',
+    description: 'Tells the visitors waiting on a book or a planche that it has come out, and drops the lists of those that never did',
 )]
 class BookReleaseAlertSend extends Command
 {

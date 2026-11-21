@@ -17,9 +17,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * The e-mails this bundle sends on its own account, as templates an admin composes rather than Twig files nobody
  * but a developer can touch.
  *
- * Two, and they are the two halves of one promise: the first acknowledges the subscription and carries the way out
- * of it, the second says the book is out. Nothing else is ever sent to that address, which is what keeps the
- * waiting list a service the visitor asked for rather than a mailing list.
+ * Two per kind, a book or a planche, and they are the two halves of one promise: the first acknowledges the
+ * subscription and carries the way out of it, the second says it is out. Nothing else is ever sent to that address,
+ * which is what keeps the waiting list a service the visitor asked for rather than a mailing list.
  *
  * Every sentence is read from the "book" catalogue, which is the one place the default wording lives: what
  * c975l:ui:email-templates:ensure seeds, what EmailTemplateRenderer falls back on if the row is deleted, and what a
@@ -32,6 +32,11 @@ class BookEmailTemplateProvider implements EmailTemplateProviderInterface
 
     // The one e-mail the whole waiting list exists for
     public const string BOOK_RELEASED = 'book_released';
+
+    // The same two halves for a planche, worded for it: a planche "est parue" and is read, where a book "est paru" and is discovered
+    public const string STRIP_RELEASE_ALERT_CONFIRMATION = 'strip_release_alert_confirmation';
+
+    public const string STRIP_RELEASED = 'strip_released';
 
     // The languages this bundle ships a book catalogue for. Listed rather than read from kernel.enabled_locales: the translator answers every locale by falling back on the default one, so iterating a site's languages would seed a Spanish row holding French sentences
     private const array LOCALES = ['fr', 'en', 'es'];
@@ -68,6 +73,16 @@ class BookEmailTemplateProvider implements EmailTemplateProviderInterface
                 $this->text('label.book_released_intro', $locale, ['%book%' => '{{ book_title }}']),
                 ['button', null, null, null, $this->trans('label.book_released_discover', $locale), '{{ book_url }}'],
                 $this->text('label.book_released_last', $locale),
+            ],
+            self::STRIP_RELEASE_ALERT_CONFIRMATION => [
+                $this->html('label.release_alert_confirmation_intro', $locale, ['%book%' => '<a href="{{ strip_url }}">{{ strip_title }}</a>']),
+                $this->text('label.release_alert_confirmation_once', $locale),
+                $this->html('label.release_alert_confirmation_unsubscribe', $locale, ['%url%' => '<a href="{{ unsubscribe_url }}">{{ unsubscribe_url }}</a>']),
+            ],
+            self::STRIP_RELEASED => [
+                $this->text('label.strip_released_intro', $locale, ['%strip%' => '{{ strip_title }}']),
+                ['button', null, null, null, $this->trans('label.strip_released_read', $locale), '{{ strip_url }}'],
+                $this->text('label.strip_released_last', $locale),
             ],
         ];
     }

@@ -23,13 +23,18 @@ use Symfony\Component\Translation\Translator;
  */
 class BookEmailTemplateProviderTest extends TestCase
 {
-    // The two halves of one promise, written in the three languages this bundle ships
-    public function testBothEmailsAreDeclaredInEveryLanguageTheBundleShips(): void
+    // The two halves of each promise, a book's and a planche's, written in the three languages this bundle ships
+    public function testEveryEmailIsDeclaredInEveryLanguageTheBundleShips(): void
     {
         $templates = $this->provider()->getEmailTemplates();
 
         $this->assertSame(
-            [BookEmailTemplateProvider::RELEASE_ALERT_CONFIRMATION, BookEmailTemplateProvider::BOOK_RELEASED],
+            [
+                BookEmailTemplateProvider::RELEASE_ALERT_CONFIRMATION,
+                BookEmailTemplateProvider::BOOK_RELEASED,
+                BookEmailTemplateProvider::STRIP_RELEASE_ALERT_CONFIRMATION,
+                BookEmailTemplateProvider::STRIP_RELEASED,
+            ],
             array_keys($templates)
         );
 
@@ -63,7 +68,7 @@ class BookEmailTemplateProviderTest extends TestCase
      */
     public function testEveryPlaceholderIsOneTheServiceFillsIn(): void
     {
-        $filled = ['book_title', 'book_url', 'unsubscribe_url'];
+        $filled = ['book_title', 'book_url', 'strip_title', 'strip_url', 'unsubscribe_url'];
         $placed = [];
 
         foreach ($this->provider()->getEmailTemplates() as $blocksByLocale) {
@@ -91,6 +96,11 @@ class BookEmailTemplateProviderTest extends TestCase
 
             $this->assertSame('html', $blocks[2][0]);
             $this->assertStringContainsString('<a href="{{ unsubscribe_url }}">{{ unsubscribe_url }}</a>', (string) $blocks[2][3]);
+        }
+
+        // A planche's acknowledgement links the planche, with the variables BookReleaseAlertService fills for it
+        foreach ($this->provider()->getEmailTemplates()[BookEmailTemplateProvider::STRIP_RELEASE_ALERT_CONFIRMATION] as $blocks) {
+            $this->assertStringContainsString('<a href="{{ strip_url }}">{{ strip_title }}</a>', (string) $blocks[0][3]);
         }
     }
 

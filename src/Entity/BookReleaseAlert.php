@@ -14,10 +14,11 @@ use c975L\BookBundle\Repository\BookReleaseAlertRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-// One visitor waiting on one book coming out. Held against the book and not against an edition: a book is published once, in every format at once, where ShopBundle's stock alert waits on the item that ran out
+// One visitor waiting on one book or one planche coming out, never both. Held against the book and not against an edition: a book is published once, in every format at once, where ShopBundle's stock alert waits on the item that ran out
 #[ORM\Entity(repositoryClass: BookReleaseAlertRepository::class)]
 #[ORM\Table(name: 'book_release_alert')]
 #[ORM\UniqueConstraint(name: 'uniq_release_alert_book_email', columns: ['book_id', 'email'])]
+#[ORM\UniqueConstraint(name: 'uniq_release_alert_strip_email', columns: ['strip_id', 'email'])]
 class BookReleaseAlert
 {
     #[ORM\Id]
@@ -27,8 +28,13 @@ class BookReleaseAlert
 
     // The book deleted takes its waiting list with it: what nobody will read is not worth being told about
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Book $book = null;
+
+    // The planche waited on, in place of a book: same list, same e-mails, same purge
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Strip $strip = null;
 
     // The same length ShopBundle's stock alert gives its own address column, the two holding addresses of the same visitors
     #[ORM\Column(length: 100)]
@@ -72,6 +78,18 @@ class BookReleaseAlert
     public function setBook(?Book $book): self
     {
         $this->book = $book;
+
+        return $this;
+    }
+
+    public function getStrip(): ?Strip
+    {
+        return $this->strip;
+    }
+
+    public function setStrip(?Strip $strip): self
+    {
+        $this->strip = $strip;
 
         return $this;
     }

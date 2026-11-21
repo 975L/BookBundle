@@ -1,14 +1,15 @@
 {% extends 'layout.html.twig' %}
 {% trans_default_domain 'book' %}
 
-{# Defines specific variables #}
-{% set title = 'label.release_alert_title'|trans({'%book%': book.title}) %}
+{# Defines specific variables - the book or the planche waited on, whichever the page was opened for #}
+{% set awaited = book ?? strip %}
+{% set title = 'label.release_alert_title'|trans({'%book%': awaited.title}) %}
 
 {# Nothing here is worth finding through a search engine, and the page carries a session-bound form #}
 {% set robots = 'noindex, follow' %}
 
 {% block content %}
-    <p class="text lead">{{ 'label.release_alert_intro'|trans({'%book%': book.title}) }}</p>
+    <p class="text lead">{{ 'label.release_alert_intro'|trans({'%book%': awaited.title}) }}</p>
 
     {{ form_start(form) }}
         {# The errors bound to no field - an expired token, say - without which the page redisplays saying nothing #}

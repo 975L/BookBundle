@@ -14,6 +14,7 @@ use c975L\BookBundle\Controller\BookReleaseAlertController;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookReleaseAlert;
 use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookReleaseAlertServiceInterface;
 use c975L\BookBundle\Service\BookTranslator;
@@ -235,6 +236,50 @@ class BookReleaseAlertControllerTest extends TestCase
 
         $this->createController($this->createStub(BookReleaseAlertServiceInterface::class))
             ->new($this->request(), $this->book())
+        ;
+    }
+
+    private function strip(?string $published = '+3 days'): Strip
+    {
+        return new Strip()
+            ->setTitle('La planche')
+            ->setSlug('la-planche')
+            ->setPublished(null === $published ? null : new \DateTimeImmutable($published))
+        ;
+    }
+
+    // A planche dated ahead takes the same form, and subscribes through its own door, answering with the planche's own words when refused
+    public function testAPlancheStillToComeSubscribesThroughItsOwnDoor(): void
+    {
+        $releaseAlertService = $this->createMock(BookReleaseAlertServiceInterface::class);
+        $releaseAlertService->expects($this->once())->method('subscribeToStrip')->willReturn(false);
+        $releaseAlertService->expects($this->never())->method('subscribe');
+        $controller = $this->createController($releaseAlertService, form: $this->form(true));
+        $session = $this->session();
+
+        $controller->newStrip($this->request('GET', $session), $strip = $this->strip());
+        $response = $controller->newStrip($this->request('POST', $session, true), $strip);
+
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame(['text.strip_release_alert_unavailable'], $session->getFlashBag()->get('warning'));
+    }
+
+    // An undated planche is a draft its own page answers 404 for: this one does not let it be found either
+    public function testAnUndatedPlancheIsNotFound(): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        $this->createController($this->createStub(BookReleaseAlertServiceInterface::class))
+            ->newStrip($this->request(), $this->strip(null))
+        ;
+    }
+
+    public function testAPlancheSetAsideIsNotFound(): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        $this->createController($this->createStub(BookReleaseAlertServiceInterface::class))
+            ->newStrip($this->request(), $this->strip()->setSerie(new Serie()->setHidden(true)))
         ;
     }
 

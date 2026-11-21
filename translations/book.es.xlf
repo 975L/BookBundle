@@ -686,6 +686,10 @@
                 <source>description.guided_step_book_strip_creation_open</source>
                 <target>La lista de todas las páginas, desde donde se crea la siguiente.</target>
             </trans-unit>
+            <trans-unit id="DlIbzRk">
+                <source>description.guided_step_book_strip_creation_published</source>
+                <target>Una fecha futura mantiene la página fuera de las listas: su página la anuncia con su fecha y ofrece a los lectores recibir un aviso de su publicación.</target>
+            </trans-unit>
             <trans-unit id="JL9wRS1">
                 <source>description.guided_step_book_strip_creation_serie</source>
                 <target>La serie es lo que permite leerla a continuación de las demás, y la ruta de navegación remonta a ella.</target>
@@ -2422,6 +2426,10 @@
                 <source>label.guided_step_book_strip_creation_open</source>
                 <target>Abra las páginas</target>
             </trans-unit>
+            <trans-unit id="ibSAfpH">
+                <source>label.guided_step_book_strip_creation_published</source>
+                <target>Fechar la publicación</target>
+            </trans-unit>
             <trans-unit id="Lvu9crm">
                 <source>label.guided_step_book_strip_creation_save</source>
                 <target>Guarde</target>
@@ -2924,7 +2932,7 @@
             </trans-unit>
             <trans-unit id="5VP4hMt">
                 <source>label.release_alert_email_help</source>
-                <target>Solo sirve para avisarle de la publicación de este libro.</target>
+                <target>Solo sirve para avisarle de esta publicación.</target>
             </trans-unit>
             <trans-unit id="8_vS6eM">
                 <source>label.release_alert_intro</source>
@@ -3066,6 +3074,26 @@
                 <source>label.strip_page</source>
                 <target>Página completa</target>
             </trans-unit>
+            <trans-unit id="Ek58H82">
+                <source>label.strip_read_serie</source>
+                <target>Leer las páginas de %serie%</target>
+            </trans-unit>
+            <trans-unit id="ggs_2Ko">
+                <source>label.strip_released_intro</source>
+                <target>Pidió que le avisáramos de la publicación de %strip%: ya está en línea.</target>
+            </trans-unit>
+            <trans-unit id="uiP2FBD">
+                <source>label.strip_released_last</source>
+                <target>Este es el único mensaje que recibirá sobre esta página, y su dirección acaba de ser eliminada de la lista.</target>
+            </trans-unit>
+            <trans-unit id="MDSgnQp">
+                <source>label.strip_released_read</source>
+                <target>Leer la página</target>
+            </trans-unit>
+            <trans-unit id="PKyQJzb">
+                <source>label.strip_released_subject</source>
+                <target>Ya está publicada la página que esperaba</target>
+            </trans-unit>
             <trans-unit id="DSj269.">
                 <source>label.strip_search</source>
                 <target>Buscar una plancha</target>
@@ -3085,6 +3113,10 @@
             <trans-unit id="RyLMKF9">
                 <source>label.strip_social_reserved</source>
                 <target>Reservada %date%</target>
+            </trans-unit>
+            <trans-unit id="dMmVK80">
+                <source>label.strip_to_be_published</source>
+                <target>Página de próxima publicación</target>
             </trans-unit>
             <trans-unit id="D88P91q">
                 <source>label.strip_transcription</source>
@@ -3232,7 +3264,7 @@
             </trans-unit>
             <trans-unit id="dxjjuJP">
                 <source>text.release_alert_unsubscribe_confirm</source>
-                <target>Un clic y su dirección sale de esta lista de espera: no se le avisará de la publicación del libro.</target>
+                <target>Un clic y su dirección sale de esta lista de espera: no se le avisará de esta publicación.</target>
             </trans-unit>
             <trans-unit id="ofTxT19">
                 <source>text.release_alert_unsubscribed</source>
@@ -3241,6 +3273,18 @@
             <trans-unit id="7TID4un">
                 <source>text.series</source>
                 <target>Esta historia forma parte de nuestra serie</target>
+            </trans-unit>
+            <trans-unit id="vHINqha">
+                <source>text.strip_release_alert_already_published</source>
+                <target>Esta página ya está publicada: puede leerla ahora mismo.</target>
+            </trans-unit>
+            <trans-unit id="X24pGlU">
+                <source>text.strip_release_alert_unavailable</source>
+                <target>Esta página ya no está en línea, no se enviará ningún correo de publicación.</target>
+            </trans-unit>
+            <trans-unit id="qkILXsD">
+                <source>text.strip_release_date</source>
+                <target>Se publica el %date%</target>
             </trans-unit>
         </body>
     </file>

@@ -12,6 +12,7 @@ namespace c975L\BookBundle\Repository;
 
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookReleaseAlert;
+use c975L\BookBundle\Entity\Strip;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -31,18 +32,27 @@ class BookReleaseAlertRepository extends ServiceEntityRepository
         return $this->findOneBy(['book' => $book, 'email' => $email]);
     }
 
-    // The subscriptions whose book has come out, read in the database rather than filtered in PHP: the conditions are BookRepository::publishedQueryBuilder()'s own, so a book set aside, of a serie set aside, in the trash or replaced is not published and nobody is written to. Ordered by the refusals counted on each address first, a row whose send keeps failing going to the back rather than filling every batch (see BookReleaseAlert::$attempts)
+    // Same row for a planche, the unique constraint on (strip, email) leaving no second one either
+    public function findOneByStripAndEmail(Strip $strip, string $email): ?BookReleaseAlert
+    {
+        return $this->findOneBy(['strip' => $strip, 'email' => $email]);
+    }
+
+    // The subscriptions whose book or planche has come out, read in the database rather than filtered in PHP: the conditions are BookRepository's and StripRepository's publishedQueryBuilder() own, so what is set aside, of a serie set aside, in the trash or replaced is not published and nobody is written to. Ordered by the refusals counted on each address first, a row whose send keeps failing going to the back rather than filling every batch (see BookReleaseAlert::$attempts)
     /** @return BookReleaseAlert[] */
     public function findReleased(int $limit): array
     {
         return $this->createQueryBuilder('a')
-            ->innerJoin('a.book', 'b')
-            ->leftJoin('b.serie', 'serie')
-            ->andWhere('b.isDeleted = false')
-            ->andWhere('b.hidden = false')
-            ->andWhere('b.newerVersion IS NULL')
-            ->andWhere('serie IS NULL OR serie.hidden = false')
-            ->andWhere('b.published IS NOT NULL AND b.published <= :now')
+            ->leftJoin('a.book', 'b')
+            ->leftJoin('b.serie', 'bookSerie')
+            ->leftJoin('a.strip', 's')
+            ->leftJoin('s.serie', 'stripSerie')
+            ->andWhere(
+                '(b.id IS NOT NULL AND b.isDeleted = false AND b.hidden = false AND b.newerVersion IS NULL'
+                . ' AND (bookSerie IS NULL OR bookSerie.hidden = false) AND b.published IS NOT NULL AND b.published <= :now)'
+                . ' OR (s.id IS NOT NULL AND s.isDeleted = false AND s.hidden = false'
+                . ' AND (stripSerie IS NULL OR stripSerie.hidden = false) AND s.published IS NOT NULL AND s.published <= :now)'
+            )
             ->setParameter('now', new \DateTimeImmutable())
             ->orderBy('a.attempts', \SortDirection::Ascending)
             ->addOrderBy('a.id', \SortDirection::Ascending)
@@ -62,7 +72,7 @@ class BookReleaseAlertRepository extends ServiceEntityRepository
         ;
     }
 
-    // The waiting lists of books that never came out, dropped wholesale: an address kept for a parution that never happens is an address kept for nothing
+    // The waiting lists of books or planches that never came out, dropped wholesale: an address kept for a parution that never happens is an address kept for nothing
     public function deleteCreatedBefore(\DateTimeImmutable $retentionDate): int
     {
         return (int) $this->createQueryBuilder('a')

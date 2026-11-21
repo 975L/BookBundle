@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.38.0
+
+[BC-Break] MCP catalog tools, release alert on scheduled strips
+
+- `BookMcpProvider`: an agent lists and reads the books, adds a draft and writes its title and summary, with the rights of its token's account (21/11/2026)
+- [BC-Break] A scheduled strip's page shows its title and date in a hero offering the release alert, `BookReleaseAlertServiceInterface::subscribeToStrip()` added (21/11/2026)
+
 ## v2.37.1
 
 A scheduled strip can be held by its teaser

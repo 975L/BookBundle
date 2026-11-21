@@ -2,6 +2,14 @@
 
 This document describes breaking changes and how to upgrade between major versions.
 
+## v2.38.0
+
+**A release alert can wait on a strip.** `book_release_alert` gets a nullable `strip_id` column and its unique
+index, and `book_id` becomes nullable: `doctrine:schema:update` (or a migration) does both. Run
+`php bin/console c975l:ui:email-templates:ensure` to seed `strip_release_alert_confirmation` and `strip_released`.
+**A class implementing `BookReleaseAlertServiceInterface`** adds `subscribeToStrip()`. **A site overriding
+`release_alert/new.html.twig`** reads `book ?? strip`, the page being opened for one or the other.
+
 ## v2.36.0
 
 **Entity dates are immutable** (same SQL columns, no migration): their getters return `\DateTimeImmutable`.

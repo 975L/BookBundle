@@ -610,6 +610,10 @@
                 <source>narration.guided_step_book_strip_creation_open</source>
                 <target>The panel takes you to the strips, the list where the next one is created.</target>
             </trans-unit>
+            <trans-unit id="6hvsliu">
+                <source>narration.guided_step_book_strip_creation_published</source>
+                <target>Date the release. A date to come keeps the strip off the lists: its page announces it with its date and offers readers to be told by e-mail the day it comes out.</target>
+            </trans-unit>
             <trans-unit id="yEIKblJ">
                 <source>narration.guided_step_book_strip_creation_save</source>
                 <target>Save with the button at the bottom of the form.</target>

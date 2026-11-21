@@ -19,7 +19,7 @@ class BookMaintenanceTaskProvider implements MaintenanceTaskProviderInterface
     public function getMaintenanceTasks(): array
     {
         return [
-            // Release alerts, nightly: a book is dated to the day, so it comes out at 00:00 and the first run of the night tells everyone waiting
+            // Release alerts, nightly: a book or a planche is dated to the day, so it comes out at 00:00 and the first run of the night tells everyone waiting
             new MaintenanceTask('# #(1-3) * * *', 'c975l:book:release-alerts:send'),
         ];
     }

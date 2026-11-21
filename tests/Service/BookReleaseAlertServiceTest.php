@@ -14,6 +14,7 @@ use c975L\BookBundle\Email\BookEmailTemplateProvider;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookReleaseAlert;
 use c975L\BookBundle\Entity\Serie;
+use c975L\BookBundle\Entity\Strip;
 use c975L\BookBundle\Repository\BookReleaseAlertRepository;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookReleaseAlertService;
@@ -26,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-// Who gets told a book is out, and who does not: the waiting list only accepts what is still to come, tells each subscriber once, and keeps nothing once it has
+// Who gets told a book or a planche is out, and who does not: the waiting list only accepts what is still to come, tells each subscriber once, and keeps nothing once it has
 class BookReleaseAlertServiceTest extends TestCase
 {
     /** @var EmailSendRequest[] */
@@ -124,6 +125,7 @@ class BookReleaseAlertServiceTest extends TestCase
             static fn (int $limit): array => array_slice($released, 0, $limit)
         );
         $repository->method('findOneByBookAndEmail')->willReturn($existing);
+        $repository->method('findOneByStripAndEmail')->willReturn($existing);
         $repository->method('deleteCreatedBefore')->willReturn(3);
 
         return $repository;
@@ -299,6 +301,58 @@ class BookReleaseAlertServiceTest extends TestCase
         $this->expectException(\LogicException::class);
 
         $service->notifyReleased(50);
+    }
+
+    private function strip(?string $published): Strip
+    {
+        return new Strip()
+            ->setTitle('La planche')
+            ->setSlug('la-planche')
+            ->setPublished(null === $published ? null : new \DateTimeImmutable($published))
+        ;
+    }
+
+    // A planche dated ahead is waited on like a book, and acknowledged with its own template and its own variables
+    public function testAPlancheStillToComeIsAcknowledgedWithItsOwnTemplate(): void
+    {
+        $service = $this->createService($this->repositoryReturning());
+
+        $this->assertTrue($service->subscribeToStrip($this->strip('+3 days'), 'waiting@example.org', 'fr'));
+
+        $this->assertInstanceOf(Strip::class, $this->persisted[0]->getStrip());
+        $this->assertNull($this->persisted[0]->getBook());
+        $variables = $this->rendered[BookEmailTemplateProvider::STRIP_RELEASE_ALERT_CONFIRMATION];
+        $this->assertSame('La planche', $variables['strip_title']);
+        $this->assertSame('https://example.org/livre/le-livre', $variables['strip_url']);
+    }
+
+    // Unlike a book, an undated planche is a draft and not one still to come: nothing is promised on it
+    public function testAPlancheUndatedOutOrSetAsideRefusesASubscription(): void
+    {
+        $service = $this->createService($this->repositoryReturning());
+
+        $this->assertFalse($service->subscribeToStrip($this->strip(null), 'waiting@example.org', 'fr'));
+        $this->assertFalse($service->subscribeToStrip($this->strip('today'), 'waiting@example.org', 'fr'));
+        $this->assertFalse($service->subscribeToStrip($this->strip('+3 days')->setHidden(true), 'waiting@example.org', 'fr'));
+        $this->assertFalse($service->subscribeToStrip($this->strip('+3 days')->setIsDeleted(true), 'waiting@example.org', 'fr'));
+        $this->assertFalse($service->subscribeToStrip($this->strip('+3 days')->setSerie(new Serie()->setHidden(true)), 'waiting@example.org', 'fr'));
+        $this->assertSame([], $this->sent);
+    }
+
+    // The parution of a planche goes out in the planche's own words, and the row goes with it
+    public function testAPlancheOutIsToldWithItsOwnTemplate(): void
+    {
+        $alert = new BookReleaseAlert()
+            ->setStrip($this->strip('-1 day'))
+            ->setEmail('waiting@example.org')
+            ->setLocale('fr')
+        ;
+        $service = $this->createService($this->repositoryReturning([$alert]));
+
+        $this->assertSame(1, $service->notifyReleased(50));
+        $this->assertArrayHasKey(BookEmailTemplateProvider::STRIP_RELEASED, $this->rendered);
+        $this->assertArrayNotHasKey(BookEmailTemplateProvider::BOOK_RELEASED, $this->rendered);
+        $this->assertSame([$alert], $this->removed);
     }
 
     public function testTheStaleSubscriptionsArePurged(): void
