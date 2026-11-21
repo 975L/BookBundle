@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.38.1
+
+php-http/discovery plugin allowed
+
+- `php-http/discovery` plugin allowed in `allow-plugins`, so `composer qa` no longer stops on its prompt (21/11/2026)
+
 ## v2.38.0
 
 [BC-Break] MCP catalog tools, release alert on scheduled strips
