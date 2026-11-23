@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.38.3
+
+README opened on a short overview for humans
+
+- README opened on a short overview for humans, the reference folded below it (23/11/2026)
+
 ## v2.38.2
 
 Book edited by an agent named after its account

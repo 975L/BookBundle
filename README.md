@@ -1,28 +1,60 @@
 # BookBundle
 
-Symfony bundle providing a publisher's catalog of books and series on the c975L core — media, video, press and marketing collections, EasyAdmin CRUD, public listings growing on scroll, multilingual editions and its own sitemap.
-
 [![GitHub](https://img.shields.io/github/license/975L/BookBundle)](https://github.com/975L/BookBundle/blob/main/LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/c975l/book-bundle)](https://packagist.org/packages/c975l/book-bundle)
 [![PHP Version](https://img.shields.io/packagist/php-v/c975l/book-bundle)](https://packagist.org/packages/c975l/book-bundle)
 [![Codacy Grade](https://app.codacy.com/project/badge/Grade/a9a849a68d024496875550ae58ab4c2d)](https://app.codacy.com/gh/975L/BookBundle/dashboard)
 
+![BookBundle](.github/images/BookBundle.svg)
+
+**A publisher's catalog of books and series on your site, with a page for each book, kept up to date from the back office.**
+
 **[Bundle page](https://bundles.975l.com/en/pages/book-bundle) · [Tutorials](https://bundles.975l.com/en/tutoriels/book-bundle) · [Block kinds](https://bundles.975l.com/en/pages/blocks/Book) · [Live demo](https://bundles.975l.com/demo/) · [Demo back-office](https://bundles.975l.com/demo/login)**
 
-## Why BookBundle
+> **TL;DR** — BookBundle adds a catalog of books and series to a c975L site: a page for each book, listings, editions in several languages and its own sitemap, all edited from the back office. It rests only on CoreBundle, so it drops into any c975L site without SiteBundle, ShopBundle or any other satellite bundle. Install it with Composer, then follow the installation steps below.
 
-![BookBundle](.github/images/BookBundle.svg)
+## What you get
+
+- Books and series, each with its own page, and listings that grow as the visitor scrolls
+- Pictures, videos, press and marketing material attached to each book
+- Every published form of a book (paperback, ebook, audiobook) with its own ISBN
+- The whole catalog translated into every language the site declares
+- Authors, illustrators and narrators recorded once, each with a page listing what they signed
+- Readers told by e-mail the day a forthcoming book comes out
+- Books, series and strips shown on any page through blocks
+- A sitemap, Atom feeds and an ONIX feed for bookshops and distributors
+
+## Quick start
+
+```bash
+composer require c975l/book-bundle
+```
+
+The full [installation](#installation) section below walks through the remaining steps.
+
+## For AI agents
+
+- **Skills** — read straight from `vendor/` by the coding agent of the site installing this bundle (see [AI agent skills](#ai-agent-skills)):
+  - [c975l-book-display-pages](skills/c975l-book-display-pages/SKILL.md) — the public pages, their sections and the components a site overrides
+  - [c975l-book-customization](skills/c975l-book-customization/SKILL.md) — the site's own vocabulary, what its catalog lists, the platforms and the url prefixes
+  - [c975l-book-lifecycle](skills/c975l-book-lifecycle/SKILL.md) — new versions, duplicating, the trash, and the export and import
+- **MCP** — an AI agent works with the catalog through the site's MCP endpoint (CoreBundle's `/api/mcp`), with the rights of its token's account: `book_list`, `book_get`, `book_create`, `book_edit` (see [MCP tools](#mcp-tools)).
+
+## Reference
+
+<details>
+<summary>Contents</summary>
+
+- **Setup** — [requirements](#requirements) · [installation](#installation) · [configuration](#load-the-configuration) · [routes](#enable-routes) · [assets](#install-assets)
+- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [display pages](#display-pages) · [categories](#categories) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [publishing a strip from a manifest](#publishing-a-strip-from-a-manifest) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [publishing a new version](#publishing-a-new-version-of-a-book) · [telling readers a book is out](#telling-readers-a-book-is-out) · [posting on social networks](#posting-the-catalog-on-social-networks) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [documents to print](#documents-to-print) · [drawings to colour on screen](#drawings-to-colour-on-screen) · [structured data](#structured-data) · [ONIX feed](#onix-feed) · [Google Play Books feed](#google-play-books-feed) · [edition files and channels](#edition-files-and-channels) · [sitemap](#sitemap) · [Atom feeds](#atom-feeds) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup) · [MCP tools](#mcp-tools) · [AI agent skills](#ai-agent-skills)
+
+</details>
+
+## Why BookBundle
 
 Add BookBundle on top of the [c975L core](https://github.com/975L/CoreBundle) to get a publishing catalog — no dependency on SiteBundle, ShopBundle, SocialBundle or any other satellite bundle, so it drops into any c975L site that needs one. Media collections, admin CRUD and export reuse the core's shared mechanisms rather than duplicating them.
 
 ---
-
-> **TL;DR** — A publishing catalog of books and series, each book carrying media, video, press and marketing sub-collections, with EasyAdmin CRUD, public listings growing on scroll and a dedicated sitemap. Depends only on the c975L core, so it drops into any c975L site.
-
-## Contents
-
-- **Setup** — [requirements](#requirements) · [installation](#installation) · [configuration](#load-the-configuration) · [routes](#enable-routes) · [assets](#install-assets)
-- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [structured data](#structured-data) · [ONIX feed](#onix-feed) · [Google Play Books feed](#google-play-books-feed) · [edition files and channels](#edition-files-and-channels) · [sitemap](#sitemap) · [Atom feeds](#atom-feeds) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup)
 
 ## Features
 
