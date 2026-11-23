@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.38.4
+
+README's details and summary elements allowed by markdownlint
+
+- `.markdownlint.json` allows the `details` and `summary` elements the README folds its reference in, as CoreBundle's does (23/11/2026)
+
 ## v2.38.3
 
 README opened on a short overview for humans
