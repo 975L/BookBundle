@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.38.2
+
+Book edited by an agent named after its account
+
+- `book_edit` names the token's account as the book's last editor, as the back office does (23/11/2026)
+- The MCP instructions and the edit tool say an edit of a book already shown appears on the site at once (23/11/2026)
+
 ## v2.38.1
 
 php-http/discovery plugin allowed

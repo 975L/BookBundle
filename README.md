@@ -1180,7 +1180,7 @@ of them sharing a photograph would read as a bug.
 
 ## MCP tools
 
-The catalog brings its tools to the site's MCP endpoint, `/api/mcp`, which c975l/core-bundle serves and opens (see its README, "Opening the site to AI agents"): `Mcp\BookMcpProvider`, under the `book` key of the agent tokens, for an account holding `site-role-editor` as on the back office.
+The catalog brings its tools to the site's MCP endpoint, `/api/mcp`, which c975l/core-bundle serves and opens (see its README, "Opening the site to AI agents"): `Mcp\BookMcpProvider`, under the `book` key of the agent tokens, for an account holding `site-role-editor` as on the back office. An agent's edit of a book already visible shows on the site at once, as an editor's would; what it adds stays hidden until a human publishes it.
 
 | Tool | Does |
 | --- | --- |

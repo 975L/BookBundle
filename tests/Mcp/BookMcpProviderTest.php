@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Tests\Mcp;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Mcp\BookMcpProvider;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\ConfigBundle\Contract\UserInterface;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Mcp\Server\Exception\ToolCallException;
@@ -22,12 +23,20 @@ use Symfony\Component\Clock\MockClock;
 
 class BookMcpProviderTest extends TestCase
 {
+    private UserInterface $user;
+
+    protected function setUp(): void
+    {
+        $this->user = $this->createStub(UserInterface::class);
+    }
+
     // The tools named under the "book" key, the writing ones flagged
     public function testTools(): void
     {
         $tools = iterator_to_array($this->provider()->getMcpTools(), false);
 
         $this->assertSame('book', $this->provider()->getMcpKey());
+        $this->assertStringContainsString('at once', $this->provider()->getMcpInstructions());
         $this->assertSame(['book_list', 'book_get', 'book_create', 'book_edit'], array_map(static fn ($tool): string => $tool->name, $tools));
         $this->assertSame([false, false, true, true], array_map(static fn ($tool): bool => $tool->writes, $tools));
     }
@@ -47,6 +56,7 @@ class BookMcpProviderTest extends TestCase
         $this->assertInstanceOf(Book::class, $persisted[0]);
         $this->assertNull($persisted[0]->getPublished());
         $this->assertSame('summary-1', $persisted[0]->getSummary());
+        $this->assertSame($this->user, $persisted[0]->getUser());
 
         // A title giving no ascii letter falls back on "book", numbered like any other
         $this->assertSame('book-2', $this->provider($repository, $entityManager)->create('!!!')['slug']);
@@ -64,6 +74,7 @@ class BookMcpProviderTest extends TestCase
 
         $this->provider($repository)->edit(1, summary: 'summary-2');
         $this->assertSame(['item-1', 'summary-2'], [$book->getTitle(), $book->getSummary()]);
+        $this->assertSame($this->user, $book->getUser());
 
         $book->setIsDeleted(true);
         $this->expectException(ToolCallException::class);
@@ -84,6 +95,7 @@ class BookMcpProviderTest extends TestCase
         $config->method('get')->willReturn('ROLE_EDITOR');
         $security = $this->createStub(Security::class);
         $security->method('isGranted')->willReturn($granted);
+        $security->method('getUser')->willReturn($this->user);
 
         return new BookMcpProvider($repository ?? $this->createStub(BookRepository::class), $entityManager ?? $this->createStub(EntityManagerInterface::class), $config, $security, new MockClock('2026-11-21 10:00'));
     }

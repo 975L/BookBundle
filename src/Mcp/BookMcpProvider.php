@@ -44,7 +44,7 @@ class BookMcpProvider implements McpToolProviderInterface
 
     public function getMcpInstructions(): string
     {
-        return 'Books are the catalog of the site. A book added by an agent is a draft, without a publication day: a human publishes it from the back office.';
+        return 'Books are the catalog of the site. A book added by an agent is a draft, without a publication day: a human publishes it from the back office. An edit of a book the site already shows appears there at once.';
     }
 
     public function getMcpTools(): iterable
@@ -52,7 +52,7 @@ class BookMcpProvider implements McpToolProviderInterface
         yield new McpTool('book_list', 'Books', 'The books whose title holds the search words, every book without them, drafts included, the latest first.', $this->list(...));
         yield new McpTool('book_get', 'Book', 'A book: title, summary, number, serie, publication day (none for a draft).', $this->get(...));
         yield new McpTool('book_create', 'Add a draft book', 'Adds a book as a draft, with its title and an optional summary.', $this->create(...), true);
-        yield new McpTool('book_edit', 'Write a book', 'Changes only the title or summary given of a book.', $this->edit(...), true);
+        yield new McpTool('book_edit', 'Write a book', 'Changes only the title or summary given of a book, seen at once when the site already shows it.', $this->edit(...), true);
     }
 
     // The books whose title holds the words, every one without them, the trash left aside
@@ -103,21 +103,20 @@ class BookMcpProvider implements McpToolProviderInterface
             throw new ToolCallException('The title is empty.');
         }
         $now = $this->clock->now();
-        $user = $this->security->getUser();
         $book = new Book()
             ->setTitle($title)
             ->setSlug($this->slug($title))
             ->setSummary('' === trim((string) $summary) ? null : trim((string) $summary))
             ->setCreation($now)
             ->setModification($now)
-            ->setUser($user instanceof UserInterface ? $user : null);
+            ->setUser($this->currentUser());
         $this->entityManager->persist($book);
         $this->entityManager->flush();
 
         return ['id' => $book->getId(), 'slug' => $book->getSlug()];
     }
 
-    // A book's title or summary changed, only those given, an empty summary clearing it
+    // A book's title or summary changed, only those given, an empty summary clearing it, the account named as its last editor as on the back office
     /**
      * @param int     $book    id of the book
      * @param ?string $title   new title
@@ -134,7 +133,7 @@ class BookMcpProvider implements McpToolProviderInterface
         if (null !== $summary) {
             $found->setSummary('' === trim($summary) ? null : trim($summary));
         }
-        $found->setModification($this->clock->now());
+        $found->setModification($this->clock->now())->setUser($this->currentUser());
         $this->entityManager->flush();
 
         return ['id' => $found->getId()];
@@ -146,6 +145,14 @@ class BookMcpProvider implements McpToolProviderInterface
         if (!$this->security->isGranted((string) $this->configService->get('site-role-editor'))) {
             throw new ToolCallException('This account may not work on the books.');
         }
+    }
+
+    // The token's account, when the application's User entity implements the c975L one
+    private function currentUser(): ?UserInterface
+    {
+        $user = $this->security->getUser();
+
+        return $user instanceof UserInterface ? $user : null;
     }
 
     // A book by its id, one in the trash answering as unknown

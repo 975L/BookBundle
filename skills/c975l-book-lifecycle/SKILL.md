@@ -352,4 +352,4 @@ php bin/console c975l:health-check:run --kind=files-book
 
 ## An agent adding a draft
 
-`Mcp\BookMcpProvider` (key `book`, `McpToolProviderInterface` of c975l/core-bundle) gives the site's `/api/mcp` four tools behind `site-role-editor`: `book_list` and `book_get` read the catalog, trash left aside; `book_create` adds a book without a `published` day (a draft), its slug from `AsciiSlugger` kept unique by a number; `book_edit` writes only the title or summary given. Nothing an agent does publishes a book.
+`Mcp\BookMcpProvider` (key `book`, `McpToolProviderInterface` of c975l/core-bundle) gives the site's `/api/mcp` four tools behind `site-role-editor`: `book_list` and `book_get` read the catalog, trash left aside; `book_create` adds a book without a `published` day (a draft), its slug from `AsciiSlugger` kept unique by a number; `book_edit` writes only the title or summary given; both name the token's account as the book's user, as the back office does. Nothing an agent does publishes a book.
