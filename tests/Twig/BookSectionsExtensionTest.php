@@ -18,6 +18,7 @@ use c975L\BookBundle\Entity\BookMarketing;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\BookPresse;
 use c975L\BookBundle\Entity\BookPrintable;
+use c975L\BookBundle\Entity\BookVideo;
 use c975L\BookBundle\Entity\Character;
 use c975L\BookBundle\Entity\CharacterMedia;
 use c975L\BookBundle\Entity\Serie;
@@ -215,6 +216,26 @@ class BookSectionsExtensionTest extends TestCase
         $this->assertContains('podcasts', $this->anchors($book));
     }
 
+    // A book still to come shows neither its pages nor its videos: the hero's buttons to them would point at nothing
+    public function testNeitherPagesNorVideosOpenASectionOnABookToCome(): void
+    {
+        $book = new Book()->setPublished(new \DateTimeImmutable('+1 year'));
+        $book->addPage(new BookMedia()->setName('page-1.webp'));
+        $book->addVideo(new BookVideo()->setName('film.mp4'));
+
+        $this->assertSame(['informations'], $this->anchors($book));
+    }
+
+    // Once out, both are offered
+    public function testPagesAndVideosOpenTheirSectionsOnceTheBookIsOut(): void
+    {
+        $book = new Book()->setPublished(new \DateTimeImmutable('-1 day'));
+        $book->addPage(new BookMedia()->setName('page-1.webp'));
+        $book->addVideo(new BookVideo()->setName('film.mp4'));
+
+        $this->assertSame(['pages', 'apercu', 'informations'], $this->anchors($book));
+    }
+
     // A book is read in its own language, whatever the language the visitor reached it in
     public function testTheLabelsAreTranslatedInTheBooksOwnLanguage(): void
     {
@@ -314,7 +335,7 @@ class BookSectionsExtensionTest extends TestCase
     // The pages are a collection of their own (Book::getPages()), uploaded on their own field: a recording does not enter it
     public function testThePagesAreTheirOwnCollection(): void
     {
-        $book = new Book();
+        $book = new Book()->setPublished(new \DateTimeImmutable('-1 day'));
         $book->addAudio(new BookMedia()->setName('histoire.mp3'));
 
         $this->assertNotContains('pages', $this->anchors($book));

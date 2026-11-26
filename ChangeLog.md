@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.40.1
+
+No read nor watch button before a book is out
+
+- The hero offers no « Read » nor « Watch » button on a book not out yet, its pages and videos waiting for its day (26/11/2026)
+
 ## v2.40.0
 
 New version of a book published on its day

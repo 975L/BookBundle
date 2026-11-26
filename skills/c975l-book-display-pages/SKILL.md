@@ -149,10 +149,10 @@ They all live in `templates/components/` and are overridden in
 | --- | --- |
 | `<twig:c975LBook:Book:Hero>` | the opening — cover (flipped over on a click given a fourth), backdrop, eyebrow, title, a button per section reached from there |
 | `<twig:c975LBook:Book:Resume>` | the sentence under the hero |
-| `<twig:c975LBook:Book:Pages>` | the pages, in UiBundle's slider |
+| `<twig:c975LBook:Book:Pages>` | the pages, in UiBundle's slider — the section, and its button in the hero, absent while `isToBePublished()` |
 | `<twig:c975LBook:Book:Flipbook>` | the video turning them, under the hero and outside any card |
 | `<twig:c975LBook:Book:Podcasts>` | one card for everything the book is listened to by, plus a link to `book_listen` when the book carries timecodes and pages. While `isToBePublished()`: the podcast apps alone, no player and no download, and the section goes when no link is left |
-| `<twig:c975LBook:Book:Videos>` | one card for everything it is watched by |
+| `<twig:c975LBook:Book:Videos>` | one card for everything it is watched by — the section, and its button in the hero, absent while `isToBePublished()` |
 | `<twig:c975LBook:Book:Shops>` | the bookshops, the site's own shop first and in the site colour — titled "Get it free" rather than "Buy" when `Book::isFree()` (a digital edition whose public price is 0) |
 | `<twig:c975LBook:Book:Printables>` | the documents to print in one centred grid, in the order of the levels (`book_printables_by_kind()`), each `Book:Printable` a thumbnail cut from the PDF, captioned by its level (else its title, which stays its alt) and opening the PDF in a new tab — the section right before the informations, absent from a book holding none out today (`getPublishedPrintables()`, a `BookPrintable` dated ahead waiting for its `publishedOn`) or still `isToBePublished()` |
 | `<twig:c975LBook:Book:Informations>` | the framed civil status — author, illustrator, everyone else the book credits, serie, editions, languages, versions |

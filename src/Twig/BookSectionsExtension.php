@@ -61,12 +61,12 @@ class BookSectionsExtension
         $sections = array_merge(
             // The summary is no section: it is the sentence the book opens on, printed under the hero by the page itself (Book:Resume) - with no title and no anchor, it has nothing to do in the table of contents
             $this->sections([
-                // The pages the book shows (Book::getPages())
-                'pages' => ['label.read', !$book->getPages()->isEmpty()],
+                // The pages the book shows (Book::getPages()), once it is out as the component prints them
+                'pages' => ['label.read', !$book->isToBePublished() && !$book->getPages()->isEmpty()],
                 // Where the book is listened to: the recording itself once the book is out, as much as the platforms carrying it, the card holding both
                 'podcasts' => ['label.podcasts', (!$book->isToBePublished() && [] !== self::audioMedias($book)) || [] !== $this->customizationRegistry->getLinksOf($book, 'audio') || [] !== $this->customizationRegistry->getLinksOf($book, 'podcast')],
-                // The videos the book holds as files, and the platforms it is watched on - one card, the way the stores and the podcast apps share theirs. The "video" group had a name and a place in the vocabulary and was printed by nothing
-                'apercu' => ['label.watch', !$book->getVideos()->isEmpty() || [] !== $this->customizationRegistry->getLinksOf($book, 'video')],
+                // The videos the book holds as files, and the platforms it is watched on - one card, the way the stores and the podcast apps share theirs, printed once the book is out
+                'apercu' => ['label.watch', !$book->isToBePublished() && (!$book->getVideos()->isEmpty() || [] !== $this->customizationRegistry->getLinksOf($book, 'video'))],
             ], $locale),
             $this->sections([
                 // Where a book not yet paid for is helped along, which comes before where a book already out is bought
