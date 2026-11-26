@@ -11,8 +11,10 @@
 namespace c975L\BookBundle\Tests\Mcp;
 
 use c975L\BookBundle\Entity\Book;
+use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Mcp\BookMcpProvider;
 use c975L\BookBundle\Repository\BookRepository;
+use c975L\BookBundle\Repository\SerieRepository;
 use c975L\ConfigBundle\Contract\UserInterface;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -65,6 +67,59 @@ class BookMcpProviderTest extends TestCase
         $this->provider($repository, $entityManager)->create(' ');
     }
 
+    // A draft placed by its number, language and serie, linked both ways to the book it translates
+    public function testCreateTranslation(): void
+    {
+        $source = new Book()->setTitle('item-1')->setLanguage('fr');
+        $serie = new Serie();
+        $repository = $this->createStub(BookRepository::class);
+        $repository->method('find')->willReturn($source);
+        $series = $this->createStub(SerieRepository::class);
+        $series->method('find')->willReturn($serie);
+        $persisted = [];
+        $entityManager = $this->createStub(EntityManagerInterface::class);
+        $entityManager->method('persist')->willReturnCallback(static function (object $entity) use (&$persisted): void {
+            $persisted[] = $entity;
+        });
+
+        $this->provider($repository, $entityManager, series: $series)->create('item-2', number: 2, language: 'en', serie: 1, translates: 1);
+        $book = $persisted[0];
+        $this->assertSame([2, 'en', $serie, $source, $book], [$book->getNumber(), $book->getLanguage(), $book->getSerie(), $book->getTranslationBook(), $source->getTranslationBook()]);
+        $this->assertNull($book->getPublished());
+        $read = $this->provider($this->repositoryFinding($book))->get(1);
+        $this->assertSame(['en', null, null], [$read['language'], $read['serieId'], $read['translates']]);
+
+        // A book already naming its translation keeps it
+        $other = new Book();
+        $source->setTranslationBook($other);
+        $this->provider($repository, $entityManager, series: $series)->create('item-3', translates: 1);
+        $this->assertSame($other, $source->getTranslationBook());
+    }
+
+    // A language the back office does not offer is refused
+    public function testCreateRefusesAnUnknownLanguage(): void
+    {
+        $this->expectException(ToolCallException::class);
+        $this->provider()->create('item-1', language: 'xx');
+    }
+
+    // An unknown serie is refused
+    public function testCreateRefusesAnUnknownSerie(): void
+    {
+        $this->expectException(ToolCallException::class);
+        $this->provider()->create('item-1', serie: 1);
+    }
+
+    // A serie in the trash is refused as unknown
+    public function testCreateRefusesASerieInTheTrash(): void
+    {
+        $series = $this->createStub(SerieRepository::class);
+        $series->method('find')->willReturn(new Serie()->setIsDeleted(true));
+
+        $this->expectException(ToolCallException::class);
+        $this->provider(series: $series)->create('item-1', serie: 1);
+    }
+
     // Only the fields given change, a book in the trash answering as unknown
     public function testEdit(): void
     {
@@ -81,6 +136,37 @@ class BookMcpProviderTest extends TestCase
         $this->provider($repository)->edit(1, title: 'item-2');
     }
 
+    // A book placed again by its number, language and serie, linked both ways to the book it translates, what is not given kept
+    public function testEditPlacesTheBook(): void
+    {
+        $serie = new Serie();
+        $book = new Book()->setTitle('item-1')->setNumber(1)->setLanguage('fr');
+        $source = new Book()->setTitle('item-0');
+        $repository = $this->createStub(BookRepository::class);
+        $repository->method('find')->willReturnCallback(static fn (int $id): Book => 1 === $id ? $book : $source);
+        $series = $this->createStub(SerieRepository::class);
+        $series->method('find')->willReturn($serie);
+
+        $this->provider($repository, series: $series)->edit(1, language: 'en', serie: 3, translates: 2);
+        $this->assertSame([1, 'en', $serie, $source, $book], [$book->getNumber(), $book->getLanguage(), $book->getSerie(), $book->getTranslationBook(), $source->getTranslationBook()]);
+        $this->provider($repository, series: $series)->edit(1, number: 2);
+        $this->assertSame([2, 'en', $serie], [$book->getNumber(), $book->getLanguage(), $book->getSerie()]);
+    }
+
+    // A language the back office does not offer or a book translating itself is refused
+    public function testEditRefusesWhatTheCatalogCannotHold(): void
+    {
+        $repository = $this->repositoryFinding(new Book()->setTitle('item-1'));
+        try {
+            $this->provider($repository)->edit(1, language: 'xx');
+            $this->fail('An unknown language is refused.');
+        } catch (ToolCallException) {
+        }
+
+        $this->expectException(ToolCallException::class);
+        $this->provider($repository)->edit(1, translates: 1);
+    }
+
     // An account that does not edit the catalog is refused every tool
     public function testRefusedWithoutTheRole(): void
     {
@@ -88,8 +174,17 @@ class BookMcpProviderTest extends TestCase
         $this->provider(granted: false)->list();
     }
 
+    // A repository finding the given book by any id
+    private function repositoryFinding(Book $book): BookRepository
+    {
+        $repository = $this->createStub(BookRepository::class);
+        $repository->method('find')->willReturn($book);
+
+        return $repository;
+    }
+
     // The provider for an account editing the catalog or not
-    private function provider(?BookRepository $repository = null, ?EntityManagerInterface $entityManager = null, bool $granted = true): BookMcpProvider
+    private function provider(?BookRepository $repository = null, ?EntityManagerInterface $entityManager = null, bool $granted = true, ?SerieRepository $series = null): BookMcpProvider
     {
         $config = $this->createStub(ConfigServiceInterface::class);
         $config->method('get')->willReturn('ROLE_EDITOR');
@@ -97,6 +192,6 @@ class BookMcpProviderTest extends TestCase
         $security->method('isGranted')->willReturn($granted);
         $security->method('getUser')->willReturn($this->user);
 
-        return new BookMcpProvider($repository ?? $this->createStub(BookRepository::class), $entityManager ?? $this->createStub(EntityManagerInterface::class), $config, $security, new MockClock('2026-11-21 10:00'));
+        return new BookMcpProvider($repository ?? $this->createStub(BookRepository::class), $series ?? $this->createStub(SerieRepository::class), $entityManager ?? $this->createStub(EntityManagerInterface::class), $config, $security, new MockClock('2026-11-21 10:00'));
     }
 }

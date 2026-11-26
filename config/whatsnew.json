@@ -1,5 +1,20 @@
 [
     {
+        "date": "2026-11-26",
+        "description": [
+            {
+                "en": "A book, its editions, their ISBN, prices, channels and files can be published from a manifest by a script, scheduled on its day and sent to the shop, the ONIX feed and Google Play Books as if saved in the back office.",
+                "fr": "Un livre, ses éditions, leurs ISBN, prix, canaux et fichiers peuvent être publiés depuis un manifeste par un script, programmés à leur jour et envoyés à la boutique, au flux ONIX et à Google Play Livres comme s'ils étaient enregistrés au back-office.",
+                "es": "Un libro, sus ediciones, sus ISBN, precios, canales y archivos pueden publicarse desde un manifiesto mediante un script, programados para su día y enviados a la tienda, al flujo ONIX y a Google Play Libros como si se guardaran en el back-office."
+            },
+            {
+                "en": "An AI agent adding or editing a book can also give its number, its language, its serie and the book it translates, the two then linked to each other as translations.",
+                "fr": "Un agent IA qui ajoute ou modifie un livre peut aussi lui donner son numéro, sa langue, sa série et le livre qu'il traduit, les deux étant alors liés l'un à l'autre comme traductions.",
+                "es": "Un agente de IA que añade o modifica un libro también puede darle su número, su idioma, su serie y el libro que traduce, quedando ambos enlazados entre sí como traducciones."
+            }
+        ]
+    },
+    {
         "date": "2026-11-21",
         "description": [
             {

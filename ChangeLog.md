@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.39.0
+
+Book published from a manifest, draft placed by its translation
+
+- `c975l:book:publish <manifest.json>` creates or updates a book with its medias and editions, visible from its day, then writes it into the shop (26/11/2026)
+- `Book::LANGUAGES` names the languages a book is written in (26/11/2026)
+- `Book::translates()` links a book to the one it translates, and that one back while it names none (26/11/2026)
+- `book_create` takes a book's number, language, serie and the book it translates, the two linked both ways (26/11/2026)
+- `book_edit` changes a book's number, language, serie and the book it translates too (26/11/2026)
+- `book_list` and `book_get` give a book's language, `book_get` the id of its serie and the book it translates (26/11/2026)
+
 ## v2.38.5
 
 README banner centred, showcase film shown

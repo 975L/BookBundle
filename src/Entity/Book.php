@@ -37,6 +37,9 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     use HideableTrait;
     use TrashableTrait;
 
+    // Languages a book is written in, those the back office offers
+    public const array LANGUAGES = ['fr', 'en', 'es'];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -962,6 +965,17 @@ class Book implements HasBlocksInterface, TrashableInterface, \Stringable
     public function setTranslationBook(?self $translationBook): self
     {
         $this->translationBook = $translationBook;
+
+        return $this;
+    }
+
+    // Linked to the book it translates, and that one back to it while it names no other
+    public function translates(self $source): self
+    {
+        $this->translationBook = $source;
+        if (null === $source->getTranslationBook()) {
+            $source->setTranslationBook($this);
+        }
 
         return $this;
     }

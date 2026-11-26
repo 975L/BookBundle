@@ -49,7 +49,7 @@ The full [installation](#installation) section below walks through the remaining
 ### Contents
 
 - **Setup** — [requirements](#requirements) · [installation](#installation) · [configuration](#load-the-configuration) · [routes](#enable-routes) · [assets](#install-assets)
-- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [display pages](#display-pages) · [categories](#categories) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [publishing a strip from a manifest](#publishing-a-strip-from-a-manifest) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [publishing a new version](#publishing-a-new-version-of-a-book) · [telling readers a book is out](#telling-readers-a-book-is-out) · [posting on social networks](#posting-the-catalog-on-social-networks) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [documents to print](#documents-to-print) · [drawings to colour on screen](#drawings-to-colour-on-screen) · [structured data](#structured-data) · [ONIX feed](#onix-feed) · [Google Play Books feed](#google-play-books-feed) · [edition files and channels](#edition-files-and-channels) · [sitemap](#sitemap) · [Atom feeds](#atom-feeds) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup) · [MCP tools](#mcp-tools) · [AI agent skills](#ai-agent-skills)
+- **Using it** — [public routes](#routes) · [translating the catalog](#translating-the-catalog) · [display pages](#display-pages) · [categories](#categories) · [who peoples a serie](#who-peoples-a-serie) · [editions](#editions) · [publishing a strip from a manifest](#publishing-a-strip-from-a-manifest) · [publishing a book from a manifest](#publishing-a-book-from-a-manifest) · [duplicating](#duplicating-a-book-a-serie-or-a-strip) · [publishing a new version](#publishing-a-new-version-of-a-book) · [telling readers a book is out](#telling-readers-a-book-is-out) · [posting on social networks](#posting-the-catalog-on-social-networks) · [trash, redirects and 410](#trash-redirects-and-410) · [setting a row aside](#setting-a-row-aside) · [customizing the catalog](#customizing-the-catalog) · [links](#links) · [ISBN filter](#isbn-filter) · [blocks](#blocks) · [documents to print](#documents-to-print) · [drawings to colour on screen](#drawings-to-colour-on-screen) · [structured data](#structured-data) · [ONIX feed](#onix-feed) · [Google Play Books feed](#google-play-books-feed) · [edition files and channels](#edition-files-and-channels) · [sitemap](#sitemap) · [Atom feeds](#atom-feeds) · [health check](#health-check) · [export / import](#export--import-the-catalog) · [demo catalog](#seeding-a-demo-catalog) · [backup](#backup) · [MCP tools](#mcp-tools) · [AI agent skills](#ai-agent-skills)
 
 ## Why BookBundle
 
@@ -517,6 +517,16 @@ A planche can be written without the back-office, by a script or a runner on ano
 ```
 
 The planche of that number in the serie is brought up to date, or created with the serie's slug followed by its title's, suffixed `-2`, `-3`… when another planche already carries it. It is saved **visible**, the listings showing it only from its `published` day on, which is how a planche is scheduled. Its page and panels are uploaded through Vich in the manifest's order, in place of those it had, and a manifest naming no file leaves its medias as they were. A character the serie does not hold is left out with a warning, never created under a name that may be misspelt; a file missing or out of the manifest's folder, a day not written `YYYY-MM-DD`, or a planche of that number in the trash (to restore first), refuses the whole manifest, nothing written. The last line printed is `STRIP <id> <address>`, for the caller to link the planche.
+
+### Publishing a book from a manifest
+
+A book can be written the same way, editions and files included, through `php bin/console c975l:book:publish <manifest.json> [--dry-run]`, run where the catalog lives (`--env=prod` over ssh, the files sent beside the manifest first):
+
+```json
+{"slug": "item-1", "serie": "catalog", "title": "item-1", "published": "2026-12-03", "language": "en", "summary": "<p>…</p>", "age": "4-8", "translates": "item-0", "categories": ["catalog"], "contributors": [{"contributor": "item-2", "role": "narrator"}], "medias": {"cover": "cover.jpg", "cover_back": "back.jpg", "page": ["page1.jpg", "page2.jpg"]}, "editions": [{"kind": "digital", "isbn": "9780000000001", "pages": 16, "format": "…", "price": 0, "currency": "EUR", "channels": ["shop", "onix", "google"], "files": {"pdf": "book.pdf", "booklet": "booklet.pdf", "epub": {"file": "book.epub", "readAloud": true}}}, {"kind": "audio", "isbn": "9780000000002", "files": {"audio": "book.mp3", "cover_front": "square.jpg"}}]}
+```
+
+The book of that slug is brought up to date, or created under it with its serie's author and illustrator. It is saved **visible**, shown from its `published` day on, linked both ways to the book it `translates` (`Book::translates()`). Its categories and contributors are replaced when the manifest names them, one the site does not hold left out with a warning. A media or an edition file is uploaded through Vich in place of those of its kind, the others kept; an edition is found by its kind or added, a file sold at the edition's price unless it names its own, a cover never sold. A file missing, out of the manifest's folder or in an extension its kind does not take, a kind, a channel or a role the bundle does not know, a file its edition does not hold, an ISBN, a format or a currency longer than its column, a price below zero, an age over 20 characters, a slug other than lower case words joined by hyphens, a language other than `fr`, `en` or `es`, a book to translate that is not there or is the book itself, a day not written `YYYY-MM-DD` or a book of that slug in the trash refuses the whole manifest, nothing written. The book is then written into the shop as saving it in the back-office does (`BookShopPublisher`), the ONIX and Google Play Books feeds reading its editions' channels. The last line printed is `BOOK <id> <address>`.
 
 ### Duplicating a book, a serie or a strip
 
@@ -1216,9 +1226,9 @@ The catalog brings its tools to the site's MCP endpoint, `/api/mcp`, which c975l
 | Tool | Does |
 | --- | --- |
 | `book_list` | The books whose title holds the `search` words, every book without them, drafts included, the latest first |
-| `book_get` | A `book`: title, summary, number, serie, publication day (none for a draft) |
-| `book_create` | A draft book added with its `title` and an optional `summary`, its slug made unique; publishing stays a human's |
-| `book_edit` | Only the `title` or `summary` given of a `book` changed |
+| `book_get` | A `book`: title, summary, number, serie and its `serieId`, language, the book it `translates`, publication day (none for a draft) |
+| `book_create` | A draft book added with its `title` and optionally its `summary`, `number`, `language` (`fr`, `en`, `es`), `serie` and the book it `translates`, linked both ways while that one names no other translation; its slug made unique, publishing stays a human's |
+| `book_edit` | Only the `title`, `summary`, `number`, `language`, `serie` or book it `translates` given of a `book` changed, the translation linked both ways as on `book_create` |
 
 ## AI agent skills
 
