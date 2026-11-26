@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Tests\Mcp;
 
+use c975L\BookBundle\Command\BookPublishCommand;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Mcp\BookMcpProvider;
@@ -22,6 +23,7 @@ use Mcp\Server\Exception\ToolCallException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Clock\MockClock;
+use Symfony\Component\Filesystem\Filesystem;
 
 class BookMcpProviderTest extends TestCase
 {
@@ -184,7 +186,7 @@ class BookMcpProviderTest extends TestCase
     }
 
     // The provider for an account editing the catalog or not
-    private function provider(?BookRepository $repository = null, ?EntityManagerInterface $entityManager = null, bool $granted = true, ?SerieRepository $series = null): BookMcpProvider
+    private function provider(?BookRepository $repository = null, ?EntityManagerInterface $entityManager = null, bool $granted = true, ?SerieRepository $series = null, string $projectDir = '/nowhere'): BookMcpProvider
     {
         $config = $this->createStub(ConfigServiceInterface::class);
         $config->method('get')->willReturn('ROLE_EDITOR');
@@ -192,6 +194,18 @@ class BookMcpProviderTest extends TestCase
         $security->method('isGranted')->willReturn($granted);
         $security->method('getUser')->willReturn($this->user);
 
-        return new BookMcpProvider($repository ?? $this->createStub(BookRepository::class), $series ?? $this->createStub(SerieRepository::class), $entityManager ?? $this->createStub(EntityManagerInterface::class), $config, $security, new MockClock('2026-11-21 10:00'));
+        return new BookMcpProvider($repository ?? $this->createStub(BookRepository::class), $series ?? $this->createStub(SerieRepository::class), $entityManager ?? $this->createStub(EntityManagerInterface::class), $config, $security, new MockClock('2026-11-21 10:00'), $projectDir);
+    }
+
+    // A new version kept for its day is read with the book, none otherwise
+    public function testGetTellsTheNewVersionWaiting(): void
+    {
+        $directory = sys_get_temp_dir() . '/book-mcp-' . uniqid();
+        $book = new Book()->setTitle('item-1')->setSlug('item-1');
+        $this->assertNull($this->provider($this->repositoryFinding($book), projectDir: $directory)->get(1)['newVersionOn']);
+
+        new Filesystem()->dumpFile($directory . '/' . BookPublishCommand::VERSIONS_DIRECTORY . '/item-1/manifest.json', '{"published": "2026-12-05"}');
+        $this->assertSame('2026-12-05', $this->provider($this->repositoryFinding($book), projectDir: $directory)->get(1)['newVersionOn']);
+        new Filesystem()->remove($directory);
     }
 }

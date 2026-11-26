@@ -30,6 +30,7 @@ use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookShopPublisher;
+use c975L\BookBundle\Service\BookVersionPublisher;
 use c975L\ConfigBundle\Management\ArchivePath;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -39,12 +40,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 
-// One book written from a manifest, the way the back-office would: found by its slug or created, its texts, day, serie, translation, categories and contributors set, its medias and its editions with their files uploaded, visible from its day on, then written into the shop as saving it there does. Run again, it brings the same book up to date, a media or a file replaced only when the manifest names one of its kind. Manifest: {"slug": "item-1", "serie": "catalog", "title": "item-1", "published": "2026-12-03", "language": "en", "summary": "<p>…</p>", "age": "4-8", "number": 1, "translates": "item-0", "categories": ["catalog"], "contributors": [{"contributor": "item-2", "role": "narrator"}], "medias": {"cover": "cover.jpg", "page": ["page2.jpg"]}, "editions": [{"kind": "digital", "isbn": "…", "pages": 16, "format": "…", "price": 0, "currency": "EUR", "channels": ["shop", "onix"], "files": {"pdf": "book.pdf", "epub": {"file": "book.epub", "readAloud": true}}}]}, file paths relative to it, all but "slug", "serie", "title" and "published" optional; the last line printed is "BOOK <id> <address>"
-#[AsCommand(name: 'c975l:book:publish', description: 'Creates or updates the book a JSON manifest describes, with its medias and editions, visible from its day on, writes it into the shop and prints its address. Shows it without writing with --dry-run.')]
+// One book written from a manifest, the way the back-office would: found by its slug or created, its texts, day, serie, translation, categories and contributors set, its medias and its editions with their files uploaded, visible from its day on, then written into the shop as saving it there does. Run again, it brings the same book up to date, a media or a file replaced only when the manifest names one of its kind. Manifest: {"slug": "item-1", "serie": "catalog", "title": "item-1", "published": "2026-12-03", "language": "en", "summary": "<p>…</p>", "age": "4-8", "number": 1, "translates": "item-0", "categories": ["catalog"], "contributors": [{"contributor": "item-2", "role": "narrator"}], "medias": {"cover": "cover.jpg", "page": ["page2.jpg"]}, "editions": [{"kind": "digital", "isbn": "…", "pages": 16, "format": "…", "price": 0, "currency": "EUR", "channels": ["shop", "onix"], "files": {"pdf": "book.pdf", "epub": {"file": "book.epub", "readAloud": true}}}]}, file paths relative to it, all but "slug", "serie", "title" and "published" optional; the last line printed is "BOOK <id> <address>". With "newVersion": true, a book already out is replaced by a new version on its day: what came out is set aside as BookVersionPublisher does, the manifest kept until then under var/book/versions and published by --pending, which the nightly maintenance runs
+#[AsCommand(name: 'c975l:book:publish', description: 'Creates or updates the book a JSON manifest describes, with its medias and editions, visible from its day on, writes it into the shop and prints its address. A new version of a book already out waits for its day, published by --pending. Shows it without writing with --dry-run.')]
 class BookPublishCommand extends Command
 {
+    // Where a new version waiting for its day is kept, one folder per book: its manifest and its files as they were sent
+    public const string VERSIONS_DIRECTORY = 'var/book/versions';
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly BookRepository $bookRepository,
@@ -53,6 +60,10 @@ class BookPublishCommand extends Command
         private readonly ContributorRepository $contributorRepository,
         private readonly BookPublicUrlResolver $urlResolver,
         private readonly BookShopPublisher $shopPublisher,
+        private readonly BookVersionPublisher $versionPublisher,
+        private readonly TranslatorInterface $translator,
+        #[Autowire(param: 'kernel.project_dir')]
+        private readonly string $projectDir,
     ) {
         parent::__construct();
     }
@@ -60,7 +71,8 @@ class BookPublishCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('manifest', InputArgument::REQUIRED, 'The JSON manifest describing the book')
+            ->addArgument('manifest', InputArgument::OPTIONAL, 'The JSON manifest describing the book')
+            ->addOption('pending', null, InputOption::VALUE_NONE, 'Publishes the new versions whose day has come')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Shows what would be written, writing nothing')
         ;
     }
@@ -68,7 +80,42 @@ class BookPublishCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $dryRun = (bool) $input->getOption('dry-run');
+        if ($input->getOption('pending')) {
+            return $this->pending($io, $output, $dryRun);
+        }
         $path = (string) $input->getArgument('manifest');
+        if ('' === $path) {
+            $io->error('Manifeste attendu, ou --pending.');
+
+            return Command::FAILURE;
+        }
+
+        return $this->publish($path, $io, $output, $dryRun, false);
+    }
+
+    // The new versions kept until their day, published once it has come and their folder then removed; one refused stays for the next night
+    private function pending(SymfonyStyle $io, OutputInterface $output, bool $dryRun): int
+    {
+        $code = Command::SUCCESS;
+        foreach (glob($this->projectDir . '/' . self::VERSIONS_DIRECTORY . '/*/manifest.json') ?: [] as $path) {
+            $day = $this->day(json_decode((string) file_get_contents($path), true)['published'] ?? null);
+            if (null === $day || $day > new \DateTimeImmutable('today')) {
+                continue;
+            }
+            $done = $this->publish($path, $io, $output, $dryRun, true);
+            if (Command::SUCCESS === $done && !$dryRun) {
+                new Filesystem()->remove(\dirname($path));
+            }
+            $code = Command::SUCCESS === $done ? $code : Command::FAILURE;
+        }
+
+        return $code;
+    }
+
+    // One manifest published, a new version not due yet kept for its day instead; $due when its day has come
+    private function publish(string $path, SymfonyStyle $io, OutputInterface $output, bool $dryRun, bool $due): int
+    {
         $read = $this->read($path);
         if (null === $read) {
             $io->error('Manifeste illisible, série inconnue, ou slug, titre ou date manquant : ' . $path);
@@ -91,17 +138,24 @@ class BookPublishCommand extends Command
 
             return Command::FAILURE;
         }
-        $io->text(\sprintf('%s %s « %s », %s, %d édition(s)', null === $book ? '+' : '=', $manifest['slug'], trim($manifest['title']), $published->format('d/m/Y'), \count($this->list($manifest['editions'] ?? null))));
-        if ($input->getOption('dry-run')) {
+        $version = $this->isNewVersion($manifest, $book);
+        $io->text(\sprintf('%s %s « %s », %s, %d édition(s)%s', null === $book ? '+' : '=', $manifest['slug'], trim($manifest['title']), $published->format('d/m/Y'), \count($this->list($manifest['editions'] ?? null)), $version ? ', nouvelle version' : ''));
+        if ($dryRun) {
             return Command::SUCCESS;
         }
 
+        // A new version not due yet waits for its day, the book as it came out staying online until then
+        if ($version && !$due && $published > new \DateTimeImmutable('today')) {
+            $this->keep($path, $manifest['slug'], $this->files(\dirname($path), $manifest)['found']);
+            $io->text(\sprintf('Nouvelle version gardée jusqu\'au %s, publiée cette nuit-là par --pending', $published->format('d/m/Y')));
+            $output->writeln(\sprintf('BOOK %d %s', $book?->getId(), $this->urlResolver->resolve('book_display', ['slug' => $book?->getSlug()]) ?? ''));
+
+            return Command::SUCCESS;
+        }
+
+        // One transaction for what came out set aside and the book written: a failure in between would otherwise set it aside a second time the next night
         $book ??= $this->created($manifest['slug'], $serie);
-        $this->fill($book, $manifest, $serie, $published, $source);
-        $left = [...$this->categories($book, $manifest), ...$this->contributors($book, $manifest)];
-        $this->lay($book, $this->files(\dirname($path), $manifest)['medias']);
-        $this->editions($book, $manifest, \dirname($path));
-        $this->em->flush();
+        $left = $this->em->wrapInTransaction(fn (): array => $this->write($book, $manifest, ['serie' => $serie, 'published' => $published, 'source' => $source], \dirname($path), $version));
         if ([] !== $left) {
             $io->warning(['Absent du site, laissé de côté :', ...$left]);
         }
@@ -110,6 +164,49 @@ class BookPublishCommand extends Command
         $output->writeln(\sprintf('BOOK %d %s', $book->getId(), $this->urlResolver->resolve('book_display', ['slug' => $book->getSlug()]) ?? ''));
 
         return Command::SUCCESS;
+    }
+
+    // What came out set aside when a new version replaces it, then the book filled, its medias laid and its editions written; the categories and contributors the site does not hold returned
+    /**
+     * @param array<mixed>                                                      $manifest
+     * @param array{serie: Serie, published: \DateTimeImmutable, source: ?Book} $placed
+     *
+     * @return list<string>
+     */
+    private function write(Book $book, array $manifest, array $placed, string $directory, bool $version): array
+    {
+        if ($version) {
+            $this->versionPublisher->setAside($book, $this->translator->trans('label.previous_version_suffix', [], 'book'));
+        }
+        $this->fill($book, $manifest, $placed['serie'], $placed['published'], $placed['source']);
+        $left = [...$this->categories($book, $manifest), ...$this->contributors($book, $manifest)];
+        $this->lay($book, $this->files($directory, $manifest)['medias']);
+        $this->editions($book, $manifest, $directory);
+        $this->em->flush();
+
+        return $left;
+    }
+
+    // Whether the manifest asks for a new version of a book that has come out and is not replaced yet, what came out being set aside on its day
+    /** @param array<mixed> $manifest */
+    private function isNewVersion(array $manifest, ?Book $book): bool
+    {
+        $out = $book?->getPublished();
+
+        return true === ($manifest['newVersion'] ?? false) && null !== $out && $out <= new \DateTimeImmutable('today') && null === $book->getNewerVersion();
+    }
+
+    // The manifest and the files it names kept for the night of its day, under the paths it gives them, nothing else of its folder copied; a version kept before for the same book replaced
+    /** @param array<string, string> $found */
+    private function keep(string $path, string $slug, array $found): void
+    {
+        $target = $this->projectDir . '/' . self::VERSIONS_DIRECTORY . '/' . $slug;
+        $filesystem = new Filesystem();
+        $filesystem->remove($target);
+        $filesystem->copy($path, $target . '/manifest.json');
+        foreach ($found as $relative => $file) {
+            $filesystem->copy($file, $target . '/' . $relative);
+        }
     }
 
     // The manifest with its serie and its day, null when it is unreadable or lacks its slug (lower case words joined by hyphens, as an address takes it), serie, title or day
@@ -242,31 +339,37 @@ class BookPublishCommand extends Command
         return \is_string($manifest['age'] ?? null) && mb_strlen($manifest['age']) > 20 ? [...$refused, 'âge ' . json_encode($manifest['age'], \JSON_UNESCAPED_UNICODE)] : $refused;
     }
 
-    // Every file the manifest names, read beside it only (see ArchivePath) and in an extension its kind takes: the book's medias with their kind, the editions' files apart, those not found listed
+    // Every file the manifest names, read beside it only (see ArchivePath) and in an extension its kind takes: the book's medias with their kind, every file found by the path the manifest gives it, those not found listed
     /**
      * @param array<mixed> $manifest
      *
-     * @return array{medias: list<array{kind: string, file: string}>, missing: list<string>}
+     * @return array{medias: list<array{kind: string, file: string}>, found: array<string, string>, missing: list<string>}
      */
     private function files(string $directory, array $manifest): array
     {
         $medias = [];
+        $found = [];
         $missing = [];
         foreach (\is_array($manifest['medias'] ?? null) ? $manifest['medias'] : [] as $kind => $named) {
             foreach (\is_array($named) ? $named : [$named] as $relative) {
                 $file = $this->resolve($directory, $relative, Media::FILE_UPLOAD_EXTENSIONS, $missing);
                 if (null !== $file) {
                     $medias[] = ['kind' => (string) $kind, 'file' => $file];
+                    $found[(string) $relative] = $file;
                 }
             }
         }
         foreach ($this->list($manifest['editions'] ?? null) as $edition) {
             foreach (\is_array($edition) && \is_array($edition['files'] ?? null) ? $edition['files'] : [] as $kind => $named) {
-                $this->resolve($directory, \is_array($named) ? ($named['file'] ?? null) : $named, BookEditionFileKind::tryFrom((string) $kind)?->extensions() ?? [], $missing);
+                $relative = \is_array($named) ? ($named['file'] ?? null) : $named;
+                $file = $this->resolve($directory, $relative, BookEditionFileKind::tryFrom((string) $kind)?->extensions() ?? [], $missing);
+                if (null !== $file) {
+                    $found[(string) $relative] = $file;
+                }
             }
         }
 
-        return ['medias' => $medias, 'missing' => $missing];
+        return ['medias' => $medias, 'found' => $found, 'missing' => $missing];
     }
 
     // A file beside the manifest in one of the extensions given, its absence or another extension added to the missing ones

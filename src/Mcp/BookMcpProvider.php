@@ -10,6 +10,7 @@
 
 namespace c975L\BookBundle\Mcp;
 
+use c975L\BookBundle\Command\BookPublishCommand;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\Serie;
 use c975L\BookBundle\Repository\BookRepository;
@@ -22,6 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Mcp\Server\Exception\ToolCallException;
 use Psr\Clock\ClockInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 // The catalog's books on the site's MCP endpoint, for an account that edits them on the back office: listed, read, a draft added and its card written, publishing left to a human
@@ -37,6 +39,8 @@ class BookMcpProvider implements McpToolProviderInterface
         private readonly ConfigServiceInterface $configService,
         private readonly Security $security,
         private readonly ClockInterface $clock,
+        #[Autowire(param: 'kernel.project_dir')]
+        private readonly string $projectDir,
     ) {
     }
 
@@ -53,7 +57,7 @@ class BookMcpProvider implements McpToolProviderInterface
     public function getMcpTools(): iterable
     {
         yield new McpTool('book_list', 'Books', 'The books whose title holds the search words, every book without them, drafts included, the latest first.', $this->list(...));
-        yield new McpTool('book_get', 'Book', 'A book: title, summary, number, serie and its id, language, the book it translates, publication day (none for a draft).', $this->get(...));
+        yield new McpTool('book_get', 'Book', 'A book: title, summary, number, serie and its id, language, the book it translates, publication day (none for a draft) and the day a new version waits for, if any.', $this->get(...));
         yield new McpTool('book_create', 'Add a draft book', 'Adds a book as a draft, with its title and optionally its summary, number, language, serie and the book it translates, the two then linked both ways.', $this->create(...), true);
         yield new McpTool('book_edit', 'Write a book', 'Changes only the title, summary, number, language, serie or book it translates given of a book, seen at once when the site already shows it.', $this->edit(...), true);
     }
@@ -82,13 +86,22 @@ class BookMcpProvider implements McpToolProviderInterface
     /**
      * @param int $book id of the book
      *
-     * @return array{id: ?int, title: ?string, number: ?int, serie: ?string, language: ?string, published: ?string, slug: ?string, summary: ?string, serieId: ?int, translates: ?int}
+     * @return array{id: ?int, title: ?string, number: ?int, serie: ?string, language: ?string, published: ?string, slug: ?string, summary: ?string, serieId: ?int, translates: ?int, newVersionOn: ?string}
      */
     public function get(int $book): array
     {
         $found = $this->found($book);
 
-        return [...$this->summary($found), 'slug' => $found->getSlug(), 'summary' => $found->getSummary(), 'serieId' => $found->getSerie()?->getId(), 'translates' => $found->getTranslationBook()?->getId()];
+        return [...$this->summary($found), 'slug' => $found->getSlug(), 'summary' => $found->getSummary(), 'serieId' => $found->getSerie()?->getId(), 'translates' => $found->getTranslationBook()?->getId(), 'newVersionOn' => $this->newVersionOn($found)];
+    }
+
+    // The day a new version of the book waits for under BookPublishCommand::VERSIONS_DIRECTORY, null when none waits
+    private function newVersionOn(Book $book): ?string
+    {
+        $path = $this->projectDir . '/' . BookPublishCommand::VERSIONS_DIRECTORY . '/' . $book->getSlug() . '/manifest.json';
+        $day = is_file($path) ? (json_decode((string) file_get_contents($path), true)['published'] ?? null) : null;
+
+        return \is_string($day) ? $day : null;
     }
 
     // A draft book added, its slug made from its title and kept unique by a number, placed in the catalog by what is given

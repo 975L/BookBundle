@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.40.0
+
+New version of a book published on its day
+
+- `c975l:book:publish` takes `"newVersion": true`: a book already out is replaced on its day, the manifest kept under `var/book/versions/` until then (26/11/2026)
+- `c975l:book:publish --pending`, run nightly by `BookMaintenanceTaskProvider`, publishes the new versions whose day has come (26/11/2026)
+- Added `BookVersionPublisher::setAside()`, the versions gesture shared by the back office and the command (26/11/2026)
+- `book_get` gives the day a new version waits for (26/11/2026)
+- A book not out yet shows no pages, flipbook nor videos, as it shows no recording nor printables (26/11/2026)
+
 ## v2.39.0
 
 Book published from a manifest, draft placed by its translation

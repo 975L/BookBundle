@@ -16,6 +16,7 @@ use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Repository\BookRepository;
 use c975L\UiBundle\Service\TranslationCopier;
 use c975L\UiBundle\Service\UniqueSlug;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 // Publishing a new version of a book: the book keeps its address and its identity - its id, its slug, its readers' ratings, its blocks, its translations - and a twin takes the version being set aside, with its ISBN, its date, its files and its platforms. The twin only leaves the catalog: it keeps its page, its ISBN and its place in the sitemap, and is reached from the book replacing it (see Book::$newerVersion). The gesture sits here rather than in the screen or in a command, because it serves both: splitting an already published catalog, and publishing a new version of an existing book
@@ -33,7 +34,42 @@ class BookVersionPublisher
         private readonly BookRepository $bookRepository,
         private readonly SluggerInterface $slugger,
         private readonly TranslationCopier $translationCopier,
+        private readonly EntityManagerInterface $entityManager,
     ) {
+    }
+
+    // Sets aside what the book published so far, in one transaction: a twin is born under the book's title and the suffix given, takes the released editions and the pages of the text as it came out, and names the book as the version replacing it; the book keeps its address and starts again with editions to fill. Its title is returned
+    public function setAside(Book $book, string $suffix): string
+    {
+        return $this->entityManager->wrapInTransaction(function () use ($book, $suffix): string {
+            // The version already set aside, read before the twin is born: the twin takes its place beside the book, and it hangs behind the twin - a third version chains onto the second (see Book::$newerVersion)
+            $chained = $book->getPreviousVersion();
+
+            // Freed first, and written: the link is unique in database, and the twin's row cannot name the book while the old one still names it
+            if ($chained instanceof Book) {
+                $chained->setNewerVersion(null);
+                $this->entityManager->flush();
+            }
+
+            $title = $this->previousTitle($book, $suffix);
+            $previous = $this->createPreviousVersion($book, $title);
+
+            // Saved before any move: an edition can only name a book the database knows (see moveEdition())
+            $this->entityManager->persist($previous);
+            $this->entityManager->flush();
+            $chained?->setNewerVersion($previous);
+
+            // Read first, moved after: moveEdition() detaches each edition from the book, and the collection would change under the loop
+            foreach ($book->getEditions()->toArray() as $edition) {
+                $this->moveEdition($edition, $previous);
+            }
+
+            // And the pages of the text as it came out, which go with it, their timecodes too - they name those pages: the one staying gets its own
+            $this->moveMedias($book, $previous, ['page', 'flipbook', 'cues']);
+            $this->entityManager->flush();
+
+            return $title;
+        });
     }
 
     // The twin carrying the version set aside: the same book, the same number, the same language, the same people credited. No blocks, no reader ratings - those belong to the page being kept, which is the one outside links reach - and of the translations only the summary's, the one text copied over as it stands (see TranslationCopier). The title is the one the editor writes, in the book's language: the bundle presumes no reason for the replacement - original edition, unillustrated text, second edition - and that title is what names the cross link from one version to the other (see Book/Hero.html.twig)

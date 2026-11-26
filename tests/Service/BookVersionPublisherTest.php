@@ -19,6 +19,7 @@ use c975L\BookBundle\Repository\BookRepository;
 use c975L\BookBundle\Service\BookTranslator;
 use c975L\BookBundle\Service\BookVersionPublisher;
 use c975L\UiBundle\Service\TranslationCopier;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
@@ -121,12 +122,34 @@ class BookVersionPublisherTest extends TestCase
         $this->assertSame('Tome 1 — previous version', $this->publisher()->previousTitle(new Book()->setTitle('Tome 1'), ' — previous version'));
     }
 
-    private function publisher(?Book $collides = null, ?TranslationCopier $translationCopier = null): BookVersionPublisher
+    // Setting aside in one transaction: the twin under the suffixed title replaced by the book, taking its editions, the book keeping its slug
+    public function testSetAsideHandsWhatCameOutToTheTwin(): void
+    {
+        $persisted = [];
+        $em = $this->createStub(EntityManagerInterface::class);
+        $em->method('wrapInTransaction')->willReturnCallback(static fn (callable $work): mixed => $work());
+        $em->method('persist')->willReturnCallback(static function (object $row) use (&$persisted): void {
+            $persisted[] = $row;
+        });
+        $book = new Book()->setTitle('item-1')->setSlug('item-1');
+        $edition = new BookEdition()->setKind('digital')->setBook($book);
+        $book->addEdition($edition);
+
+        $title = $this->publisher(entityManager: $em)->setAside($book, ' — previous version');
+
+        $this->assertSame('item-1 — previous version', $title);
+        $this->assertCount(1, $persisted);
+        $this->assertSame($book, $persisted[0]->getNewerVersion());
+        $this->assertSame($persisted[0], $edition->getBook());
+        $this->assertSame('item-1', $book->getSlug());
+    }
+
+    private function publisher(?Book $collides = null, ?TranslationCopier $translationCopier = null, ?EntityManagerInterface $entityManager = null): BookVersionPublisher
     {
         $repository = $this->createStub(BookRepository::class);
         $repository->method('findOneBy')->willReturn($collides);
 
-        return new BookVersionPublisher($repository, new AsciiSlugger(), $translationCopier ?? $this->createStub(TranslationCopier::class));
+        return new BookVersionPublisher($repository, new AsciiSlugger(), $translationCopier ?? $this->createStub(TranslationCopier::class), $entityManager ?? $this->createStub(EntityManagerInterface::class));
     }
 
     // The pages of the text as it came out follow the version set aside; what holds for the text itself - the recording, the trailer - stays with the book keeping the page

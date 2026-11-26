@@ -24,11 +24,13 @@ use c975L\BookBundle\Repository\ContributorRepository;
 use c975L\BookBundle\Repository\SerieRepository;
 use c975L\BookBundle\Service\BookPublicUrlResolver;
 use c975L\BookBundle\Service\BookShopPublisher;
+use c975L\BookBundle\Service\BookVersionPublisher;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 // A book written from a manifest: created or brought up to date by its slug, its medias and editions laid, visible from its day on, written into the shop, refused whole on what it cannot find
 class BookPublishCommandTest extends TestCase
@@ -40,6 +42,10 @@ class BookPublishCommandTest extends TestCase
     private bool $flushed = false;
 
     private bool $shopped = false;
+
+    private int $setAside = 0;
+
+    private bool $inTransaction = false;
 
     /** @var array<string, Book> */
     private array $books = [];
@@ -157,9 +163,60 @@ class BookPublishCommandTest extends TestCase
         $this->assertSame('item-0', $book->getTitle());
     }
 
-    // The command run on a manifest of book item-1 of the serie, the given keys laid over its own
-    /** @param array<string, mixed> $manifest */
-    private function publish(array $manifest): CommandTester
+    // A new version of a book already out waits for its day, kept with the files it names and nothing else, nothing written, the book staying as it came out
+    public function testNewVersionWaitsForItsDay(): void
+    {
+        $this->books['item-1'] = new Book()->setSlug('item-1')->setPublished(new \DateTimeImmutable('2020-01-01'));
+
+        $tester = $this->publish(['newVersion' => true, 'published' => '2099-01-01', 'medias' => ['cover' => 'cover.jpg']]);
+
+        $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
+        $this->assertStringContainsString('Nouvelle version gardée', $tester->getDisplay());
+        $this->assertFileExists($this->directory . '/project/' . BookPublishCommand::VERSIONS_DIRECTORY . '/item-1/manifest.json');
+        $this->assertFileExists($this->directory . '/project/' . BookPublishCommand::VERSIONS_DIRECTORY . '/item-1/cover.jpg');
+        $this->assertFileDoesNotExist($this->directory . '/project/' . BookPublishCommand::VERSIONS_DIRECTORY . '/item-1/page2.jpg');
+        $this->assertFalse($this->flushed);
+        $this->assertSame(0, $this->setAside);
+    }
+
+    // A new version due today sets aside what came out, then writes the book, both in one transaction; a book never out, or asked no new version, is only brought up to date
+    public function testNewVersionDueSetsAsideWhatCameOut(): void
+    {
+        $this->books['item-1'] = new Book()->setSlug('item-1')->setPublished(new \DateTimeImmutable('2020-01-01'));
+        $this->publish(['newVersion' => true, 'published' => new \DateTimeImmutable('today')->format('Y-m-d')]);
+        $this->assertSame(1, $this->setAside);
+        $this->assertTrue($this->flushed);
+
+        $this->books['item-1'] = new Book()->setSlug('item-1')->setPublished(new \DateTimeImmutable('2099-01-01'));
+        $this->publish(['newVersion' => true, 'published' => '2099-02-01']);
+        $this->publish(['published' => new \DateTimeImmutable('today')->format('Y-m-d')]);
+        $this->assertSame(1, $this->setAside);
+    }
+
+    // The nightly run publishes the kept versions whose day has come and removes their folder, those still to come staying
+    public function testPendingPublishesTheVersionsDue(): void
+    {
+        $this->books['item-1'] = new Book()->setSlug('item-1')->setPublished(new \DateTimeImmutable('2020-01-01'));
+        $this->books['item-2'] = new Book()->setSlug('item-2')->setPublished(new \DateTimeImmutable('2020-01-01'));
+        $versions = $this->directory . '/project/' . BookPublishCommand::VERSIONS_DIRECTORY;
+        foreach (['item-1' => new \DateTimeImmutable('today')->format('Y-m-d'), 'item-2' => '2099-01-01'] as $slug => $day) {
+            new Filesystem()->dumpFile($versions . '/' . $slug . '/manifest.json', (string) json_encode(['slug' => $slug, 'serie' => 'catalog', 'title' => $slug, 'published' => $day, 'newVersion' => true]));
+        }
+
+        $tester = $this->publish([], ['--pending' => true]);
+
+        $this->assertSame(Command::SUCCESS, $tester->getStatusCode());
+        $this->assertSame(1, $this->setAside);
+        $this->assertDirectoryDoesNotExist($versions . '/item-1');
+        $this->assertFileExists($versions . '/item-2/manifest.json');
+    }
+
+    // The command run on a manifest of book item-1 of the serie, the given keys laid over its own, or with the options given in its place
+    /**
+     * @param array<string, mixed> $manifest
+     * @param array<string, mixed> $options
+     */
+    private function publish(array $manifest, array $options = []): CommandTester
     {
         new Filesystem()->dumpFile($this->directory . '/book.json', (string) json_encode([...['slug' => 'item-1', 'serie' => 'catalog', 'title' => 'item-1', 'published' => '2026-12-03'], ...$manifest]));
         $series = $this->createStub(SerieRepository::class);
@@ -178,6 +235,13 @@ class BookPublishCommandTest extends TestCase
         $em->method('flush')->willReturnCallback(function (): void {
             $this->flushed = true;
         });
+        $em->method('wrapInTransaction')->willReturnCallback(function (callable $write): mixed {
+            $this->inTransaction = true;
+            $written = $write();
+            $this->inTransaction = false;
+
+            return $written;
+        });
         $urls = $this->createStub(BookPublicUrlResolver::class);
         $urls->method('resolve')->willReturn('https://example.com/item-1');
         $shop = $this->createStub(BookShopPublisher::class);
@@ -185,8 +249,16 @@ class BookPublishCommandTest extends TestCase
         $shop->method('publish')->willReturnCallback(function (): void {
             $this->shopped = true;
         });
-        $tester = new CommandTester(new BookPublishCommand($em, $books, $series, $categories, $contributors, $urls, $shop));
-        $tester->execute(['manifest' => $this->directory . '/book.json']);
+        $versions = $this->createStub(BookVersionPublisher::class);
+        $versions->method('setAside')->willReturnCallback(function (): string {
+            $this->setAside += $this->inTransaction ? 1 : 100;
+
+            return 'item-1 previous';
+        });
+        $translator = $this->createStub(TranslatorInterface::class);
+        $translator->method('trans')->willReturnArgument(0);
+        $tester = new CommandTester(new BookPublishCommand($em, $books, $series, $categories, $contributors, $urls, $shop, $versions, $translator, $this->directory . '/project'));
+        $tester->execute([] === $options ? ['manifest' => $this->directory . '/book.json'] : $options);
 
         return $tester;
     }

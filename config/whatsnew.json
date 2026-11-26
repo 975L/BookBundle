@@ -3,6 +3,21 @@
         "date": "2026-11-26",
         "description": [
             {
+                "en": "Books: a new version of a book already out, the illustrated one replacing the text for instance, can be published by a script for its day; until then the book stays online as it came out, and that night the former version is set aside as with the back office's gesture.",
+                "fr": "Livres : une nouvelle version d'un livre déjà paru, l'illustrée remplaçant le texte par exemple, peut être publiée par un script pour son jour ; d'ici là le livre reste en ligne tel qu'il est paru, et cette nuit-là l'ancienne version est mise de côté comme par le geste du back-office.",
+                "es": "Libros: una nueva versión de un libro ya publicado, la ilustrada que sustituye al texto por ejemplo, puede publicarse por un script para su día; hasta entonces el libro sigue en línea tal como salió, y esa noche la versión anterior se aparta como con el gesto del back-office."
+            },
+            {
+                "en": "Books: a book announced for a coming day no longer shows its pages, flipbook nor videos before it is out, as for its recording and its documents to print.",
+                "fr": "Livres : un livre annoncé pour un jour à venir ne montre plus ses pages, son flipbook ni ses vidéos avant sa parution, comme son enregistrement et ses documents à imprimer.",
+                "es": "Libros: un libro anunciado para un día próximo ya no muestra sus páginas, su flipbook ni sus vídeos antes de salir, como su grabación y sus documentos para imprimir."
+            }
+        ]
+    },
+    {
+        "date": "2026-11-26",
+        "description": [
+            {
                 "en": "A book, its editions, their ISBN, prices, channels and files can be published from a manifest by a script, scheduled on its day and sent to the shop, the ONIX feed and Google Play Books as if saved in the back office.",
                 "fr": "Un livre, ses éditions, leurs ISBN, prix, canaux et fichiers peuvent être publiés depuis un manifeste par un script, programmés à leur jour et envoyés à la boutique, au flux ONIX et à Google Play Livres comme s'ils étaient enregistrés au back-office.",
                 "es": "Un libro, sus ediciones, sus ISBN, precios, canales y archivos pueden publicarse desde un manifiesto mediante un script, programados para su día y enviados a la tienda, al flujo ONIX y a Google Play Libros como si se guardaran en el back-office."

@@ -162,7 +162,8 @@ before the flag existed reads as shown.
 A book with no date, or with a date still to come, is **à paraître** (`Book::isToBePublished()`, the same
 reading `findAllToBePublished()` gives the listing) and carries a link to a page where a visitor leaves an
 address — a page of its own, the sheet's html being cached per fragment where a form needs a session. Its page
-shows no reviews section until then, nor does the page of a book of a hidden serie, the form that section
+shows its cover, summary and details only until then: no pages, flipbook, videos, recording, printables nor
+reviews section, nor does the page of a book of a hidden serie, the form that section
 folds onto answering 404 for a book `BookFavoriteItemProvider` does not name.
 
 `BookReleaseAlert` holds one row per waiting visitor: the book, the address, the locale it was taken in, a
@@ -264,7 +265,7 @@ and contributors replaced when named, its medias and its editions' files uploade
 kind; refused whole on a missing file or one in an extension its kind does not take, an unknown kind, channel or role, a file its edition
 does not hold, a value longer than its column, a negative price or a slug no address takes, a language outside `Book::LANGUAGES`, an absent book to translate or the
 book itself, a malformed day or a book in the trash;
-then written into the shop (`BookShopPublisher`), printing `BOOK <id> <address>` last.
+then written into the shop (`BookShopPublisher`), printing `BOOK <id> <address>` last. Its `"newVersion": true` replaces a book already out on its day: kept until then under `BookPublishCommand::VERSIONS_DIRECTORY` (`var/book/versions/<slug>/`), then `--pending` (nightly, `BookMaintenanceTaskProvider`) sets aside what came out through `BookVersionPublisher::setAside()` (the gesture the back office's `publishVersion` calls too) and writes the manifest.
 
 ## Who peoples a serie
 

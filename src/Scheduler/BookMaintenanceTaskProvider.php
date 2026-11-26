@@ -21,6 +21,8 @@ class BookMaintenanceTaskProvider implements MaintenanceTaskProviderInterface
         return [
             // Release alerts, nightly: a book or a planche is dated to the day, so it comes out at 00:00 and the first run of the night tells everyone waiting
             new MaintenanceTask('# #(1-3) * * *', 'c975l:book:release-alerts:send'),
+            // New versions waiting for their day, nightly and before the alerts: the book set aside and rewritten at 00:00 is the one the alerts announce
+            new MaintenanceTask('# 0 * * *', 'c975l:book:publish --pending'),
         ];
     }
 }

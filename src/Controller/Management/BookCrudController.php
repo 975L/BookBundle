@@ -44,7 +44,6 @@ use c975L\UiBundle\Form\BlockType;
 use c975L\UiBundle\Form\TrixEditorType;
 use c975L\UiBundle\Service\BlockMoveRowAttrBuilder;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -613,7 +612,7 @@ class BookCrudController extends AbstractCrudController
 
     // Sets aside what the book published so far: a twin book is born, takes the released editions with their files and their platforms, and names this one as the version replacing it. The book itself does not move address - it is the one outside links carry and it must lead to the most recent text - and starts again with editions to fill (see BookVersionPublisher)
     #[AdminRoute('/{entityId}/publish-version', options: ['methods' => ['POST']])]
-    public function publishVersion(AdminContext $context, EntityManagerInterface $entityManager, Request $request): Response
+    public function publishVersion(AdminContext $context, Request $request): Response
     {
         $this->denyAccessUnlessGranted($this->configService->get('site-role-editor'));
 
@@ -629,8 +628,7 @@ class BookCrudController extends AbstractCrudController
             return $this->redirect($this->bookIndexUrl());
         }
 
-        // One transaction for the whole gesture: a failure past the first flush would otherwise leave the chained version detached, back in the catalog
-        $title = $entityManager->wrapInTransaction(fn (): string => $this->setAsidePreviousVersion($book, $entityManager));
+        $title = $this->versionPublisher->setAside($book, $this->translator->trans('label.previous_version_suffix', [], 'book'));
 
         $this->addFlash('success', $this->translator->trans('flash.version_published', ['%title%' => $title], 'book'));
 
@@ -641,41 +639,6 @@ class BookCrudController extends AbstractCrudController
                 ->setEntityId($book->getId())
                 ->generateUrl()
         );
-    }
-
-    // The twin born, the chain picked up and what came out moved onto it, its title returned for the flash
-    private function setAsidePreviousVersion(Book $book, EntityManagerInterface $entityManager): string
-    {
-        // The version already set aside, read before the twin is born: the twin takes its place beside the book, and it hangs behind the twin - a third version chains onto the second (see Book::$newerVersion)
-        $chained = $book->getPreviousVersion();
-
-        // Freed first, and written: the link is unique in database, and the twin's row cannot name the book while the old one still names it
-        if ($chained instanceof Book) {
-            $chained->setNewerVersion(null);
-            $entityManager->flush();
-        }
-
-        $title = $this->versionPublisher->previousTitle($book, $this->translator->trans('label.previous_version_suffix', [], 'book'));
-        $previous = $this->versionPublisher->createPreviousVersion($book, $title);
-
-        // Saved before any move: an edition can only name a book the database knows (see BookVersionPublisher::moveEdition())
-        $entityManager->persist($previous);
-        $entityManager->flush();
-
-        // The chain picked up from below: the previous version is now replaced by the twin, itself replaced by the book
-        $chained?->setNewerVersion($previous);
-
-        // Read first, moved after: moveEdition() detaches each edition from the book, and the collection would change under the loop
-        foreach ($book->getEditions()->toArray() as $edition) {
-            $this->versionPublisher->moveEdition($edition, $previous);
-        }
-
-        // And the pages of the text as it came out, which go with it, their timecodes too - they name those pages: the one staying gets its own (see BookVersionPublisher::moveMedias())
-        $this->versionPublisher->moveMedias($book, $previous, ['page', 'flipbook', 'cues']);
-
-        $entityManager->flush();
-
-        return $title;
     }
 
     // The button's address, its csrf token in the request: the button posts it, a GET writing nothing
