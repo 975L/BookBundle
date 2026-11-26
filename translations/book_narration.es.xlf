@@ -106,6 +106,10 @@
                 <source>narration.guided_step_book_colorings_open</source>
                 <target>Abra la lista de libros: los dibujos para colorear se añaden al libro del que salen.</target>
             </trans-unit>
+            <trans-unit id="1DVbFaF">
+                <source>narration.guided_step_book_colorings_preview</source>
+                <target>Antes de su salida, este botón le muestra todos los dibujos del libro, ordenados por nivel, cada uno con su título, su día y sus lápices. Revíselos aquí: la aplicación solo los ve en su día.</target>
+            </trans-unit>
             <trans-unit id="exSRKHD">
                 <source>narration.guided_step_book_composition_add</source>
                 <target>Añada un bloque. Cada uno tiene su tipo y su propio formulario, y se apilan en el orden de la página.</target>

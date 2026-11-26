@@ -153,7 +153,7 @@ class BookGuidedProjectProviderTest extends TestCase
     public function testEveryBuiltInActionHighlightedIsAnEasyAdminOne(): void
     {
         // The ones this bundle declares itself, next to EasyAdmin's (see BookCrudController, TrashableCrudTrait and ContentLocaleCrudTrait) - "export" being the group the three formats sit in, and the only part of it a step can point at
-        $known = [...new \ReflectionClass(Action::class)->getConstants(), 'publishVersion', 'trash', 'duplicate', 'translate', 'export', 'exportSql', 'exportCsv', 'exportJson', 'exportSelection'];
+        $known = [...new \ReflectionClass(Action::class)->getConstants(), 'publishVersion', 'previewColorings', 'trash', 'duplicate', 'translate', 'export', 'exportSql', 'exportCsv', 'exportJson', 'exportSelection'];
 
         foreach ($this->highlights() as $highlight) {
             if (!preg_match('/^\.action-([A-Za-z]+)$/', $highlight, $matches)) {

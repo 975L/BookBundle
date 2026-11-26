@@ -75,6 +75,7 @@ nothing else can:
 - `filename`, on `printables` only, is the word a document to print is stored under, in the book's language,
   then its level and its book's slug (`BookPrintableNamer`): the file a reader downloads says what it is.
   `c975l:book:printables:rename --force` brings the documents uploaded before it to that name.
+  `c975l:book:printables:import <manifest.json> [--dry-run]` lays many documents at once under that same name, as the form does.
 - `cache: false` keeps the whole run of sections out of the cache, and so does a `template` without `cache: true` — a fragment may print something of one visitor (a form and its csrf token), so it is cached only when the site declares `cache: true`.
 
 ## The catalog contract

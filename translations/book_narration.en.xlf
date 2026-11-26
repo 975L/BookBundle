@@ -106,6 +106,10 @@
                 <source>narration.guided_step_book_colorings_open</source>
                 <target>Open the list of books: drawings to colour are added to the book they come from.</target>
             </trans-unit>
+            <trans-unit id="1DVbFaF">
+                <source>narration.guided_step_book_colorings_preview</source>
+                <target>Before they come out, this button shows you all the book's drawings, sorted by level, each with its title, its day and its crayons. Check them here: the app only sees them on their day.</target>
+            </trans-unit>
             <trans-unit id="exSRKHD">
                 <source>narration.guided_step_book_composition_add</source>
                 <target>Add a block. Each has its kind and its own form, and they stack in the order of the page.</target>

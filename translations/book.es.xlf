@@ -6,6 +6,10 @@
                 <source>action.duplicate</source>
                 <target>Duplicar</target>
             </trans-unit>
+            <trans-unit id="dmZnPi4">
+                <source>action.preview_colorings</source>
+                <target>Ver los dibujos para colorear</target>
+            </trans-unit>
             <trans-unit id="cm16A9p">
                 <source>action.publish_new_version</source>
                 <target>Publicar una nueva versión</target>
@@ -217,6 +221,10 @@
             <trans-unit id="8OkeSWe">
                 <source>description.guided_step_book_colorings_open</source>
                 <target>Los dibujos para colorear se añaden al libro del que salen.</target>
+            </trans-unit>
+            <trans-unit id="G_OK2fs">
+                <source>description.guided_step_book_colorings_preview</source>
+                <target>Este botón muestra todos los dibujos del libro, por nivel, con su título, su día y sus lápices, incluso los que aún no han salido.</target>
             </trans-unit>
             <trans-unit id="QmMk4WE">
                 <source>description.guided_step_book_composition_add</source>
@@ -1422,6 +1430,22 @@
                 <source>label.coloring</source>
                 <target>Dibujo (PNG)</target>
             </trans-unit>
+            <trans-unit id="LbArub9">
+                <source>label.coloring_crayons</source>
+                <target>Lápices</target>
+            </trans-unit>
+            <trans-unit id="oIfQzXw">
+                <source>label.coloring_no_kind</source>
+                <target>Sin nivel</target>
+            </trans-unit>
+            <trans-unit id="G15OnOu">
+                <source>label.coloring_out_now</source>
+                <target>Visible</target>
+            </trans-unit>
+            <trans-unit id="IafW00u">
+                <source>label.coloring_out_on</source>
+                <target>Sale el %date%</target>
+            </trans-unit>
             <trans-unit id="bTwRHdo">
                 <source>label.coloring_published_on-help</source>
                 <target>Vacío: visible en cuanto se guarda. Una fecha: el dibujo aparece ese día, solo.</target>
@@ -1441,6 +1465,18 @@
             <trans-unit id="sD3Jww1">
                 <source>label.colorings-help</source>
                 <target>Dibujos en PNG, trazos negros sobre fondo blanco, que un niño colorea con un toque en la aplicación.</target>
+            </trans-unit>
+            <trans-unit id="Z5EF8Ps">
+                <source>label.colorings_preview</source>
+                <target>Dibujos para colorear: %title%</target>
+            </trans-unit>
+            <trans-unit id="SPyzAHG">
+                <source>label.colorings_preview-help</source>
+                <target>Tal como los mostrará la aplicación, incluidos los que esperan su día.</target>
+            </trans-unit>
+            <trans-unit id="2uyvh3r">
+                <source>label.colorings_preview_none</source>
+                <target>Este libro no tiene ningún dibujo para colorear en pantalla.</target>
             </trans-unit>
             <trans-unit id="fBgQMYT">
                 <source>label.contributor</source>
@@ -1921,6 +1957,10 @@
             <trans-unit id="a3gAtCW">
                 <source>label.guided_step_book_colorings_list</source>
                 <target>Añada sus dibujos</target>
+            </trans-unit>
+            <trans-unit id="Yx5Zlct">
+                <source>label.guided_step_book_colorings_preview</source>
+                <target>Revíselos antes de su salida</target>
             </trans-unit>
             <trans-unit id="8EtrFFM">
                 <source>label.guided_step_book_composition_add</source>

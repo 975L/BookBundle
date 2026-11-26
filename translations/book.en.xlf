@@ -6,6 +6,10 @@
                 <source>action.duplicate</source>
                 <target>Duplicate</target>
             </trans-unit>
+            <trans-unit id="dmZnPi4">
+                <source>action.preview_colorings</source>
+                <target>Preview the drawings to colour</target>
+            </trans-unit>
             <trans-unit id="cm16A9p">
                 <source>action.publish_new_version</source>
                 <target>Publish a new version</target>
@@ -217,6 +221,10 @@
             <trans-unit id="8OkeSWe">
                 <source>description.guided_step_book_colorings_open</source>
                 <target>Drawings to colour are added to the book they come from.</target>
+            </trans-unit>
+            <trans-unit id="G_OK2fs">
+                <source>description.guided_step_book_colorings_preview</source>
+                <target>This button shows all the book's drawings, by level, with their title, day and crayons, even those not out yet.</target>
             </trans-unit>
             <trans-unit id="QmMk4WE">
                 <source>description.guided_step_book_composition_add</source>
@@ -1422,6 +1430,22 @@
                 <source>label.coloring</source>
                 <target>Drawing (PNG)</target>
             </trans-unit>
+            <trans-unit id="LbArub9">
+                <source>label.coloring_crayons</source>
+                <target>Crayons</target>
+            </trans-unit>
+            <trans-unit id="oIfQzXw">
+                <source>label.coloring_no_kind</source>
+                <target>No level</target>
+            </trans-unit>
+            <trans-unit id="G15OnOu">
+                <source>label.coloring_out_now</source>
+                <target>Out</target>
+            </trans-unit>
+            <trans-unit id="IafW00u">
+                <source>label.coloring_out_on</source>
+                <target>Out on %date%</target>
+            </trans-unit>
             <trans-unit id="bTwRHdo">
                 <source>label.coloring_published_on-help</source>
                 <target>Empty: visible as soon as it is saved. A date: the drawing shows up on that day, by itself.</target>
@@ -1441,6 +1465,18 @@
             <trans-unit id="sD3Jww1">
                 <source>label.colorings-help</source>
                 <target>PNG drawings, black lines on white, that a child colours with a touch in the app.</target>
+            </trans-unit>
+            <trans-unit id="Z5EF8Ps">
+                <source>label.colorings_preview</source>
+                <target>Drawings to colour: %title%</target>
+            </trans-unit>
+            <trans-unit id="SPyzAHG">
+                <source>label.colorings_preview-help</source>
+                <target>As the app will show them, those waiting for their day included.</target>
+            </trans-unit>
+            <trans-unit id="2uyvh3r">
+                <source>label.colorings_preview_none</source>
+                <target>This book has no drawing to colour on screen.</target>
             </trans-unit>
             <trans-unit id="fBgQMYT">
                 <source>label.contributor</source>
@@ -1921,6 +1957,10 @@
             <trans-unit id="a3gAtCW">
                 <source>label.guided_step_book_colorings_list</source>
                 <target>Add your drawings</target>
+            </trans-unit>
+            <trans-unit id="Yx5Zlct">
+                <source>label.guided_step_book_colorings_preview</source>
+                <target>Check them before they come out</target>
             </trans-unit>
             <trans-unit id="8EtrFFM">
                 <source>label.guided_step_book_composition_add</source>

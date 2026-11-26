@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.42.0
+
+Printables laid from a manifest, colorings previewed before their day
+
+- `c975l:book:printables:import <manifest.json> [--dry-run]` lays documents to print on their books, known again by the bytes of their stored file (26/11/2026)
+- Added `AbstractBookManifestImportCommand`, the manifest reading shared by the colorings and printables imports (26/11/2026)
+- A book's drawings to colour are previewed by level at `/management/book/{id}/colorings/preview`, linked from its row and edit page (26/11/2026)
+- The `book-colorings` guided project shows the preview (26/11/2026)
+
 ## v2.41.0
 
 A book's product comes out with the book

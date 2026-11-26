@@ -106,6 +106,10 @@
                 <source>narration.guided_step_book_colorings_open</source>
                 <target>Ouvrez la liste des livres : les dessins à colorier se déposent sur le livre dont ils sont tirés.</target>
             </trans-unit>
+            <trans-unit id="1DVbFaF">
+                <source>narration.guided_step_book_colorings_preview</source>
+                <target>Avant leur sortie, ce bouton vous montre tous les dessins du livre, rangés par niveau, chacun avec son titre, son jour et ses crayons. Vérifiez-les ici : l'appli ne les verra qu'à leur jour.</target>
+            </trans-unit>
             <trans-unit id="exSRKHD">
                 <source>narration.guided_step_book_composition_add</source>
                 <target>Ajoutez un block. Chacun a son type et son propre formulaire, et ils s'empilent dans l'ordre de la page.</target>

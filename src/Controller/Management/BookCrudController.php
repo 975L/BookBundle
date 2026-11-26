@@ -580,12 +580,20 @@ class BookCrudController extends AbstractCrudController
 
         $disabledTitle = $this->translator->trans('action.publish_new_version_disabled', [], 'book');
 
+        // Every drawing of the book, those not out yet included, for whoever edits them to check before their day: shown on every row, telling a book holding none apart would cost a query per row
+        $previewColorings = Action::new('previewColorings', t('action.preview_colorings', [], 'book'), 'fa fa-palette')
+            ->linkToUrl(fn (Book $book): string => $this->generateUrl(BookColoringsPreviewController::ROUTE, ['id' => $book->getId()]))
+            ->displayIf(static fn (Book $book): bool => !$book->isDeleted());
+        $previewTitle = $this->translator->trans('action.preview_colorings', [], 'book');
+
         // Added before the trait configures: it is what lays out the index row, and reorder() refuses an action it does not know yet (see extraIndexActions())
         $actions = $actions
             ->add(Crud::PAGE_INDEX, $publishVersion)
             ->add(Crud::PAGE_EDIT, $publishVersion)
             ->add(Crud::PAGE_INDEX, $publishVersionDone)
             ->add(Crud::PAGE_EDIT, $publishVersionDone)
+            ->add(Crud::PAGE_INDEX, $previewColorings)
+            ->add(Crud::PAGE_EDIT, $previewColorings)
         ;
 
         return $this->trashableActions($actions)
@@ -599,15 +607,18 @@ class BookCrudController extends AbstractCrudController
                 'tabindex' => '-1',
                 'title' => $disabledTitle,
             ]))
+            ->update(Crud::PAGE_INDEX, 'previewColorings', static fn (Action $action) => EasyAdminActionHelper::toIconOnly($action, $previewTitle))
+            ->update(Crud::PAGE_EDIT, 'previewColorings', static fn (Action $action) => EasyAdminActionHelper::toIconOnly($action, $previewTitle))
+            ->setPermission('previewColorings', $this->configService->get('site-role-editor'))
             ->setPermission('publishVersion', $this->configService->get('site-role-editor'))
             ->setPermission('publishVersionDone', $this->configService->get('site-role-editor'))
         ;
     }
 
-    // The two faces of the versions gesture keep their column between the copy and the trash - only one of the two shows per row. No #[\Override]: the redefined method comes from a trait, which PHP considers declared in this very class
+    // The two faces of the versions gesture keep their column between the copy and the trash - only one of the two shows per row - and the preview of the drawings follows them. No #[\Override]: the redefined method comes from a trait, which PHP considers declared in this very class
     protected function extraIndexActions(): array
     {
-        return ['publishVersion', 'publishVersionDone'];
+        return ['publishVersion', 'publishVersionDone', 'previewColorings'];
     }
 
     // Sets aside what the book published so far: a twin book is born, takes the released editions with their files and their platforms, and names this one as the version replacing it. The book itself does not move address - it is the one outside links carry and it must lead to the most recent text - and starts again with editions to fill (see BookVersionPublisher)

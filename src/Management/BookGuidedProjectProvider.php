@@ -613,6 +613,12 @@ class BookGuidedProjectProvider implements GuidedProjectProviderInterface
                     'highlight' => '[data-book-colorings]',
                 ],
                 [
+                    'label' => 'label.guided_step_book_colorings_preview',
+                    'description' => 'description.guided_step_book_colorings_preview',
+                    'narration' => 'narration.guided_step_book_colorings_preview',
+                    'highlight' => '.action-previewColorings',
+                ],
+                [
                     'label' => 'label.guided_step_book_printables_done',
                     'description' => 'description.guided_step_book_colorings_done',
                     'narration' => 'narration.guided_step_book_colorings_done',

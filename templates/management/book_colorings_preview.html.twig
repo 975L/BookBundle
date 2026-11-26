@@ -1,0 +1,47 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}{{ ('label.colorings_preview'|trans({'%title%': book.title}, 'book')) }}{% endblock %}
+
+{% block main %}
+    <h1>{{ ('label.colorings_preview'|trans({'%title%': book.title}, 'book')) }}</h1>
+    <p>{{ ('label.colorings_preview-help'|trans({}, 'book')) }}</p>
+
+    {% for group in groups %}
+        {# One level after the other, in the order the site names them, so each reads apart #}
+        <h2 class="mt-4">{{ group.label ? (group.label|trans({}, 'book')) : ('label.coloring_no_kind'|trans({}, 'book')) }} ({{ group.colorings|length }})</h2>
+        <div class="row g-3" data-ea-not-prose>
+            {% for coloring in group.colorings %}
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <figure class="border rounded p-2 h-100 mb-0">
+                        {% if coloring.name %}
+                            <a href="{{ asset(coloring.name) }}" target="_blank" rel="noopener">
+                                <img src="{{ asset(coloring.name) }}" alt="{{ coloring.title }}" class="img-fluid bg-white" loading="lazy">
+                            </a>
+                        {% endif %}
+                        <figcaption class="mt-2">
+                            <strong>{{ coloring.title }}</strong>
+                            <div>
+                                {% if coloring.published %}
+                                    <twig:ea:Badge color="success">{{ ('label.coloring_out_now'|trans({}, 'book')) }}</twig:ea:Badge>
+                                {% endif %}
+                                {% if coloring.publishedOn %}
+                                    <twig:ea:Badge color="{{ coloring.published ? 'secondary' : 'warning' }}">{{ ('label.coloring_out_on'|trans({'%date%': coloring.publishedOn|date('d/m/Y')}, 'book')) }}</twig:ea:Badge>
+                                {% endif %}
+                            </div>
+                            {# Each crayon a square drawn by its own fill, the colour being the row's data and no style of the page #}
+                            {% if coloring.palette is not empty %}
+                                <div class="mt-1" title="{{ ('label.coloring_crayons'|trans({}, 'book')) }}">
+                                    {% for colour in coloring.palette %}
+                                        <svg width="16" height="16" aria-hidden="true"><rect width="16" height="16" rx="3" fill="{{ colour }}" stroke="#ccc"/></svg>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </figcaption>
+                    </figure>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>{{ ('label.colorings_preview_none'|trans({}, 'book')) }}</p>
+    {% endfor %}
+{% endblock %}

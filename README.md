@@ -958,6 +958,14 @@ The `printables` section (`Book:Printables`) comes right before the informations
 
 `filename` is the word the file is stored under, so the one a reader downloads says what it is: read in the book's language, then followed by the document's level and the book's slug (`activite-debutants-contes-du-soir-<id>.pdf`). Without it a document goes by its book's slug alone. Documents uploaded before it was set, or whose book changed its slug, are brought to that name, thumbnail included, by `php bin/console c975l:book:printables:rename`, which lists them and renames them with `--force`.
 
+Many documents at once go through a manifest rather than the form, `php bin/console c975l:book:printables:import <manifest.json> [--dry-run]`, its paths relative to it:
+
+```json
+{"printables": [{"book": 1, "file": "item-1/Petits-Coloriages.pdf", "title": "item-1", "kind": "small", "publishedOn": "2027-01-13"}]}
+```
+
+`book` is the number its short link carries, or its slug, and `file` a PDF, read by its bytes. `title`, `kind` (one of the site's levels) and `publishedOn` are optional. Each document is uploaded as the form does, named by `BookPrintableNamer` and given its thumbnail on the way. Run again, it uploads nothing twice: a document already on its book, known by the bytes of its stored file, only gets its title, level and day again, a key left out keeping what it carries; one at the same level under the same title whose bytes changed gets the new file in its place. Lay the documents before the drawings to colour, which come out with them.
+
 The `book_printables` block lists the published books holding at least one document out today, each shown by its first one and leading to that section. It takes the head and the selection of the other listing kinds, is cached under the same catalog tag as `book_books` (rendered live while a book or a document waits for its day), and is what a site composes into a page of its own: the page, its address and its menu entry stay the site's.
 
 ### Drawings to colour on screen
@@ -973,6 +981,8 @@ Many drawings at once go through a manifest rather than the form, `php bin/conso
 ```
 
 `book` is the number its short link carries, or its slug. `kind`, optional, is one of the site's levels: a drawing naming another is left out, like one whose day is misspelt. Each drawing comes out on the `publishedOn` given, else with the last of its book's documents to print, and never before `notBefore`. Run again, it uploads nothing twice: a drawing already on its book, known by its fingerprint, only gets its title, day and crayons again.
+
+Before they come out, the palette icon of a book's row, and of its edit page, opens the preview of its drawings at `/management/book/{id}/colorings/preview` (`BookColoringsPreviewController`, at the editor's role): every drawing of the book, those waiting for their day included, grouped by the site's levels in their order, each with its image, title, day and crayons.
 
 ### Structured data
 
