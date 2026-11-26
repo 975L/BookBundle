@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.41.0
+
+A book's product comes out with the book
+
+- The shop product of a book comes out the day its first version does, showing only that day before it (26/11/2026)
+
 ## v2.40.2
 
 Book published again keeps its credits

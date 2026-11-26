@@ -52,7 +52,9 @@ class BookShopPublisher
         $latest = $book->getLatestVersion();
         $items = [];
         $sold = false;
+        $firstOut = null;
         for ($version = $latest; null !== $version; $version = $version->getPreviousVersion()) {
+            $firstOut = $version->getPublished() ?? $firstOut;
             foreach ($version->getEditions() as $edition) {
                 if ($edition->hasChannel(BookChannel::Shop)) {
                     $sold = true;
@@ -72,6 +74,8 @@ class BookShopPublisher
             items: $items,
             coverPath: $this->coverPath($latest),
             language: $latest->getLanguage(),
+            // The day the first version came out: a new version on its way leaves the text already out on sale
+            availableAt: $firstOut,
         ));
     }
 

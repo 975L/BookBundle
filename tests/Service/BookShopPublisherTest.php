@@ -95,6 +95,20 @@ class BookShopPublisherTest extends TestCase
         $this->assertSame('en', $written[0]->language);
     }
 
+    // The product comes out the day the first version did, a new version on its way leaving the text already out on sale
+    public function testTheProductComesOutWithTheFirstVersion(): void
+    {
+        $written = [];
+        $old = $this->book(1, 'old.epub', ['shop'])->setPublished(new \DateTimeImmutable('2026-12-19'));
+        $this->publisher($written)->publish($old);
+        $this->assertSame('2026-12-19', $written[0]->availableAt?->format('Y-m-d'));
+
+        $new = $this->book(2, 'new.epub', ['shop'])->setPublished(new \DateTimeImmutable('2027-03-01'));
+        $old->setNewerVersion($new);
+        $this->publisher($written)->publish($old);
+        $this->assertSame('2026-12-19', $written[1]->availableAt?->format('Y-m-d'));
+    }
+
     // An edition ticked "Shop" whose files are not on disk yet is no reason to set the product's items aside: nothing is written
     public function testAShopEditionWithoutFilesWritesNothing(): void
     {
