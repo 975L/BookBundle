@@ -13,6 +13,7 @@ namespace c975L\BookBundle\Tests\Command;
 use c975L\BookBundle\Command\BookPublishCommand;
 use c975L\BookBundle\Entity\Book;
 use c975L\BookBundle\Entity\BookCategory;
+use c975L\BookBundle\Entity\BookContributor;
 use c975L\BookBundle\Entity\BookEdition;
 use c975L\BookBundle\Entity\BookMedia;
 use c975L\BookBundle\Entity\Contributor;
@@ -39,6 +40,8 @@ class BookPublishCommandTest extends TestCase
 
     private Serie $serie;
 
+    private Contributor $narrator;
+
     private bool $flushed = false;
 
     private bool $shopped = false;
@@ -59,6 +62,7 @@ class BookPublishCommandTest extends TestCase
         foreach (['cover.jpg', 'page2.jpg', 'book.pdf', 'book.epub', 'book.mp3'] as $file) {
             new Filesystem()->dumpFile($this->directory . '/' . $file, $file);
         }
+        $this->narrator = new Contributor()->setSlug('item-2');
         $this->serie = new Serie()->setSlug('catalog')->setAuthor(new Contributor()->setSlug('item-3'));
     }
 
@@ -115,6 +119,29 @@ class BookPublishCommandTest extends TestCase
         $this->assertSame(Command::SUCCESS, $this->publish([])->getStatusCode());
         $this->assertSame(['item-1', 'summary-0', false], [$book->getTitle(), $book->getSummary(), $book->isHidden()]);
         $this->assertCount(1, $book->getMedias());
+    }
+
+    // A credit the book already holds is kept, not added again, a credit the manifest no longer names removed
+    public function testHeldContributorsAreKept(): void
+    {
+        $book = new Book()->setSlug('item-1');
+        $held = new BookContributor()->setContributor($this->narrator)->setRole('narrator');
+        $book->addContributor($held);
+        $book->addContributor(new BookContributor()->setContributor(new Contributor()->setSlug('item-3'))->setRole('narrator'));
+        $this->books['item-1'] = $book;
+
+        $this->assertSame(Command::SUCCESS, $this->publish(['contributors' => [['contributor' => 'item-2', 'role' => 'narrator']]])->getStatusCode());
+        $this->assertSame([$held], array_values($book->getContributors()->toArray()));
+    }
+
+    // A person named twice in the same role by the manifest is credited once, the unique credit never inserted twice
+    public function testRepeatedContributorIsCreditedOnce(): void
+    {
+        $book = new Book()->setSlug('item-1');
+        $this->books['item-1'] = $book;
+
+        $this->assertSame(Command::SUCCESS, $this->publish(['contributors' => [['contributor' => 'item-2', 'role' => 'narrator'], ['contributor' => 'item-2', 'role' => 'narrator']]])->getStatusCode());
+        $this->assertCount(1, $book->getContributors());
     }
 
     // A missing file, an unknown kind, a book to translate that is not there or a malformed day refuse the manifest, nothing written
@@ -230,7 +257,7 @@ class BookPublishCommandTest extends TestCase
         $categories = $this->createStub(BookCategoryRepository::class);
         $categories->method('findOneBy')->willReturnCallback(static fn (array $criteria): ?BookCategory => 'catalog' === $criteria['slug'] ? new BookCategory() : null);
         $contributors = $this->createStub(ContributorRepository::class);
-        $contributors->method('findOneBy')->willReturn(new Contributor()->setSlug('item-2'));
+        $contributors->method('findOneBy')->willReturn($this->narrator);
         $em = $this->createStub(EntityManagerInterface::class);
         $em->method('flush')->willReturnCallback(function (): void {
             $this->flushed = true;

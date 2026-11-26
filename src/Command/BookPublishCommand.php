@@ -452,7 +452,7 @@ class BookPublishCommand extends Command
         return $missing;
     }
 
-    // The contributors the manifest names in place of those the book had, in its order, those the site does not hold returned
+    // The contributors the manifest names in place of those the book had, in its order, a credit already held kept so that a run again never inserts it twice, those the site does not hold returned
     /**
      * @param array<mixed> $manifest
      *
@@ -463,9 +463,8 @@ class BookPublishCommand extends Command
         if (!\array_key_exists('contributors', $manifest)) {
             return [];
         }
-        foreach ($book->getContributors()->toArray() as $contributor) {
-            $book->removeContributor($contributor);
-        }
+        $held = $book->getContributors()->toArray();
+        $kept = [];
         $missing = [];
         foreach ($this->list($manifest['contributors']) as $position => $named) {
             $person = \is_array($named) && $this->filled($named['contributor'] ?? null) ? $this->contributorRepository->findOneBy(['slug' => $named['contributor']]) : null;
@@ -473,12 +472,30 @@ class BookPublishCommand extends Command
                 $missing[] = 'contributeur ' . json_encode(\is_array($named) ? ($named['contributor'] ?? null) : $named, \JSON_UNESCAPED_UNICODE);
                 continue;
             }
-            $contributor = new BookContributor()->setContributor($person)->setRole((string) ($named['role'] ?? BookContributorRole::Narrator->value))->setPosition($position);
-            $book->addContributor($contributor);
-            $this->em->persist($contributor);
+            $kept[] = $this->credit($book, $person, (string) ($named['role'] ?? BookContributorRole::Narrator->value))->setPosition($position);
+        }
+        foreach ($held as $credit) {
+            if (!\in_array($credit, $kept, true)) {
+                $book->removeContributor($credit);
+            }
         }
 
         return $missing;
+    }
+
+    // The credit of a person in a role the book already holds, or was given earlier in the same manifest, else a new one added to it
+    private function credit(Book $book, Contributor $person, string $role): BookContributor
+    {
+        foreach ($book->getContributors() as $credit) {
+            if ($credit->getContributor() === $person && $credit->getRole() === $role) {
+                return $credit;
+            }
+        }
+        $credit = new BookContributor()->setContributor($person)->setRole($role);
+        $book->addContributor($credit);
+        $this->em->persist($credit);
+
+        return $credit;
     }
 
     // The medias the manifest names, in place of those of their kind, the others kept

@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.40.2
+
+Book published again keeps its credits
+
+- `c975l:book:publish` run again keeps the credits the book already holds instead of inserting them twice, a person named twice in a role credited once (26/11/2026)
+
 ## v2.40.1
 
 No read nor watch button before a book is out
